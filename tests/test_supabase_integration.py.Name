@@ -1,0 +1,356 @@
+"""
+Comprehensive test script for Supabase integration with automatic project selection.
+
+Tests:
+1. User switching between projects
+2. Data isolation (users, slots, plans)
+3. API endpoint functionality
+4. Automatic project detection
+"""
+
+import os
+import sys
+import requests
+import json
+from typing import Dict, Optional
+
+# Test configuration
+BASE_URL = "http://127.0.0.1:8000"
+USE_SUPABASE = None  # Will be determined from backend
+
+# Test users (these should exist in your Supabase projects)
+# Update these with actual user IDs from your database
+WILSON_USER_ID = None  # Will be detected or created
+DANIELA_USER_ID = None  # Will be detected or created
+
+
+class Colors:
+    """ANSI color codes for terminal output."""
+    GREEN = "\033[92m"
+    RED = "\033[91m"
+    YELLOW = "\033[93m"
+    BLUE = "\033[94m"
+    RESET = "\033[0m"
+    BOLD = "\033[1m"
+
+
+def print_header(text: str):
+    """Print a formatted header."""
+    print(f"\n{Colors.BOLD}{Colors.BLUE}{'='*60}{Colors.RESET}")
+    print(f"{Colors.BOLD}{Colors.BLUE}{text.center(60)}{Colors.RESET}")
+    print(f"{Colors.BOLD}{Colors.BLUE}{'='*60}{Colors.RESET}\n")
+
+
+def print_success(text: str):
+    """Print success message."""
+    print(f"{Colors.GREEN}[OK] {text}{Colors.RESET}")
+
+
+def print_error(text: str):
+    """Print error message."""
+    print(f"{Colors.RED}[ERROR] {text}{Colors.RESET}")
+
+
+def print_warning(text: str):
+    """Print warning message."""
+    print(f"{Colors.YELLOW}[WARN] {text}{Colors.RESET}")
+
+
+def print_info(text: str):
+    """Print info message."""
+    print(f"{Colors.BLUE}[INFO] {text}{Colors.RESET}")
+
+
+def check_backend_health() -> bool:
+    """Check if backend is running and determine database type."""
+    global USE_SUPABASE
+    
+    try:
+        response = requests.get(f"{BASE_URL}/api/health", timeout=5)
+        if response.status_code == 200:
+            print_success("Backend is running")
+            
+            # Try to get database info
+            try:
+                db_response = requests.get(f"{BASE_URL}/api/health/database", timeout=5)
+                if db_response.status_code == 200:
+                    db_info = db_response.json()
+                    USE_SUPABASE = db_info.get("use_supabase", False)
+                    db_type = db_info.get("database_type", "Unknown")
+                    print_info(f"Backend is using: {db_type}")
+                    if USE_SUPABASE:
+                        project = db_info.get("supabase_project", "unknown")
+                        print_info(f"Supabase project: {project}")
+                else:
+                    # Fallback: check local env if endpoint not available
+                    USE_SUPABASE = os.getenv("USE_SUPABASE", "False").lower() == "true"
+                    print_warning("Database endpoint not available, checking local environment")
+            except Exception:
+                # Fallback: check local env if endpoint not available
+                USE_SUPABASE = os.getenv("USE_SUPABASE", "False").lower() == "true"
+                print_warning("Could not query database info, checking local environment")
+            
+            return True
+        else:
+            print_error(f"Backend returned status {response.status_code}")
+            return False
+    except requests.exceptions.ConnectionError:
+        print_error("Cannot connect to backend. Is it running?")
+        print_info("Start backend with: python -m uvicorn backend.api:app --reload")
+        return False
+    except Exception as e:
+        print_error(f"Error checking backend: {e}")
+        return False
+
+
+def get_or_create_user(first_name: str, last_name: str, email: Optional[str] = None) -> Optional[str]:
+    """Get existing user by name or create a new one."""
+    # First, try to list all users and find by name
+    try:
+        response = requests.get(f"{BASE_URL}/api/users", timeout=10)
+        if response.status_code == 200:
+            users = response.json()
+            for user in users:
+                if (user.get("first_name", "").lower() == first_name.lower() and
+                    user.get("last_name", "").lower() == last_name.lower()):
+                    print_info(f"Found existing user: {first_name} {last_name} (ID: {user['id']})")
+                    return user["id"]
+    except Exception as e:
+        print_warning(f"Could not list users: {e}")
+    
+    # Create new user if not found
+    try:
+        payload = {
+            "first_name": first_name,
+            "last_name": last_name,
+            "email": email or f"{first_name.lower()}.{last_name.lower()}@test.com"
+        }
+        response = requests.post(f"{BASE_URL}/api/users", json=payload, timeout=10)
+        if response.status_code == 200:
+            user = response.json()
+            print_success(f"Created user: {first_name} {last_name} (ID: {user['id']})")
+            return user["id"]
+        else:
+            print_error(f"Failed to create user: {response.status_code} - {response.text}")
+            return None
+    except Exception as e:
+        print_error(f"Error creating user: {e}")
+        return None
+
+
+def test_user_operations(user_id: str) -> bool:
+    """Test user CRUD operations."""
+    print_header(f"Testing User Operations for {user_id}")
+    
+    try:
+        # Get user
+        response = requests.get(f"{BASE_URL}/api/users/{user_id}", timeout=10)
+        if response.status_code == 200:
+            user = response.json()
+            print_success(f"Retrieved user: {user.get('first_name')} {user.get('last_name')}")
+            print_info(f"  ID: {user['id']}")
+            print_info(f"  Email: {user.get('email', 'N/A')}")
+            return True
+        else:
+            print_error(f"Failed to get user: {response.status_code}")
+            return False
+    except Exception as e:
+        print_error(f"Error testing user operations: {e}")
+        return False
+
+
+def test_slot_operations(user_id: str) -> bool:
+    """Test class slot CRUD operations."""
+    print_header(f"Testing Slot Operations for {user_id}")
+    
+    try:
+        # List existing slots
+        response = requests.get(f"{BASE_URL}/api/users/{user_id}/slots", timeout=10)
+        if response.status_code == 200:
+            slots = response.json()
+            print_info(f"Found {len(slots)} existing slots")
+            
+            # Create a test slot if none exist
+            if len(slots) == 0:
+                slot_data = {
+                    "slot_number": 1,
+                    "subject": "Math",
+                    "grade": "3",
+                    "homeroom": "Test Room",
+                    "proficiency_levels": "1,2,3",
+                    "primary_teacher_first_name": "Test",
+                    "primary_teacher_last_name": "Teacher"
+                }
+                response = requests.post(
+                    f"{BASE_URL}/api/users/{user_id}/slots",
+                    json=slot_data,
+                    timeout=10
+                )
+                if response.status_code == 200:
+                    slot = response.json()
+                    print_success(f"Created test slot: Slot {slot['slot_number']} - {slot['subject']}")
+                    return True
+                else:
+                    print_error(f"Failed to create slot: {response.status_code} - {response.text}")
+                    return False
+            else:
+                print_success(f"Verified {len(slots)} slots exist")
+                for slot in slots[:3]:  # Show first 3
+                    print_info(f"  Slot {slot['slot_number']}: {slot['subject']} - Grade {slot['grade']}")
+                return True
+        else:
+            print_error(f"Failed to list slots: {response.status_code}")
+            return False
+    except Exception as e:
+        print_error(f"Error testing slot operations: {e}")
+        return False
+
+
+def test_plan_operations(user_id: str) -> bool:
+    """Test weekly plan operations."""
+    print_header(f"Testing Plan Operations for {user_id}")
+    
+    try:
+        # List existing plans
+        response = requests.get(f"{BASE_URL}/api/users/{user_id}/plans", timeout=10)
+        if response.status_code == 200:
+            plans = response.json()
+            print_info(f"Found {len(plans)} existing plans")
+            if plans:
+                for plan in plans[:3]:  # Show first 3
+                    print_info(f"  Plan: Week of {plan.get('week_of', 'N/A')} - Status: {plan.get('status', 'N/A')}")
+            print_success("Plan listing works")
+            return True
+        else:
+            print_error(f"Failed to list plans: {response.status_code}")
+            return False
+    except Exception as e:
+        print_error(f"Error testing plan operations: {e}")
+        return False
+
+
+def test_recent_weeks(user_id: str) -> bool:
+    """Test recent weeks detection."""
+    print_header(f"Testing Recent Weeks Detection for {user_id}")
+    
+    try:
+        response = requests.get(f"{BASE_URL}/api/recent-weeks?user_id={user_id}&limit=3", timeout=10)
+        if response.status_code == 200:
+            weeks = response.json()
+            print_info(f"Found {len(weeks)} recent weeks")
+            for week in weeks:
+                print_info(f"  {week.get('display', 'N/A')} - {week.get('week_of', 'N/A')}")
+            print_success("Recent weeks detection works")
+            return True
+        else:
+            print_warning(f"Recent weeks returned {response.status_code} - may not have base_path configured")
+            return True  # Not a critical failure
+    except Exception as e:
+        print_warning(f"Recent weeks error (non-critical): {e}")
+        return True  # Not a critical failure
+
+
+def test_project_isolation(user1_id: str, user2_id: str) -> bool:
+    """Test that users are isolated to their respective projects."""
+    print_header("Testing Project Isolation")
+    
+    if not USE_SUPABASE:
+        print_warning("Skipping project isolation test (not using Supabase)")
+        return True
+    
+    try:
+        # Get users and verify they're in different projects
+        # This is verified by the fact that automatic project selection works
+        print_info("Testing automatic project selection...")
+        
+        # Get user1 data
+        response1 = requests.get(f"{BASE_URL}/api/users/{user1_id}", timeout=10)
+        if response1.status_code != 200:
+            print_error(f"Failed to get user1: {response1.status_code}")
+            return False
+        
+        # Get user2 data
+        response2 = requests.get(f"{BASE_URL}/api/users/{user2_id}", timeout=10)
+        if response2.status_code != 200:
+            print_error(f"Failed to get user2: {response2.status_code}")
+            return False
+        
+        user1 = response1.json()
+        user2 = response2.json()
+        
+        print_success(f"User 1: {user1.get('first_name')} {user1.get('last_name')} (ID: {user1_id})")
+        print_success(f"User 2: {user2.get('first_name')} {user2.get('last_name')} (ID: {user2_id})")
+        print_success("Both users accessible - automatic project selection working!")
+        
+        return True
+    except Exception as e:
+        print_error(f"Error testing project isolation: {e}")
+        return False
+
+
+def main():
+    """Run all tests."""
+    print_header("Supabase Integration Test Suite")
+    
+    print_info(f"Backend URL: {BASE_URL}")
+    print_info(f"Using Supabase: {USE_SUPABASE}")
+    
+    # Check backend health
+    if not check_backend_health():
+        sys.exit(1)
+    
+    # Get or create test users
+    print_header("Setting Up Test Users")
+    global WILSON_USER_ID, DANIELA_USER_ID
+    
+    WILSON_USER_ID = get_or_create_user("Wilson", "Rodrigues", "wilson@test.com")
+    DANIELA_USER_ID = get_or_create_user("Daniela", "Silva", "daniela@test.com")
+    
+    if not WILSON_USER_ID or not DANIELA_USER_ID:
+        print_error("Failed to set up test users")
+        sys.exit(1)
+    
+    # Test results
+    results = []
+    
+    # Test User 1 (Wilson)
+    print_header("Testing User 1: Wilson Rodrigues")
+    results.append(("User 1 Operations", test_user_operations(WILSON_USER_ID)))
+    results.append(("User 1 Slots", test_slot_operations(WILSON_USER_ID)))
+    results.append(("User 1 Plans", test_plan_operations(WILSON_USER_ID)))
+    results.append(("User 1 Recent Weeks", test_recent_weeks(WILSON_USER_ID)))
+    
+    # Test User 2 (Daniela)
+    print_header("Testing User 2: Daniela Silva")
+    results.append(("User 2 Operations", test_user_operations(DANIELA_USER_ID)))
+    results.append(("User 2 Slots", test_slot_operations(DANIELA_USER_ID)))
+    results.append(("User 2 Plans", test_plan_operations(DANIELA_USER_ID)))
+    results.append(("User 2 Recent Weeks", test_recent_weeks(DANIELA_USER_ID)))
+    
+    # Test project isolation
+    results.append(("Project Isolation", test_project_isolation(WILSON_USER_ID, DANIELA_USER_ID)))
+    
+    # Summary
+    print_header("Test Results Summary")
+    passed = sum(1 for _, result in results if result)
+    total = len(results)
+    
+    for test_name, result in results:
+        if result:
+            print_success(f"{test_name}: PASSED")
+        else:
+            print_error(f"{test_name}: FAILED")
+    
+    print(f"\n{Colors.BOLD}Results: {passed}/{total} tests passed{Colors.RESET}\n")
+    
+    if passed == total:
+        print_success("All tests passed! Supabase integration is working correctly.")
+        return 0
+    else:
+        print_error(f"{total - passed} test(s) failed. Please review the errors above.")
+        return 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())
+

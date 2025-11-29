@@ -1,0 +1,61 @@
+{
+  "summary": {
+    "total_files": 2,
+    "total_links": 158,
+    "overall_inline_rate": 100.0,
+    "overall_fallback_rate": 0.0,
+    "improvement_over_baseline": 15.799999999999997
+  },
+  "overall_stats": {
+    "coordinate": 158,
+    "label_day": 0,
+    "fuzzy": 0,
+    "fallback": 0
+  },
+  "by_type": {
+    "standard_8x6": [
+      {
+        "name": "Davies (Grade 3 ELA)",
+        "inline_rate": 100.0
+      },
+      {
+        "name": "Lang",
+        "inline_rate": 100.0
+      }
+    ]
+  },
+  "individual_results": [
+    {
+      "file_name": "Davies (Grade 3 ELA)",
+      "file_type": "standard_8x6",
+      "total_links": 80,
+      "table_links": 80,
+      "para_links": 0,
+      "stats": {
+        "coordinate": 80,
+        "label_day": 0,
+        "fuzzy": 0,
+        "fallback": 0
+      },
+      "inline_rate": 100.0,
+      "fallback_rate": 0.0,
+      "output_file": "d:\\LP\\validation_output\\Davies_(Grade_3_ELA)_output.docx"
+    },
+    {
+      "file_name": "Lang",
+      "file_type": "standard_8x6",
+      "total_links": 78,
+      "table_links": 78,
+      "para_links": 0,
+      "stats": {
+        "coordinate": 78,
+        "label_day": 0,
+        "fuzzy": 0,
+        "fallback": 0
+      },
+      "inline_rate": 100.0,
+      "fallback_rate": 0.0,
+      "output_file": "d:\\LP\\validation_output\\Lang_output.docx"
+    }
+  ]
+}

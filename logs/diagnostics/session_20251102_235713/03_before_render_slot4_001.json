@@ -1,0 +1,16 @@
+{
+  "timestamp": "2025-11-03T00:00:01.258873",
+  "stage": "03_before_render_slot4",
+  "data": {
+    "slot_number": 4,
+    "subject": "Science/Health",
+    "render_type": "single_slot",
+    "metadata_slot_number": 4,
+    "metadata_subject": "Science/Health",
+    "hyperlink_count": 0,
+    "all_hyperlinks_have_slot": true,
+    "all_hyperlinks_have_subject": true,
+    "hyperlink_slot_distribution": {},
+    "sample_hyperlinks": []
+  }
+}

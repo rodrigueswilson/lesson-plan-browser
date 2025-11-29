@@ -1,0 +1,64 @@
+{
+  "metadata": {
+    "week_of": "10/6-10/10",
+    "grade": "7",
+    "subject": "Social Studies"
+  },
+  "days": {
+    "monday": {
+      "unit_lesson": "Unit One",
+      "objective": {
+        "content_objective": "Students will explain systems",
+        "student_goal": "I will explain",
+        "wida_objective": "Students will use language to explain (ELD-SS.6-8.Explain.Writing) appropriate for levels 2-5."
+      },
+      "anticipatory_set": {
+        "original_content": "Warm up activity",
+        "bilingual_bridge": "Preview vocabulary in Portuguese"
+      },
+      "tailored_instruction": {
+        "original_content": "Teach content",
+        "co_teaching_model": {
+          "model_name": "Invalid Model Name",
+          "rationale": "This is invalid",
+          "wida_context": "Mixed levels",
+          "phase_plan": [],
+          "implementation_notes": ["Note"]
+        },
+        "ell_support": [],
+        "special_needs_support": ["Support"],
+        "materials": ["Materials"]
+      },
+      "misconceptions": {
+        "original_content": "Misconception",
+        "linguistic_note": {
+          "pattern_id": "invalid_pattern",
+          "note": "Note",
+          "prevention_tip": "Tip"
+        }
+      },
+      "assessment": {
+        "primary_assessment": "Test",
+        "bilingual_overlay": {
+          "instrument": "Test",
+          "wida_mapping": "Explain + ELD + Levels",
+          "supports_by_level": {
+            "levels_1_2": "Support",
+            "levels_3_4": "Support",
+            "levels_5_6": "Support"
+          },
+          "scoring_lens": "Scoring",
+          "constraints_honored": "Constraints"
+        }
+      },
+      "homework": {
+        "original_content": "",
+        "family_connection": "Family activity"
+      }
+    },
+    "tuesday": {},
+    "wednesday": {},
+    "thursday": {},
+    "friday": {}
+  }
+}

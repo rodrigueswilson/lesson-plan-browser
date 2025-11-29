@@ -1,0 +1,10 @@
+---
+alwaysApply: true
+---
+# KISS (Keep It Simple, Stupid) Principle
+
+- **Always** favor simple, straightforward solutions over complex ones. The best code is easy to read, understand, and maintain.
+- **Always** break down complex problems into smaller, simpler, manageable parts.
+- **Never** add functionality that is not currently required (YAGNI - You Ain't Gonna Need It).
+- **Never** introduce unnecessary layers of abstraction or complex design patterns when a simpler approach would suffice.
+- Before committing to a solution, **always** ask: "Is there a simpler way to achieve this?"

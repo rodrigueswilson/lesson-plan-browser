@@ -1,0 +1,9 @@
+---
+alwaysApply: true
+---
+# DRY (Don't Repeat Yourself) Principle
+
+- **Always** analyze the codebase for duplication before adding new code. If you find the same or very similar logic repeated in more than one place, refactor it into a single, reusable function, method, or class.
+- **Never** write new code that knowingly duplicates existing functionality. Avoid "WET" (Write Everything Twice) solutions by abstracting common patterns.
+- **Always** give extracted functions or classes clear, descriptive names that accurately represent their single responsibility.
+- If you are unsure whether a piece of code is a candidate for abstraction, ask for clarification.

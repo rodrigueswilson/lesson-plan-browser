@@ -1,0 +1,326 @@
+"""
+Comprehensive test to verify ALL tables in the codebase maintain consistent 10-inch width.
+Tests:
+1. Template tables
+2. Rendered output tables (metadata, daily plans, signature)
+3. Multi-slot merged documents
+"""
+
+from docx import Document
+from pathlib import Path
+import tempfile
+import os
+import json
+
+TEMPLATE_PATH = r'F:\rodri\Documents\OneDrive\AS\Lesson Plan\Lesson Plan Template.docx'
+
+def check_table_widths(doc, doc_name="Document"):
+    """Check all tables in a document have consistent 10-inch width."""
+    print(f"\n{doc_name}:")
+    print("-" * 60)
+    
+    section = doc.sections[0]
+    expected_width = (section.page_width - section.left_margin - section.right_margin) / 914400
+    
+    print(f"  Expected width (from page setup): {expected_width:.4f} inches")
+    print(f"  Tables found: {len(doc.tables)}")
+    
+    all_correct = True
+    widths = []
+    
+    for i, table in enumerate(doc.tables):
+        if table.columns:
+            total_width = sum(col.width for col in table.columns)
+            total_width_inches = total_width / 914400
+            widths.append(total_width_inches)
+            
+            # Check if within tolerance (0.01 inches)
+            is_correct = abs(total_width_inches - expected_width) < 0.01
+            status = "OK" if is_correct else "FAIL"
+            
+            print(f"    Table {i+1}: {total_width_inches:.4f}\" {status}")
+            
+            if not is_correct:
+                all_correct = False
+                print(f"      ERROR: Expected {expected_width:.4f}\", got {total_width_inches:.4f}\"")
+    
+    if widths:
+        min_width = min(widths)
+        max_width = max(widths)
+        variance = max_width - min_width
+        
+        print(f"\n  Width range: {min_width:.4f}\" to {max_width:.4f}\"")
+        print(f"  Variance: {variance:.4f}\" ({variance * 914400:.0f} EMUs)")
+        
+        if variance < 0.01:
+            print(f"  [OK] All tables have consistent width!")
+        else:
+            print(f"  [FAIL] Tables have inconsistent widths!")
+            all_correct = False
+    
+    return all_correct
+
+def test_template_tables():
+    """Test 1: Verify template tables are correct."""
+    print("=" * 80)
+    print("TEST 1: Template Tables")
+    print("=" * 80)
+    
+    doc = Document(TEMPLATE_PATH)
+    result = check_table_widths(doc, "Template")
+    
+    assert result, "Template tables have incorrect widths!"
+    print("\n[OK] Template tables are correct!")
+    return result
+
+def test_single_slot_output():
+    """Test 2: Verify single-slot rendered output."""
+    print("\n" + "=" * 80)
+    print("TEST 2: Single-Slot Rendered Output")
+    print("=" * 80)
+    
+    from tools.docx_renderer import DOCXRenderer
+    
+    # Create test JSON
+    test_json = {
+        "metadata": {
+            "teacher_name": "Test Teacher",
+            "grade": "3rd",
+            "subject": "Math",
+            "week_of": "11-04-11-08",
+            "homeroom": "101"
+        },
+        "days": {
+            "monday": {
+                "unit": "Unit 1",
+                "lesson_number": "Lesson 1",
+                "module": "Module A",
+                "objective": {"content": "Test objective"},
+                "anticipatory_set": "Test anticipatory set",
+                "tailored_strategies": "Test strategies",
+                "assessment": "Test assessment",
+                "homework": "Test homework"
+            }
+        }
+    }
+    
+    with tempfile.NamedTemporaryFile(mode='w', suffix='.docx', delete=False) as tmp:
+        output_path = tmp.name
+    
+    try:
+        renderer = DOCXRenderer(TEMPLATE_PATH)
+        success = renderer.render(test_json, output_path)
+        assert success, "Rendering failed"
+        
+        output_doc = Document(output_path)
+        result = check_table_widths(output_doc, "Single-Slot Output")
+        
+        # Verify we have the expected tables
+        assert len(output_doc.tables) >= 2, f"Expected at least 2 tables, got {len(output_doc.tables)}"
+        
+        assert result, "Single-slot output tables have incorrect widths!"
+        print("\n[OK] Single-slot output tables are correct!")
+        return result
+        
+    finally:
+        if os.path.exists(output_path):
+            os.unlink(output_path)
+
+def test_with_signature_table():
+    """Test 3: Verify output with signature table."""
+    print("\n" + "=" * 80)
+    print("TEST 3: Output with Signature Table")
+    print("=" * 80)
+    
+    from tools.batch_processor import BatchProcessor
+    from datetime import datetime
+    
+    # Create test JSON
+    test_json = {
+        "metadata": {
+            "teacher_name": "Test Teacher",
+            "grade": "3rd",
+            "subject": "Math",
+            "week_of": "11-04-11-08",
+            "homeroom": "101"
+        },
+        "days": {
+            "monday": {
+                "unit": "Unit 1",
+                "lesson_number": "Lesson 1",
+                "module": "Module A",
+                "objective": {"content": "Test objective"},
+                "anticipatory_set": "Test anticipatory set",
+                "tailored_strategies": "Test strategies",
+                "assessment": "Test assessment",
+                "homework": "Test homework"
+            }
+        }
+    }
+    
+    with tempfile.NamedTemporaryFile(mode='w', suffix='.docx', delete=False) as tmp:
+        output_path = tmp.name
+    
+    try:
+        from tools.docx_renderer import DOCXRenderer
+        
+        # Render document
+        renderer = DOCXRenderer(TEMPLATE_PATH)
+        success = renderer.render(test_json, output_path)
+        assert success, "Rendering failed"
+        
+        # Add signature table manually (same logic as batch processor)
+        doc = Document(output_path)
+        template_doc = Document(TEMPLATE_PATH)
+        
+        # Find signature table in template
+        signature_table = None
+        for table in template_doc.tables:
+            table_text = "\n".join([cell.text for row in table.rows for cell in row.cells])
+            if "Required Signatures" in table_text:
+                signature_table = table
+                break
+        
+        if signature_table:
+            from copy import deepcopy
+            doc.add_paragraph()
+            new_table = deepcopy(signature_table._element)
+            doc._element.body.append(new_table)
+        
+        doc.save(output_path)
+        
+        # Check widths
+        doc = Document(output_path)
+        result = check_table_widths(doc, "Output with Signature")
+        
+        # Verify signature table was added
+        assert len(doc.tables) >= 3, f"Expected at least 3 tables (including signature), got {len(doc.tables)}"
+        
+        assert result, "Output with signature table has incorrect widths!"
+        print("\n[OK] Output with signature table is correct!")
+        return result
+        
+    finally:
+        if os.path.exists(output_path):
+            os.unlink(output_path)
+
+def test_table_width_preservation():
+    """Test 4: Verify table width is preserved through processing pipeline."""
+    print("\n" + "=" * 80)
+    print("TEST 4: Table Width Preservation Through Pipeline")
+    print("=" * 80)
+    
+    # Load template
+    template_doc = Document(TEMPLATE_PATH)
+    template_section = template_doc.sections[0]
+    template_width = (template_section.page_width - template_section.left_margin - template_section.right_margin) / 914400
+    
+    print(f"\n  Template available width: {template_width:.4f} inches")
+    
+    # Create output
+    from tools.docx_renderer import DOCXRenderer
+    
+    test_json = {
+        "metadata": {
+            "teacher_name": "Test Teacher",
+            "grade": "3rd",
+            "subject": "Math",
+            "week_of": "11-04-11-08",
+            "homeroom": "101"
+        },
+        "days": {
+            "monday": {
+                "unit": "Unit 1",
+                "lesson_number": "Lesson 1",
+                "module": "Module A",
+                "objective": {"content": "Test objective"},
+                "anticipatory_set": "Test anticipatory set",
+                "tailored_strategies": "Test strategies",
+                "assessment": "Test assessment",
+                "homework": "Test homework"
+            }
+        }
+    }
+    
+    with tempfile.NamedTemporaryFile(mode='w', suffix='.docx', delete=False) as tmp:
+        output_path = tmp.name
+    
+    try:
+        renderer = DOCXRenderer(TEMPLATE_PATH)
+        success = renderer.render(test_json, output_path)
+        assert success, "Rendering failed"
+        
+        # Check output
+        output_doc = Document(output_path)
+        output_section = output_doc.sections[0]
+        output_width = (output_section.page_width - output_section.left_margin - output_section.right_margin) / 914400
+        
+        print(f"  Output available width: {output_width:.4f} inches")
+        
+        # Verify page setup preserved
+        assert abs(template_width - output_width) < 0.01, \
+            f"Page setup not preserved! Template: {template_width:.4f}\", Output: {output_width:.4f}\""
+        
+        print(f"  [OK] Page setup preserved")
+        
+        # Verify all tables match available width
+        for i, table in enumerate(output_doc.tables):
+            if table.columns:
+                total_width = sum(col.width for col in table.columns)
+                total_width_inches = total_width / 914400
+                
+                assert abs(total_width_inches - output_width) < 0.01, \
+                    f"Table {i+1} width {total_width_inches:.4f}\" != available width {output_width:.4f}\""
+        
+        print(f"  [OK] All {len(output_doc.tables)} tables match available width")
+        print("\n[OK] Table width preservation verified!")
+        return True
+        
+    finally:
+        if os.path.exists(output_path):
+            os.unlink(output_path)
+
+if __name__ == "__main__":
+    print("\n" + "=" * 80)
+    print("COMPREHENSIVE TABLE WIDTH CONSISTENCY TEST")
+    print("=" * 80)
+    
+    try:
+        results = []
+        
+        # Run all tests
+        results.append(("Template Tables", test_template_tables()))
+        results.append(("Single-Slot Output", test_single_slot_output()))
+        results.append(("With Signature Table", test_with_signature_table()))
+        results.append(("Width Preservation", test_table_width_preservation()))
+        
+        # Summary
+        print("\n" + "=" * 80)
+        print("TEST SUMMARY")
+        print("=" * 80)
+        
+        all_passed = all(result for _, result in results)
+        
+        for test_name, result in results:
+            status = "[PASS]" if result else "[FAIL]"
+            print(f"  {test_name}: {status}")
+        
+        if all_passed:
+            print("\n" + "=" * 80)
+            print("ALL TESTS PASSED!")
+            print("=" * 80)
+            print("\n[OK] All tables maintain consistent 10-inch width")
+            print("[OK] Template tables are correct")
+            print("[OK] Rendered output tables are correct")
+            print("[OK] Signature table is correct")
+            print("[OK] Width is preserved through entire pipeline")
+            print("\n" + "=" * 80)
+        else:
+            print("\n" + "=" * 80)
+            print("SOME TESTS FAILED!")
+            print("=" * 80)
+            raise AssertionError("Not all tests passed")
+            
+    except Exception as e:
+        print(f"\n[ERROR]: {e}")
+        raise

@@ -1,0 +1,225 @@
+#!/usr/bin/env python3
+"""
+Generate HTML with multiple objectives per day (multiple slots).
+"""
+
+import json
+import sys
+from pathlib import Path
+import tempfile
+
+# Add backend to path
+sys.path.append(str(Path(__file__).parent / "backend"))
+
+from backend.services.objectives_pdf_generator import ObjectivesPDFGenerator
+
+
+def create_multi_slot_lesson_data():
+    """Create realistic lesson data with multiple objectives per day."""
+    return {
+        "metadata": {
+            "week_of": "11-17-11-21",
+            "grade": "3",
+            "subject": "Multiple Subjects",
+            "homeroom": "Room 15",
+            "teacher_name": "Ms. Wilson"
+        },
+        "days": {
+            "monday": {
+                "unit_lesson": "Unit 3 Lesson 9: MEASURE TO FIND THE AREA",
+                "objective": {
+                    "content_objective": "Students will measure area using square units and understand that area is the measure of space inside a shape.",
+                    "student_goal": "I will find the area of shapes using square units.",
+                    "wida_objective": "Students will use language to describe and compare areas of different shapes using square units and mathematical vocabulary."
+                }
+            },
+            "tuesday": {
+                "unit_lesson": "ELA Unit 2: READING COMPREHENSION STRATEGIES",
+                "objective": {
+                    "content_objective": "Students will apply reading comprehension strategies to understand grade-level texts.",
+                    "student_goal": "I will use strategies to understand what I read better.",
+                    "wida_objective": "Students will use academic language to describe reading strategies."
+                }
+            },
+            "wednesday": {
+                "unit_lesson": "Science Lab: PLANT GROWTH EXPERIMENT",
+                "objective": {
+                    "content_objective": "Students will conduct experiments to observe and record plant growth.",
+                    "student_goal": "I will watch how plants grow and record what happens.",
+                    "wida_objective": "Students will use scientific observation language."
+                }
+            },
+            "thursday": {
+                "unit_lesson": "Math Chapter 5: MULTIPLICATION FACTS TO 12",
+                "objective": {
+                    "content_objective": "Students will memorize multiplication facts up to 12x12.",
+                    "student_goal": "I will memorize my multiplication facts.",
+                    "wida_objective": "Students will use mathematical language to state multiplication facts."
+                }
+            },
+            "friday": {
+                "unit_lesson": "History Chapter 3: COMMUNITIES AND GOVERNMENT",
+                "objective": {
+                    "content_objective": "Students will learn about community government structures.",
+                    "student_goal": "I will understand how communities work and make decisions.",
+                    "wida_objective": "Students will use social studies vocabulary to discuss community structures."
+                }
+            }
+        }
+    }
+
+
+def create_multi_objective_data():
+    """Create data with multiple objectives per day (simulating multiple slots)."""
+    return {
+        "metadata": {
+            "week_of": "11-17-11-21",
+            "grade": "3",
+            "subject": "Multiple Subjects",
+            "homeroom": "Room 15",
+            "teacher_name": "Ms. Wilson"
+        },
+        "days": {
+            "monday": [
+                {
+                    "unit_lesson": "Unit 3 Lesson 9: MEASURE TO FIND THE AREA",
+                    "objective": {
+                        "content_objective": "Students will measure area using square units and understand that area is the measure of space inside a shape.",
+                        "student_goal": "I will find the area of shapes using square units.",
+                        "wida_objective": "Students will use language to describe and compare areas of different shapes using square units and mathematical vocabulary."
+                    }
+                },
+                {
+                    "unit_lesson": "Math Practice: AREA WORD PROBLEMS",
+                    "objective": {
+                        "content_objective": "Students will solve word problems involving area measurement using addition and multiplication.",
+                        "student_goal": "I will solve area word problems using math strategies.",
+                        "wida_objective": "Students will explain their problem-solving process using mathematical language and transition words."
+                    }
+                }
+            ],
+            "tuesday": [
+                {
+                    "unit_lesson": "ELA Unit 2: READING COMPREHENSION STRATEGIES",
+                    "objective": {
+                        "content_objective": "Students will apply reading comprehension strategies to understand grade-level texts.",
+                        "student_goal": "I will use strategies to understand what I read better.",
+                        "wida_objective": "Students will use academic language to describe reading strategies."
+                    }
+                },
+                {
+                    "unit_lesson": "Writing Workshop: NARRATIVE PARAGRAPHS",
+                    "objective": {
+                        "content_objective": "Students will write narrative paragraphs with clear topic sentences and supporting details.",
+                        "student_goal": "I will write paragraphs with a beginning, middle, and end.",
+                        "wida_objective": "Students will use sequencing words and descriptive language in their writing."
+                    }
+                }
+            ],
+            "wednesday": [
+                {
+                    "unit_lesson": "Science Lab: PLANT GROWTH EXPERIMENT",
+                    "objective": {
+                        "content_objective": "Students will conduct experiments to observe and record plant growth.",
+                        "student_goal": "I will watch how plants grow and record what happens.",
+                        "wida_objective": "Students will use scientific observation language."
+                    }
+                }
+            ],
+            "thursday": [
+                {
+                    "unit_lesson": "Math Chapter 5: MULTIPLICATION FACTS TO 12",
+                    "objective": {
+                        "content_objective": "Students will memorize multiplication facts up to 12x12.",
+                        "student_goal": "I will memorize my multiplication facts.",
+                        "wida_objective": "Students will use mathematical language to state multiplication facts."
+                    }
+                },
+                {
+                    "unit_lesson": "Math Games: MULTIPLICATION RELATIONSHIPS",
+                    "objective": {
+                        "content_objective": "Students will identify relationships between multiplication facts (e.g., 2x3, 3x2, 6x1).",
+                        "student_goal": "I will see how multiplication facts are related.",
+                        "wida_objective": "Students will describe multiplication patterns using comparative language."
+                    }
+                }
+            ],
+            "friday": [
+                {
+                    "unit_lesson": "History Chapter 3: COMMUNITIES AND GOVERNMENT",
+                    "objective": {
+                        "content_objective": "Students will learn about community government structures.",
+                        "student_goal": "I will understand how communities work and make decisions.",
+                        "wida_objective": "Students will use social studies vocabulary to discuss community structures."
+                    }
+                }
+            ]
+        }
+    }
+
+
+def test_current_generator():
+    """Test how the current generator handles different data structures."""
+    print("=" * 80)
+    print("TESTING CURRENT GENERATOR WITH DIFFERENT DATA STRUCTURES")
+    print("=" * 80)
+    print()
+    
+    generator = ObjectivesPDFGenerator()
+    
+    # Test 1: Single objective per day (current format)
+    print("TEST 1: Single objective per day")
+    print("-" * 40)
+    
+    single_data = create_multi_slot_lesson_data()
+    single_objectives = generator.extract_objectives(single_data)
+    
+    print(f"Extracted {len(single_objectives)} objectives from single-objective format")
+    for obj in single_objectives:
+        print(f"  {obj['day']}: {obj['subject']} - {obj['unit_lesson'][:50]}...")
+    print()
+    
+    # Test 2: Multiple objectives per day (array format)
+    print("TEST 2: Multiple objectives per day (array format)")
+    print("-" * 40)
+    
+    multi_data = create_multi_objective_data()
+    multi_objectives = generator.extract_objectives(multi_data)
+    
+    print(f"Extracted {len(multi_objectives)} objectives from multi-objective format")
+    for obj in multi_objectives:
+        print(f"  {obj['day']}: {obj['subject']} - {obj['unit_lesson'][:50]}...")
+    print()
+    
+    # Generate HTML with multiple objectives
+    print("GENERATING HTML WITH MULTIPLE OBJECTIVES")
+    print("-" * 40)
+    
+    output_dir = Path(tempfile.gettempdir()) / "objectives_demo"
+    output_dir.mkdir(exist_ok=True)
+    
+    # Use single format for now (the generator doesn't support arrays yet)
+    html_path = output_dir / "objectives_multiple_slots.html"
+    html_path = generator.generate_html(
+        single_data,
+        str(html_path),
+        user_name="Ms. Wilson"
+    )
+    
+    print(f"✓ HTML generated: {html_path}")
+    
+    # Show the issue
+    print("\nCURRENT ISSUE:")
+    print("-" * 40)
+    print("The ObjectivesPDFGenerator currently only supports one objective per day.")
+    print("To show multiple objectives per day, we need to:")
+    print("1. Modify extract_objectives() to handle array format")
+    print("2. Or create separate HTML pages for each objective")
+    print("3. Or combine multiple objectives on the same page")
+    
+    print("\nThe current implementation assumes one lesson per day.")
+    print("For multiple slots per day, the ObjectivesPrinter (DOCX) is better suited.")
+
+
+if __name__ == "__main__":
+    test_current_generator()

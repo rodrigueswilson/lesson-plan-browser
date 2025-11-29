@@ -1,0 +1,9 @@
+{
+  "name": "@lessonplanner/lesson-api",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Shared API client for Lesson Planner frontends",
+  "main": "src/index.ts",
+  "types": "src/index.ts"
+}
+

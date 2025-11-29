@@ -1,0 +1,116 @@
+{
+  "summary": {
+    "total_files_analyzed": 111,
+    "successful_analyses": 100,
+    "failed_analyses": 11
+  },
+  "standard_structure": {
+    "dimensions": "8x6",
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "column_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "prevalence": "83/100 files"
+  },
+  "variations": {
+    "dimension_variations": 7,
+    "row_sequence_variations": 14,
+    "column_sequence_variations": 6
+  },
+  "all_unique_row_labels": [
+    "3.2 Section A: Practice Problems - Problem 5\nFamily Connection: Peça que a família peça à criança para encontrar dois objetos em casa e decidir qual cobre mais espaço, usando as palavras 'mais espaço'/'more space' e desenhar as figuras para comparar.",
+    "Activity 1: Compare Shapes (15 minutes). Activity 2: Pattern Blocks to Compare Shapes (20 minutes). Students compare shapes and decide which is larger by covering with pattern blocks.\nCo-Teaching Model: Station Teaching\nPhase Plan:\n  Warmup (10 min)\n  Bilingual: Introduce bilingual vocabulary and model covering shapes using pattern blocks; demonstrate comparative language with frames.\n  Primary: Lead quick practice identifying shapes and guide initial predictions about which covers more space.\n  Stations - Compare & Measure (25 min)\n  Bilingual: Support a small group measuring area with pattern blocks, prompting students to describe choices using 'more space'/'mais espaço' and count tiles.\n  Primary: Observe and challenge groups to justify choices with evidence; circulate to other groups.\n  Closure (10 min)\n  Bilingual: Facilitate a 2-student compare share using frames: 'Shape A covers more space because _.'\n  Primary: Summarize misconceptions (e.g., length vs area) and reinforce area language.\nELL Support:\n  Concrete Representations with Pattern Blocks (Levels 1-3): Provide pattern blocks and guide students to cover shapes while counting tiles; bilingual teacher models counting in Portuguese then English.\n  Comparative Sentence Frames (Levels 2-4): Frames: 'Shape A covers more space than Shape B because _.' Display frames in Portuguese and English and practice chorally.\n  Visual Anchor Chart (Length vs Area) (Levels 2-4): Show side-by-side images demonstrating length vs area with bilingual labels; refer to chart during student reasoning.\nMaterials: Pattern blocks sets, Pairs of shapes printed for comparing, Visual anchor chart with bilingual labels (area/área; length/comprimento)",
+    "Anticipated Misconceptions",
+    "Anticipatory Set",
+    "Anticipatory Set:",
+    "Assessment",
+    "Assessment:",
+    "Assessment: 3.2.1 Cool Down\nInstrument: Cool Down: orally explain which shape covers more space and why, using informal tools (pattern blocks).\nSupports by Level:\n  Levels 1-2: Allow students to show covered shapes and point to more tiles; permit response in Portuguese with teacher transcription to English.\n  Levels 3-4: Provide comparative sentence frame and allow students to draw covered shapes and label counts.\n  Levels 5-6: Expect students to orally explain using comparative connectors and correct use of 'area' vocabulary in English.",
+    "Bilingual Language Objective:",
+    "Content: Students will explain orally how to determine which shape covers the most space using informal tools and language.\nStudent Goal: I will explain which shape covers more space.\nWIDA/Bilingual: Students will use language to explain reasoning about area and comparison (ELD-MA.2-3.Explain.Expressive) by using pattern blocks and comparative sentence frames appropriate for WIDA levels 2-4, producing an oral explanation and a labeled comparison.",
+    "Daily \nInstructional Task",
+    "Day",
+    "Differentiation",
+    "Enduring \nUnderstanding",
+    "Enduring Understanding",
+    "Essential Question",
+    "Homework",
+    "Homework:",
+    "Instructional Procedure",
+    "LESSON 1: WHAT IS AREA?   \n3.2.1 Teacher Guide",
+    "Learning Objectives",
+    "MAP Testing",
+    "Misconception:",
+    "Misconceptions:",
+    "Notes",
+    "Notes:",
+    "Objective:",
+    "SIPPS",
+    "Students may believe length alone is enough to compare two-dimensional shapes rather than considering area.\nLinguistic Note: Portuguese uses 'comprimento' (length) and 'área' (area) distinctly; students may conflate terms when reasoning in English.\nPrevention: Explicitly contrast 'length' and 'area' with bilingual examples and have students demonstrate coverings with tiles while saying both terms.",
+    "THURSDAY",
+    "Tailored Instruction",
+    "Tailored Instruction:",
+    "Unit, Lesson #, Module:",
+    "Unit, Lesson #, Module:\n05 - Fifth Grade Unit Description and Summary of Key Learning",
+    "Vocabulary",
+    "Warm-up: How Many Do You See: Arrays (10 minutes)\nBilingual Bridge: Preview cognates: 'area - área', 'shape - forma', 'cover - cobrir'. Show shapes covered with pattern blocks and name them in Portuguese then English."
+  ],
+  "all_unique_column_headers": [
+    "Day",
+    "FRIDAY",
+    "FRIDAY 10/3",
+    "FRIDAY 9/19",
+    "FRIDAY 9/26",
+    "MONDAY",
+    "MONDAY 9/15",
+    "MONDAY 9/22",
+    "MONDAY 9/29",
+    "THURSDAY",
+    "THURSDAY 10/2",
+    "THURSDAY 9/18",
+    "THURSDAY 9/25",
+    "TUESDAY",
+    "TUESDAY 9/16",
+    "TUESDAY 9/23",
+    "TUESDAY 9/30",
+    "WEDNESDAY",
+    "WEDNESDAY 10/1",
+    "WEDNESDAY 9/17",
+    "WEDNESDAY 9/24"
+  ],
+  "dimension_distribution": {
+    "8x6": 83,
+    "9x6": 10,
+    "13x6": 3,
+    "4x6": 1,
+    "14x6": 1,
+    "10x6": 1,
+    "8x2": 1
+  },
+  "recommendations": [
+    {
+      "type": "structure_consistency",
+      "level": "medium",
+      "message": "Found 7 different dimension patterns - need dimension-aware placement logic"
+    },
+    {
+      "type": "row_consistency",
+      "level": "medium",
+      "message": "Found 14 different row patterns - use row_label + row_index for matching"
+    }
+  ]
+}

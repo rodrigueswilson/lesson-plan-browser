@@ -1,0 +1,3514 @@
+{
+  "files": [
+    {
+      "file": "Davies W43",
+      "input_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W43\\10_20-10_24 Davies Lesson Plans.docx",
+      "output_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W43\\Wilson_Rodrigues_Weekly_W43_10-20-10-24_20251019_133850.docx",
+      "total_links": 80,
+      "inline": 181,
+      "fallback": 34,
+      "inline_rate": 226.25000000000003,
+      "fallback_rate": 42.5,
+      "broken": 0,
+      "broken_links": [],
+      "false_positives": [
+        {
+          "text": "activity",
+          "url": "https://docs.google.com/presentation/d/1t6_fueJtuhaW_8twpuQOmapOP1SEfm7--YT0-K3KZ3c/edit#slide=id.g25dda564d33_0_0",
+          "location": "T1R1C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "activity",
+          "url": "https://docs.google.com/presentation/d/1t6_fueJtuhaW_8twpuQOmapOP1SEfm7--YT0-K3KZ3c/edit#slide=id.g25dda564d33_0_0",
+          "location": "T1R2C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "activity",
+          "url": "https://docs.google.com/presentation/d/1t6_fueJtuhaW_8twpuQOmapOP1SEfm7--YT0-K3KZ3c/edit#slide=id.g25dda564d33_0_0",
+          "location": "T1R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "activity",
+          "url": "https://docs.google.com/presentation/d/1t6_fueJtuhaW_8twpuQOmapOP1SEfm7--YT0-K3KZ3c/edit#slide=id.g25dda564d33_0_0",
+          "location": "T1R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "activity",
+          "url": "https://docs.google.com/presentation/d/1t6_fueJtuhaW_8twpuQOmapOP1SEfm7--YT0-K3KZ3c/edit#slide=id.g25dda564d33_0_0",
+          "location": "T9R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "activity",
+          "url": "https://docs.google.com/presentation/d/1t6_fueJtuhaW_8twpuQOmapOP1SEfm7--YT0-K3KZ3c/edit#slide=id.g25dda564d33_0_0",
+          "location": "T9R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "activity",
+          "url": "https://docs.google.com/presentation/d/1t6_fueJtuhaW_8twpuQOmapOP1SEfm7--YT0-K3KZ3c/edit#slide=id.g25dda564d33_0_0",
+          "location": "T9R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "activity",
+          "url": "https://docs.google.com/presentation/d/1t6_fueJtuhaW_8twpuQOmapOP1SEfm7--YT0-K3KZ3c/edit#slide=id.g25dda564d33_0_0",
+          "location": "T9R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Capture Squares ",
+          "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+          "location": "T1R4C2",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Capture Squares ",
+          "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+          "location": "T1R4C2",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Capture Squares ",
+          "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+          "location": "T1R4C2",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Capture Squares ",
+          "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+          "location": "T1R4C2",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Capture Squares ",
+          "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+          "location": "T1R4C2",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Capture Squares ",
+          "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+          "location": "T1R4C2",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Capture Squares ",
+          "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+          "location": "T1R4C2",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Capture Squares ",
+          "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+          "location": "T1R4C2",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Capture Squares ",
+          "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+          "location": "T9R3C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Capture Squares ",
+          "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+          "location": "T9R3C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Capture Squares ",
+          "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+          "location": "T9R3C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Capture Squares ",
+          "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+          "location": "T9R3C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Capture Squares ",
+          "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+          "location": "T9R3C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Capture Squares ",
+          "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+          "location": "T9R3C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Capture Squares ",
+          "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+          "location": "T9R3C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Capture Squares ",
+          "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+          "location": "T9R3C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 6",
+          "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+          "location": "T1R4C2",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 6",
+          "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+          "location": "T1R4C2",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 6",
+          "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+          "location": "T1R4C2",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 6",
+          "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+          "location": "T1R4C2",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 6",
+          "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+          "location": "T1R4C2",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 6",
+          "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+          "location": "T1R4C2",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 6",
+          "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+          "location": "T1R4C2",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 6",
+          "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+          "location": "T9R3C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 6",
+          "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+          "location": "T9R3C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 6",
+          "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+          "location": "T9R3C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 6",
+          "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+          "location": "T9R3C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 6",
+          "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+          "location": "T9R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 6",
+          "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+          "location": "T9R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 6",
+          "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+          "location": "T9R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 7",
+          "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+          "location": "T1R4C2",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 7",
+          "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+          "location": "T1R4C2",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 7",
+          "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+          "location": "T1R4C2",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 7",
+          "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+          "location": "T1R4C2",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 7",
+          "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+          "location": "T9R3C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 7",
+          "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+          "location": "T9R3C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 7",
+          "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+          "location": "T9R3C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 7",
+          "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+          "location": "T9R3C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 7",
+          "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+          "location": "T9R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 7",
+          "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+          "location": "T9R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 7",
+          "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+          "location": "T9R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 7",
+          "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+          "location": "T9R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "video note taking worksheet",
+          "url": "https://docs.google.com/document/d/1Pi2Iq8cayg7Yfl0quLsMYbtn5C2uRFtl_80TeFrZmkA/edit",
+          "location": "T1R4C4",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "video note taking worksheet",
+          "url": "https://docs.google.com/document/d/1Pi2Iq8cayg7Yfl0quLsMYbtn5C2uRFtl_80TeFrZmkA/edit",
+          "location": "T9R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 1",
+          "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+          "location": "T1R4C5",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 1",
+          "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+          "location": "T1R4C5",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 1",
+          "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+          "location": "T1R4C5",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 1",
+          "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+          "location": "T1R4C5",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 1",
+          "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+          "location": "T9R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 1",
+          "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+          "location": "T9R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 1",
+          "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+          "location": "T9R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 2",
+          "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+          "location": "T1R4C5",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 2",
+          "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+          "location": "T1R4C5",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 2",
+          "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+          "location": "T1R4C5",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 2",
+          "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+          "location": "T1R4C5",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 2",
+          "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+          "location": "T9R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 2",
+          "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+          "location": "T9R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 2",
+          "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+          "location": "T9R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 2",
+          "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+          "location": "T9R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "cool down activity",
+          "url": "https://drive.google.com/file/d/1SAZcScVuPYIxoWk-iw4uHQBoWA-xBNWv/view?usp=drive_link",
+          "location": "T3R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "cool down activity",
+          "url": "https://drive.google.com/file/d/1I1ff5nTSqZVycwzq6AT3qdTkPYPl5rwq/view?usp=drive_link",
+          "location": "T3R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "cool down activity",
+          "url": "https://drive.google.com/file/d/1I1ff5nTSqZVycwzq6AT3qdTkPYPl5rwq/view?usp=drive_link",
+          "location": "T3R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "cool down activity",
+          "url": "https://drive.google.com/file/d/13e24ty3-6G_H9nkDlUp-wHosmIKjKHzo/view?usp=drive_link",
+          "location": "T3R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "cool down activity",
+          "url": "https://drive.google.com/file/d/1SAZcScVuPYIxoWk-iw4uHQBoWA-xBNWv/view?usp=drive_link",
+          "location": "T5R3C5",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "cool down activity",
+          "url": "https://drive.google.com/file/d/1I1ff5nTSqZVycwzq6AT3qdTkPYPl5rwq/view?usp=drive_link",
+          "location": "T5R3C5",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "cool down activity",
+          "url": "https://drive.google.com/file/d/1I1ff5nTSqZVycwzq6AT3qdTkPYPl5rwq/view?usp=drive_link",
+          "location": "T5R3C5",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "cool down activity",
+          "url": "https://drive.google.com/file/d/13e24ty3-6G_H9nkDlUp-wHosmIKjKHzo/view?usp=drive_link",
+          "location": "T5R3C5",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "cool down activity",
+          "url": "https://drive.google.com/file/d/1SAZcScVuPYIxoWk-iw4uHQBoWA-xBNWv/view?usp=drive_link",
+          "location": "T7R6C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "cool down activity",
+          "url": "https://drive.google.com/file/d/1I1ff5nTSqZVycwzq6AT3qdTkPYPl5rwq/view?usp=drive_link",
+          "location": "T7R6C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "cool down activity",
+          "url": "https://drive.google.com/file/d/1I1ff5nTSqZVycwzq6AT3qdTkPYPl5rwq/view?usp=drive_link",
+          "location": "T7R6C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "cool down activity",
+          "url": "https://drive.google.com/file/d/13e24ty3-6G_H9nkDlUp-wHosmIKjKHzo/view?usp=drive_link",
+          "location": "T7R6C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "2.2.5 Cool Down",
+          "url": "https://drive.google.com/file/d/1CG6VLXrkbpcZgCj3u2H39fdZV3xX0r69/view?usp=drive_link",
+          "location": "T3R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "2.2.5 Cool Down",
+          "url": "https://drive.google.com/file/d/1CG6VLXrkbpcZgCj3u2H39fdZV3xX0r69/view?usp=drive_link",
+          "location": "T5R4C5",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "2.2.5 Cool Down",
+          "url": "https://drive.google.com/file/d/1CG6VLXrkbpcZgCj3u2H39fdZV3xX0r69/view?usp=drive_link",
+          "location": "T7R6C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        }
+      ],
+      "false_positive_rate": 102.49999999999999,
+      "metadata_coverage": {
+        "section_hint": 76.25,
+        "day_hint": 100.0
+      }
+    },
+    {
+      "file": "Lang W43",
+      "input_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W43\\Lang Lesson Plans 10_20_25-10_24_25.docx",
+      "output_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W43\\Wilson_Rodrigues_Weekly_W43_10-20-10-24_20251019_133850.docx",
+      "total_links": 78,
+      "inline": 181,
+      "fallback": 34,
+      "inline_rate": 232.05128205128207,
+      "fallback_rate": 43.58974358974359,
+      "broken": 0,
+      "broken_links": [],
+      "false_positives": [
+        {
+          "text": "activity",
+          "url": "https://docs.google.com/presentation/d/1t6_fueJtuhaW_8twpuQOmapOP1SEfm7--YT0-K3KZ3c/edit#slide=id.g25dda564d33_0_0",
+          "location": "T1R1C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "activity",
+          "url": "https://docs.google.com/presentation/d/1t6_fueJtuhaW_8twpuQOmapOP1SEfm7--YT0-K3KZ3c/edit#slide=id.g25dda564d33_0_0",
+          "location": "T1R2C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "activity",
+          "url": "https://docs.google.com/presentation/d/1t6_fueJtuhaW_8twpuQOmapOP1SEfm7--YT0-K3KZ3c/edit#slide=id.g25dda564d33_0_0",
+          "location": "T1R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "activity",
+          "url": "https://docs.google.com/presentation/d/1t6_fueJtuhaW_8twpuQOmapOP1SEfm7--YT0-K3KZ3c/edit#slide=id.g25dda564d33_0_0",
+          "location": "T1R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "activity",
+          "url": "https://docs.google.com/presentation/d/1t6_fueJtuhaW_8twpuQOmapOP1SEfm7--YT0-K3KZ3c/edit#slide=id.g25dda564d33_0_0",
+          "location": "T9R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "activity",
+          "url": "https://docs.google.com/presentation/d/1t6_fueJtuhaW_8twpuQOmapOP1SEfm7--YT0-K3KZ3c/edit#slide=id.g25dda564d33_0_0",
+          "location": "T9R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "activity",
+          "url": "https://docs.google.com/presentation/d/1t6_fueJtuhaW_8twpuQOmapOP1SEfm7--YT0-K3KZ3c/edit#slide=id.g25dda564d33_0_0",
+          "location": "T9R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "activity",
+          "url": "https://docs.google.com/presentation/d/1t6_fueJtuhaW_8twpuQOmapOP1SEfm7--YT0-K3KZ3c/edit#slide=id.g25dda564d33_0_0",
+          "location": "T9R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Capture Squares ",
+          "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+          "location": "T1R4C2",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Capture Squares ",
+          "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+          "location": "T1R4C2",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Capture Squares ",
+          "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+          "location": "T1R4C2",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Capture Squares ",
+          "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+          "location": "T1R4C2",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Capture Squares ",
+          "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+          "location": "T1R4C2",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Capture Squares ",
+          "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+          "location": "T1R4C2",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Capture Squares ",
+          "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+          "location": "T1R4C2",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Capture Squares ",
+          "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+          "location": "T1R4C2",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Capture Squares ",
+          "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+          "location": "T9R3C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Capture Squares ",
+          "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+          "location": "T9R3C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Capture Squares ",
+          "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+          "location": "T9R3C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Capture Squares ",
+          "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+          "location": "T9R3C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Capture Squares ",
+          "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+          "location": "T9R3C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Capture Squares ",
+          "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+          "location": "T9R3C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Capture Squares ",
+          "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+          "location": "T9R3C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Capture Squares ",
+          "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+          "location": "T9R3C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 6",
+          "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+          "location": "T1R4C2",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 6",
+          "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+          "location": "T1R4C2",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 6",
+          "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+          "location": "T1R4C2",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 6",
+          "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+          "location": "T1R4C2",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 6",
+          "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+          "location": "T1R4C2",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 6",
+          "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+          "location": "T1R4C2",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 6",
+          "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+          "location": "T1R4C2",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 6",
+          "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+          "location": "T9R3C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 6",
+          "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+          "location": "T9R3C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 6",
+          "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+          "location": "T9R3C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 6",
+          "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+          "location": "T9R3C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 6",
+          "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+          "location": "T9R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 6",
+          "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+          "location": "T9R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 6",
+          "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+          "location": "T9R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 7",
+          "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+          "location": "T1R4C2",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 7",
+          "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+          "location": "T1R4C2",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 7",
+          "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+          "location": "T1R4C2",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 7",
+          "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+          "location": "T1R4C2",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 7",
+          "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+          "location": "T9R3C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 7",
+          "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+          "location": "T9R3C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 7",
+          "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+          "location": "T9R3C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 7",
+          "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+          "location": "T9R3C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 7",
+          "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+          "location": "T9R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 7",
+          "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+          "location": "T9R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 7",
+          "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+          "location": "T9R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 7",
+          "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+          "location": "T9R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "video note taking worksheet",
+          "url": "https://docs.google.com/document/d/1Pi2Iq8cayg7Yfl0quLsMYbtn5C2uRFtl_80TeFrZmkA/edit",
+          "location": "T1R4C4",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "video note taking worksheet",
+          "url": "https://docs.google.com/document/d/1Pi2Iq8cayg7Yfl0quLsMYbtn5C2uRFtl_80TeFrZmkA/edit",
+          "location": "T9R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 1",
+          "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+          "location": "T1R4C5",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 1",
+          "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+          "location": "T1R4C5",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 1",
+          "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+          "location": "T1R4C5",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 1",
+          "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+          "location": "T1R4C5",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 1",
+          "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+          "location": "T9R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 1",
+          "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+          "location": "T9R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 1",
+          "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+          "location": "T9R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 2",
+          "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+          "location": "T1R4C5",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 2",
+          "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+          "location": "T1R4C5",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 2",
+          "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+          "location": "T1R4C5",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 2",
+          "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+          "location": "T1R4C5",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 2",
+          "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+          "location": "T9R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 2",
+          "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+          "location": "T9R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 2",
+          "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+          "location": "T9R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 2",
+          "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+          "location": "T9R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "cool down activity",
+          "url": "https://drive.google.com/file/d/1SAZcScVuPYIxoWk-iw4uHQBoWA-xBNWv/view?usp=drive_link",
+          "location": "T3R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "cool down activity",
+          "url": "https://drive.google.com/file/d/1I1ff5nTSqZVycwzq6AT3qdTkPYPl5rwq/view?usp=drive_link",
+          "location": "T3R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "cool down activity",
+          "url": "https://drive.google.com/file/d/1I1ff5nTSqZVycwzq6AT3qdTkPYPl5rwq/view?usp=drive_link",
+          "location": "T3R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "cool down activity",
+          "url": "https://drive.google.com/file/d/13e24ty3-6G_H9nkDlUp-wHosmIKjKHzo/view?usp=drive_link",
+          "location": "T3R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "cool down activity",
+          "url": "https://drive.google.com/file/d/1SAZcScVuPYIxoWk-iw4uHQBoWA-xBNWv/view?usp=drive_link",
+          "location": "T5R3C5",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "cool down activity",
+          "url": "https://drive.google.com/file/d/1I1ff5nTSqZVycwzq6AT3qdTkPYPl5rwq/view?usp=drive_link",
+          "location": "T5R3C5",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "cool down activity",
+          "url": "https://drive.google.com/file/d/1I1ff5nTSqZVycwzq6AT3qdTkPYPl5rwq/view?usp=drive_link",
+          "location": "T5R3C5",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "cool down activity",
+          "url": "https://drive.google.com/file/d/13e24ty3-6G_H9nkDlUp-wHosmIKjKHzo/view?usp=drive_link",
+          "location": "T5R3C5",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "cool down activity",
+          "url": "https://drive.google.com/file/d/1SAZcScVuPYIxoWk-iw4uHQBoWA-xBNWv/view?usp=drive_link",
+          "location": "T7R6C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "cool down activity",
+          "url": "https://drive.google.com/file/d/1I1ff5nTSqZVycwzq6AT3qdTkPYPl5rwq/view?usp=drive_link",
+          "location": "T7R6C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "cool down activity",
+          "url": "https://drive.google.com/file/d/1I1ff5nTSqZVycwzq6AT3qdTkPYPl5rwq/view?usp=drive_link",
+          "location": "T7R6C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "cool down activity",
+          "url": "https://drive.google.com/file/d/13e24ty3-6G_H9nkDlUp-wHosmIKjKHzo/view?usp=drive_link",
+          "location": "T7R6C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "2.2.5 Cool Down",
+          "url": "https://drive.google.com/file/d/1CG6VLXrkbpcZgCj3u2H39fdZV3xX0r69/view?usp=drive_link",
+          "location": "T3R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "2.2.5 Cool Down",
+          "url": "https://drive.google.com/file/d/1CG6VLXrkbpcZgCj3u2H39fdZV3xX0r69/view?usp=drive_link",
+          "location": "T5R4C5",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "2.2.5 Cool Down",
+          "url": "https://drive.google.com/file/d/1CG6VLXrkbpcZgCj3u2H39fdZV3xX0r69/view?usp=drive_link",
+          "location": "T7R6C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        }
+      ],
+      "false_positive_rate": 105.12820512820514,
+      "metadata_coverage": {
+        "section_hint": 73.07692307692307,
+        "day_hint": 100.0
+      }
+    },
+    {
+      "file": "Savoca W43",
+      "input_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W43\\Ms. Savoca-10_20_25-10_25_25 Lesson plans.docx",
+      "output_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W43\\Wilson_Rodrigues_Weekly_W43_10-20-10-24_20251019_133850.docx",
+      "total_links": 19,
+      "inline": 181,
+      "fallback": 34,
+      "inline_rate": 952.6315789473686,
+      "fallback_rate": 178.94736842105263,
+      "broken": 0,
+      "broken_links": [],
+      "false_positives": [
+        {
+          "text": "activity",
+          "url": "https://docs.google.com/presentation/d/1t6_fueJtuhaW_8twpuQOmapOP1SEfm7--YT0-K3KZ3c/edit#slide=id.g25dda564d33_0_0",
+          "location": "T1R1C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "activity",
+          "url": "https://docs.google.com/presentation/d/1t6_fueJtuhaW_8twpuQOmapOP1SEfm7--YT0-K3KZ3c/edit#slide=id.g25dda564d33_0_0",
+          "location": "T1R2C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "activity",
+          "url": "https://docs.google.com/presentation/d/1t6_fueJtuhaW_8twpuQOmapOP1SEfm7--YT0-K3KZ3c/edit#slide=id.g25dda564d33_0_0",
+          "location": "T1R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "activity",
+          "url": "https://docs.google.com/presentation/d/1t6_fueJtuhaW_8twpuQOmapOP1SEfm7--YT0-K3KZ3c/edit#slide=id.g25dda564d33_0_0",
+          "location": "T1R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "activity",
+          "url": "https://docs.google.com/presentation/d/1t6_fueJtuhaW_8twpuQOmapOP1SEfm7--YT0-K3KZ3c/edit#slide=id.g25dda564d33_0_0",
+          "location": "T9R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "activity",
+          "url": "https://docs.google.com/presentation/d/1t6_fueJtuhaW_8twpuQOmapOP1SEfm7--YT0-K3KZ3c/edit#slide=id.g25dda564d33_0_0",
+          "location": "T9R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "activity",
+          "url": "https://docs.google.com/presentation/d/1t6_fueJtuhaW_8twpuQOmapOP1SEfm7--YT0-K3KZ3c/edit#slide=id.g25dda564d33_0_0",
+          "location": "T9R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "activity",
+          "url": "https://docs.google.com/presentation/d/1t6_fueJtuhaW_8twpuQOmapOP1SEfm7--YT0-K3KZ3c/edit#slide=id.g25dda564d33_0_0",
+          "location": "T9R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Capture Squares ",
+          "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+          "location": "T1R4C2",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Capture Squares ",
+          "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+          "location": "T1R4C2",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Capture Squares ",
+          "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+          "location": "T1R4C2",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Capture Squares ",
+          "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+          "location": "T1R4C2",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Capture Squares ",
+          "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+          "location": "T1R4C2",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Capture Squares ",
+          "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+          "location": "T1R4C2",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Capture Squares ",
+          "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+          "location": "T1R4C2",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Capture Squares ",
+          "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+          "location": "T1R4C2",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Capture Squares ",
+          "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+          "location": "T9R3C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Capture Squares ",
+          "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+          "location": "T9R3C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Capture Squares ",
+          "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+          "location": "T9R3C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Capture Squares ",
+          "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+          "location": "T9R3C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Capture Squares ",
+          "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+          "location": "T9R3C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Capture Squares ",
+          "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+          "location": "T9R3C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Capture Squares ",
+          "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+          "location": "T9R3C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Capture Squares ",
+          "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+          "location": "T9R3C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 6",
+          "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+          "location": "T1R4C2",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 6",
+          "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+          "location": "T1R4C2",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 6",
+          "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+          "location": "T1R4C2",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 6",
+          "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+          "location": "T1R4C2",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 6",
+          "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+          "location": "T1R4C2",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 6",
+          "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+          "location": "T1R4C2",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 6",
+          "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+          "location": "T1R4C2",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 6",
+          "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+          "location": "T9R3C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 6",
+          "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+          "location": "T9R3C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 6",
+          "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+          "location": "T9R3C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 6",
+          "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+          "location": "T9R3C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 6",
+          "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+          "location": "T9R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 6",
+          "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+          "location": "T9R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 6",
+          "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+          "location": "T9R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 7",
+          "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+          "location": "T1R4C2",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 7",
+          "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+          "location": "T1R4C2",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 7",
+          "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+          "location": "T1R4C2",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 7",
+          "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+          "location": "T1R4C2",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 7",
+          "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+          "location": "T9R3C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 7",
+          "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+          "location": "T9R3C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 7",
+          "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+          "location": "T9R3C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 7",
+          "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+          "location": "T9R3C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 7",
+          "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+          "location": "T9R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 7",
+          "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+          "location": "T9R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 7",
+          "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+          "location": "T9R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 7",
+          "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+          "location": "T9R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "video note taking worksheet",
+          "url": "https://docs.google.com/document/d/1Pi2Iq8cayg7Yfl0quLsMYbtn5C2uRFtl_80TeFrZmkA/edit",
+          "location": "T1R4C4",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "video note taking worksheet",
+          "url": "https://docs.google.com/document/d/1Pi2Iq8cayg7Yfl0quLsMYbtn5C2uRFtl_80TeFrZmkA/edit",
+          "location": "T9R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 1",
+          "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+          "location": "T1R4C5",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 1",
+          "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+          "location": "T1R4C5",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 1",
+          "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+          "location": "T1R4C5",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 1",
+          "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+          "location": "T1R4C5",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 1",
+          "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+          "location": "T9R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 1",
+          "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+          "location": "T9R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 1",
+          "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+          "location": "T9R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 2",
+          "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+          "location": "T1R4C5",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 2",
+          "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+          "location": "T1R4C5",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 2",
+          "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+          "location": "T1R4C5",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 2",
+          "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+          "location": "T1R4C5",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 2",
+          "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+          "location": "T9R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 2",
+          "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+          "location": "T9R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 2",
+          "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+          "location": "T9R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "Stage 2",
+          "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+          "location": "T9R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "cool down activity",
+          "url": "https://drive.google.com/file/d/1SAZcScVuPYIxoWk-iw4uHQBoWA-xBNWv/view?usp=drive_link",
+          "location": "T3R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "cool down activity",
+          "url": "https://drive.google.com/file/d/1I1ff5nTSqZVycwzq6AT3qdTkPYPl5rwq/view?usp=drive_link",
+          "location": "T3R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "cool down activity",
+          "url": "https://drive.google.com/file/d/1I1ff5nTSqZVycwzq6AT3qdTkPYPl5rwq/view?usp=drive_link",
+          "location": "T3R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "cool down activity",
+          "url": "https://drive.google.com/file/d/13e24ty3-6G_H9nkDlUp-wHosmIKjKHzo/view?usp=drive_link",
+          "location": "T3R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "cool down activity",
+          "url": "https://drive.google.com/file/d/1SAZcScVuPYIxoWk-iw4uHQBoWA-xBNWv/view?usp=drive_link",
+          "location": "T5R3C5",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "cool down activity",
+          "url": "https://drive.google.com/file/d/1I1ff5nTSqZVycwzq6AT3qdTkPYPl5rwq/view?usp=drive_link",
+          "location": "T5R3C5",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "cool down activity",
+          "url": "https://drive.google.com/file/d/1I1ff5nTSqZVycwzq6AT3qdTkPYPl5rwq/view?usp=drive_link",
+          "location": "T5R3C5",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "cool down activity",
+          "url": "https://drive.google.com/file/d/13e24ty3-6G_H9nkDlUp-wHosmIKjKHzo/view?usp=drive_link",
+          "location": "T5R3C5",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "cool down activity",
+          "url": "https://drive.google.com/file/d/1SAZcScVuPYIxoWk-iw4uHQBoWA-xBNWv/view?usp=drive_link",
+          "location": "T7R6C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "cool down activity",
+          "url": "https://drive.google.com/file/d/1I1ff5nTSqZVycwzq6AT3qdTkPYPl5rwq/view?usp=drive_link",
+          "location": "T7R6C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "cool down activity",
+          "url": "https://drive.google.com/file/d/1I1ff5nTSqZVycwzq6AT3qdTkPYPl5rwq/view?usp=drive_link",
+          "location": "T7R6C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "cool down activity",
+          "url": "https://drive.google.com/file/d/13e24ty3-6G_H9nkDlUp-wHosmIKjKHzo/view?usp=drive_link",
+          "location": "T7R6C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "2.2.5 Cool Down",
+          "url": "https://drive.google.com/file/d/1CG6VLXrkbpcZgCj3u2H39fdZV3xX0r69/view?usp=drive_link",
+          "location": "T3R4C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "2.2.5 Cool Down",
+          "url": "https://drive.google.com/file/d/1CG6VLXrkbpcZgCj3u2H39fdZV3xX0r69/view?usp=drive_link",
+          "location": "T5R4C5",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        },
+        {
+          "text": "2.2.5 Cool Down",
+          "url": "https://drive.google.com/file/d/1CG6VLXrkbpcZgCj3u2H39fdZV3xX0r69/view?usp=drive_link",
+          "location": "T7R6C1",
+          "reason": "duplicate_generic_text",
+          "confidence": 0.6
+        }
+      ],
+      "false_positive_rate": 431.57894736842104,
+      "metadata_coverage": {
+        "section_hint": 47.368421052631575,
+        "day_hint": 100.0
+      }
+    }
+  ],
+  "aggregate": {
+    "total_links": 177,
+    "inline": 543,
+    "fallback": 102,
+    "broken": 0,
+    "false_positives": [
+      {
+        "text": "activity",
+        "url": "https://docs.google.com/presentation/d/1t6_fueJtuhaW_8twpuQOmapOP1SEfm7--YT0-K3KZ3c/edit#slide=id.g25dda564d33_0_0",
+        "location": "T1R1C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "activity",
+        "url": "https://docs.google.com/presentation/d/1t6_fueJtuhaW_8twpuQOmapOP1SEfm7--YT0-K3KZ3c/edit#slide=id.g25dda564d33_0_0",
+        "location": "T1R2C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "activity",
+        "url": "https://docs.google.com/presentation/d/1t6_fueJtuhaW_8twpuQOmapOP1SEfm7--YT0-K3KZ3c/edit#slide=id.g25dda564d33_0_0",
+        "location": "T1R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "activity",
+        "url": "https://docs.google.com/presentation/d/1t6_fueJtuhaW_8twpuQOmapOP1SEfm7--YT0-K3KZ3c/edit#slide=id.g25dda564d33_0_0",
+        "location": "T1R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "activity",
+        "url": "https://docs.google.com/presentation/d/1t6_fueJtuhaW_8twpuQOmapOP1SEfm7--YT0-K3KZ3c/edit#slide=id.g25dda564d33_0_0",
+        "location": "T9R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "activity",
+        "url": "https://docs.google.com/presentation/d/1t6_fueJtuhaW_8twpuQOmapOP1SEfm7--YT0-K3KZ3c/edit#slide=id.g25dda564d33_0_0",
+        "location": "T9R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "activity",
+        "url": "https://docs.google.com/presentation/d/1t6_fueJtuhaW_8twpuQOmapOP1SEfm7--YT0-K3KZ3c/edit#slide=id.g25dda564d33_0_0",
+        "location": "T9R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "activity",
+        "url": "https://docs.google.com/presentation/d/1t6_fueJtuhaW_8twpuQOmapOP1SEfm7--YT0-K3KZ3c/edit#slide=id.g25dda564d33_0_0",
+        "location": "T9R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Capture Squares ",
+        "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+        "location": "T1R4C2",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Capture Squares ",
+        "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+        "location": "T1R4C2",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Capture Squares ",
+        "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+        "location": "T1R4C2",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Capture Squares ",
+        "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+        "location": "T1R4C2",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Capture Squares ",
+        "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+        "location": "T1R4C2",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Capture Squares ",
+        "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+        "location": "T1R4C2",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Capture Squares ",
+        "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+        "location": "T1R4C2",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Capture Squares ",
+        "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+        "location": "T1R4C2",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Capture Squares ",
+        "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+        "location": "T9R3C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Capture Squares ",
+        "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+        "location": "T9R3C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Capture Squares ",
+        "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+        "location": "T9R3C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Capture Squares ",
+        "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+        "location": "T9R3C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Capture Squares ",
+        "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+        "location": "T9R3C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Capture Squares ",
+        "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+        "location": "T9R3C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Capture Squares ",
+        "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+        "location": "T9R3C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Capture Squares ",
+        "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+        "location": "T9R3C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 6",
+        "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+        "location": "T1R4C2",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 6",
+        "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+        "location": "T1R4C2",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 6",
+        "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+        "location": "T1R4C2",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 6",
+        "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+        "location": "T1R4C2",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 6",
+        "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+        "location": "T1R4C2",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 6",
+        "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+        "location": "T1R4C2",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 6",
+        "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+        "location": "T1R4C2",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 6",
+        "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+        "location": "T9R3C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 6",
+        "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+        "location": "T9R3C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 6",
+        "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+        "location": "T9R3C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 6",
+        "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+        "location": "T9R3C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 6",
+        "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+        "location": "T9R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 6",
+        "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+        "location": "T9R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 6",
+        "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+        "location": "T9R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 7",
+        "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+        "location": "T1R4C2",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 7",
+        "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+        "location": "T1R4C2",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 7",
+        "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+        "location": "T1R4C2",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 7",
+        "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+        "location": "T1R4C2",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 7",
+        "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+        "location": "T9R3C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 7",
+        "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+        "location": "T9R3C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 7",
+        "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+        "location": "T9R3C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 7",
+        "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+        "location": "T9R3C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 7",
+        "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+        "location": "T9R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 7",
+        "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+        "location": "T9R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 7",
+        "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+        "location": "T9R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 7",
+        "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+        "location": "T9R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "video note taking worksheet",
+        "url": "https://docs.google.com/document/d/1Pi2Iq8cayg7Yfl0quLsMYbtn5C2uRFtl_80TeFrZmkA/edit",
+        "location": "T1R4C4",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "video note taking worksheet",
+        "url": "https://docs.google.com/document/d/1Pi2Iq8cayg7Yfl0quLsMYbtn5C2uRFtl_80TeFrZmkA/edit",
+        "location": "T9R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 1",
+        "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+        "location": "T1R4C5",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 1",
+        "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+        "location": "T1R4C5",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 1",
+        "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+        "location": "T1R4C5",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 1",
+        "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+        "location": "T1R4C5",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 1",
+        "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+        "location": "T9R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 1",
+        "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+        "location": "T9R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 1",
+        "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+        "location": "T9R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 2",
+        "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+        "location": "T1R4C5",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 2",
+        "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+        "location": "T1R4C5",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 2",
+        "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+        "location": "T1R4C5",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 2",
+        "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+        "location": "T1R4C5",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 2",
+        "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+        "location": "T9R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 2",
+        "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+        "location": "T9R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 2",
+        "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+        "location": "T9R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 2",
+        "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+        "location": "T9R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "cool down activity",
+        "url": "https://drive.google.com/file/d/1SAZcScVuPYIxoWk-iw4uHQBoWA-xBNWv/view?usp=drive_link",
+        "location": "T3R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "cool down activity",
+        "url": "https://drive.google.com/file/d/1I1ff5nTSqZVycwzq6AT3qdTkPYPl5rwq/view?usp=drive_link",
+        "location": "T3R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "cool down activity",
+        "url": "https://drive.google.com/file/d/1I1ff5nTSqZVycwzq6AT3qdTkPYPl5rwq/view?usp=drive_link",
+        "location": "T3R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "cool down activity",
+        "url": "https://drive.google.com/file/d/13e24ty3-6G_H9nkDlUp-wHosmIKjKHzo/view?usp=drive_link",
+        "location": "T3R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "cool down activity",
+        "url": "https://drive.google.com/file/d/1SAZcScVuPYIxoWk-iw4uHQBoWA-xBNWv/view?usp=drive_link",
+        "location": "T5R3C5",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "cool down activity",
+        "url": "https://drive.google.com/file/d/1I1ff5nTSqZVycwzq6AT3qdTkPYPl5rwq/view?usp=drive_link",
+        "location": "T5R3C5",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "cool down activity",
+        "url": "https://drive.google.com/file/d/1I1ff5nTSqZVycwzq6AT3qdTkPYPl5rwq/view?usp=drive_link",
+        "location": "T5R3C5",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "cool down activity",
+        "url": "https://drive.google.com/file/d/13e24ty3-6G_H9nkDlUp-wHosmIKjKHzo/view?usp=drive_link",
+        "location": "T5R3C5",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "cool down activity",
+        "url": "https://drive.google.com/file/d/1SAZcScVuPYIxoWk-iw4uHQBoWA-xBNWv/view?usp=drive_link",
+        "location": "T7R6C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "cool down activity",
+        "url": "https://drive.google.com/file/d/1I1ff5nTSqZVycwzq6AT3qdTkPYPl5rwq/view?usp=drive_link",
+        "location": "T7R6C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "cool down activity",
+        "url": "https://drive.google.com/file/d/1I1ff5nTSqZVycwzq6AT3qdTkPYPl5rwq/view?usp=drive_link",
+        "location": "T7R6C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "cool down activity",
+        "url": "https://drive.google.com/file/d/13e24ty3-6G_H9nkDlUp-wHosmIKjKHzo/view?usp=drive_link",
+        "location": "T7R6C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "2.2.5 Cool Down",
+        "url": "https://drive.google.com/file/d/1CG6VLXrkbpcZgCj3u2H39fdZV3xX0r69/view?usp=drive_link",
+        "location": "T3R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "2.2.5 Cool Down",
+        "url": "https://drive.google.com/file/d/1CG6VLXrkbpcZgCj3u2H39fdZV3xX0r69/view?usp=drive_link",
+        "location": "T5R4C5",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "2.2.5 Cool Down",
+        "url": "https://drive.google.com/file/d/1CG6VLXrkbpcZgCj3u2H39fdZV3xX0r69/view?usp=drive_link",
+        "location": "T7R6C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "activity",
+        "url": "https://docs.google.com/presentation/d/1t6_fueJtuhaW_8twpuQOmapOP1SEfm7--YT0-K3KZ3c/edit#slide=id.g25dda564d33_0_0",
+        "location": "T1R1C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "activity",
+        "url": "https://docs.google.com/presentation/d/1t6_fueJtuhaW_8twpuQOmapOP1SEfm7--YT0-K3KZ3c/edit#slide=id.g25dda564d33_0_0",
+        "location": "T1R2C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "activity",
+        "url": "https://docs.google.com/presentation/d/1t6_fueJtuhaW_8twpuQOmapOP1SEfm7--YT0-K3KZ3c/edit#slide=id.g25dda564d33_0_0",
+        "location": "T1R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "activity",
+        "url": "https://docs.google.com/presentation/d/1t6_fueJtuhaW_8twpuQOmapOP1SEfm7--YT0-K3KZ3c/edit#slide=id.g25dda564d33_0_0",
+        "location": "T1R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "activity",
+        "url": "https://docs.google.com/presentation/d/1t6_fueJtuhaW_8twpuQOmapOP1SEfm7--YT0-K3KZ3c/edit#slide=id.g25dda564d33_0_0",
+        "location": "T9R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "activity",
+        "url": "https://docs.google.com/presentation/d/1t6_fueJtuhaW_8twpuQOmapOP1SEfm7--YT0-K3KZ3c/edit#slide=id.g25dda564d33_0_0",
+        "location": "T9R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "activity",
+        "url": "https://docs.google.com/presentation/d/1t6_fueJtuhaW_8twpuQOmapOP1SEfm7--YT0-K3KZ3c/edit#slide=id.g25dda564d33_0_0",
+        "location": "T9R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "activity",
+        "url": "https://docs.google.com/presentation/d/1t6_fueJtuhaW_8twpuQOmapOP1SEfm7--YT0-K3KZ3c/edit#slide=id.g25dda564d33_0_0",
+        "location": "T9R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Capture Squares ",
+        "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+        "location": "T1R4C2",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Capture Squares ",
+        "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+        "location": "T1R4C2",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Capture Squares ",
+        "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+        "location": "T1R4C2",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Capture Squares ",
+        "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+        "location": "T1R4C2",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Capture Squares ",
+        "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+        "location": "T1R4C2",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Capture Squares ",
+        "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+        "location": "T1R4C2",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Capture Squares ",
+        "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+        "location": "T1R4C2",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Capture Squares ",
+        "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+        "location": "T1R4C2",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Capture Squares ",
+        "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+        "location": "T9R3C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Capture Squares ",
+        "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+        "location": "T9R3C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Capture Squares ",
+        "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+        "location": "T9R3C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Capture Squares ",
+        "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+        "location": "T9R3C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Capture Squares ",
+        "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+        "location": "T9R3C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Capture Squares ",
+        "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+        "location": "T9R3C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Capture Squares ",
+        "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+        "location": "T9R3C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Capture Squares ",
+        "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+        "location": "T9R3C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 6",
+        "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+        "location": "T1R4C2",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 6",
+        "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+        "location": "T1R4C2",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 6",
+        "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+        "location": "T1R4C2",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 6",
+        "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+        "location": "T1R4C2",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 6",
+        "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+        "location": "T1R4C2",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 6",
+        "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+        "location": "T1R4C2",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 6",
+        "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+        "location": "T1R4C2",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 6",
+        "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+        "location": "T9R3C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 6",
+        "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+        "location": "T9R3C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 6",
+        "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+        "location": "T9R3C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 6",
+        "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+        "location": "T9R3C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 6",
+        "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+        "location": "T9R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 6",
+        "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+        "location": "T9R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 6",
+        "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+        "location": "T9R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 7",
+        "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+        "location": "T1R4C2",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 7",
+        "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+        "location": "T1R4C2",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 7",
+        "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+        "location": "T1R4C2",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 7",
+        "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+        "location": "T1R4C2",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 7",
+        "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+        "location": "T9R3C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 7",
+        "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+        "location": "T9R3C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 7",
+        "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+        "location": "T9R3C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 7",
+        "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+        "location": "T9R3C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 7",
+        "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+        "location": "T9R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 7",
+        "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+        "location": "T9R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 7",
+        "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+        "location": "T9R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 7",
+        "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+        "location": "T9R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "video note taking worksheet",
+        "url": "https://docs.google.com/document/d/1Pi2Iq8cayg7Yfl0quLsMYbtn5C2uRFtl_80TeFrZmkA/edit",
+        "location": "T1R4C4",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "video note taking worksheet",
+        "url": "https://docs.google.com/document/d/1Pi2Iq8cayg7Yfl0quLsMYbtn5C2uRFtl_80TeFrZmkA/edit",
+        "location": "T9R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 1",
+        "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+        "location": "T1R4C5",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 1",
+        "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+        "location": "T1R4C5",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 1",
+        "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+        "location": "T1R4C5",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 1",
+        "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+        "location": "T1R4C5",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 1",
+        "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+        "location": "T9R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 1",
+        "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+        "location": "T9R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 1",
+        "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+        "location": "T9R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 2",
+        "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+        "location": "T1R4C5",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 2",
+        "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+        "location": "T1R4C5",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 2",
+        "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+        "location": "T1R4C5",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 2",
+        "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+        "location": "T1R4C5",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 2",
+        "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+        "location": "T9R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 2",
+        "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+        "location": "T9R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 2",
+        "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+        "location": "T9R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 2",
+        "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+        "location": "T9R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "cool down activity",
+        "url": "https://drive.google.com/file/d/1SAZcScVuPYIxoWk-iw4uHQBoWA-xBNWv/view?usp=drive_link",
+        "location": "T3R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "cool down activity",
+        "url": "https://drive.google.com/file/d/1I1ff5nTSqZVycwzq6AT3qdTkPYPl5rwq/view?usp=drive_link",
+        "location": "T3R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "cool down activity",
+        "url": "https://drive.google.com/file/d/1I1ff5nTSqZVycwzq6AT3qdTkPYPl5rwq/view?usp=drive_link",
+        "location": "T3R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "cool down activity",
+        "url": "https://drive.google.com/file/d/13e24ty3-6G_H9nkDlUp-wHosmIKjKHzo/view?usp=drive_link",
+        "location": "T3R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "cool down activity",
+        "url": "https://drive.google.com/file/d/1SAZcScVuPYIxoWk-iw4uHQBoWA-xBNWv/view?usp=drive_link",
+        "location": "T5R3C5",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "cool down activity",
+        "url": "https://drive.google.com/file/d/1I1ff5nTSqZVycwzq6AT3qdTkPYPl5rwq/view?usp=drive_link",
+        "location": "T5R3C5",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "cool down activity",
+        "url": "https://drive.google.com/file/d/1I1ff5nTSqZVycwzq6AT3qdTkPYPl5rwq/view?usp=drive_link",
+        "location": "T5R3C5",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "cool down activity",
+        "url": "https://drive.google.com/file/d/13e24ty3-6G_H9nkDlUp-wHosmIKjKHzo/view?usp=drive_link",
+        "location": "T5R3C5",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "cool down activity",
+        "url": "https://drive.google.com/file/d/1SAZcScVuPYIxoWk-iw4uHQBoWA-xBNWv/view?usp=drive_link",
+        "location": "T7R6C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "cool down activity",
+        "url": "https://drive.google.com/file/d/1I1ff5nTSqZVycwzq6AT3qdTkPYPl5rwq/view?usp=drive_link",
+        "location": "T7R6C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "cool down activity",
+        "url": "https://drive.google.com/file/d/1I1ff5nTSqZVycwzq6AT3qdTkPYPl5rwq/view?usp=drive_link",
+        "location": "T7R6C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "cool down activity",
+        "url": "https://drive.google.com/file/d/13e24ty3-6G_H9nkDlUp-wHosmIKjKHzo/view?usp=drive_link",
+        "location": "T7R6C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "2.2.5 Cool Down",
+        "url": "https://drive.google.com/file/d/1CG6VLXrkbpcZgCj3u2H39fdZV3xX0r69/view?usp=drive_link",
+        "location": "T3R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "2.2.5 Cool Down",
+        "url": "https://drive.google.com/file/d/1CG6VLXrkbpcZgCj3u2H39fdZV3xX0r69/view?usp=drive_link",
+        "location": "T5R4C5",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "2.2.5 Cool Down",
+        "url": "https://drive.google.com/file/d/1CG6VLXrkbpcZgCj3u2H39fdZV3xX0r69/view?usp=drive_link",
+        "location": "T7R6C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "activity",
+        "url": "https://docs.google.com/presentation/d/1t6_fueJtuhaW_8twpuQOmapOP1SEfm7--YT0-K3KZ3c/edit#slide=id.g25dda564d33_0_0",
+        "location": "T1R1C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "activity",
+        "url": "https://docs.google.com/presentation/d/1t6_fueJtuhaW_8twpuQOmapOP1SEfm7--YT0-K3KZ3c/edit#slide=id.g25dda564d33_0_0",
+        "location": "T1R2C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "activity",
+        "url": "https://docs.google.com/presentation/d/1t6_fueJtuhaW_8twpuQOmapOP1SEfm7--YT0-K3KZ3c/edit#slide=id.g25dda564d33_0_0",
+        "location": "T1R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "activity",
+        "url": "https://docs.google.com/presentation/d/1t6_fueJtuhaW_8twpuQOmapOP1SEfm7--YT0-K3KZ3c/edit#slide=id.g25dda564d33_0_0",
+        "location": "T1R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "activity",
+        "url": "https://docs.google.com/presentation/d/1t6_fueJtuhaW_8twpuQOmapOP1SEfm7--YT0-K3KZ3c/edit#slide=id.g25dda564d33_0_0",
+        "location": "T9R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "activity",
+        "url": "https://docs.google.com/presentation/d/1t6_fueJtuhaW_8twpuQOmapOP1SEfm7--YT0-K3KZ3c/edit#slide=id.g25dda564d33_0_0",
+        "location": "T9R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "activity",
+        "url": "https://docs.google.com/presentation/d/1t6_fueJtuhaW_8twpuQOmapOP1SEfm7--YT0-K3KZ3c/edit#slide=id.g25dda564d33_0_0",
+        "location": "T9R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "activity",
+        "url": "https://docs.google.com/presentation/d/1t6_fueJtuhaW_8twpuQOmapOP1SEfm7--YT0-K3KZ3c/edit#slide=id.g25dda564d33_0_0",
+        "location": "T9R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Capture Squares ",
+        "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+        "location": "T1R4C2",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Capture Squares ",
+        "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+        "location": "T1R4C2",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Capture Squares ",
+        "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+        "location": "T1R4C2",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Capture Squares ",
+        "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+        "location": "T1R4C2",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Capture Squares ",
+        "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+        "location": "T1R4C2",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Capture Squares ",
+        "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+        "location": "T1R4C2",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Capture Squares ",
+        "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+        "location": "T1R4C2",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Capture Squares ",
+        "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+        "location": "T1R4C2",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Capture Squares ",
+        "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+        "location": "T9R3C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Capture Squares ",
+        "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+        "location": "T9R3C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Capture Squares ",
+        "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+        "location": "T9R3C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Capture Squares ",
+        "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+        "location": "T9R3C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Capture Squares ",
+        "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+        "location": "T9R3C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Capture Squares ",
+        "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+        "location": "T9R3C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Capture Squares ",
+        "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+        "location": "T9R3C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Capture Squares ",
+        "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_link",
+        "location": "T9R3C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 6",
+        "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+        "location": "T1R4C2",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 6",
+        "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+        "location": "T1R4C2",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 6",
+        "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+        "location": "T1R4C2",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 6",
+        "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+        "location": "T1R4C2",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 6",
+        "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+        "location": "T1R4C2",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 6",
+        "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+        "location": "T1R4C2",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 6",
+        "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+        "location": "T1R4C2",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 6",
+        "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+        "location": "T9R3C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 6",
+        "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+        "location": "T9R3C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 6",
+        "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+        "location": "T9R3C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 6",
+        "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+        "location": "T9R3C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 6",
+        "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+        "location": "T9R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 6",
+        "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+        "location": "T9R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 6",
+        "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+        "location": "T9R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 7",
+        "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+        "location": "T1R4C2",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 7",
+        "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+        "location": "T1R4C2",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 7",
+        "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+        "location": "T1R4C2",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 7",
+        "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+        "location": "T1R4C2",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 7",
+        "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+        "location": "T9R3C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 7",
+        "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+        "location": "T9R3C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 7",
+        "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+        "location": "T9R3C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 7",
+        "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+        "location": "T9R3C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 7",
+        "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+        "location": "T9R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 7",
+        "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+        "location": "T9R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 7",
+        "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+        "location": "T9R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 7",
+        "url": "https://newarkps.ilclassroom.com/wikis/9984491-five-in-a-row-addition-and-subtraction-1-3?path=Wiki.10465245",
+        "location": "T9R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "video note taking worksheet",
+        "url": "https://docs.google.com/document/d/1Pi2Iq8cayg7Yfl0quLsMYbtn5C2uRFtl_80TeFrZmkA/edit",
+        "location": "T1R4C4",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "video note taking worksheet",
+        "url": "https://docs.google.com/document/d/1Pi2Iq8cayg7Yfl0quLsMYbtn5C2uRFtl_80TeFrZmkA/edit",
+        "location": "T9R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 1",
+        "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+        "location": "T1R4C5",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 1",
+        "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+        "location": "T1R4C5",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 1",
+        "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+        "location": "T1R4C5",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 1",
+        "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+        "location": "T1R4C5",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 1",
+        "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+        "location": "T9R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 1",
+        "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+        "location": "T9R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 1",
+        "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+        "location": "T9R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 2",
+        "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+        "location": "T1R4C5",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 2",
+        "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+        "location": "T1R4C5",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 2",
+        "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+        "location": "T1R4C5",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 2",
+        "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+        "location": "T1R4C5",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 2",
+        "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+        "location": "T9R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 2",
+        "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+        "location": "T9R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 2",
+        "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+        "location": "T9R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "Stage 2",
+        "url": "https://newarkps.ilclassroom.com/wikis/9939743-rectangle-rumble-3-5?path=Wiki.10465245",
+        "location": "T9R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "cool down activity",
+        "url": "https://drive.google.com/file/d/1SAZcScVuPYIxoWk-iw4uHQBoWA-xBNWv/view?usp=drive_link",
+        "location": "T3R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "cool down activity",
+        "url": "https://drive.google.com/file/d/1I1ff5nTSqZVycwzq6AT3qdTkPYPl5rwq/view?usp=drive_link",
+        "location": "T3R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "cool down activity",
+        "url": "https://drive.google.com/file/d/1I1ff5nTSqZVycwzq6AT3qdTkPYPl5rwq/view?usp=drive_link",
+        "location": "T3R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "cool down activity",
+        "url": "https://drive.google.com/file/d/13e24ty3-6G_H9nkDlUp-wHosmIKjKHzo/view?usp=drive_link",
+        "location": "T3R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "cool down activity",
+        "url": "https://drive.google.com/file/d/1SAZcScVuPYIxoWk-iw4uHQBoWA-xBNWv/view?usp=drive_link",
+        "location": "T5R3C5",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "cool down activity",
+        "url": "https://drive.google.com/file/d/1I1ff5nTSqZVycwzq6AT3qdTkPYPl5rwq/view?usp=drive_link",
+        "location": "T5R3C5",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "cool down activity",
+        "url": "https://drive.google.com/file/d/1I1ff5nTSqZVycwzq6AT3qdTkPYPl5rwq/view?usp=drive_link",
+        "location": "T5R3C5",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "cool down activity",
+        "url": "https://drive.google.com/file/d/13e24ty3-6G_H9nkDlUp-wHosmIKjKHzo/view?usp=drive_link",
+        "location": "T5R3C5",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "cool down activity",
+        "url": "https://drive.google.com/file/d/1SAZcScVuPYIxoWk-iw4uHQBoWA-xBNWv/view?usp=drive_link",
+        "location": "T7R6C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "cool down activity",
+        "url": "https://drive.google.com/file/d/1I1ff5nTSqZVycwzq6AT3qdTkPYPl5rwq/view?usp=drive_link",
+        "location": "T7R6C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "cool down activity",
+        "url": "https://drive.google.com/file/d/1I1ff5nTSqZVycwzq6AT3qdTkPYPl5rwq/view?usp=drive_link",
+        "location": "T7R6C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "cool down activity",
+        "url": "https://drive.google.com/file/d/13e24ty3-6G_H9nkDlUp-wHosmIKjKHzo/view?usp=drive_link",
+        "location": "T7R6C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "2.2.5 Cool Down",
+        "url": "https://drive.google.com/file/d/1CG6VLXrkbpcZgCj3u2H39fdZV3xX0r69/view?usp=drive_link",
+        "location": "T3R4C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "2.2.5 Cool Down",
+        "url": "https://drive.google.com/file/d/1CG6VLXrkbpcZgCj3u2H39fdZV3xX0r69/view?usp=drive_link",
+        "location": "T5R4C5",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      },
+      {
+        "text": "2.2.5 Cool Down",
+        "url": "https://drive.google.com/file/d/1CG6VLXrkbpcZgCj3u2H39fdZV3xX0r69/view?usp=drive_link",
+        "location": "T7R6C1",
+        "reason": "duplicate_generic_text",
+        "confidence": 0.6
+      }
+    ],
+    "warnings": []
+  }
+}

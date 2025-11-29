@@ -1,0 +1,15 @@
+# Enhanced Bilingual Lesson Plan - {{ metadata.subject }}
+
+**Week of:** {{ metadata.week_of }}
+**Grade:** {{ metadata.grade }}
+{% if metadata.homeroom %}**Homeroom:** {{ metadata.homeroom }}{% endif %}
+
+| | MONDAY | TUESDAY | WEDNESDAY | THURSDAY | FRIDAY |
+|---|---|---|---|---|---|
+| **Unit, Lesson #, Module:** | {{ days.monday.unit_lesson }} | {{ days.tuesday.unit_lesson }} | {{ days.wednesday.unit_lesson }} | {{ days.thursday.unit_lesson }} | {{ days.friday.unit_lesson }} |
+| **Objective:** | {% set day = days.monday %}{% include 'cells/objective.jinja2' %} | {% set day = days.tuesday %}{% include 'cells/objective.jinja2' %} | {% set day = days.wednesday %}{% include 'cells/objective.jinja2' %} | {% set day = days.thursday %}{% include 'cells/objective.jinja2' %} | {% set day = days.friday %}{% include 'cells/objective.jinja2' %} |
+| **Anticipatory Set:** | {% set day = days.monday %}{% include 'cells/anticipatory_set.jinja2' %} | {% set day = days.tuesday %}{% include 'cells/anticipatory_set.jinja2' %} | {% set day = days.wednesday %}{% include 'cells/anticipatory_set.jinja2' %} | {% set day = days.thursday %}{% include 'cells/anticipatory_set.jinja2' %} | {% set day = days.friday %}{% include 'cells/anticipatory_set.jinja2' %} |
+| **Tailored Instruction:** | {% set day = days.monday %}{% include 'cells/tailored_instruction.jinja2' %} | {% set day = days.tuesday %}{% include 'cells/tailored_instruction.jinja2' %} | {% set day = days.wednesday %}{% include 'cells/tailored_instruction.jinja2' %} | {% set day = days.thursday %}{% include 'cells/tailored_instruction.jinja2' %} | {% set day = days.friday %}{% include 'cells/tailored_instruction.jinja2' %} |
+| **Misconceptions:** | {% set day = days.monday %}{% include 'cells/misconceptions.jinja2' %} | {% set day = days.tuesday %}{% include 'cells/misconceptions.jinja2' %} | {% set day = days.wednesday %}{% include 'cells/misconceptions.jinja2' %} | {% set day = days.thursday %}{% include 'cells/misconceptions.jinja2' %} | {% set day = days.friday %}{% include 'cells/misconceptions.jinja2' %} |
+| **Assessment:** | {% set day = days.monday %}{% include 'cells/assessment.jinja2' %} | {% set day = days.tuesday %}{% include 'cells/assessment.jinja2' %} | {% set day = days.wednesday %}{% include 'cells/assessment.jinja2' %} | {% set day = days.thursday %}{% include 'cells/assessment.jinja2' %} | {% set day = days.friday %}{% include 'cells/assessment.jinja2' %} |
+| **Homework:** | {% set day = days.monday %}{% include 'cells/homework.jinja2' %} | {% set day = days.tuesday %}{% include 'cells/homework.jinja2' %} | {% set day = days.wednesday %}{% include 'cells/homework.jinja2' %} | {% set day = days.thursday %}{% include 'cells/homework.jinja2' %} | {% set day = days.friday %}{% include 'cells/homework.jinja2' %} |

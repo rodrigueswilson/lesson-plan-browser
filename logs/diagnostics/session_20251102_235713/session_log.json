@@ -1,0 +1,43 @@
+[
+  {
+    "timestamp": "2025-11-02T23:57:13.391772",
+    "stage": "01_parser_slot4",
+    "data": {
+      "slot_number": 4,
+      "subject": "Science/Health",
+      "source_file": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\25 W45\\Mrs. Grande Science 11_03- 11_07.docx",
+      "hyperlink_count": 0,
+      "hyperlinks": []
+    }
+  },
+  {
+    "timestamp": "2025-11-03T00:00:01.258873",
+    "stage": "03_before_render_slot4",
+    "data": {
+      "slot_number": 4,
+      "subject": "Science/Health",
+      "render_type": "single_slot",
+      "metadata_slot_number": 4,
+      "metadata_subject": "Science/Health",
+      "hyperlink_count": 0,
+      "all_hyperlinks_have_slot": true,
+      "all_hyperlinks_have_subject": true,
+      "hyperlink_slot_distribution": {},
+      "sample_hyperlinks": []
+    }
+  },
+  {
+    "timestamp": "2025-11-03T00:00:01.262379",
+    "stage": "04_renderer_metadata_extracted",
+    "data": {
+      "slot_number": 4,
+      "slot_number_type": "int",
+      "slot_number_is_none": false,
+      "subject": "Science/Health",
+      "subject_is_none": false,
+      "hyperlink_count": 0,
+      "teacher": "Catarina Morais / Daniela Silva",
+      "filtering_will_activate": true
+    }
+  }
+]

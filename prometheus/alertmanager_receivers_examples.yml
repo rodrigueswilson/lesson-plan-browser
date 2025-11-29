@@ -1,0 +1,316 @@
+# Alertmanager Receiver Examples
+# Copy-paste ready configurations for common notification channels
+
+# ============================================================================
+# SLACK RECEIVER EXAMPLES
+# ============================================================================
+
+# Basic Slack Receiver
+- name: 'slack-basic'
+  slack_configs:
+    - api_url: 'https://hooks.slack.com/services/REPLACE_WITH_YOUR_WEBHOOK'
+      channel: '#alerts'
+      title: '{{ .GroupLabels.alertname }}'
+      text: |
+        *Alert:* {{ .GroupLabels.alertname }}
+        *Severity:* {{ .GroupLabels.severity }}
+        *Environment:* {{ .GroupLabels.env }}
+        
+        {{ range .Alerts }}
+        *Description:* {{ .Annotations.description }}
+        *Runbook:* {{ .Annotations.runbook_url }}
+        {{ end }}
+      send_resolved: true
+
+# Slack with Rich Formatting
+- name: 'slack-rich'
+  slack_configs:
+    - api_url: 'https://hooks.slack.com/services/REPLACE_WITH_YOUR_WEBHOOK'
+      channel: '#oncall-alerts'
+      username: 'Alertmanager'
+      icon_emoji: ':warning:'
+      title: '{{ .GroupLabels.alertname }}'
+      title_link: '{{ .Annotations.runbook_url }}'
+      text: |
+        *Severity:* {{ .GroupLabels.severity }}
+        *Component:* {{ .GroupLabels.component }}
+        *Environment:* {{ .GroupLabels.env }}
+        
+        {{ range .Alerts }}
+        *Description:* {{ .Annotations.description }}
+        *Runbook:* <{{ .Annotations.runbook_url }}|View Runbook>
+        {{ end }}
+      color: '{{ if eq .GroupLabels.severity "critical" }}danger{{ else }}warning{{ end }}'
+      send_resolved: true
+      http_config:
+        bearer_token: 'your-slack-bearer-token-if-needed'
+
+# Slack with Action Buttons (using Slack Block Kit)
+- name: 'slack-with-actions'
+  slack_configs:
+    - api_url: 'https://hooks.slack.com/services/REPLACE_WITH_YOUR_WEBHOOK'
+      channel: '#oncall-alerts'
+      title: '{{ .GroupLabels.alertname }}'
+      text: |
+        *Alert:* {{ .GroupLabels.alertname }}
+        *Severity:* {{ .GroupLabels.severity }}
+        
+        {{ range .Alerts }}
+        *Description:* {{ .Annotations.description }}
+        *Runbook:* {{ .Annotations.runbook_url }}
+        {{ end }}
+      actions:
+        - type: button
+          text: 'View Runbook'
+          url: '{{ .Annotations.runbook_url }}'
+        - type: button
+          text: 'Acknowledge'
+          url: 'https://your-alertmanager:9093/#/alerts'
+      send_resolved: true
+
+# ============================================================================
+# PAGERDUTY RECEIVER EXAMPLES
+# ============================================================================
+
+# Basic PagerDuty Receiver
+- name: 'pagerduty-basic'
+  pagerduty_configs:
+    - service_key: 'YOUR_PAGERDUTY_INTEGRATION_KEY'
+      description: '{{ .GroupLabels.alertname }}: {{ .Annotations.summary }}'
+      severity: '{{ .GroupLabels.severity }}'
+      details:
+        alertname: '{{ .GroupLabels.alertname }}'
+        severity: '{{ .GroupLabels.severity }}'
+        environment: '{{ .GroupLabels.env }}'
+        runbook_url: '{{ .Annotations.runbook_url }}'
+        description: '{{ .Annotations.description }}'
+      send_resolved: true
+
+# PagerDuty with Custom Routing
+- name: 'pagerduty-critical'
+  pagerduty_configs:
+    - service_key: 'YOUR_PAGERDUTY_CRITICAL_SERVICE_KEY'
+      description: 'CRITICAL: {{ .GroupLabels.alertname }}'
+      severity: 'critical'
+      client: 'Lesson Planner API'
+      client_url: 'https://your-api.example.com'
+      details:
+        alertname: '{{ .GroupLabels.alertname }}'
+        severity: '{{ .GroupLabels.severity }}'
+        component: '{{ .GroupLabels.component }}'
+        environment: '{{ .GroupLabels.env }}'
+        runbook_url: '{{ .Annotations.runbook_url }}'
+        summary: '{{ .Annotations.summary }}'
+        description: '{{ .Annotations.description }}'
+      links:
+        - href: '{{ .Annotations.runbook_url }}'
+          text: 'View Runbook'
+      send_resolved: true
+
+# PagerDuty with V2 Events API
+- name: 'pagerduty-v2'
+  pagerduty_configs:
+    - routing_key: 'YOUR_PAGERDUTY_ROUTING_KEY'
+      description: '{{ .GroupLabels.alertname }}'
+      severity: '{{ .GroupLabels.severity }}'
+      group: '{{ .GroupLabels.component }}'
+      component: '{{ .GroupLabels.service }}'
+      class: 'rate_limiter'
+      custom_details:
+        alertname: '{{ .GroupLabels.alertname }}'
+        environment: '{{ .GroupLabels.env }}'
+        runbook_url: '{{ .Annotations.runbook_url }}'
+        description: '{{ .Annotations.description }}'
+      links:
+        - href: '{{ .Annotations.runbook_url }}'
+          text: 'Runbook'
+      send_resolved: true
+
+# ============================================================================
+# EMAIL RECEIVER EXAMPLES
+# ============================================================================
+
+# Basic SMTP Email Receiver
+- name: 'email-basic'
+  email_configs:
+    - to: 'oncall@example.com'
+      from: 'alertmanager@example.com'
+      smarthost: 'smtp.example.com:587'
+      auth_username: 'alertmanager@example.com'
+      auth_password: 'your-smtp-password'
+      headers:
+        Subject: 'Alert: {{ .GroupLabels.alertname }}'
+      html: |
+        <h2>Alert: {{ .GroupLabels.alertname }}</h2>
+        <p><strong>Severity:</strong> {{ .GroupLabels.severity }}</p>
+        <p><strong>Environment:</strong> {{ .GroupLabels.env }}</p>
+        <p><strong>Description:</strong> {{ .Annotations.description }}</p>
+        <p><a href="{{ .Annotations.runbook_url }}">View Runbook</a></p>
+      send_resolved: true
+
+# Email with TLS
+- name: 'email-tls'
+  email_configs:
+    - to: 'oncall@example.com'
+      from: 'alertmanager@example.com'
+      smarthost: 'smtp.gmail.com:587'
+      auth_username: 'your-email@gmail.com'
+      auth_password: 'your-app-password'
+      headers:
+        Subject: '{{ if eq .GroupLabels.severity "critical" }}[CRITICAL]{{ else }}[WARNING]{{ end }} {{ .GroupLabels.alertname }}'
+        From: 'Alertmanager <alertmanager@example.com>'
+        To: 'On-Call Team <oncall@example.com>'
+      html: |
+        <html>
+        <body>
+          <h2 style="color: {{ if eq .GroupLabels.severity "critical" }}red{{ else }}orange{{ end }};">
+            Alert: {{ .GroupLabels.alertname }}
+          </h2>
+          <table border="1" cellpadding="5">
+            <tr><td><strong>Severity</strong></td><td>{{ .GroupLabels.severity }}</td></tr>
+            <tr><td><strong>Component</strong></td><td>{{ .GroupLabels.component }}</td></tr>
+            <tr><td><strong>Environment</strong></td><td>{{ .GroupLabels.env }}</td></tr>
+            <tr><td><strong>Description</strong></td><td>{{ .Annotations.description }}</td></tr>
+          </table>
+          <p><a href="{{ .Annotations.runbook_url }}">View Runbook</a></p>
+        </body>
+        </html>
+      send_resolved: true
+      require_tls: true
+
+# Email with Multiple Recipients
+- name: 'email-team'
+  email_configs:
+    - to: 'oncall@example.com'
+      to: 'team-lead@example.com'
+      from: 'alertmanager@example.com'
+      smarthost: 'smtp.example.com:587'
+      auth_username: 'alertmanager@example.com'
+      auth_password: 'your-smtp-password'
+      headers:
+        Subject: '{{ .GroupLabels.alertname }} - {{ .GroupLabels.severity }}'
+        Cc: 'manager@example.com'
+      html: |
+        <h2>{{ .GroupLabels.alertname }}</h2>
+        <p><strong>Severity:</strong> {{ .GroupLabels.severity }}</p>
+        <p><strong>Runbook:</strong> <a href="{{ .Annotations.runbook_url }}">{{ .Annotations.runbook_url }}</a></p>
+        <hr>
+        <p><small>This is an automated alert from Alertmanager.</small></p>
+      send_resolved: true
+
+# ============================================================================
+# WEBHOOK RECEIVER EXAMPLES
+# ============================================================================
+
+# Generic Webhook Receiver
+- name: 'webhook-generic'
+  webhook_configs:
+    - url: 'https://your-webhook-endpoint.com/alerts'
+      http_config:
+        bearer_token: 'your-bearer-token'
+      send_resolved: true
+
+# Webhook with Custom Headers
+- name: 'webhook-custom'
+  webhook_configs:
+    - url: 'https://your-api.example.com/webhook'
+      http_config:
+        bearer_token: 'your-api-key'
+        basic_auth:
+          username: 'alertmanager'
+          password: 'your-password'
+      send_resolved: true
+
+# ============================================================================
+# OPSGENIE RECEIVER EXAMPLE
+# ============================================================================
+
+- name: 'opsgenie'
+  opsgenie_configs:
+    - api_key: 'YOUR_OPSGENIE_API_KEY'
+      description: '{{ .GroupLabels.alertname }}'
+      message: '{{ .Annotations.summary }}'
+      details:
+        alertname: '{{ .GroupLabels.alertname }}'
+        severity: '{{ .GroupLabels.severity }}'
+        runbook_url: '{{ .Annotations.runbook_url }}'
+      tags: '{{ .GroupLabels.component }},{{ .GroupLabels.env }}'
+      priority: '{{ if eq .GroupLabels.severity "critical" }}P1{{ else }}P2{{ end }}'
+      send_resolved: true
+
+# ============================================================================
+# TEAMS RECEIVER EXAMPLE
+# ============================================================================
+
+- name: 'teams'
+  webhook_configs:
+    - url: 'https://outlook.office.com/webhook/YOUR_WEBHOOK_URL'
+      send_resolved: true
+
+# ============================================================================
+# DISCORD RECEIVER EXAMPLE
+# ============================================================================
+
+- name: 'discord'
+  webhook_configs:
+    - url: 'https://discord.com/api/webhooks/YOUR_WEBHOOK_ID/YOUR_WEBHOOK_TOKEN'
+      send_resolved: true
+
+# ============================================================================
+# COMBINED RECEIVER EXAMPLES
+# ============================================================================
+
+# Critical Alerts - Multiple Channels
+- name: 'oncall-critical'
+  # PagerDuty for immediate notification
+  pagerduty_configs:
+    - service_key: 'YOUR_PAGERDUTY_CRITICAL_KEY'
+      description: 'CRITICAL: {{ .GroupLabels.alertname }}'
+      severity: 'critical'
+      details:
+        runbook_url: '{{ .Annotations.runbook_url }}'
+  
+  # Slack for team visibility
+  slack_configs:
+    - api_url: 'https://hooks.slack.com/services/REPLACE_WITH_YOUR_WEBHOOK'
+      channel: '#oncall-critical'
+      title: '🚨 CRITICAL: {{ .GroupLabels.alertname }}'
+      text: |
+        *Runbook:* {{ .Annotations.runbook_url }}
+        *Description:* {{ .Annotations.description }}
+  
+  # Email for record keeping
+  email_configs:
+    - to: 'oncall@example.com'
+      from: 'alertmanager@example.com'
+      smarthost: 'smtp.example.com:587'
+      auth_username: 'alertmanager@example.com'
+      auth_password: 'your-password'
+      headers:
+        Subject: 'CRITICAL: {{ .GroupLabels.alertname }}'
+      html: |
+        <h2>CRITICAL Alert</h2>
+        <p><a href="{{ .Annotations.runbook_url }}">View Runbook</a></p>
+  
+  send_resolved: true
+
+# Warning Alerts - Slack + Email Only
+- name: 'oncall-warning'
+  slack_configs:
+    - api_url: 'https://hooks.slack.com/services/REPLACE_WITH_YOUR_WEBHOOK'
+      channel: '#oncall-warnings'
+      title: '⚠️ Warning: {{ .GroupLabels.alertname }}'
+      text: |
+        *Runbook:* {{ .Annotations.runbook_url }}
+  
+  email_configs:
+    - to: 'oncall@example.com'
+      from: 'alertmanager@example.com'
+      smarthost: 'smtp.example.com:587'
+      auth_username: 'alertmanager@example.com'
+      auth_password: 'your-password'
+      headers:
+        Subject: 'Warning: {{ .GroupLabels.alertname }}'
+  
+  send_resolved: true
+

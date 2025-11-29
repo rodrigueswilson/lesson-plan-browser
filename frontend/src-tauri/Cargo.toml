@@ -1,0 +1,37 @@
+[package]
+name = "bilingual-lesson-planner"
+version = "1.0.0"
+description = "Bilingual Weekly Lesson Plan Builder"
+authors = ["Lesson Planner Team"]
+license = ""
+repository = ""
+edition = "2021"
+
+[lib]
+name = "bilingual_lesson_planner"
+crate-type = ["cdylib", "rlib"]
+path = "src/lib.rs"
+
+[build-dependencies]
+tauri-build = { version = "2.0", features = [] }
+
+[dependencies]
+tauri = { version = "2.0", features = ["devtools"] }
+tauri-plugin-dialog = "2.0"
+tauri-plugin-fs = "2.0"
+tauri-plugin-http = "2.0"
+tauri-plugin-shell = "2.0"
+rusqlite = { version = "0.30", features = ["bundled", "serde_json"] }
+base64 = "0.21"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tokio = { version = "1.0", features = ["full"] }
+uuid = { version = "1.0", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+thiserror = "1.0"
+log = "0.4"
+dotenv = "0.15"
+
+[features]
+default = ["custom-protocol"]
+custom-protocol = ["tauri/custom-protocol"]

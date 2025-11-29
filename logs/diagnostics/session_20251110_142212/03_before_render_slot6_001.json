@@ -1,0 +1,49 @@
+{
+  "timestamp": "2025-11-10T14:34:56.708222",
+  "stage": "03_before_render_slot6",
+  "data": {
+    "slot_number": 6,
+    "subject": "ELA",
+    "render_type": "multi_slot",
+    "metadata_slot_number": 6,
+    "metadata_subject": "ELA",
+    "hyperlink_count": 6,
+    "all_hyperlinks_have_slot": true,
+    "all_hyperlinks_have_subject": true,
+    "hyperlink_slot_distribution": {
+      "6": 6
+    },
+    "sample_hyperlinks": [
+      {
+        "text": "Vocabulary Knowledge Rating Scale",
+        "source_slot": 6,
+        "source_subject": "ELA"
+      },
+      {
+        "text": "activity",
+        "source_slot": 6,
+        "source_subject": "ELA"
+      },
+      {
+        "text": "Map and 10 Questions",
+        "source_slot": 6,
+        "source_subject": "ELA"
+      },
+      {
+        "text": "activity",
+        "source_slot": 6,
+        "source_subject": "ELA"
+      },
+      {
+        "text": "A is for Arrowhead",
+        "source_slot": 6,
+        "source_subject": "ELA"
+      },
+      {
+        "text": "3-2-1 Response Chart",
+        "source_slot": 6,
+        "source_subject": "ELA"
+      }
+    ]
+  }
+}

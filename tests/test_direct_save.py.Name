@@ -1,0 +1,91 @@
+"""
+Test direct save of vocabulary_cognates to database using create_lesson_step.
+"""
+import sys
+import uuid
+from pathlib import Path
+
+sys.path.append(str(Path(__file__).parent))
+
+from backend.database import get_db
+
+plan_id = "plan_20251122160826"
+db = get_db()
+
+vocabulary_cognates = [
+    {"english": "state", "portuguese": "estado", "is_cognate": False, "relevance_note": "Test save"},
+    {"english": "coast", "portuguese": "costa", "is_cognate": True, "relevance_note": "Test save"}
+]
+
+# Create step data exactly like in generate_lesson_steps
+step_data = {
+    "id": str(uuid.uuid4()),
+    "lesson_plan_id": plan_id,
+    "day_of_week": "monday",
+    "slot_number": 1,
+    "step_number": 999,  # Use high number to find it easily
+    "step_name": "TEST Vocabulary Step Direct Save",
+    "duration_minutes": 5,
+    "start_time_offset": 0,
+    "content_type": "instruction",
+    "display_content": "Test content",
+    "hidden_content": [],
+    "sentence_frames": [],
+    "materials_needed": [],
+    "vocabulary_cognates": vocabulary_cognates,
+}
+
+print("="*80)
+print("DIRECT SAVE TEST")
+print("="*80)
+
+print(f"\nBefore save:")
+print(f"  step_data['vocabulary_cognates']: {step_data['vocabulary_cognates']}")
+print(f"  Type: {type(step_data['vocabulary_cognates'])}")
+print(f"  Length: {len(step_data['vocabulary_cognates'])}")
+
+try:
+    step_id = db.create_lesson_step(step_data)
+    print(f"\n[OK] Step created: {step_id}")
+    
+    # Retrieve immediately
+    steps = db.get_lesson_steps(plan_id, day_of_week="monday", slot_number=1)
+    test_step = next((s for s in steps if s.step_number == 999), None)
+    
+    if test_step:
+        print(f"\n[OK] Found test step: {test_step.step_name}")
+        vocab_retrieved = test_step.vocabulary_cognates
+        print(f"\nAfter retrieval from database:")
+        print(f"  vocabulary_cognates type: {type(vocab_retrieved)}")
+        print(f"  vocabulary_cognates value: {vocab_retrieved}")
+        print(f"  vocabulary_cognates is list: {isinstance(vocab_retrieved, list)}")
+        
+        if vocab_retrieved and isinstance(vocab_retrieved, list) and len(vocab_retrieved) > 0:
+            print(f"  [OK] vocabulary_cognates saved and retrieved correctly!")
+            print(f"       Count: {len(vocab_retrieved)} items")
+            print(f"       First item: {vocab_retrieved[0]}")
+        elif vocab_retrieved is None:
+            print(f"  [FAIL] vocabulary_cognates is None in database")
+        elif isinstance(vocab_retrieved, list) and len(vocab_retrieved) == 0:
+            print(f"  [FAIL] vocabulary_cognates is empty list in database")
+        else:
+            print(f"  [FAIL] vocabulary_cognates has unexpected type/value")
+    else:
+        print(f"\n[FAIL] Test step not found after creation")
+    
+    # Cleanup
+    print(f"\nCleaning up test step...")
+    from backend.schema import LessonStep
+    from sqlmodel import Session, delete
+    with Session(db.engine) as session:
+        session.exec(delete(LessonStep).where(LessonStep.id == step_id))
+        session.commit()
+    print(f"[OK] Test step deleted")
+    
+except Exception as e:
+    print(f"\n[FAIL] Error: {e}")
+    import traceback
+    traceback.print_exc()
+
+print("\n" + "="*80)
+

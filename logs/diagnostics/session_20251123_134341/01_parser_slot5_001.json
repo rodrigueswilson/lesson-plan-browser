@@ -1,0 +1,52 @@
+{
+  "timestamp": "2025-11-23T13:56:35.053230",
+  "stage": "01_parser_slot5",
+  "data": {
+    "slot_number": 5,
+    "subject": "Math",
+    "source_file": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\25 W48\\Morais 11_23 - 11_27.docx",
+    "hyperlink_count": 5,
+    "hyperlinks": [
+      {
+        "text": "2.3.10 Teacher Guide",
+        "url": "https://drive.google.com/file/d/1Hcf0M0UJ02QEJp5WSy9gQJEFLd-Pyr5f/view?usp=drive_link",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Unit 3: Measuring Length",
+        "url": "https://docs.google.com/document/d/1jS0EN5RQpawPPkDnTkUnbktDeqnLDjeojFHudRl5zGY/edit",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "2.3.10 Cool-down",
+        "url": "https://drive.google.com/file/d/1BQ7KCFSxDDfYAHb4sucGn8jntUXsg-pp/view?usp=drive_link",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "2.3.11 Cool Down",
+        "url": "https://drive.google.com/file/d/19M2gkY3h5gSZiqDHiIEoVW21-zxzMH-Y/view?usp=drive_link",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "2.3.12 Cool Down",
+        "url": "https://drive.google.com/file/d/1u8cXR5-IosF6sCH0WEj53ZYwbb1ux03B/view?usp=drive_link",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      }
+    ]
+  }
+}

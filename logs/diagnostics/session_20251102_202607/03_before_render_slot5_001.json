@@ -1,0 +1,94 @@
+{
+  "timestamp": "2025-11-02T20:38:48.155669",
+  "stage": "03_before_render_slot5",
+  "data": {
+    "slot_number": 5,
+    "subject": "Math",
+    "render_type": "multi_slot",
+    "metadata_slot_number": 5,
+    "metadata_subject": "Math",
+    "hyperlink_count": 41,
+    "all_hyperlinks_have_slot": true,
+    "all_hyperlinks_have_subject": true,
+    "hyperlink_slot_distribution": {
+      "5": 41
+    },
+    "sample_hyperlinks": [
+      {
+        "text": "LESSON 11: AREA AND THE MULTIPLICATION TABLE",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "3.2.11 Teacher Guide",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "LESSON 12: AREA AND ADDITION",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "3.2.12 Teacher Guide",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "LESSON 13: FIND THE AREA OF A FIGURE",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "3.2.13 Teacher Guide",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Capture Squares ",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Stage 6",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Rectangle Rumble",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Stage 2",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Five in a Row: Addition and Subtraction",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Stage 7",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "3.2 Section B: Practice Problems",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Capture Squares ",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Stage 7",
+        "source_slot": 5,
+        "source_subject": "Math"
+      }
+    ]
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "timestamp": "2025-11-03T00:11:28.668454",
+  "stage": "01_parser_slot4",
+  "data": {
+    "slot_number": 4,
+    "subject": "Science",
+    "source_file": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\25 W45\\Morais 11_3_25 - 11_7_25.docx",
+    "hyperlink_count": 2,
+    "hyperlinks": [
+      {
+        "text": " 2nd Grade Science ",
+        "url": "https://docs.google.com/document/d/1nImdZIX6pCavnrr59YDV-iKMuixgzblvrcu5bGunB6Q/edit",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": " 2nd Grade Science ",
+        "url": "https://docs.google.com/document/d/1nImdZIX6pCavnrr59YDV-iKMuixgzblvrcu5bGunB6Q/edit",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      }
+    ]
+  }
+}

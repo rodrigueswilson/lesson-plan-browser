@@ -1,0 +1,36 @@
+{
+  "timestamp": "2025-11-22T17:30:06.388564",
+  "stage": "02_lesson_json_slot4",
+  "data": {
+    "slot_number": 4,
+    "subject": "Science",
+    "metadata_slot_number": null,
+    "metadata_subject": "Science",
+    "hyperlink_count": 3,
+    "hyperlinks_with_slot_metadata": 0,
+    "hyperlinks_with_subject_metadata": 0,
+    "sample_hyperlinks": [
+      {
+        "text": " 2nd Grade Science ",
+        "has_source_slot": false,
+        "source_slot": null,
+        "has_source_subject": false,
+        "source_subject": null
+      },
+      {
+        "text": " 2nd Grade Science ",
+        "has_source_slot": false,
+        "source_slot": null,
+        "has_source_subject": false,
+        "source_subject": null
+      },
+      {
+        "text": " 2nd Grade Science ",
+        "has_source_slot": false,
+        "source_slot": null,
+        "has_source_subject": false,
+        "source_subject": null
+      }
+    ]
+  }
+}

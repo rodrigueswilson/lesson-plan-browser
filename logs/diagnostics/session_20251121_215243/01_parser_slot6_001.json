@@ -1,0 +1,36 @@
+{
+  "timestamp": "2025-11-21T22:08:05.600059",
+  "stage": "01_parser_slot6",
+  "data": {
+    "slot_number": 6,
+    "subject": "Science",
+    "source_file": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W47\\Ms. Savoca-11_17_25-11_21_25 Lesson plans.docx",
+    "hyperlink_count": 3,
+    "hyperlinks": [
+      {
+        "text": " 2nd Grade Science ",
+        "url": "https://docs.google.com/document/d/1nImdZIX6pCavnrr59YDV-iKMuixgzblvrcu5bGunB6Q/edit",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": " 2nd Grade Science ",
+        "url": "https://docs.google.com/document/d/1nImdZIX6pCavnrr59YDV-iKMuixgzblvrcu5bGunB6Q/edit",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": " 2nd Grade Science ",
+        "url": "https://docs.google.com/document/d/1nImdZIX6pCavnrr59YDV-iKMuixgzblvrcu5bGunB6Q/edit",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      }
+    ]
+  }
+}

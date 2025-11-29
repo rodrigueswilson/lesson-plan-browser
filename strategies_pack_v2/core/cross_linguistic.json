@@ -1,0 +1,507 @@
+{
+  "_meta": {
+    "category": "cross_linguistic",
+    "description": "Strategies leveraging cross-linguistic connections and biliteracy development",
+    "schema_version": "1.7_enhanced",
+    "strategy_count": 8,
+    "last_updated": "2025-09-14",
+    "wida_aligned": true,
+    "includes_definitions": true
+  },
+  "strategies": [
+    {
+      "id": "the_bridge",
+      "strategy_name": "The Bridge (Cross-Language Transfer)",
+      "aliases": [
+        "Biliteracy Bridge"
+      ],
+      "present_in": [
+        "ChatGPT"
+      ],
+      "evidence_tier": "practice-based/mixed",
+      "core_principle": "Explicitly map learned content/vocabulary from L1 to English (and vice versa) to ensure transfer.",
+      "applicable_contexts": [
+        "Dual-language units",
+        "Push-in review after English lessons"
+      ],
+      "implementation_steps": [
+        "List key L1 concepts; co-create English equivalents in two-column charts.",
+        "Compare cognates/false cognates; apply via English summaries/presentations."
+      ],
+      "primary_benefits": [
+        "Prevents compartmentalization",
+        "Builds biliterate academic vocabulary"
+      ],
+      "research_foundation": [
+        "Karen Beeman",
+        "Cheryl Urow"
+      ],
+      "cross_refs": [
+        "cognate_awareness",
+        "preview_review"
+      ],
+      "high_level_categories": ["Cross-Linguistic & Biliteracy"],
+      "primary_skill": "reading",
+      "secondary_skills": ["writing", "speaking"],
+      "skill_weights": {
+        "speaking": 0.2,
+        "listening": 0.1,
+        "reading": 0.4,
+        "writing": 0.3
+      },
+      "delivery_modes": ["push-in", "small-group", "whole-group"],
+      "l1_modes": ["translanguaging", "preview-review"],
+      "is_integrated_framework": false,
+      "definitions": {
+        "short_en": "Systematic process for explicitly connecting learning between L1 and English to ensure cross-linguistic transfer.",
+        "long_en": "The Bridge is a systematic instructional process that explicitly connects learning between students' L1 and English to ensure cross-linguistic transfer and prevent compartmentalization of knowledge. Teachers guide students to map learned content and vocabulary from one language to another using visual organizers, two-column charts, and comparative analysis. The process includes identifying cognates and false cognates, comparing linguistic structures, and applying transferred knowledge through English summaries or presentations. This strategy is particularly powerful in dual-language programs where students learn content in both languages. The Bridge helps students see connections between their languages, builds metalinguistic awareness, and develops biliterate academic vocabulary. Implementation requires careful planning to ensure meaningful connections and authentic application opportunities in both languages.",
+        "look_fors": [
+          "Two-column charts mapping L1 and English concepts/vocabulary",
+          "Explicit comparison of cognates and false cognates",
+          "Student application through English summaries or presentations",
+          "Systematic transfer activities connecting both languages"
+        ],
+        "non_examples": [
+          "Simple translation without conceptual connections",
+          "Separate instruction in each language without bridging",
+          "Random code-switching without systematic transfer focus"
+        ]
+      }
+    },
+    {
+      "id": "strategic_code_switching",
+      "strategy_name": "Strategic Code-Switching",
+      "aliases": [
+        "Planned L1 clarification"
+      ],
+      "present_in": [
+        "ChatGPT"
+      ],
+      "evidence_tier": "practice-based/mixed",
+      "core_principle": "Brief, purposeful switches to L1 to unlock comprehension, then immediate return to English.",
+      "applicable_contexts": [
+        "Complex concepts/terms",
+        "Task directions/safety info"
+      ],
+      "implementation_steps": [
+        "Clarify in L1 in a sentence or two; immediately restate in English.",
+        "Monitor frequency and reduce as proficiency grows."
+      ],
+      "primary_benefits": [
+        "Prevents misunderstandings and frustration",
+        "Supports confidence and efficiency"
+      ],
+      "research_foundation": [
+        "M. Sakaria",
+        "Dwi Priyana"
+      ],
+      "cross_refs": [
+        "preview_review",
+        "translanguaging"
+      ],
+      "high_level_categories": ["Cross-Linguistic & Biliteracy"],
+      "primary_skill": "speaking",
+      "secondary_skills": ["listening"],
+      "skill_weights": {
+        "speaking": 0.6,
+        "listening": 0.4,
+        "reading": 0.0,
+        "writing": 0.0
+      },
+      "delivery_modes": ["push-in", "whole-group", "small-group"],
+      "l1_modes": ["strategic-code-switch"],
+      "is_integrated_framework": false,
+      "definitions": {
+        "short_en": "Purposeful, brief switches to L1 for clarification followed by immediate return to English instruction.",
+        "long_en": "Strategic Code-Switching involves purposeful, brief switches to students' L1 to clarify complex concepts, vocabulary, or instructions, followed by immediate return to English. This approach differs from random code-switching by being planned, limited, and goal-oriented. Teachers use L1 strategically for critical comprehension points, safety information, or complex academic concepts that might otherwise create barriers to learning. The key is brevity and immediate bridging back to English to maintain English exposure while preventing frustration and misunderstanding. Frequency should decrease as student proficiency grows. This strategy requires careful monitoring to ensure it supports rather than replaces English development. When used judiciously, strategic code-switching can unlock comprehension and build confidence while maintaining focus on English acquisition goals.",
+        "look_fors": [
+          "Brief, purposeful L1 use for critical comprehension points",
+          "Immediate restatement or return to English after L1 clarification",
+          "Strategic timing for complex concepts or safety information",
+          "Decreasing frequency as student proficiency develops"
+        ],
+        "non_examples": [
+          "Extensive L1 use that replaces English instruction",
+          "Random code-switching without clear purpose or planning",
+          "L1 use without bridging back to English learning objectives"
+        ]
+      }
+    },
+    {
+      "id": "preview_review",
+      "strategy_name": "Preview-Review",
+      "aliases": [
+        "L1 preview, English instruction, L1 review"
+      ],
+      "present_in": [
+        "ChatGPT",
+        "Gemini"
+      ],
+      "evidence_tier": "research-backed",
+      "core_principle": "Preview content in L1, teach in English, then review/consolidate in L1.",
+      "applicable_contexts": [
+        "Content-heavy lessons",
+        "New concept introduction"
+      ],
+      "implementation_steps": [
+        "Brief L1 preview of key concepts and vocabulary.",
+        "Deliver main instruction in English with scaffolds.",
+        "L1 review to consolidate understanding and check comprehension."
+      ],
+      "primary_benefits": [
+        "Builds background knowledge and reduces cognitive load",
+        "Ensures comprehension while maintaining English focus"
+      ],
+      "research_foundation": [
+        "Jim Cummins",
+        "Nancy Cloud"
+      ],
+      "cross_refs": [
+        "strategic_code_switching",
+        "the_bridge"
+      ],
+      "high_level_categories": ["Cross-Linguistic & Biliteracy"],
+      "primary_skill": "listening",
+      "secondary_skills": ["reading", "speaking"],
+      "skill_weights": {
+        "speaking": 0.2,
+        "listening": 0.5,
+        "reading": 0.2,
+        "writing": 0.1
+      },
+      "delivery_modes": ["push-in", "whole-group"],
+      "l1_modes": ["preview-review"],
+      "is_integrated_framework": false,
+      "definitions": {
+        "short_en": "Three-phase instructional sequence: L1 preview, English instruction, L1 review for comprehension consolidation.",
+        "long_en": "Preview-Review is a structured instructional sequence that uses students' L1 strategically to support English content learning. The three phases include: (1) L1 Preview - brief introduction of key concepts and vocabulary in students' native language to activate background knowledge, (2) English Instruction - main lesson delivery in English with appropriate scaffolds and supports, and (3) L1 Review - consolidation and comprehension check in L1 to ensure understanding. This approach reduces cognitive load by providing conceptual foundation in L1 while maintaining focus on English development during core instruction. The strategy is particularly effective for content-heavy lessons and complex concept introduction. Implementation requires careful time management to ensure the majority of instruction remains in English while using L1 strategically for comprehension support.",
+        "look_fors": [
+          "Brief L1 preview activating background knowledge",
+          "Majority of instruction delivered in English with scaffolds",
+          "L1 review consolidating understanding and checking comprehension",
+          "Clear transitions between L1 and English phases"
+        ],
+        "non_examples": [
+          "Extended L1 instruction that replaces English learning",
+          "Random language switching without structured sequence",
+          "L1 preview or review that becomes the main instruction"
+        ]
+      }
+    },
+    {
+      "id": "contrastive_analysis",
+      "strategy_name": "Contrastive Analysis",
+      "aliases": [
+        "Cross-linguistic comparison"
+      ],
+      "present_in": [
+        "ChatGPT"
+      ],
+      "evidence_tier": "research-backed",
+      "core_principle": "Compare L1 and English structures to anticipate challenges and highlight transferable knowledge.",
+      "applicable_contexts": [
+        "Grammar instruction",
+        "Phonological awareness",
+        "Writing conventions"
+      ],
+      "implementation_steps": [
+        "Present side-by-side L1-English examples on board or chart.",
+        "Discuss both transferable features and potential pitfalls.",
+        "Have students practice transforming sentences across languages."
+      ],
+      "primary_benefits": [
+        "Builds metalinguistic awareness",
+        "Prevents fossilization of common errors"
+      ],
+      "research_foundation": [
+        "Robert Lado",
+        "Terence Odlin"
+      ],
+      "cross_refs": [
+        "cognate_awareness",
+        "metalinguistic_awareness"
+      ],
+      "high_level_categories": ["Cross-Linguistic & Biliteracy"],
+      "primary_skill": "reading",
+      "secondary_skills": ["writing", "speaking"],
+      "skill_weights": {
+        "speaking": 0.2,
+        "listening": 0.1,
+        "reading": 0.4,
+        "writing": 0.3
+      },
+      "delivery_modes": ["push-in", "whole-group", "small-group"],
+      "l1_modes": ["translanguaging", "strategic-code-switch"],
+      "is_integrated_framework": false,
+      "definitions": {
+        "short_en": "Teaching students to compare L1 and English structures to anticipate challenges and highlight transferable knowledge.",
+        "long_en": "Contrastive Analysis is the systematic comparison of linguistic structures in students' L1 and in English to highlight similarities and differences. Teachers guide students to notice phonological, morphological, syntactic, or pragmatic features that transfer positively (e.g., cognates, similar word order) and those that may cause errors (e.g., false cognates, article use). In practice, teachers present side‑by‑side examples, chart similarities, and explicitly point out potential pitfalls. Students practice transforming sentences across languages and reflect on how knowledge of L1 helps anticipate English patterns. This fosters metalinguistic awareness and prevents fossilization of common errors. Contrastive analysis is especially effective when introducing complex grammar, writing conventions, or academic registers. It should not devolve into prescriptive 'avoid mistakes' lists; instead, it should celebrate cross‑linguistic resources while clarifying non‑equivalences.",
+        "look_fors": [
+          "Side‑by‑side L1–English examples on board or chart",
+          "Discussion of both transferable features and pitfalls",
+          "Students transforming or translating short sentences",
+          "Reflection on how L1 knowledge informs English learning"
+        ],
+        "non_examples": [
+          "Only error‑correction without positive transfer",
+          "Focusing exclusively on L1 interference as deficit",
+          "Teaching rules in isolation without contrast"
+        ]
+      }
+    },
+    {
+      "id": "bilingual_books_texts",
+      "strategy_name": "Bilingual Books and Parallel Texts",
+      "aliases": [
+        "Dual-language texts",
+        "Parallel reading materials"
+      ],
+      "present_in": [
+        "v1.4 enhancement"
+      ],
+      "evidence_tier": "practice-based/mixed",
+      "core_principle": "Use texts available in both L1 and English to support comprehension and cross-linguistic connections.",
+      "applicable_contexts": [
+        "Literature study",
+        "Content area reading",
+        "Independent reading programs"
+      ],
+      "implementation_steps": [
+        "Select high-quality texts available in both languages.",
+        "Allow students to read in L1 first, then English version.",
+        "Facilitate discussions comparing language use and cultural elements."
+      ],
+      "primary_benefits": [
+        "Supports comprehension through L1 foundation",
+        "Develops biliteracy and cultural connections"
+      ],
+      "research_foundation": [
+        "Alma Flor Ada",
+        "Isabel Campoy"
+      ],
+      "cross_refs": [
+        "interactive_read_alouds",
+        "culturally_responsive_pedagogy"
+      ],
+      "high_level_categories": ["Cross-Linguistic & Biliteracy", "Cultural & Identity Affirming"],
+      "primary_skill": "reading",
+      "secondary_skills": ["speaking", "writing"],
+      "skill_weights": {
+        "speaking": 0.2,
+        "listening": 0.1,
+        "reading": 0.6,
+        "writing": 0.1
+      },
+      "delivery_modes": ["push-in", "small-group", "individual"],
+      "l1_modes": ["translanguaging", "preview-review"],
+      "is_integrated_framework": false,
+      "definitions": {
+        "short_en": "Use of texts available in both L1 and English to support comprehension and develop biliteracy skills.",
+        "long_en": "Bilingual Books and Parallel Texts strategy involves using high-quality literature and informational texts that are available in both students' L1 and English to support reading comprehension and biliteracy development. Students may read the L1 version first to build comprehension and background knowledge, then engage with the English version with enhanced understanding. This approach allows for rich discussions comparing language use, cultural elements, and translation choices. Teachers can facilitate cross-linguistic analysis, vocabulary development, and cultural connections. The strategy is particularly effective for building confidence in English reading while honoring students' L1 literacy skills. Implementation requires careful text selection to ensure quality in both languages and meaningful opportunities for comparison and analysis.",
+        "look_fors": [
+          "High-quality texts available in both L1 and English",
+          "Strategic sequencing of L1 and English reading",
+          "Cross-linguistic discussions and comparisons",
+          "Cultural connections and identity affirmation"
+        ],
+        "non_examples": [
+          "Poor quality translations that don't maintain meaning",
+          "Using only L1 texts without English connection",
+          "Literal word-for-word translations without cultural adaptation"
+        ]
+      }
+    },
+    {
+      "id": "cross_linguistic_transfer",
+      "strategy_name": "Cross-Linguistic Transfer Strategies",
+      "aliases": [
+        "Language transfer techniques",
+        "Positive transfer activation"
+      ],
+      "present_in": [
+        "v1.4 enhancement"
+      ],
+      "evidence_tier": "research-backed",
+      "core_principle": "Explicitly activate and leverage positive transfer from L1 to support English learning.",
+      "applicable_contexts": [
+        "Reading comprehension",
+        "Writing instruction",
+        "Academic language development"
+      ],
+      "implementation_steps": [
+        "Identify areas of positive transfer between L1 and English.",
+        "Explicitly teach students to recognize and use transfer opportunities.",
+        "Provide practice in applying L1 knowledge to English tasks."
+      ],
+      "primary_benefits": [
+        "Accelerates English acquisition through L1 resources",
+        "Builds metalinguistic awareness and confidence"
+      ],
+      "research_foundation": [
+        "Jim Cummins",
+        "Kenji Hakuta",
+        "Ellen Bialystok"
+      ],
+      "cross_refs": [
+        "cognate_awareness",
+        "contrastive_analysis",
+        "metalinguistic_awareness"
+      ],
+      "high_level_categories": ["Cross-Linguistic & Biliteracy", "Cognitive & Metacognitive"],
+      "primary_skill": "integrated",
+      "secondary_skills": ["reading", "writing", "speaking"],
+      "skill_weights": {
+        "speaking": 0.25,
+        "listening": 0.15,
+        "reading": 0.35,
+        "writing": 0.25
+      },
+      "delivery_modes": ["push-in", "whole-group", "small-group"],
+      "l1_modes": ["translanguaging", "strategic-code-switch"],
+      "is_integrated_framework": false,
+      "definitions": {
+        "short_en": "Explicit instruction in recognizing and applying positive transfer from L1 to support English learning.",
+        "long_en": "Cross-Linguistic Transfer Strategies involve explicitly teaching students to recognize and leverage positive transfer opportunities from their L1 to support English learning. Teachers identify areas where L1 knowledge can support English development, such as reading strategies, academic concepts, cultural knowledge, and linguistic structures. Students learn to consciously apply L1 resources to English tasks, building bridges between their languages. This approach includes teaching transfer strategies for reading comprehension, writing processes, and academic language development. The goal is to help students become strategic about using their full linguistic repertoire while developing metalinguistic awareness. Effective implementation requires teacher knowledge of both languages and systematic instruction in transfer techniques.",
+        "look_fors": [
+          "Explicit instruction in positive transfer opportunities",
+          "Student recognition and application of L1 knowledge to English tasks",
+          "Systematic teaching of transfer strategies across skill areas",
+          "Development of metalinguistic awareness about language connections"
+        ],
+        "non_examples": [
+          "Assuming transfer happens automatically without instruction",
+          "Focus only on interference without positive transfer",
+          "Separate language instruction without connection-making"
+        ]
+      }
+    },
+    {
+      "id": "metalinguistic_awareness",
+      "strategy_name": "Metalinguistic Awareness Development",
+      "aliases": [
+        "Language awareness instruction",
+        "Linguistic reflection"
+      ],
+      "present_in": [
+        "v1.4 enhancement"
+      ],
+      "evidence_tier": "research-backed",
+      "core_principle": "Develop students' conscious awareness of language as a system and their ability to reflect on language use.",
+      "applicable_contexts": [
+        "Grammar instruction",
+        "Reading strategy instruction",
+        "Writing process instruction"
+      ],
+      "implementation_steps": [
+        "Engage students in explicit discussion about language patterns and rules.",
+        "Encourage reflection on language learning strategies and processes.",
+        "Compare language structures and functions across L1 and English."
+      ],
+      "primary_benefits": [
+        "Enhances language learning efficiency and transfer",
+        "Develops critical thinking about language use"
+      ],
+      "research_foundation": [
+        "Ellen Bialystok",
+        "Jessner Ulrike",
+        "Jean-Marc Dewaele"
+      ],
+      "cross_refs": [
+        "contrastive_analysis",
+        "cross_linguistic_transfer",
+        "cognate_awareness"
+      ],
+      "high_level_categories": ["Cross-Linguistic & Biliteracy", "Cognitive & Metacognitive"],
+      "primary_skill": "integrated",
+      "secondary_skills": ["speaking", "reading", "writing"],
+      "skill_weights": {
+        "speaking": 0.3,
+        "listening": 0.2,
+        "reading": 0.25,
+        "writing": 0.25
+      },
+      "delivery_modes": ["push-in", "whole-group", "small-group"],
+      "l1_modes": ["translanguaging", "strategic-code-switch"],
+      "is_integrated_framework": false,
+      "definitions": {
+        "short_en": "Instruction that develops students' conscious awareness of language as a system and ability to reflect on language use.",
+        "long_en": "Metalinguistic Awareness Development involves teaching students to think consciously about language as a system, including its patterns, rules, and functions. Students learn to reflect on their own language use, compare languages, and analyze linguistic structures and processes. This awareness includes understanding how languages work, recognizing patterns across languages, and developing strategic approaches to language learning. Teachers engage students in explicit discussions about grammar, vocabulary, discourse patterns, and language learning strategies. For multilingual learners, metalinguistic awareness is particularly powerful because it helps them leverage knowledge across languages and become more strategic language learners. This approach enhances both language learning efficiency and critical thinking about communication.",
+        "look_fors": [
+          "Explicit discussion and analysis of language patterns and rules",
+          "Student reflection on language learning strategies and processes",
+          "Comparison of linguistic structures across L1 and English",
+          "Development of strategic approaches to language learning"
+        ],
+        "non_examples": [
+          "Implicit language instruction without conscious awareness building",
+          "Grammar instruction without reflection or analysis",
+          "Separate language study without cross-linguistic connections"
+        ]
+      }
+    },
+    {
+      "id": "heritage_language_connections",
+      "strategy_name": "Heritage Language Connections",
+      "aliases": [
+        "Home language valorization",
+        "Cultural linguistic assets"
+      ],
+      "present_in": [
+        "v1.4 enhancement"
+      ],
+      "evidence_tier": "practice-based/mixed",
+      "core_principle": "Honor and build upon students' heritage language knowledge and cultural linguistic practices.",
+      "applicable_contexts": [
+        "Identity affirmation activities",
+        "Family engagement",
+        "Cultural studies integration"
+      ],
+      "implementation_steps": [
+        "Learn about students' heritage languages and cultural practices.",
+        "Create opportunities for students to share linguistic and cultural knowledge.",
+        "Connect heritage language features to English learning when appropriate."
+      ],
+      "primary_benefits": [
+        "Affirms cultural identity and builds confidence",
+        "Leverages cultural and linguistic assets for learning"
+      ],
+      "research_foundation": [
+        "Luis Moll",
+        "Norma González",
+        "Ofelia García"
+      ],
+      "cross_refs": [
+        "culturally_responsive_pedagogy",
+        "funds_of_knowledge",
+        "translanguaging"
+      ],
+      "high_level_categories": ["Cross-Linguistic & Biliteracy", "Cultural & Identity Affirming"],
+      "primary_skill": "speaking",
+      "secondary_skills": ["listening", "reading", "writing"],
+      "skill_weights": {
+        "speaking": 0.4,
+        "listening": 0.3,
+        "reading": 0.15,
+        "writing": 0.15
+      },
+      "delivery_modes": ["push-in", "whole-group", "small-group"],
+      "l1_modes": ["translanguaging", "preview-review"],
+      "is_integrated_framework": false,
+      "definitions": {
+        "short_en": "Instructional approach that honors and builds upon students' heritage language knowledge and cultural practices.",
+        "long_en": "Heritage Language Connections involves recognizing, honoring, and building upon the linguistic and cultural knowledge that students bring from their heritage language communities. Teachers learn about students' home languages, cultural practices, and linguistic traditions, creating classroom opportunities for students to share and apply this knowledge. This approach goes beyond simple translation to include cultural ways of communicating, storytelling traditions, and community knowledge systems. Students are encouraged to make connections between their heritage language features and English learning when appropriate. The strategy affirms cultural identity, builds confidence, and leverages students' full range of linguistic and cultural assets for academic success. Implementation requires cultural humility and ongoing learning about students' communities.",
+        "look_fors": [
+          "Teacher knowledge of students' heritage languages and cultural practices",
+          "Classroom opportunities for students to share linguistic and cultural knowledge",
+          "Connections between heritage language features and English learning",
+          "Affirmation of cultural identity and linguistic diversity"
+        ],
+        "non_examples": [
+          "Treating heritage languages as obstacles to English learning",
+          "Superficial cultural celebrations without deep linguistic connections",
+          "Assumptions about language use without learning from families"
+        ]
+      }
+    }
+  ]
+}

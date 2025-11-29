@@ -1,0 +1,60 @@
+{
+  "timestamp": "2025-11-23T21:34:06.138758",
+  "stage": "01_parser_slot4",
+  "data": {
+    "slot_number": 4,
+    "subject": "Math",
+    "source_file": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W48\\Ms. Savoca-11_24_25-11_26_25 Lesson plans.docx",
+    "hyperlink_count": 6,
+    "hyperlinks": [
+      {
+        "text": "Unit 3: Measuring Length",
+        "url": "https://docs.google.com/document/d/1jS0EN5RQpawPPkDnTkUnbktDeqnLDjeojFHudRl5zGY/edit",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Unit 3: Measuring Length",
+        "url": "https://docs.google.com/document/d/1jS0EN5RQpawPPkDnTkUnbktDeqnLDjeojFHudRl5zGY/edit",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Unit 3: Measuring Length",
+        "url": "https://docs.google.com/document/d/1jS0EN5RQpawPPkDnTkUnbktDeqnLDjeojFHudRl5zGY/edit",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "2.3.1 Cool Down",
+        "url": "https://drive.google.com/file/d/1rL8iWCJh1O-l34fpD9yYSXEIGzpM8hj8/view?usp=drive_link",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "cool down activity",
+        "url": "https://drive.google.com/file/d/1I1ff5nTSqZVycwzq6AT3qdTkPYPl5rwq/view?usp=drive_link",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "2.3.2 Cool Down",
+        "url": "https://drive.google.com/file/d/16NKbjA7ytDtFMkqjpMmyjRn7vW46H56M/view?usp=drive_link",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      }
+    ]
+  }
+}

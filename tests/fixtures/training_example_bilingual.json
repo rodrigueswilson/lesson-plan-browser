@@ -1,0 +1,255 @@
+{
+  "metadata": {
+    "week_of": "10/6-10/10",
+    "grade": "6",
+    "subject": "Science",
+    "homeroom": "205",
+    "teacher_name": "Ms. Rodriguez"
+  },
+  "days": {
+    "monday": {
+      "unit_lesson": "Unit Three Lesson One",
+      "objective": {
+        "content_objective": "Students will identify the three states of matter and their properties",
+        "student_goal": "I will describe solids, liquids, and gases using scientific vocabulary",
+        "wida_objective": "Students will use descriptive language to compare and contrast states of matter (ELD Standard 4, Levels 2-4)"
+      },
+      "anticipatory_set": {
+        "original_content": "Show ice cube melting in a beaker. Ask: What is happening? Why? Record observations.",
+        "bilingual_bridge": "Preview key cognates: solid/sólido, liquid/líquido, gas/gás, matter/matéria, molecule/molécula. Display visual chart with images and labels in both languages."
+      },
+      "tailored_instruction": {
+        "original_content": "Present three states of matter with demonstrations. Show solid (ice), liquid (water), gas (steam). Discuss molecular movement in each state. Students complete comparison chart.",
+        "co_teaching_model": {
+          "model_name": "Station Teaching",
+          "implementation": "Three stations: (1) Hands-on exploration with materials, (2) Digital simulation of molecular movement, (3) Vocabulary building with bilingual flashcards",
+          "teacher_roles": "Teacher A manages stations 1-2, Teacher B leads station 3 with ELL focus, students rotate every 12 minutes"
+        },
+        "ell_support": [
+          {
+            "strategy_name": "Visual Aids",
+            "implementation": "Use particle diagrams showing molecular arrangement in solids, liquids, and gases. Display anchor chart with images and bilingual labels."
+          },
+          {
+            "strategy_name": "Sentence Frames",
+            "implementation": "Provide frames: 'A solid has ___ shape and ___ volume.' 'Molecules in a liquid are ___ than in a solid.' Post frames in English and Portuguese."
+          },
+          {
+            "strategy_name": "Cognate Awareness",
+            "implementation": "Highlight Portuguese-English cognates throughout lesson. Create cognate word wall for science vocabulary."
+          }
+        ],
+        "materials": ["Ice cubes", "Hot plate", "Beakers", "Thermometer", "Particle diagrams", "Bilingual vocabulary cards", "Comparison chart"]
+      },
+      "misconceptions": {
+        "original_content": "Students may think gases have no mass or that liquids always take the shape of their container from the bottom up.",
+        "linguistic_note": {
+          "common_confusion": "Portuguese speakers may confuse 'matter' with 'material' (matéria vs. material). Both exist in Portuguese but with different meanings.",
+          "clarification": "Emphasize that 'matter' (matéria) refers to anything that has mass and takes up space, while 'material' (material) refers to the substance something is made from."
+        }
+      },
+      "assessment": {
+        "primary_assessment": "Students complete three-column chart comparing states of matter. Must include at least 3 properties for each state.",
+        "bilingual_overlay": {
+          "accommodation": "ELL students (Levels 1-2) may use drawings with labels. Levels 3-4 use sentence frames. Levels 5-6 write full sentences.",
+          "language_support": "Provide bilingual word bank and visual references during assessment."
+        }
+      },
+      "homework": {
+        "original_content": "Find 5 examples of each state of matter at home. Draw or photograph them. Label in English.",
+        "family_connection": "Ask family members to help identify examples. Discuss: What do you call these states of matter in Portuguese? (sólido, líquido, gasoso)"
+      }
+    },
+    "tuesday": {
+      "unit_lesson": "Unit Three Lesson Two",
+      "objective": {
+        "content_objective": "Students will explain how matter changes from one state to another",
+        "student_goal": "I will describe melting, freezing, evaporation, and condensation",
+        "wida_objective": "Students will use cause-and-effect language to explain phase changes (ELD Standard 4, Levels 3-5)"
+      },
+      "anticipatory_set": {
+        "original_content": "Review homework examples. Discuss: Can matter change from one state to another? How?",
+        "bilingual_bridge": "Introduce phase change vocabulary with cognates: evaporation/evaporação, condensation/condensação. Show video of water cycle with bilingual captions."
+      },
+      "tailored_instruction": {
+        "original_content": "Demonstrate phase changes: melt ice, boil water, observe condensation on cold glass. Introduce terms: melting, freezing, evaporation, condensation. Students conduct mini-experiments in groups.",
+        "co_teaching_model": {
+          "model_name": "Parallel Teaching",
+          "implementation": "Divide class by language proficiency. Both groups do same experiments but with differentiated language support.",
+          "teacher_roles": "Teacher A works with higher proficiency students using academic language. Teacher B works with emerging bilinguals using simplified language, visuals, and L1 support."
+        },
+        "ell_support": [
+          {
+            "strategy_name": "Graphic Organizers",
+            "implementation": "Use cycle diagram to show phase changes. Include arrows with temperature indicators and bilingual labels."
+          },
+          {
+            "strategy_name": "Hands-On Learning",
+            "implementation": "All students conduct experiments to observe phase changes directly. Reduces language barrier through concrete experience."
+          }
+        ],
+        "materials": ["Ice", "Hot plate", "Cold glass", "Thermometers", "Phase change diagram", "Lab safety equipment", "Observation sheets"]
+      },
+      "misconceptions": {
+        "original_content": "Students may think evaporation only happens when water boils. Some may not understand that freezing and melting are reverse processes.",
+        "linguistic_note": {
+          "common_confusion": "The word 'evaporation' may be confused with 'vaporization' (both translate to evaporação/vaporização in Portuguese).",
+          "clarification": "Explain that evaporation happens at any temperature, while boiling (ebulição) happens at a specific temperature."
+        }
+      },
+      "assessment": {
+        "primary_assessment": "Lab report: Describe observations from experiments. Explain what caused each phase change.",
+        "bilingual_overlay": {
+          "accommodation": "Provide sentence starters: 'When we heated the ice, it ___ because ___.' Allow use of diagrams with labels.",
+          "language_support": "Word bank with phase change terms in English and Portuguese. Visual reference chart available."
+        }
+      },
+      "homework": {
+        "original_content": "Observe and record one phase change at home (ice melting, water boiling, steam condensing, etc.). Write 3-5 sentences describing what happened.",
+        "family_connection": "Discuss with family: What phase changes do you observe when cooking? Share examples in any language."
+      }
+    },
+    "wednesday": {
+      "unit_lesson": "Unit Three Lesson Three",
+      "objective": {
+        "content_objective": "Students will investigate the role of temperature in phase changes",
+        "student_goal": "I will explain how adding or removing heat causes matter to change state",
+        "wida_objective": "Students will use scientific language to describe cause-and-effect relationships (ELD Standard 4, Levels 3-5)"
+      },
+      "anticipatory_set": {
+        "original_content": "Quick write: What happens to ice cream on a hot day? Why? Share with partner.",
+        "bilingual_bridge": "Review temperature vocabulary: hot/quente, cold/frio, heat/calor, temperature/temperatura. Use thermometer visuals with dual labels."
+      },
+      "tailored_instruction": {
+        "original_content": "Investigate relationship between temperature and phase changes. Students measure temperature while ice melts and water boils. Graph results. Discuss energy transfer.",
+        "ell_support": [
+          {
+            "strategy_name": "Data Visualization",
+            "implementation": "Students create line graphs showing temperature over time. Visual representation reduces language demands while reinforcing concepts."
+          },
+          {
+            "strategy_name": "Collaborative Learning",
+            "implementation": "Mixed-proficiency groups. Each student has a role: timekeeper, temperature reader, recorder, reporter. Roles rotate."
+          }
+        ],
+        "materials": ["Thermometers", "Ice", "Hot plate", "Beakers", "Graph paper", "Stopwatches", "Safety goggles"]
+      },
+      "misconceptions": {
+        "original_content": "Students may think temperature continues to rise during melting or boiling. They may not understand that energy is used to change state, not increase temperature.",
+        "linguistic_note": {
+          "common_confusion": "Heat (calor) vs. temperature (temperatura) - these are often used interchangeably in everyday Portuguese but have specific meanings in science.",
+          "clarification": "Heat is energy transfer; temperature is a measure of average kinetic energy. Use concrete examples and visuals to distinguish."
+        }
+      },
+      "assessment": {
+        "primary_assessment": "Graph analysis: Students interpret their temperature graphs and answer questions about phase changes and energy.",
+        "bilingual_overlay": {
+          "accommodation": "Questions provided in simplified English with key terms in Portuguese. Sentence frames for written responses.",
+          "language_support": "Allow students to annotate graphs in Portuguese, then translate key points to English with support."
+        }
+      },
+      "homework": {
+        "original_content": "Complete graph analysis worksheet. Write a paragraph explaining what happens to temperature during phase changes.",
+        "family_connection": "Ask family: How do you know when water is boiling? What do you observe? Discuss in any language."
+      }
+    },
+    "thursday": {
+      "unit_lesson": "Unit Three Lesson Four",
+      "objective": {
+        "content_objective": "Students will compare the water cycle to phase changes studied in class",
+        "student_goal": "I will identify phase changes in the water cycle and explain their causes",
+        "wida_objective": "Students will connect scientific concepts using academic vocabulary and complex sentences (ELD Standard 4, Levels 4-6)"
+      },
+      "anticipatory_set": {
+        "original_content": "Show water cycle diagram. Ask: Where do you see phase changes happening? Label them.",
+        "bilingual_bridge": "Introduce water cycle terms: precipitation/precipitação, runoff/escoamento, collection/acumulação. Use animated diagram with bilingual narration."
+      },
+      "tailored_instruction": {
+        "original_content": "Connect lab observations to real-world water cycle. Students create annotated water cycle diagrams showing phase changes and temperature conditions. Present to class.",
+        "co_teaching_model": {
+          "model_name": "Team Teaching",
+          "implementation": "Both teachers co-present, alternating between English and Portuguese for key concepts. Model translanguaging as a learning strategy.",
+          "teacher_roles": "Teacher A presents in English, Teacher B clarifies in Portuguese and provides examples. Both answer questions and facilitate discussion."
+        },
+        "ell_support": [
+          {
+            "strategy_name": "Translanguaging",
+            "implementation": "Allow students to discuss concepts in Portuguese, then present in English. Validate use of L1 as a cognitive tool."
+          },
+          {
+            "strategy_name": "Multimodal Presentation",
+            "implementation": "Students create diagrams with labels, arrows, and brief explanations. Reduces language demands while demonstrating understanding."
+          }
+        ],
+        "materials": ["Water cycle posters", "Markers", "Bilingual reference materials", "Example diagrams", "Presentation rubric"]
+      },
+      "misconceptions": {
+        "original_content": "Students may think the water cycle only happens in nature, not in everyday life. Some may not recognize that the same water is recycled.",
+        "linguistic_note": {
+          "common_confusion": "Cycle (ciclo) may be confused with circle (círculo). Both are similar in Portuguese.",
+          "clarification": "Emphasize that a cycle is a repeating process, not just a circular shape. Use timeline and circular diagram to show difference."
+        }
+      },
+      "assessment": {
+        "primary_assessment": "Water cycle diagram with annotations. Must show at least 4 phase changes and explain temperature conditions for each.",
+        "bilingual_overlay": {
+          "accommodation": "Rubric includes options for different proficiency levels. Levels 1-2 use labels and simple phrases. Levels 3-4 use sentences. Levels 5-6 use complex sentences with transitions.",
+          "language_support": "Provide sentence frames for explanations: 'When ___ happens, water changes from ___ to ___ because ___.' Word bank available."
+        }
+      },
+      "homework": {
+        "original_content": "Observe the water cycle at home or in your neighborhood. Take photos or draw pictures. Write where you see each part of the cycle.",
+        "family_connection": "Discuss with family: How does the water cycle affect our daily lives? Where does our water come from? Share in any language."
+      }
+    },
+    "friday": {
+      "unit_lesson": "Unit Three Assessment",
+      "objective": {
+        "content_objective": "Students will demonstrate understanding of states of matter and phase changes",
+        "student_goal": "I will show what I learned about matter and how it changes",
+        "wida_objective": "Students will use scientific language to explain concepts in multiple formats (ELD Standard 4, Levels 2-6)"
+      },
+      "anticipatory_set": {
+        "original_content": "Review game: States of Matter Jeopardy. Teams compete to answer questions. Review key concepts.",
+        "bilingual_bridge": "Game includes questions in both English and Portuguese. Students can answer in either language, then translate."
+      },
+      "tailored_instruction": {
+        "original_content": "Brief review of key concepts. Students complete unit assessment with multiple formats: multiple choice, diagram labeling, short answer, and practical demonstration.",
+        "co_teaching_model": {
+          "model_name": "Alternative Teaching",
+          "implementation": "Most students take standard assessment. Small group of emerging bilinguals receives modified assessment with additional supports.",
+          "teacher_roles": "Teacher A administers standard assessment to main group. Teacher B works with small group, providing scaffolds, clarifications, and extended time."
+        },
+        "ell_support": [
+          {
+            "strategy_name": "Differentiated Assessment",
+            "implementation": "Multiple ways to show understanding: drawing, labeling, writing, demonstrating. Students choose format that best shows their knowledge."
+          },
+          {
+            "strategy_name": "Extended Time",
+            "implementation": "ELL students receive 1.5x time. Can use bilingual dictionary and reference materials."
+          }
+        ],
+        "materials": ["Assessment packets (differentiated)", "Bilingual dictionaries", "Visual reference charts", "Lab materials for demonstrations"]
+      },
+      "misconceptions": {
+        "original_content": "Address any remaining misconceptions through one-on-one or small group support during assessment.",
+        "linguistic_note": {
+          "common_confusion": "Review all key vocabulary one final time, emphasizing cognates and false cognates.",
+          "clarification": "Provide visual glossary as reference during assessment."
+        }
+      },
+      "assessment": {
+        "primary_assessment": "Unit test covering states of matter, phase changes, temperature, and water cycle. Multiple formats to accommodate different proficiency levels.",
+        "bilingual_overlay": {
+          "accommodation": "Test available in three versions: standard, modified with scaffolds, and bilingual with Portuguese supports. Students take version appropriate for their proficiency level.",
+          "language_support": "All versions include visual supports, word banks, and sentence frames. Bilingual dictionaries allowed."
+        }
+      },
+      "homework": {
+        "original_content": "Reflection: Write about one thing you learned this week and one question you still have. Optional: Create a poster showing states of matter for extra credit.",
+        "family_connection": "Share your assessment results with family. Teach them one thing you learned about matter. Discuss in any language."
+      }
+    }
+  }
+}

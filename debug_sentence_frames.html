@@ -1,0 +1,189 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>Sentence Frames - Week of 11/17-11/21</title>
+            <style>
+                
+        @import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600&display=swap');
+
+        @page {
+            size: 8.5in 11in; /* Portrait US Letter */
+            margin: 0.5in;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Source Sans Pro', 'Inter', 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: white;
+        }
+
+        .frames-page {
+            width: 7.5in;  /* 8.5 - 1" margins */
+            height: 10in;  /* 11 - 1" margins */
+            position: relative;
+            margin: 0 auto 0.25in auto;
+            page-break-after: always;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            height: 0.35in;
+            font-size: 10pt;
+            color: #808080; /* 50% gray */
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            margin-bottom: 0.05in;
+        }
+
+        .panels {
+            position: relative;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel {
+            flex: 1;
+            padding: 0.25in 0.3in;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .panel-title {
+            font-size: 10pt;
+            font-weight: 600;
+            color: #808080;
+            margin-bottom: 0.1in;
+        }
+
+        .frame-text {
+            font-size: 28pt;
+            font-weight: 600;
+            color: #000000;
+            line-height: 1.2;
+            margin-bottom: 0.1in;
+            word-wrap: break-word;
+            max-width: 100%;
+        }
+
+        .frame-function {
+            font-size: 11pt;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #808080;
+        }
+
+        .bundle-frame-row {
+            margin: 0.05in 0;
+        }
+
+        .bundle-frame-text {
+            font-size: 18pt;
+            font-weight: 600;
+            color: #000000;
+            line-height: 1.2;
+        }
+
+        .bundle-frame-function {
+            font-size: 9pt;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #808080;
+        }
+
+        .fold-line {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 0;
+            border-top: 1px solid #C0C0C0;
+        }
+
+        .fold-line-1 {
+            top: calc(10in / 3);
+        }
+
+        .fold-line-2 {
+            top: calc(2 * 10in / 3);
+        }
+
+        @media print {
+            .frames-page {
+                page-break-after: always;
+            }
+            .frames-page:last-child {
+                page-break-after: auto;
+            }
+        }
+        
+            </style>
+        </head>
+        <body>
+            
+        <div class="frames-page frames-page-1">
+            <div class="header">11/17-11/21 | Math | Grade 3 | 101</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                
+                <div class="panel panel-1">
+                    <div class="frame-text">Test Frame 2</div>
+                    <div class="frame-function">Explain</div>
+                </div>
+            
+                <div class="panel panel-2">
+                    <div class="frame-text"></div>
+                    <div class="frame-function"></div>
+                </div>
+            
+                <div class="panel panel-3">
+                    <div class="frame-text"></div>
+                    <div class="frame-function"></div>
+                </div>
+            
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-2">
+            <div class="header">11/17-11/21 | Math | Grade 3 | 101</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                <div class="panel panel-1">
+                    <div class="panel-title">Levels 1-2</div>
+                    
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">Test Frame 1</div>
+                    <div class="bundle-frame-function">Describe</div>
+                </div>
+                
+                </div>
+                <div class="panel panel-2">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text">Test Frame 3</div>
+                    <div class="frame-function">Justify</div>
+                </div>
+                <div class="panel panel-3">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text"></div>
+                    <div class="frame-function"></div>
+                </div>
+            </div>
+        </div>
+        
+        </body>
+        </html>
+        

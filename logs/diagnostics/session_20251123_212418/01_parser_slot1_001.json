@@ -1,0 +1,52 @@
+{
+  "timestamp": "2025-11-23T21:24:18.502013",
+  "stage": "01_parser_slot1",
+  "data": {
+    "slot_number": 1,
+    "subject": "ELA",
+    "source_file": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W48\\FALSE Kelsey Lang 11_24-11_28 Lesson Plans - Copy.docx",
+    "hyperlink_count": 5,
+    "hyperlinks": [
+      {
+        "text": "Lenni Lenape",
+        "url": "https://docs.google.com/document/d/1_yHvguDhJIZmrIwY3ZcW-BIhfQH5VtH2xs1KtKlnNVY/edit?tab=t.9vfaqefj1",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Lenni Lenape",
+        "url": "https://docs.google.com/document/d/1_yHvguDhJIZmrIwY3ZcW-BIhfQH5VtH2xs1KtKlnNVY/edit?tab=t.9vfaqefj1",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Lenni Lenape",
+        "url": "https://docs.google.com/document/d/1_yHvguDhJIZmrIwY3ZcW-BIhfQH5VtH2xs1KtKlnNVY/edit?tab=t.9vfaqefj1",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Building A Wigwam",
+        "url": "https://www.youtube.com/watch?v=rb2s9vxrS_E",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "3-2-1 sheet",
+        "url": "https://docs.google.com/document/d/17G4xIhQP7pcOvlnej3iN6yopYxdgdGMXQd3VghazLv8/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      }
+    ]
+  }
+}

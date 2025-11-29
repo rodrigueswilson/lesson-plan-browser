@@ -1,0 +1,94 @@
+{
+  "timestamp": "2025-10-26T20:23:26.113531",
+  "stage": "03_before_render_slot5",
+  "data": {
+    "slot_number": 5,
+    "subject": "Math",
+    "render_type": "multi_slot",
+    "metadata_slot_number": 5,
+    "metadata_subject": "Math",
+    "hyperlink_count": 99,
+    "all_hyperlinks_have_slot": true,
+    "all_hyperlinks_have_subject": true,
+    "hyperlink_slot_distribution": {
+      "5": 99
+    },
+    "sample_hyperlinks": [
+      {
+        "text": "activity",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "activity",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "navigation by stars",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "activity",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "activity",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Culminating Task: Reading New Jersey Maps",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "activity",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "video",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "LESSON 8: AREA OF A RECTANGLE WITHOUT A GRID",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "3.2.8 Teacher Guide",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "LESSON 9: MEASURE TO FIND THE AREA",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "LESSON 10: SOLVE AREA PROBLEMS",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "3.2.10 Teacher Guide",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "LESSON 11: AREA AND THE MULTIPLICATION TABLE",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "3.2.11 Teacher Guide",
+        "source_slot": 5,
+        "source_subject": "Math"
+      }
+    ]
+  }
+}

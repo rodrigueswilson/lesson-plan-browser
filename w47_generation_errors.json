@@ -1,0 +1,26 @@
+[
+  {
+    "timestamp": "2025-11-16T21:05:45.755210",
+    "context": "check_progress",
+    "error": "('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None))",
+    "type": "ConnectionError"
+  },
+  {
+    "timestamp": "2025-11-16T21:05:51.824067",
+    "context": "check_progress",
+    "error": "HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url: /api/progress/6dc1bd72-9481-44f4-9ee7-123c7dc2d1b0/poll (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x000002230DB84BC0>: Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it'))",
+    "type": "ConnectionError"
+  },
+  {
+    "timestamp": "2025-11-16T21:05:57.894468",
+    "context": "check_progress",
+    "error": "HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url: /api/progress/6dc1bd72-9481-44f4-9ee7-123c7dc2d1b0/poll (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x000002230DB6B680>: Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it'))",
+    "type": "ConnectionError"
+  },
+  {
+    "timestamp": "2025-11-16T21:06:03.984689",
+    "context": "check_progress",
+    "error": "HTTPConnectionPool(host='localhost', port=8000): Max retries exceeded with url: /api/progress/6dc1bd72-9481-44f4-9ee7-123c7dc2d1b0/poll (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x000002230DB6B020>: Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it'))",
+    "type": "ConnectionError"
+  }
+]

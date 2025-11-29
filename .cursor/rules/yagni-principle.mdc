@@ -1,0 +1,10 @@
+---
+alwaysApply: true
+---
+# YAGNI (You Aren't Gonna Need It) Principle
+
+- **Always** implement only the functionality that is explicitly required by the current task or user story.
+- **Always** focus on delivering the simplest possible solution that meets the immediate, concrete requirements.
+- **Never** add code, options, or features based on speculation about what might be needed in the future.
+- **Never** leave commented-out "dead code" in the codebase. If it's not needed, remove it; it can be retrieved from version control if necessary.
+- If a feature is proposed that does not solve a current, documented problem, **always** question its necessity before implementing.

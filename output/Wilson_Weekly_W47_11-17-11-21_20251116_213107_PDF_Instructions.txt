@@ -1,0 +1,24 @@
+PDF CONVERSION INSTRUCTIONS
+
+Your COMPLETE objectives file is ready:
+HTML File: d:\LP\output\Wilson_Weekly_W47_11-17-11-21_20251116_213107_Objectives.html
+
+HOW TO CREATE PDF (EASY METHOD):
+1. Double-click the HTML file to open in your web browser
+2. Press Ctrl+P (or Cmd+P on Mac)
+3. Select "Save as PDF" as the printer/destination
+4. Choose "Landscape" orientation
+5. Set margins to "None" or "Minimum"
+6. Click "Save"
+
+WHAT YOU GET:
+✅ All 5 days of objectives (Monday-Friday)
+✅ Clear day labels and lesson titles
+✅ Auto-sized fonts for maximum readability
+✅ Professional classroom-ready layout
+✅ Perfect 11" × 8.5" landscape format
+
+TIP: The HTML file works great for digital display too!
+Open it in any browser for classroom presentation.
+
+Generated on: 2025-11-16 23:23:47

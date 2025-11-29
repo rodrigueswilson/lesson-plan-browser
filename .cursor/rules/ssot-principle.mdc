@@ -1,0 +1,10 @@
+---
+alwaysApply: true
+---
+# Single Source of Truth (SSOT) Principle
+
+- **Always** identify the single, authoritative source for any piece of data, configuration, or business logic.
+- **Always** reference information from its single source rather than duplicating it. For example, import configuration values from a central config file instead of hardcoding them in multiple places.
+- **Never** create a new source for information that already has an established authoritative source. This leads to data drift and synchronization issues.
+- **Never** store the same piece of mutable state in more than one location.
+- If the single source of truth for a piece of information is unclear, ask for clarification before defining a new one.

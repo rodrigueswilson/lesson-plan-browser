@@ -1,0 +1,35 @@
+{{/* Alert Templates for Alertmanager */}}
+{{/* Adds runbook URLs to alert annotations */}}
+
+{{ define "__runbook_url" }}
+{{- if eq .Labels.alertname "HighRateLimitViolations" -}}
+https://your-docs-site.com/docs/security/ALERT_RUNBOOK.md#high-rate-limit-violations
+{{- else if eq .Labels.alertname "CriticalRateLimitViolations" -}}
+https://your-docs-site.com/docs/security/ALERT_RUNBOOK.md#critical-rate-limit-violations
+{{- else if eq .Labels.alertname "AuthEndpointRateLimitViolations" -}}
+https://your-docs-site.com/docs/security/ALERT_RUNBOOK.md#auth-endpoint-rate-limit-violations
+{{- else if eq .Labels.alertname "RedisCircuitBreakerOpen" -}}
+https://your-docs-site.com/docs/security/ALERT_RUNBOOK.md#redis-circuit-breaker-open
+{{- else if eq .Labels.alertname "RedisCircuitBreakerOpenExtended" -}}
+https://your-docs-site.com/docs/security/ALERT_RUNBOOK.md#redis-circuit-breaker-open-extended
+{{- else if eq .Labels.alertname "HighRedisFailures" -}}
+https://your-docs-site.com/docs/security/ALERT_RUNBOOK.md#high-redis-failures
+{{- else if eq .Labels.alertname "CriticalRedisFailures" -}}
+https://your-docs-site.com/docs/security/ALERT_RUNBOOK.md#critical-redis-failures
+{{- else if eq .Labels.alertname "RedisFallbackOccurred" -}}
+https://your-docs-site.com/docs/security/ALERT_RUNBOOK.md#redis-fallback-occurred
+{{- else if eq .Labels.alertname "RedisFallbackSustained" -}}
+https://your-docs-site.com/docs/security/ALERT_RUNBOOK.md#redis-fallback-sustained
+{{- else if eq .Labels.alertname "HighRateLimitLatency" -}}
+https://your-docs-site.com/docs/security/ALERT_RUNBOOK.md#high-rate-limit-latency
+{{- else if eq .Labels.alertname "CriticalRateLimitLatency" -}}
+https://your-docs-site.com/docs/security/ALERT_RUNBOOK.md#critical-rate-limit-latency
+{{- else if eq .Labels.alertname "HighRateLimitBlockRatio" -}}
+https://your-docs-site.com/docs/security/ALERT_RUNBOOK.md#high-rate-limit-block-ratio
+{{- else if eq .Labels.alertname "CriticalRateLimitBlockRatio" -}}
+https://your-docs-site.com/docs/security/ALERT_RUNBOOK.md#critical-rate-limit-block-ratio
+{{- else -}}
+https://your-docs-site.com/docs/security/ALERT_RUNBOOK.md
+{{- end -}}
+{{ end }}
+

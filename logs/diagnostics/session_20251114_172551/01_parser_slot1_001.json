@@ -1,0 +1,60 @@
+{
+  "timestamp": "2025-11-14T17:25:51.203083",
+  "stage": "01_parser_slot1",
+  "data": {
+    "slot_number": 1,
+    "subject": "ELA/SS",
+    "source_file": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\25 W47\\Morais_11_17 - 11_20.docx",
+    "hyperlink_count": 6,
+    "hyperlinks": [
+      {
+        "text": "Predict-o-Gram",
+        "url": "https://docs.google.com/document/d/1hBySQtYRC8WbMnAAq5uHozlmdyZGTAelk_Y8CrkZvHg/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Unit 3 Kindness: Lesson 8 vocabulary",
+        "url": "https://docs.google.com/presentation/d/15voB7M63XV9cBkc23s4MMx43EfsmA40sPs6oSDDkDLo/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Unit 3 Kindness: Lesson 9 Rubric",
+        "url": "https://docs.google.com/document/d/11kgLQFal0tVjowDicCSl2RE1KA_5dFIMrmUj4BvWmn0/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Unit 3 Kindness: Lesson 8 vocabulary",
+        "url": "https://docs.google.com/presentation/d/15voB7M63XV9cBkc23s4MMx43EfsmA40sPs6oSDDkDLo/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Character Traits Anchor Charts",
+        "url": "https://docs.google.com/document/d/1OjXLLppPUK39faZbuiPCbbNLAyfISKGipbnawmUgD10/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Unit 3 Kindness: Lesson 10 Rubric",
+        "url": "https://docs.google.com/document/d/1T4msae4Dr--dxRKJnmW6YxyxA-O07gYLXBj5HzbNFjw/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      }
+    ]
+  }
+}

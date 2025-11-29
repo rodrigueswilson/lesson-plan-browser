@@ -1,0 +1,256 @@
+"""
+Test script to verify hyperlink filtering for "No School" days.
+"""
+
+from pathlib import Path
+from tools.docx_parser import DOCXParser
+import asyncio
+from tools.batch_processor import BatchProcessor
+from backend.mock_llm_service import get_mock_llm_service
+
+# Path to W45 folder
+w45_folder = Path(r"F:\rodri\Documents\OneDrive\AS\Daniela LP\25 W45")
+
+# Teacher files
+teacher_files = {
+    "Morais": "Morais 11_3_25 - 11_7_25.docx",
+    "Grande": "Mrs. Grande Science 11_03- 11_07.docx",
+    "Santiago": "T. Santiago SS Plans 11_3-11_7.docx"
+}
+
+print("=" * 70)
+print("Testing Hyperlink Filtering for 'No School' Days")
+print("=" * 70)
+
+def test_hyperlink_extraction():
+    """Test hyperlink extraction and verify day_hint metadata."""
+    print("\n" + "=" * 70)
+    print("TEST 1: Extract hyperlinks and check day_hint metadata")
+    print("=" * 70)
+    
+    for teacher_name, filename in teacher_files.items():
+        file_path = w45_folder / filename
+        
+        if not file_path.exists():
+            print(f"\n[SKIP] {teacher_name}: File not found")
+            continue
+        
+        print(f"\nTeacher: {teacher_name}")
+        print(f"File: {filename}")
+        
+        try:
+            parser = DOCXParser(str(file_path))
+            
+            # Get available slots
+            total_tables = len(parser.doc.tables)
+            available_slots = (total_tables - 1) // 2
+            
+            print(f"  Found {available_slots} slot(s)")
+            
+            # Test first slot
+            slot_num = 1
+            try:
+                from tools.docx_parser import validate_slot_structure
+                table_start, table_end = validate_slot_structure(parser.doc, slot_num)
+                meta_table = parser.doc.tables[table_start]
+                
+                # Get subject
+                subject = None
+                for row in meta_table.rows:
+                    for cell in row.cells:
+                        cell_text = cell.text.strip()
+                        cell_lower = cell_text.lower()
+                        if 'subject:' in cell_lower:
+                            subject = cell_text.split(':', 1)[-1].strip()
+                            break
+                    if subject:
+                        break
+                
+                if not subject:
+                    print(f"  [SKIP] Could not find subject")
+                    continue
+                
+                print(f"  Slot {slot_num}: {subject}")
+                
+                # Extract hyperlinks
+                hyperlinks = parser.extract_hyperlinks_for_slot(slot_num, subject)
+                print(f"  Total hyperlinks extracted: {len(hyperlinks)}")
+                
+                # Group by day_hint
+                by_day = {}
+                no_day_hint = []
+                for h in hyperlinks:
+                    day_hint = h.get('day_hint')
+                    if day_hint:
+                        day_normalized = day_hint.lower().strip()
+                        if day_normalized not in by_day:
+                            by_day[day_normalized] = []
+                        by_day[day_normalized].append(h)
+                    else:
+                        no_day_hint.append(h)
+                
+                print(f"  Hyperlinks by day:")
+                for day, links in sorted(by_day.items()):
+                    print(f"    {day}: {len(links)} hyperlink(s)")
+                if no_day_hint:
+                    print(f"    (no day_hint): {len(no_day_hint)} hyperlink(s)")
+                
+                # Extract content to get no_school_days
+                content = parser.extract_subject_content_for_slot(slot_num, subject)
+                no_school_days = content.get('no_school_days', [])
+                
+                if no_school_days:
+                    print(f"  No School days detected: {no_school_days}")
+                    
+                    # Test filtering logic
+                    no_school_days_normalized = {day.lower().strip() for day in no_school_days}
+                    filtered_hyperlinks = [
+                        h for h in hyperlinks
+                        if not h.get('day_hint') or h.get('day_hint', '').lower().strip() not in no_school_days_normalized
+                    ]
+                    
+                    filtered_count = len(hyperlinks) - len(filtered_hyperlinks)
+                    print(f"  After filtering:")
+                    print(f"    Total: {len(hyperlinks)} -> {len(filtered_hyperlinks)}")
+                    print(f"    Filtered out: {filtered_count}")
+                    
+                    # Verify filtered days
+                    filtered_by_day = {}
+                    for h in filtered_hyperlinks:
+                        day_hint = h.get('day_hint')
+                        if day_hint:
+                            day_normalized = day_hint.lower().strip()
+                            if day_normalized not in filtered_by_day:
+                                filtered_by_day[day_normalized] = []
+                            filtered_by_day[day_normalized].append(h)
+                    
+                    print(f"  Remaining hyperlinks by day:")
+                    for day, links in sorted(filtered_by_day.items()):
+                        print(f"    {day}: {len(links)} hyperlink(s)")
+                    
+                    # Verify no hyperlinks from No School days remain
+                    remaining_no_school = []
+                    for day in no_school_days_normalized:
+                        if day in filtered_by_day:
+                            remaining_no_school.extend(filtered_by_day[day])
+                    
+                    if remaining_no_school:
+                        print(f"  [FAIL] Found {len(remaining_no_school)} hyperlinks from No School days still present!")
+                        for h in remaining_no_school[:3]:
+                            print(f"    - {h.get('text', '')[:50]} (day: {h.get('day_hint')})")
+                    else:
+                        print(f"  [PASS] No hyperlinks from No School days remain")
+                else:
+                    print(f"  No 'No School' days detected")
+                    
+            except Exception as e:
+                print(f"  [ERROR] {e}")
+                import traceback
+                traceback.print_exc()
+                
+        except Exception as e:
+            print(f"\n[ERROR] Error processing {teacher_name}: {e}")
+            import traceback
+            traceback.print_exc()
+
+async def test_batch_processor_filtering():
+    """Test that batch processor correctly filters hyperlinks."""
+    print("\n" + "=" * 70)
+    print("TEST 2: Batch Processor Hyperlink Filtering")
+    print("=" * 70)
+    
+    # Create a mock slot configuration for testing
+    # We'll use Grande's file as it has a single slot
+    grande_file = w45_folder / teacher_files["Grande"]
+    
+    if not grande_file.exists():
+        print("[SKIP] Grande file not found")
+        return
+    
+    print(f"\nTesting with: {grande_file.name}")
+    
+    try:
+        parser = DOCXParser(str(grande_file))
+        
+        # Extract content to get no_school_days
+        content = parser.extract_subject_content_for_slot(1, "Science")
+        no_school_days = content.get('no_school_days', [])
+        
+        print(f"No School days: {no_school_days}")
+        
+        # Extract hyperlinks (before filtering)
+        hyperlinks_before = parser.extract_hyperlinks_for_slot(1, "Science")
+        print(f"Hyperlinks before filtering: {len(hyperlinks_before)}")
+        
+        # Group by day
+        by_day_before = {}
+        for h in hyperlinks_before:
+            day_hint = h.get('day_hint', '').lower().strip()
+            if day_hint:
+                if day_hint not in by_day_before:
+                    by_day_before[day_hint] = []
+                by_day_before[day_hint].append(h)
+        
+        print("Before filtering by day:")
+        for day, links in sorted(by_day_before.items()):
+            print(f"  {day}: {len(links)} hyperlink(s)")
+        
+        # Apply filtering logic (same as in batch_processor)
+        if no_school_days:
+            no_school_days_normalized = {day.lower().strip() for day in no_school_days}
+            hyperlinks_after = [
+                h for h in hyperlinks_before
+                if not h.get('day_hint') or h.get('day_hint', '').lower().strip() not in no_school_days_normalized
+            ]
+        else:
+            hyperlinks_after = hyperlinks_before
+        
+        print(f"\nHyperlinks after filtering: {len(hyperlinks_after)}")
+        
+        # Group by day after filtering
+        by_day_after = {}
+        for h in hyperlinks_after:
+            day_hint = h.get('day_hint', '').lower().strip()
+            if day_hint:
+                if day_hint not in by_day_after:
+                    by_day_after[day_hint] = []
+                by_day_after[day_hint].append(h)
+        
+        print("After filtering by day:")
+        for day, links in sorted(by_day_after.items()):
+            print(f"  {day}: {len(links)} hyperlink(s)")
+        
+        # Verify filtering worked
+        filtered_count = len(hyperlinks_before) - len(hyperlinks_after)
+        print(f"\nFiltered out: {filtered_count} hyperlink(s)")
+        
+        # Check that no No School day hyperlinks remain
+        no_school_days_normalized = {day.lower().strip() for day in no_school_days}
+        remaining_no_school = []
+        for day in no_school_days_normalized:
+            if day in by_day_after:
+                remaining_no_school.extend(by_day_after[day])
+        
+        if remaining_no_school:
+            print(f"[FAIL] {len(remaining_no_school)} hyperlinks from No School days still present!")
+            for h in remaining_no_school[:3]:
+                print(f"  - {h.get('text', '')[:50]} (day: {h.get('day_hint')})")
+        else:
+            print(f"[PASS] All hyperlinks from No School days were filtered out")
+            
+    except Exception as e:
+        print(f"\n[ERROR] {e}")
+        import traceback
+        traceback.print_exc()
+
+if __name__ == "__main__":
+    # Test 1: Direct extraction and filtering
+    test_hyperlink_extraction()
+    
+    # Test 2: Batch processor logic
+    asyncio.run(test_batch_processor_filtering())
+    
+    print("\n" + "=" * 70)
+    print("Testing complete")
+    print("=" * 70)
+
