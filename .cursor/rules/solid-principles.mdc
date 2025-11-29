@@ -1,0 +1,34 @@
+---
+alwaysApply: true
+---
+# SOLID Design Principles
+
+This file enforces the five core SOLID principles. When generating or refactoring object-oriented code, adhere to the following rules for each principle.
+
+### S - Single-responsibility Principle
+*A class or module should have only one reason to change.*
+- **Always** ensure that a class or module has only one, well-defined responsibility.
+- **Never** create "god objects" or utility classes that bundle unrelated functionality (e.g., mixing business logic with data parsing and API communication in a single class).
+- If a class is handling multiple responsibilities, **always** recommend refactoring it into smaller, more focused classes.
+
+### O - Open-closed Principle
+*Software entities should be open for extension but closed for modification.*
+- **Always** design classes and modules to be extensible without needing to modify their source code. Favor composition, inheritance, and interfaces to add new functionality.
+- **Never** require changes to the source code of a stable, existing class to add a new behavior. Instead, create a new class that extends the functionality.
+
+### L - Liskov Substitution Principle
+*Objects of a superclass should be replaceable with objects of its subclasses without affecting the correctness of the program.*
+- **Always** ensure that any subclass can be used in place of its parent class without causing errors or breaking functionality.
+- **Never** override a parent method in a subclass in a way that violates the parent's contract (e.g., by throwing new exceptions or returning an incompatible type). The subclass should only extend, not restrict, the parent's behavior.
+
+### I - Interface Segregation Principle
+*Clients should not be forced to depend on interfaces they do not use.*
+- **Always** create small, specific "role" interfaces rather than large, general-purpose ones.
+- **Never** force a class to implement an interface with methods it does not need. This leads to empty or exception-throwing method implementations.
+- If you see a class implementing an interface but leaving some methods empty, **always** suggest breaking the "fat" interface into smaller, more coherent ones.
+
+### D - Dependency Inversion Principle
+*Depend on abstractions, not on concrete implementations.*
+- **Always** ensure high-level modules (e.g., business logic) depend on abstractions (interfaces, abstract classes), not on low-level modules (e.g., data access, API clients).
+- **Always** use techniques like dependency injection to provide concrete implementations to a class, rather than having the class instantiate its dependencies directly.
+- **Never** allow a high-level policy class to directly import and instantiate a low-level detail class.

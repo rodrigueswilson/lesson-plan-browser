@@ -1,0 +1,59 @@
+{
+  "timestamp": "2025-11-07T17:48:45.800768",
+  "stage": "03_before_render_slot5",
+  "data": {
+    "slot_number": 5,
+    "subject": "Math",
+    "render_type": "multi_slot",
+    "metadata_slot_number": 5,
+    "metadata_subject": "Math",
+    "hyperlink_count": 8,
+    "all_hyperlinks_have_slot": true,
+    "all_hyperlinks_have_subject": true,
+    "hyperlink_slot_distribution": {
+      "5": 8
+    },
+    "sample_hyperlinks": [
+      {
+        "text": "Unit 3: Measuring Length",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Unit 3: Measuring Length",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Unit 3: Measuring Length",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Unit 3: Measuring Length",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "2.3.1 Cool Down",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "2.3.2 Cool Down",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "2.3.3 Cool Down",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "2.3.4 Cool Down",
+        "source_slot": 5,
+        "source_subject": "Math"
+      }
+    ]
+  }
+}

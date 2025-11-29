@@ -1,0 +1,11 @@
+{
+  "timestamp": "2025-11-23T03:26:52.263843",
+  "stage": "07_hyperlink_placed",
+  "data": {
+    "text": "ELA Link",
+    "slot": 1,
+    "subject": null,
+    "cell": "None_None",
+    "confidence": 1.0
+  }
+}

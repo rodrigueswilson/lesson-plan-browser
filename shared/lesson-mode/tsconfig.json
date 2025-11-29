@@ -1,0 +1,36 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "types": ["node"],
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "baseUrl": ".",
+    "typeRoots": ["../../frontend/node_modules/@types", "../../node_modules/@types"],
+    "paths": {
+      "@lesson-ui/Button": ["../../frontend/src/components/ui/Button"],
+      "@lesson-ui/Card": ["../../frontend/src/components/ui/Card"],
+      "@lesson-ui/*": ["../../frontend/src/components/ui/*"],
+      "@lesson-api": ["../lesson-api/src/index.ts"],
+      "@lesson-api/*": ["../lesson-api/src/*"],
+      "@lesson-browser": ["../lesson-browser/src/index.ts"],
+      "@lesson-browser/*": ["../lesson-browser/src/*"],
+      "lucide-react": ["../../frontend/node_modules/lucide-react"],
+      "lucide-react/*": ["../../frontend/node_modules/lucide-react/*"]
+    }
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"]
+}
+

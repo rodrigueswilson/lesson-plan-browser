@@ -1,0 +1,124 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>Lesson Plan Objectives - Week of 11-17-11-21</title>
+            <style>
+                
+        @page {
+            size: 11in 8.5in;  /* Landscape US Letter */
+            margin: 0.5in;
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Calibri', 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: white;
+        }
+        
+        .objectives-page {
+            width: 10in;  /* 11" - 0.5" margins */
+            height: 7.5in;  /* 8.5" - 0.5" margins */
+            display: flex;
+            flex-direction: column;
+            page-break-after: always;
+        }
+        
+        .header {
+            height: 0.3in;
+            font-size: 10pt;
+            color: #333;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.05in;
+        }
+        
+        .student-goal-section {
+            flex: 3;  /* 75% of remaining space */
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            min-height: 0;
+        }
+        
+        .student-goal {
+            font-family: 'Verdana', sans-serif;
+            font-weight: bold;
+            color: #000;
+            line-height: 1.25;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+        
+        .separator {
+            height: 0.15in;
+            margin: 0.1in 0;
+            border-bottom: 1px solid #808080;
+        }
+        
+        .wida-section {
+            flex: 1;  /* 25% of remaining space */
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            min-height: 0;
+        }
+        
+        .wida-label {
+            font-size: 12pt;
+            font-weight: bold;
+            color: #808080;
+            margin-bottom: 0.03in;
+        }
+        
+        .wida-objective {
+            font-size: 12pt;
+            color: #808080;
+            line-height: 1.0;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+        
+        /* Print-specific styles */
+        @media print {
+            .objectives-page {
+                page-break-after: always;
+            }
+            
+            .objectives-page:last-child {
+                page-break-after: auto;
+            }
+        }
+        
+            </style>
+        </head>
+        <body>
+            
+            <div class="objectives-page">
+                <div class="header">
+                    11-17-11-21 | ELA | Grade 3 | Room 15
+                </div>
+                
+                <div class="student-goal-section">
+                    <div class="student-goal" style="font-size: 60pt;">
+                        I will find the area of shapes using square units.
+                    </div>
+                </div>
+                
+                <div class="separator"></div>
+                
+                <div class="wida-section">
+                    <div class="wida-label">WIDA/Bilingual:</div>
+                    <div class="wida-objective">Students will use language to describe areas using mathematical vocabulary (ELD-MA.3-5.Describe.Speaking) by using visual supports and bilingual glossaries.</div>
+                </div>
+            </div>
+            
+        </body>
+        </html>
+        

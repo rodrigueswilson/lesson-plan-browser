@@ -1,0 +1,330 @@
+{
+  "_meta": {
+    "description": "WIDA-aligned proficiency adaptations for bilingual teaching strategies",
+    "schema_version": "1.0",
+    "last_updated": "2025-09-20",
+    "total_strategies": 33,
+    "alignment_framework": "WIDA 2020 ELD Standards"
+  },
+  "strategy_enhancements": {
+    "bilingual_dictionary": {
+      "wida_alignment": {
+        "key_language_uses": ["Inform", "Explain"],
+        "primary_dimension": "word_phrase",
+        "assessment_modes": ["interpretive", "presentational"]
+      },
+      "proficiency_adaptations": {
+        "levels_1_2": {
+          "implementation": "Picture dictionaries with L1-L2 visual pairs, teacher modeling of dictionary use with think-alouds",
+          "scaffolds": ["Visual dictionaries", "One-to-one word matching", "Teacher demonstration"],
+          "language_functions": ["Identify", "Match", "Point to"],
+          "assessment": "Picture identification, gesture responses to vocabulary"
+        },
+        "levels_3_4": {
+          "implementation": "Bilingual dictionaries with context practice, student-created vocabulary cards with definitions",
+          "scaffolds": ["Context clue practice", "Reverse translation checks", "Peer verification"],
+          "language_functions": ["Define", "Explain meaning", "Use in context"],
+          "assessment": "Vocabulary usage in sentences, definition explanations"
+        },
+        "levels_5_6": {
+          "implementation": "Strategic dictionary use for academic precision, etymology exploration, register awareness",
+          "scaffolds": ["Multiple definition analysis", "Academic vs. common usage", "Etymology connections"],
+          "language_functions": ["Analyze word choice", "Compare meanings", "Evaluate precision"],
+          "assessment": "Sophisticated vocabulary use, register appropriateness"
+        }
+      },
+      "grade_cluster_considerations": {
+        "K-1": "Focus on high-frequency concrete words with visual support",
+        "2-3": "Academic vocabulary introduction with context clues",
+        "4-5": "Complex academic terms with morphological analysis",
+        "6-8": "Specialized content vocabulary with etymology",
+        "9-12": "Sophisticated academic register and nuanced meanings"
+      }
+    },
+    "bilingual_word_walls": {
+      "wida_alignment": {
+        "key_language_uses": ["Inform", "Narrate"],
+        "primary_dimension": "word_phrase",
+        "assessment_modes": ["interpretive", "interpersonal", "presentational"]
+      },
+      "proficiency_adaptations": {
+        "levels_1_2": {
+          "implementation": "Picture-heavy word cards with L1-L2 pairs, color coding for categories, interactive pointing games",
+          "scaffolds": ["Visual representations", "Color coding", "Physical interaction"],
+          "language_functions": ["Identify", "Name", "Categorize"],
+          "assessment": "Word recognition, category sorting, basic usage"
+        },
+        "levels_3_4": {
+          "implementation": "Interactive word wall games, student-created cards, morphology highlighting, sentence frame integration",
+          "scaffolds": ["Morphology markers", "Example sentences", "Student contributions"],
+          "language_functions": ["Use in sentences", "Explain relationships", "Create examples"],
+          "assessment": "Sentence creation, word relationship explanations"
+        },
+        "levels_5_6": {
+          "implementation": "Student-led vocabulary instruction, etymology displays, academic register distinctions, cross-curricular connections",
+          "scaffolds": ["Register markers", "Cross-curricular links", "Student leadership"],
+          "language_functions": ["Teach others", "Analyze word relationships", "Make connections"],
+          "assessment": "Vocabulary instruction leadership, complex usage demonstrations"
+        }
+      },
+      "grade_cluster_considerations": {
+        "K-1": "Basic nouns and verbs with pictures, alphabet organization",
+        "2-3": "Theme-based organization, simple academic vocabulary",
+        "4-5": "Content-specific academic terms, morphological patterns",
+        "6-8": "Sophisticated academic vocabulary, cross-curricular connections",
+        "9-12": "Specialized terminology, advanced academic register"
+      }
+    },
+    "explicit_vocabulary": {
+      "wida_alignment": {
+        "key_language_uses": ["Inform", "Explain"],
+        "primary_dimension": "word_phrase",
+        "assessment_modes": ["interpretive", "presentational"]
+      },
+      "proficiency_adaptations": {
+        "levels_1_2": {
+          "implementation": "3-5 key words with visual supports, L1 cognate connections, TPR integration, repeated exposure",
+          "scaffolds": ["Visual supports", "L1 connections", "Physical responses", "Repetition"],
+          "language_functions": ["Recognize", "Repeat", "Match"],
+          "assessment": "Word recognition, simple matching, gesture responses"
+        },
+        "levels_3_4": {
+          "implementation": "Academic vocabulary pre-teaching with graphic organizers, word analysis, context practice",
+          "scaffolds": ["Graphic organizers", "Word analysis", "Context examples"],
+          "language_functions": ["Define", "Use in context", "Explain meaning"],
+          "assessment": "Definition provision, contextual usage, explanation tasks"
+        },
+        "levels_5_6": {
+          "implementation": "Complex vocabulary instruction with nuanced meanings, register awareness, etymology connections",
+          "scaffolds": ["Nuanced meaning exploration", "Register analysis", "Etymology study"],
+          "language_functions": ["Analyze shades of meaning", "Evaluate word choice", "Connect to broader concepts"],
+          "assessment": "Sophisticated usage, register appropriateness, complex explanations"
+        }
+      }
+    },
+    "cognate_awareness": {
+      "wida_alignment": {
+        "key_language_uses": ["Explain", "Inform"],
+        "primary_dimension": "word_phrase",
+        "assessment_modes": ["interpretive", "interpersonal"]
+      },
+      "proficiency_adaptations": {
+        "levels_1_2": {
+          "implementation": "Visual cognate matching, side-by-side L1-L2 displays, pronunciation practice",
+          "scaffolds": ["Visual matching", "Pronunciation guides", "Simple patterns"],
+          "language_functions": ["Identify similarities", "Recognize patterns", "Match words"],
+          "assessment": "Cognate identification, pattern recognition"
+        },
+        "levels_3_4": {
+          "implementation": "Cognate hunting activities, false cognate awareness, morphological pattern recognition",
+          "scaffolds": ["Pattern charts", "False cognate warnings", "Morphology exploration"],
+          "language_functions": ["Hunt for cognates", "Distinguish true/false cognates", "Apply patterns"],
+          "assessment": "Cognate discovery, accurate usage, pattern application"
+        },
+        "levels_5_6": {
+          "implementation": "Etymology analysis, register variations of cognates, academic cognate networks",
+          "scaffolds": ["Etymology resources", "Register analysis", "Academic networks"],
+          "language_functions": ["Analyze word origins", "Compare registers", "Build cognate networks"],
+          "assessment": "Etymology explanations, register distinctions, network creation"
+        }
+      }
+    },
+    "graphic_organizers": {
+      "wida_alignment": {
+        "key_language_uses": ["Inform", "Explain", "Argue"],
+        "primary_dimension": "sentence",
+        "assessment_modes": ["interpretive", "presentational"]
+      },
+      "proficiency_adaptations": {
+        "levels_1_2": {
+          "implementation": "Simple templates with visual cues, L1 labeling allowed, teacher modeling with think-alouds",
+          "scaffolds": ["Simple templates", "Visual cues", "L1 support", "Teacher modeling"],
+          "language_functions": ["Sort information", "Complete templates", "Follow patterns"],
+          "assessment": "Template completion, basic categorization"
+        },
+        "levels_3_4": {
+          "implementation": "Guided completion with sentence frames, bilingual vocabulary support, peer collaboration",
+          "scaffolds": ["Sentence frames", "Bilingual vocabulary", "Peer support"],
+          "language_functions": ["Organize ideas", "Use academic language", "Collaborate effectively"],
+          "assessment": "Organized thinking, sentence frame usage, collaborative participation"
+        },
+        "levels_5_6": {
+          "implementation": "Independent creation of complex organizers, academic language integration, critical analysis support",
+          "scaffolds": ["Complex formats", "Academic language models", "Analysis frameworks"],
+          "language_functions": ["Design organizers", "Analyze relationships", "Synthesize information"],
+          "assessment": "Independent organizer creation, complex analysis, synthesis demonstration"
+        }
+      }
+    },
+    "interactive_read_alouds": {
+      "wida_alignment": {
+        "key_language_uses": ["Narrate", "Inform", "Explain"],
+        "primary_dimension": "discourse",
+        "assessment_modes": ["interpretive", "interpersonal"]
+      },
+      "proficiency_adaptations": {
+        "levels_1_2": {
+          "implementation": "Picture-rich texts, frequent pausing for comprehension, L1 discussion time, gesture responses",
+          "scaffolds": ["Picture support", "Frequent pausing", "L1 processing time", "Gesture responses"],
+          "language_functions": ["Listen for main ideas", "Respond nonverbally", "Share in L1"],
+          "assessment": "Gesture responses, picture identification, L1 comprehension checks"
+        },
+        "levels_3_4": {
+          "implementation": "Strategic stopping points, sentence frames for responses, partner discussions, vocabulary pre-teaching",
+          "scaffolds": ["Strategic pausing", "Sentence frames", "Partner support", "Vocabulary support"],
+          "language_functions": ["Predict", "Summarize", "Ask questions", "Make connections"],
+          "assessment": "Prediction accuracy, summary completion, question formation"
+        },
+        "levels_5_6": {
+          "implementation": "Complex text analysis, academic discourse modeling, critical thinking questions, independent responses",
+          "scaffolds": ["Analysis frameworks", "Academic discourse models", "Critical thinking prompts"],
+          "language_functions": ["Analyze themes", "Evaluate arguments", "Synthesize ideas"],
+          "assessment": "Complex analysis, academic discourse, independent critical responses"
+        }
+      }
+    },
+    "translanguaging": {
+      "wida_alignment": {
+        "key_language_uses": ["All four KLUs"],
+        "primary_dimension": "discourse",
+        "assessment_modes": ["interpersonal", "presentational"]
+      },
+      "proficiency_adaptations": {
+        "levels_1_2": {
+          "implementation": "Heavy L1 support for comprehension, visual bridging to English, peer translation assistance",
+          "scaffolds": ["L1 comprehension support", "Visual bridges", "Peer translation"],
+          "language_functions": ["Understand through L1", "Bridge to English", "Support peers"],
+          "assessment": "Comprehension demonstration, basic English output with L1 support"
+        },
+        "levels_3_4": {
+          "implementation": "Strategic L1 use for complex concepts, bilingual brainstorming, structured bridging activities",
+          "scaffolds": ["Strategic L1 use", "Bilingual brainstorming", "Bridging structures"],
+          "language_functions": ["Process complex ideas", "Brainstorm bilingually", "Bridge strategically"],
+          "assessment": "Complex idea processing, strategic language use, bridging demonstration"
+        },
+        "levels_5_6": {
+          "implementation": "Sophisticated translanguaging for academic purposes, metalinguistic awareness development, register flexibility",
+          "scaffolds": ["Academic translanguaging", "Metalinguistic awareness", "Register flexibility"],
+          "language_functions": ["Use languages strategically", "Analyze language choices", "Adapt register"],
+          "assessment": "Strategic language use, metalinguistic analysis, register adaptation"
+        }
+      }
+    },
+    "siop": {
+      "wida_alignment": {
+        "key_language_uses": ["All four KLUs"],
+        "primary_dimension": "discourse",
+        "assessment_modes": ["interpretive", "interpersonal", "presentational"]
+      },
+      "proficiency_adaptations": {
+        "levels_1_2": {
+          "implementation": "Heavy visual and hands-on supports, simplified language objectives, frequent comprehension checks",
+          "scaffolds": ["Visual supports", "Hands-on activities", "Simplified objectives", "Frequent checks"],
+          "language_functions": ["Understand with support", "Participate with scaffolds", "Respond simply"],
+          "assessment": "Supported comprehension, scaffolded participation"
+        },
+        "levels_3_4": {
+          "implementation": "Structured interaction opportunities, academic language scaffolds, graphic organizer support",
+          "scaffolds": ["Structured interaction", "Academic scaffolds", "Graphic organizers"],
+          "language_functions": ["Interact academically", "Use academic language", "Organize thinking"],
+          "assessment": "Academic interaction, structured language use"
+        },
+        "levels_5_6": {
+          "implementation": "Complex academic tasks, sophisticated language objectives, independent application",
+          "scaffolds": ["Complex tasks", "Sophisticated objectives", "Independent support"],
+          "language_functions": ["Engage in complex tasks", "Use sophisticated language", "Apply independently"],
+          "assessment": "Complex task completion, sophisticated language use"
+        }
+      }
+    },
+    "collaborative_learning": {
+      "wida_alignment": {
+        "key_language_uses": ["Inform", "Explain", "Argue"],
+        "primary_dimension": "sentence",
+        "assessment_modes": ["interpersonal", "presentational"]
+      },
+      "proficiency_adaptations": {
+        "levels_1_2": {
+          "implementation": "Structured partner work with visual supports, L1 discussion encouraged, simple role assignments",
+          "scaffolds": ["Partner structures", "Visual supports", "L1 discussion", "Simple roles"],
+          "language_functions": ["Work with partners", "Share ideas simply", "Take on basic roles"],
+          "assessment": "Partner participation, simple idea sharing"
+        },
+        "levels_3_4": {
+          "implementation": "Small group protocols, sentence frames for discussion, rotating leadership roles",
+          "scaffolds": ["Group protocols", "Discussion frames", "Leadership rotation"],
+          "language_functions": ["Follow protocols", "Use discussion frames", "Lead discussions"],
+          "assessment": "Protocol following, academic discussion, leadership demonstration"
+        },
+        "levels_5_6": {
+          "implementation": "Complex collaborative tasks, academic argumentation, peer teaching opportunities",
+          "scaffolds": ["Complex tasks", "Argumentation support", "Teaching opportunities"],
+          "language_functions": ["Manage complex tasks", "Argue academically", "Teach peers"],
+          "assessment": "Complex collaboration, academic argumentation, peer teaching"
+        }
+      }
+    },
+    "formative_assessment_ml": {
+      "wida_alignment": {
+        "key_language_uses": ["All four KLUs"],
+        "primary_dimension": "discourse",
+        "assessment_modes": ["interpretive", "interpersonal", "presentational"]
+      },
+      "proficiency_adaptations": {
+        "levels_1_2": {
+          "implementation": "Non-verbal response options, picture-based assessments, L1 explanation allowed",
+          "scaffolds": ["Non-verbal options", "Picture assessments", "L1 explanation"],
+          "language_functions": ["Show understanding nonverbally", "Use pictures", "Explain in L1"],
+          "assessment": "Non-verbal demonstration, picture identification, L1 explanation"
+        },
+        "levels_3_4": {
+          "implementation": "Multiple assessment modalities, sentence frame supports, peer assessment opportunities",
+          "scaffolds": ["Multiple modalities", "Sentence frames", "Peer assessment"],
+          "language_functions": ["Choose assessment mode", "Use frames", "Assess peers"],
+          "assessment": "Multi-modal demonstration, frame usage, peer assessment"
+        },
+        "levels_5_6": {
+          "implementation": "Self-assessment tools, academic language focus, complex reasoning demonstration",
+          "scaffolds": ["Self-assessment tools", "Academic language focus", "Reasoning frameworks"],
+          "language_functions": ["Self-assess accurately", "Use academic language", "Demonstrate reasoning"],
+          "assessment": "Self-assessment accuracy, academic language use, complex reasoning"
+        }
+      }
+    },
+    "culturally_responsive_pedagogy": {
+      "wida_alignment": {
+        "key_language_uses": ["Narrate", "Inform", "Explain"],
+        "primary_dimension": "discourse",
+        "assessment_modes": ["interpersonal", "presentational"]
+      },
+      "proficiency_adaptations": {
+        "levels_1_2": {
+          "implementation": "Cultural artifact sharing, family photo discussions, simple cultural comparisons with L1 support",
+          "scaffolds": ["Cultural artifacts", "Family photos", "L1 support", "Simple comparisons"],
+          "language_functions": ["Share cultural items", "Describe family", "Make simple comparisons"],
+          "assessment": "Cultural sharing, family descriptions, basic comparisons"
+        },
+        "levels_3_4": {
+          "implementation": "Structured cultural presentations, heritage language connections, community knowledge integration",
+          "scaffolds": ["Presentation structures", "Heritage connections", "Community knowledge"],
+          "language_functions": ["Present cultural topics", "Connect heritage", "Share community knowledge"],
+          "assessment": "Cultural presentations, heritage connections, knowledge sharing"
+        },
+        "levels_5_6": {
+          "implementation": "Complex cultural analysis, critical cultural discussions, academic cultural research",
+          "scaffolds": ["Analysis frameworks", "Critical discussion guides", "Research support"],
+          "language_functions": ["Analyze culture critically", "Discuss complex topics", "Research academically"],
+          "assessment": "Cultural analysis, critical discussions, academic research"
+        }
+      }
+    },
+    "funds_of_knowledge": {
+      "wida_alignment": {
+        "key_language_uses": ["Narrate", "Inform", "Explain"],
+        "primary_dimension": "discourse",
+        "assessment_modes": ["interpersonal", "presentational"]
+      },
+      "proficiency_adaptations": {
+        "levels_1_2": {
+          "implementation": "Family skill sharing with visual supports, simple community connections, L1 storytelling",
+          "scaffolds": ["Visual supports", "Community

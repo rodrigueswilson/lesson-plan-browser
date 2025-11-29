@@ -1,0 +1,9 @@
+{
+  "name": "@lessonplanner/lesson-mode",
+  "private": true,
+  "version": "1.0.0",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "description": "Shared Lesson Mode components, hooks, and utilities for desktop and tablet apps"
+}
+

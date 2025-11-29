@@ -1,0 +1,94 @@
+{
+  "timestamp": "2025-10-26T20:23:25.998353",
+  "stage": "03_before_render_slot3",
+  "data": {
+    "slot_number": 3,
+    "subject": "Science",
+    "render_type": "multi_slot",
+    "metadata_slot_number": 3,
+    "metadata_subject": "Science",
+    "hyperlink_count": 18,
+    "all_hyperlinks_have_slot": true,
+    "all_hyperlinks_have_subject": true,
+    "hyperlink_slot_distribution": {
+      "3": 18
+    },
+    "sample_hyperlinks": [
+      {
+        "text": "ELA Unit 2",
+        "source_slot": 3,
+        "source_subject": "Science"
+      },
+      {
+        "text": "ELA Unit 2",
+        "source_slot": 3,
+        "source_subject": "Science"
+      },
+      {
+        "text": "ELA Unit 2",
+        "source_slot": 3,
+        "source_subject": "Science"
+      },
+      {
+        "text": "ELA Unit 2",
+        "source_slot": 3,
+        "source_subject": "Science"
+      },
+      {
+        "text": "ELA Unit 2",
+        "source_slot": 3,
+        "source_subject": "Science"
+      },
+      {
+        "text": "2.2.2 Teacher Guide.pdf",
+        "source_slot": 3,
+        "source_subject": "Science"
+      },
+      {
+        "text": "2.2.3 Teacher Guide.pdf",
+        "source_slot": 3,
+        "source_subject": "Science"
+      },
+      {
+        "text": "2.2.3 Teacher Guide.pdf",
+        "source_slot": 3,
+        "source_subject": "Science"
+      },
+      {
+        "text": "2.2.3 Teacher Guide.pdf",
+        "source_slot": 3,
+        "source_subject": "Science"
+      },
+      {
+        "text": "2.2.6 Teacher Guide.pdf",
+        "source_slot": 3,
+        "source_subject": "Science"
+      },
+      {
+        "text": "cool down activity",
+        "source_slot": 3,
+        "source_subject": "Science"
+      },
+      {
+        "text": "cool down activity",
+        "source_slot": 3,
+        "source_subject": "Science"
+      },
+      {
+        "text": "cool down activity",
+        "source_slot": 3,
+        "source_subject": "Science"
+      },
+      {
+        "text": "cool down activity",
+        "source_slot": 3,
+        "source_subject": "Science"
+      },
+      {
+        "text": "2.2.5 Cool Down",
+        "source_slot": 3,
+        "source_subject": "Science"
+      }
+    ]
+  }
+}

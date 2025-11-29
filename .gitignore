@@ -1,5 +1,9 @@
 # Environment variables
 .env
+!lesson-plan-browser/frontend/.env
+!lesson-plan-browser/frontend/.env.android
+!lesson-plan-browser/frontend/.env.desktop
+lesson-plan-browser/frontend/.env.local
 
 # Python
 __pycache__/

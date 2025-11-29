@@ -1,0 +1,11 @@
+{
+  "timestamp": "2025-11-23T03:26:52.321284",
+  "stage": "07_hyperlink_placed",
+  "data": {
+    "text": "Slot 2 Link",
+    "slot": 2,
+    "subject": null,
+    "cell": "Tuesday_objective",
+    "confidence": 1.0
+  }
+}

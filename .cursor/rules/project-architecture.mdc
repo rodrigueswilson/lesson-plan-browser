@@ -1,0 +1,11 @@
+---
+description: Ensures all code generation strictly adheres to the project's architecture and guidelines as defined in the README.md file.
+alwaysApply: true
+---
+# Project Architecture and Guidelines
+
+- **Always** read and apply the principles from the following file:
+@file README.md
+
+- **Never** generate code that contradicts the existing architecture described in the `README.md` file.
+- If the architecture is unclear, ask for clarification before proceeding.

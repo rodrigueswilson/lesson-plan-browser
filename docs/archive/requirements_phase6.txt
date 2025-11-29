@@ -1,0 +1,24 @@
+# Phase 6 Requirements
+# FastAPI Backend
+
+# Core dependencies (from Phase 0-5)
+jsonschema>=4.17.0
+jinja2>=3.1.2
+pydantic>=2.0.0
+pydantic-settings>=2.0.0
+structlog>=23.1.0
+python-dotenv>=1.0.0
+python-docx>=0.8.11
+lxml>=3.1.0
+
+# Phase 6 additions
+fastapi>=0.104.0  # Web framework
+uvicorn[standard]>=0.24.0  # ASGI server
+sse-starlette>=1.6.5  # Server-Sent Events support
+python-multipart>=0.0.6  # Form data parsing
+httpx>=0.28.0  # HTTP client for testing
+
+# Optional but recommended
+pytest>=7.4.0  # For testing
+black>=23.0.0  # Code formatting
+flake8>=6.0.0  # Linting

@@ -1,0 +1,90 @@
+"""Test multiple tab stop positions to find perfect alignment."""
+
+from docx import Document
+from docx.shared import Inches, Pt
+from docx.enum.text import WD_TAB_ALIGNMENT
+from datetime import datetime
+from pathlib import Path
+
+# Test different tab positions
+test_positions = [5.0, 5.2, 5.4, 5.5, 5.6, 5.8, 6.0]
+
+for tab_inches in test_positions:
+    # Load fresh template for each test
+    doc = Document("input/Lesson Plan Template SY'25-26.docx")
+    
+    # Find signature table
+    signature_table = None
+    for table in doc.tables:
+        table_text = "\n".join([cell.text for row in table.rows for cell in row.cells])
+        if "Required Signatures" in table_text:
+            signature_table = table
+            break
+    
+    if not signature_table:
+        continue
+    
+    # Find Teacher Signature row
+    for row in signature_table.rows:
+        for cell in row.cells:
+            for para in cell.paragraphs:
+                para_text = para.text
+                if "Teacher Signature:" in para_text:
+                    # Get font properties
+                    original_font_size = Pt(11)
+                    original_font_name = "Times New Roman"
+                    for run in para.runs:
+                        if run.font.size:
+                            original_font_size = run.font.size
+                        if run.font.name:
+                            original_font_name = run.font.name
+                        break
+                    
+                    # Clear and rebuild with tab stop
+                    para.clear()
+                    
+                    # Add tab stop
+                    tab_position = Inches(tab_inches)
+                    para.paragraph_format.tab_stops.add_tab_stop(tab_position, WD_TAB_ALIGNMENT.LEFT)
+                    
+                    # Rebuild the paragraph
+                    teacher_run = para.add_run("Teacher Signature: ")
+                    teacher_run.font.bold = True
+                    teacher_run.font.size = original_font_size
+                    teacher_run.font.name = original_font_name
+                    
+                    # Add name
+                    name_run = para.add_run("Wilson Rodrigues")
+                    name_run.font.underline = True
+                    name_run.font.size = original_font_size
+                    name_run.font.name = original_font_name
+                    
+                    # Add TAB character
+                    tab_run = para.add_run("\t")
+                    
+                    # Add Date
+                    date_label_run = para.add_run("Date: ")
+                    date_label_run.font.bold = True
+                    date_label_run.font.size = original_font_size
+                    date_label_run.font.name = original_font_name
+                    
+                    date_value_run = para.add_run(datetime.now().strftime("%m/%d/%Y"))
+                    date_value_run.font.underline = True
+                    date_value_run.font.size = original_font_size
+                    date_value_run.font.name = original_font_name
+                    
+                    break
+    
+    # Save with descriptive name
+    output_path = f"output/test_tab_{tab_inches:.1f}in.docx"
+    Path(output_path).parent.mkdir(parents=True, exist_ok=True)
+    doc.save(output_path)
+    print(f"Created: {output_path} (tab stop at {tab_inches} inches)")
+
+print("\n" + "=" * 80)
+print("[SUCCESS] Created test files with different tab positions")
+print("=" * 80)
+print("\nOpen each file and compare to find the best alignment:")
+for tab_inches in test_positions:
+    print(f"  output/test_tab_{tab_inches:.1f}in.docx")
+print("\nLook for the file where Teacher's 'Date:' aligns with Administrator's 'Date:'")

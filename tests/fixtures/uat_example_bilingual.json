@@ -1,0 +1,108 @@
+{
+  "metadata": {
+    "teacher_name": "Ms. Santos",
+    "subject": "Social Studies - Bilingual",
+    "grade_level": "7",
+    "week_of": "2024-10-07",
+    "school_year": "2024-2025"
+  },
+  "daily_plans": {
+    "monday": {
+      "objective": "Students will analyze the causes of the American Revolution",
+      "anticipatory_set": {
+        "original_content": "KWL Chart: What do you know about the American Revolution? What do you want to learn?",
+        "bilingual_overlay": {
+          "l1_preview": "Introducción en español: ¿Qué saben sobre la Revolución Americana? Activar conocimientos previos.",
+          "translanguaging_note": "Allow students to discuss in Spanish or English. Provide key vocabulary in both languages.",
+          "cognates": ["revolución/revolution", "independencia/independence", "colonia/colony"]
+        }
+      },
+      "instructional_input": {
+        "original_content": "Lecture on causes of American Revolution: taxation without representation, Boston Tea Party, Intolerable Acts. Use timeline and primary source documents.",
+        "bilingual_overlay": {
+          "l1_support": "Provide Spanish summary of key events. Use visual timeline with labels in both languages.",
+          "vocabulary_support": "Pre-teach key terms: taxation, representation, parliament, rebellion",
+          "strategic_translation": "Translate key concepts: 'No taxation without representation' = 'No impuestos sin representación'"
+        }
+      },
+      "guided_practice": {
+        "original_content": "Small groups analyze primary source documents. Identify causes of revolution. Create cause-and-effect chart.",
+        "bilingual_overlay": {
+          "grouping_strategy": "Pair ELLs with bilingual peers. Provide sentence frames in English and Spanish.",
+          "scaffolds": "Graphic organizers with bilingual labels. Word bank in both languages.",
+          "translanguaging_encouraged": "Students may discuss in L1, present in English"
+        }
+      },
+      "independent_practice": {
+        "original_content": "Write paragraph explaining three main causes of American Revolution. Include evidence from sources.",
+        "bilingual_overlay": {
+          "differentiation": "ELL Levels 1-2: Complete sentence frames. Levels 3-4: Write with word bank. Levels 5-6: Independent writing.",
+          "l1_option": "May write first draft in Spanish, then translate key points to English",
+          "supports": "Bilingual dictionary available, sentence starters provided"
+        }
+      },
+      "assessment": {
+        "original_content": "Review paragraphs for understanding of causes. Check for evidence from sources.",
+        "bilingual_overlay": {
+          "assessment_note": "Focus on content understanding, not just language accuracy. Accept translanguaging in responses.",
+          "wida_alignment": "ELD-SS.6-8.Explain.Writing - Levels 2-5"
+        }
+      },
+      "homework": {
+        "original_content": "Read textbook pages 145-150. Complete study guide questions.",
+        "bilingual_overlay": {
+          "family_connection": "Discuss with family: What do you know about revolutions? Share in any language.",
+          "l1_support": "Spanish translation of study guide available online"
+        }
+      }
+    },
+    "wednesday": {
+      "objective": "Students will evaluate different perspectives on the American Revolution",
+      "anticipatory_set": {
+        "original_content": "Think-Pair-Share: Were the colonists justified in rebelling? Why or why not?",
+        "bilingual_overlay": {
+          "l1_preview": "Preview in Spanish: ¿Tenían razón los colonos? Discuss perspectives.",
+          "translanguaging_note": "Encourage discussion in comfortable language, then share in English"
+        }
+      },
+      "instructional_input": {
+        "original_content": "Present multiple perspectives: Patriots, Loyalists, British government, enslaved people, Native Americans. Use primary sources and historical accounts.",
+        "bilingual_overlay": {
+          "visual_supports": "Perspective chart with images and bilingual labels",
+          "vocabulary_preview": "Pre-teach: perspective, justify, loyalist, patriot, neutral",
+          "comprehension_check": "Frequent checks in Spanish for understanding"
+        }
+      },
+      "guided_practice": {
+        "original_content": "Jigsaw activity: Groups become experts on one perspective, then teach others. Create presentation.",
+        "bilingual_overlay": {
+          "strategic_grouping": "Mixed language proficiency groups. Assign roles based on strengths.",
+          "scaffolds": "Presentation templates in both languages. Visual aids encouraged.",
+          "preview_review": "Preview activity in Spanish, review key points in English"
+        }
+      },
+      "independent_practice": {
+        "original_content": "Write from perspective of one group: letter, diary entry, or speech. Explain their viewpoint with historical evidence.",
+        "bilingual_overlay": {
+          "choice_option": "Choose format based on language comfort: letter (more structured) or speech (more flexible)",
+          "l1_brainstorming": "May brainstorm and outline in Spanish",
+          "differentiation": "Sentence frames for emerging ELLs, open-ended for advanced"
+        }
+      },
+      "assessment": {
+        "original_content": "Evaluate perspective writing for historical accuracy and evidence. Check understanding of multiple viewpoints.",
+        "bilingual_overlay": {
+          "assessment_criteria": "Content understanding prioritized. Language development noted separately.",
+          "wida_alignment": "ELD-SS.6-8.Argue.Writing - Levels 3-6"
+        }
+      },
+      "homework": {
+        "original_content": "Complete perspective writing. Prepare to share with class tomorrow.",
+        "bilingual_overlay": {
+          "family_connection": "Share your perspective writing with family. Discuss: What would you have done?",
+          "support_available": "Office hours for language support"
+        }
+      }
+    }
+  }
+}

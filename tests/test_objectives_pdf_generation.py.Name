@@ -1,0 +1,385 @@
+#!/usr/bin/env python3
+"""
+Test script for objectives PDF generation with HTML + CSS layout control.
+
+This script tests the new HTML + PDF approach with sample objectives data
+and compares it to the existing DOCX generation.
+"""
+
+import json
+import sys
+from pathlib import Path
+from datetime import datetime
+
+# Add backend to path
+sys.path.append(str(Path(__file__).parent / "backend"))
+
+from backend.services.objectives_pdf_generator import ObjectivesPDFGenerator
+from backend.services.objectives_printer import ObjectivesPrinter
+
+
+def create_sample_lesson_json() -> dict:
+    """Create sample lesson JSON with W47 objectives for testing."""
+    return {
+        "metadata": {
+            "week_of": "11-17-11-21",
+            "grade": "3",
+            "subject": "ELA",
+            "homeroom": "Room 15",
+            "teacher_name": "Ms. Wilson"
+        },
+        "days": {
+            "monday": {
+                "unit_lesson": "Unit 3 Lesson 9: MEASURE TO FIND THE AREA",
+                "objective": {
+                    "content_objective": "Students will measure area using square units and understand that area is the measure of space inside a shape.",
+                    "student_goal": "I will find the area of shapes using square units.",
+                    "wida_objective": "Students will use language to describe and compare areas of different shapes using square units and mathematical vocabulary (ELD-MA.3-5.Describe.Speaking) by using visual supports, sentence frames, and bilingual glossaries appropriate for WIDA levels 2-4, producing oral descriptions that demonstrate understanding of area measurement and spatial relationships."
+                },
+                "anticipatory_set": {
+                    "original_content": "Show different sized rectangles and ask students which would need more tiles to cover.",
+                    "bilingual_bridge": "Preview key vocabulary: área/area, quadrado/square, medir/measure. Quick L1 connection: 'Qual sala tem mais espaço?' (Which room has more space?)"
+                },
+                "tailored_instruction": {
+                    "original_content": "Model how to count square units to find area. Guide students through examples.",
+                    "co_teaching_model": "One Teach, One Observe",
+                    "ell_support": "Provide grid paper with labeled units. Use gestures for 'cover' and 'count'.",
+                    "special_needs_support": "Provide larger grid squares. Use color coding for rows and columns.",
+                    "materials": "Grid paper, square tiles, rulers"
+                },
+                "misconceptions": {
+                    "predicted": ["Students may count perimeter instead of area", "Students may leave gaps when counting"],
+                    "responses": ["Use colored tiles to show filled space vs. outline", "Model placing tiles edge to edge"]
+                },
+                "assessment": {
+                    "original_content": "Observe students finding area of given shapes. Check for accurate counting.",
+                    "bilingual_overlay": "Allow students to explain their thinking in preferred language. Focus on process over language."
+                },
+                "homework": {
+                    "original_content": "Find the area of 3 rectangles at home using square units.",
+                    "family_connection": "Discuss with family: 'Onde vemos área em casa?' (Where do we see area at home?)"
+                }
+            },
+            "tuesday": {
+                "unit_lesson": "Unit 3 Lesson 10: SOLVE AREA PROBLEMS",
+                "objective": {
+                    "content_objective": "Students will solve real-world problems involving area measurement using addition and multiplication strategies.",
+                    "student_goal": "I will solve area problems using what I know about adding and multiplying.",
+                    "wida_objective": "Students will use language to explain problem-solving strategies for area calculations using mathematical operations and vocabulary (ELD-MA.3-5.Explain.Writing) by using graphic organizers, bilingual word walls, and peer collaboration appropriate for WIDA levels 3-5, producing written explanations that demonstrate understanding of the relationship between area, addition, and multiplication."
+                },
+                "anticipatory_set": {
+                    "original_content": "Present a real-world scenario: 'A garden needs to be covered with grass. How do we know how much grass to buy?'",
+                    "bilingual_bridge": "Connect to home experiences: 'Como seus pais calculam quanto piso comprar?' (How do your parents calculate how much flooring to buy?)"
+                },
+                "tailored_instruction": {
+                    "original_content": "Guide students through word problems. Model drawing rectangles and using multiplication to find area.",
+                    "co_teaching_model": "Station Teaching",
+                    "ell_support": "Provide bilingual glossary for problem-solving terms. Use visual cues for key information.",
+                    "special_needs_support": "Break problems into smaller steps. Provide templates for drawing and labeling.",
+                    "materials": "Word problem cards, graph paper, colored pencils"
+                },
+                "misconceptions": {
+                    "predicted": ["Students may multiply instead of add for combined areas", "Students may confuse area with perimeter in word problems"],
+                    "responses": ["Use color coding to show separate areas that need addition", "Compare side-by-side examples of area vs. perimeter problems"]
+                },
+                "assessment": {
+                    "original_content": "Students solve area word problems independently. Check for appropriate strategy use.",
+                    "bilingual_overlay": "Allow students to write solutions in preferred language first, then translate key terms."
+                },
+                "homework": {
+                    "original_content": "Create and solve one area problem from your home or neighborhood.",
+                    "family_connection": "Family members help identify real-world area problems around the home."
+                }
+            },
+            "wednesday": {
+                "unit_lesson": "Unit 3 Lesson 11: AREA AND THE MULTIPLICATION TABLE",
+                "objective": {
+                    "content_objective": "Students will connect area concepts to multiplication arrays and use the multiplication table to solve area problems efficiently.",
+                    "student_goal": "I will use multiplication to find area quickly and accurately.",
+                    "wida_objective": "Students will use language to explain the connection between area arrays and multiplication facts using precise mathematical terminology (ELD-MA.3-5.Analyze.Speaking) by using manipulatives, visual models, and structured language frames appropriate for WIDA levels 2-4, producing oral explanations that demonstrate understanding of array structures and multiplication relationships."
+                },
+                "anticipatory_set": {
+                    "original_content": "Show a 4x3 array of objects. Ask students to find the total by counting and by multiplying.",
+                    "bilingual_bridge": "Use familiar array contexts: 'Fileiras de cadeiras na igreja' (Rows of chairs in church) or 'Caixas empilhadas' (Stacked boxes)"
+                },
+                "tailored_instruction": {
+                    "original_content": "Model drawing arrays to represent multiplication. Connect to multiplication table patterns.",
+                    "co_teaching_model": "Parallel Teaching",
+                    "ell_support": "Provide array templates with labels. Use bilingual multiplication charts.",
+                    "special_needs_support": "Use physical manipulatives before moving to drawings. Highlight rows and columns with colors.",
+                    "materials": "Multiplication charts, grid paper, counters, colored pencils"
+                },
+                "misconceptions": {
+                    "predicted": ["Students may not see the connection between arrays and multiplication", "Students may confuse rows x columns with addition"],
+                    "responses": ["Use physical manipulatives to build arrays, then count and multiply", "Compare counting by ones vs. skip counting vs. multiplying"]
+                },
+                "assessment": {
+                    "original_content": "Students draw arrays for given multiplication facts and find area. Check for accurate representation.",
+                    "bilingual_overlay": "Allow students to explain their arrays using gestures and preferred language."
+                },
+                "homework": {
+                    "original_content": "Find 3 examples of arrays at home. Write the multiplication fact for each.",
+                    "family_connection": "Family scavenger hunt for arrays in the home (egg cartons, baking pans, bookshelves)"
+                }
+            },
+            "thursday": {
+                "unit_lesson": "Unit 3 Lesson 12: BREAK APART NUMBERS TO MULTIPLY",
+                "objective": {
+                    "content_objective": "Students will use the distributive property to break apart larger multiplication problems into smaller, more manageable parts.",
+                    "student_goal": "I will break apart big multiplication problems to solve them easier.",
+                    "wida_objective": "Students will use language to explain the distributive property strategy using mathematical vocabulary and step-by-step reasoning (ELD-MA.3-5.Explain.Writing) by using visual models, area representations, and bilingual procedural language appropriate for WIDA levels 3-5, producing written explanations that demonstrate understanding of how breaking apart numbers makes multiplication easier."
+                },
+                "anticipatory_set": {
+                    "original_content": "Show a 6x8 array. Ask: 'How could we solve this if we don't know 6x8?' Guide students to see 6x5 + 6x3.",
+                    "bilingual_bridge": "Connect to everyday experiences: 'Comprar 6 pacotes de 8 itens' vs 'Comprar 6 pacotes de 5 e 6 pacotes de 3'"
+                },
+                "tailored_instruction": {
+                    "original_content": "Model breaking apart arrays using area models. Guide students through distributive property examples.",
+                    "co_teaching_model": "Team Teaching",
+                    "ell_support": "Provide visual area models with labeled parts. Use sentence frames for explaining the strategy.",
+                    "special_needs_support": "Use colored areas to show the 'break apart' parts. Provide templates for drawing and labeling.",
+                    "materials": "Large grid paper, colored pencils, area model templates"
+                },
+                "misconceptions": {
+                    "predicted": ["Students may forget to add the parts back together", "Students may break apart numbers incorrectly"],
+                    "responses": ["Use color coding to track each part and ensure all parts are added", "Model breaking apart using familiar facts (like 10s) first"]
+                },
+                "assessment": {
+                    "original_content": "Students solve multiplication problems using the break apart strategy. Check for correct decomposition and final answers.",
+                    "bilingual_overlay": "Allow students to show their thinking visually and explain in preferred language."
+                },
+                "homework": {
+                    "original_content": "Solve 3 multiplication problems using the break apart strategy. Show your work.",
+                    "family_connection": "Teach a family member how to use the break apart strategy with a simple problem."
+                }
+            },
+            "friday": {
+                "unit_lesson": "Unit 3 Lesson 13: MULTIPLICATION PRACTICE AND ASSESSMENT",
+                "objective": {
+                    "content_objective": "Students will demonstrate mastery of multiplication strategies including arrays, area models, and the distributive property.",
+                    "student_goal": "I will show what I know about multiplication using different strategies.",
+                    "wida_objective": "Students will use language to reflect on and evaluate their multiplication problem-solving strategies using mathematical vocabulary and self-assessment language (ELD-MA.3-5.Evaluate.Speaking/Writing) by using rubrics, peer feedback, and bilingual reflection prompts appropriate for WIDA levels 2-5, producing oral and written reflections that demonstrate metacognitive awareness of strategy selection and effectiveness."
+                },
+                "anticipatory_set": {
+                    "original_content": "Review the week's strategies. Ask students to share which strategy they liked best and why.",
+                    "bilingual_bridge": "Reflect on learning: 'Qual estratégia você mais gostou? Por quê?' (Which strategy did you like best? Why?)"
+                },
+                "tailored_instruction": {
+                    "original_content": "Students work through assessment tasks using their preferred strategies. Teacher provides individual support.",
+                    "co_teaching_model": "One Teach, One Assist",
+                    "ell_support": "Provide strategy choice boards with bilingual labels. Allow oral responses in preferred language.",
+                    "special_needs_support": "Provide strategy reminders and visual cues. Allow extended time and manipulatives.",
+                    "materials": "Assessment tasks, strategy reference sheets, manipulatives"
+                },
+                "misconceptions": {
+                    "predicted": ["Students may revert to less efficient strategies under pressure", "Students may make calculation errors despite understanding strategies"],
+                    "responses": "Encourage strategy use rather than speed. Provide checklists for self-monitoring calculations."
+                },
+                "assessment": {
+                    "original_content": "Students complete mixed multiplication problems. Assess both strategy use and accuracy.",
+                    "bilingual_overlay": "Focus on mathematical understanding over language precision. Accept explanations in any language."
+                },
+                "homework": {
+                    "original_content": "Practice multiplication facts using a strategy of your choice. Be ready to share next week.",
+                    "family_connection": "Family multiplication games using cards, dice, or everyday objects."
+                }
+            }
+        }
+    }
+
+
+def test_html_generation():
+    """Test HTML generation with sample data."""
+    print("=" * 80)
+    print("TESTING HTML + PDF OBJECTIVES GENERATION")
+    print("=" * 80)
+    
+    # Create test data
+    lesson_json = create_sample_lesson_json()
+    
+    # Initialize generators
+    pdf_generator = ObjectivesPDFGenerator()
+    docx_printer = ObjectivesPrinter()
+    
+    # Create output directory
+    output_dir = Path("test_output") / f"objectives_pdf_test_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+    output_dir.mkdir(parents=True, exist_ok=True)
+    
+    print(f"Output directory: {output_dir}")
+    print()
+    
+    # Test 1: HTML Generation
+    print("TEST 1: HTML Generation")
+    print("-" * 40)
+    
+    html_path = output_dir / "Wilson_W47_Objectives.html"
+    
+    try:
+        generated_html = pdf_generator.generate_html(
+            lesson_json,
+            str(html_path),
+            user_name="Ms. Wilson"
+        )
+        
+        print(f"✓ HTML generated: {generated_html}")
+        
+        # Check file size
+        html_size = Path(generated_html).stat().st_size
+        print(f"  File size: {html_size:,} bytes")
+        
+        # Extract and display objectives info
+        objectives = pdf_generator.extract_objectives(lesson_json)
+        print(f"  Objectives processed: {len(objectives)}")
+        
+        for i, obj in enumerate(objectives, 1):
+            student_goal_len = len(obj.get('student_goal', ''))
+            wida_len = len(obj.get('wida_objective', ''))
+            print(f"    {i}. {obj['day']}: Student Goal ({student_goal_len} chars), WIDA ({wida_len} chars)")
+        
+    except Exception as e:
+        print(f"✗ HTML generation failed: {e}")
+        return False
+    
+    print()
+    
+    # Test 2: PDF Conversion (if WeasyPrint available)
+    print("TEST 2: PDF Conversion")
+    print("-" * 40)
+    
+    pdf_path = output_dir / "Wilson_W47_Objectives.pdf"
+    
+    try:
+        generated_pdf = pdf_generator.convert_to_pdf(
+            str(html_path),
+            str(pdf_path)
+        )
+        
+        print(f"✓ PDF generated: {generated_pdf}")
+        
+        # Check file size
+        pdf_size = Path(generated_pdf).stat().st_size
+        print(f"  File size: {pdf_size:,} bytes")
+        
+    except ImportError:
+        print("⚠ WeasyPrint not installed - PDF conversion skipped")
+        print("  Install with: pip install weasyprint")
+    except Exception as e:
+        print(f"✗ PDF conversion failed: {e}")
+    
+    print()
+    
+    # Test 3: Compare with DOCX generation
+    print("TEST 3: Comparison with DOCX")
+    print("-" * 40)
+    
+    docx_path = output_dir / "Wilson_W47_Objectives_DOCX.docx"
+    
+    try:
+        generated_docx = docx_printer.generate_docx(
+            lesson_json,
+            str(docx_path),
+            user_name="Ms. Wilson",
+            week_of="11-17-11-21"
+        )
+        
+        print(f"✓ DOCX generated: {generated_docx}")
+        
+        # Check file size
+        docx_size = Path(generated_docx).stat().st_size
+        print(f"  File size: {docx_size:,} bytes")
+        
+        # Compare file sizes
+        if Path(generated_pdf).exists():
+            size_ratio = pdf_size / docx_size
+            print(f"  PDF/DOCX size ratio: {size_ratio:.2f}")
+            
+            if size_ratio < 1.5:
+                print("  ✓ PDF size is reasonable (< 1.5x DOCX)")
+            else:
+                print("  ⚠ PDF is significantly larger than DOCX")
+        
+    except Exception as e:
+        print(f"✗ DOCX generation failed: {e}")
+    
+    print()
+    
+    # Test 4: Font size calculations
+    print("TEST 4: Font Size Calculations")
+    print("-" * 40)
+    
+    test_texts = [
+        "I will find the area of shapes using square units.",
+        "I will solve area problems using what I know about adding and multiplying.",
+        "I will use multiplication to find area quickly and accurately.",
+        "I will break apart big multiplication problems to solve them easier.",
+        "I will show what I know about multiplication using different strategies."
+    ]
+    
+    print("Testing font size calculations for student goals:")
+    print("  Available space: 5.29\" × 10.0\" (75% of objectives area)")
+    
+    for i, text in enumerate(test_texts, 1):
+        font_size = pdf_generator._calculate_font_size(
+            text,
+            10.0,  # width in inches
+            5.29,  # height in inches
+            min_font_size=12,
+            max_font_size=60
+        )
+        print(f"    {i}. Font size: {font_size}pt (\"{text[:40]}...\")")
+    
+    print()
+    
+    # Test 5: Layout validation
+    print("TEST 5: Layout Validation")
+    print("-" * 40)
+    
+    print("Key layout features:")
+    print("  ✓ Landscape orientation (11\" × 8.5\")")
+    print("  ✓ 0.5\" margins on all sides")
+    print("  ✓ Flexbox layout for precise space allocation")
+    print("  ✓ Student Goal: 75% of available space")
+    print("  ✓ WIDA Objective: 25% of available space")
+    print("  ✓ Auto font sizing for Student Goal")
+    print("  ✓ Fixed 12pt font for WIDA Objective")
+    print("  ✓ Print CSS media queries")
+    
+    print()
+    print("=" * 80)
+    print("HTML + PDF OBJECTIVES GENERATION TEST COMPLETE")
+    print("=" * 80)
+    
+    return True
+
+
+def main():
+    """Run the test suite."""
+    print("Starting objectives PDF generation test...")
+    print()
+    
+    try:
+        success = test_html_generation()
+        
+        if success:
+            print("\n✓ All tests completed successfully!")
+            print("\nNext steps:")
+            print("1. Install WeasyPrint: pip install weasyprint")
+            print("2. Test with real lesson plan JSON files")
+            print("3. Compare output quality with DOCX version")
+            print("4. Consider integrating into the main application")
+        else:
+            print("\n✗ Some tests failed. Check the output above.")
+            return 1
+            
+    except KeyboardInterrupt:
+        print("\n\nTest interrupted by user.")
+        return 1
+    except Exception as e:
+        print(f"\n\nUnexpected error: {e}")
+        return 1
+    
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

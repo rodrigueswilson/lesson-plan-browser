@@ -1,0 +1,90 @@
+{
+  "metadata": {
+    "week_of": "10/6-10/10",
+    "grade": "7",
+    "subject": "Social Studies"
+  },
+  "days": {
+    "monday": {
+      "unit_lesson": "U1",
+      "objective": {
+        "content_objective": "Too short",
+        "student_goal": "I",
+        "wida_objective": "Too short for WIDA objective"
+      },
+      "anticipatory_set": {
+        "original_content": "Activity",
+        "bilingual_bridge": "Too short"
+      },
+      "tailored_instruction": {
+        "original_content": "Content",
+        "co_teaching_model": {
+          "model_name": "Station Teaching",
+          "rationale": "Short",
+          "wida_context": "Short",
+          "phase_plan": [
+            {
+              "phase_name": "W",
+              "minutes": 5,
+              "bilingual_teacher_role": "Short",
+              "primary_teacher_role": "Short"
+            }
+          ],
+          "implementation_notes": ["Short"]
+        },
+        "ell_support": [
+          {
+            "strategy_id": "cognate_awareness",
+            "strategy_name": "Cog",
+            "implementation": "Short",
+            "proficiency_levels": "Levels 2-5"
+          },
+          {
+            "strategy_id": "graphic_organizers",
+            "strategy_name": "GO",
+            "implementation": "Short",
+            "proficiency_levels": "Levels 2-4"
+          },
+          {
+            "strategy_id": "sentence_frames",
+            "strategy_name": "SF",
+            "implementation": "Short",
+            "proficiency_levels": "Levels 2-3"
+          }
+        ],
+        "special_needs_support": ["Short"],
+        "materials": ["Mat"]
+      },
+      "misconceptions": {
+        "original_content": "Misconception",
+        "linguistic_note": {
+          "pattern_id": "subject_pronoun_omission",
+          "note": "Short",
+          "prevention_tip": "Short"
+        }
+      },
+      "assessment": {
+        "primary_assessment": "Test",
+        "bilingual_overlay": {
+          "instrument": "Short",
+          "wida_mapping": "Explain + ELD-SS.6-8.Writing + Levels 2-5",
+          "supports_by_level": {
+            "levels_1_2": "Short",
+            "levels_3_4": "Short",
+            "levels_5_6": "Short"
+          },
+          "scoring_lens": "Short",
+          "constraints_honored": "Short"
+        }
+      },
+      "homework": {
+        "original_content": "",
+        "family_connection": "Short"
+      }
+    },
+    "tuesday": {},
+    "wednesday": {},
+    "thursday": {},
+    "friday": {}
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "timestamp": "2025-11-10T14:31:53.467727",
+  "stage": "01_parser_slot6",
+  "data": {
+    "slot_number": 6,
+    "subject": "ELA",
+    "source_file": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W46\\11_10-11_14 Davies Lesson Plans.docx",
+    "hyperlink_count": 6,
+    "hyperlinks": [
+      {
+        "text": "Vocabulary Knowledge Rating Scale",
+        "url": "https://docs.google.com/document/d/1Ih9Y33ckPJYFj486qbIpvs2c3Fjz_6o85My6Kw3xjP8/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "activity",
+        "url": "https://docs.google.com/presentation/d/1t6_fueJtuhaW_8twpuQOmapOP1SEfm7--YT0-K3KZ3c/edit#slide=id.g2",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Map and 10 Questions",
+        "url": "https://docs.google.com/document/u/0/d/1MZhfjBDb9jPFz7QfS2cHQ_jgSGnQOEBy8h7dBbvyj84/edit",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "activity",
+        "url": "https://docs.google.com/presentation/d/1R1osWTjkUzgzqQ4Q2naAhwt70d0WDJM8vPyXYNe7l_c/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "A is for Arrowhead",
+        "url": "https://docs.google.com/document/d/1--A_zmY3W49dYzI8-ay64p9Ayt_wI_-YXBzsqDXtUrk/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "3-2-1 Response Chart",
+        "url": "https://docs.google.com/document/d/17G4xIhQP7pcOvlnej3iN6yopYxdgdGMXQd3VghazLv8/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      }
+    ]
+  }
+}

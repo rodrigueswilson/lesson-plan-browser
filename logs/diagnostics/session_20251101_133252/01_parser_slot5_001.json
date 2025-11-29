@@ -1,0 +1,28 @@
+{
+  "timestamp": "2025-11-01T13:32:52.533997",
+  "stage": "01_parser_slot5",
+  "data": {
+    "slot_number": 5,
+    "subject": "Math",
+    "source_file": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W45\\Davies 11_3_25 Math Unit 2 Lesson 11 Lesson Plan.docx",
+    "hyperlink_count": 2,
+    "hyperlinks": [
+      {
+        "text": "SGMI Rotations",
+        "url": "https://drive.google.com/file/d/18bxlLYuIZj3YXnzYmhHRXZ7hCAzyhh6X/view?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Area Review: Unit 2 Lessons 1-5",
+        "url": "https://docs.google.com/document/d/1BHISLXyOEyaoOXimAMUEVGy7Lshq3IhmeoM0Ind0V4M/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      }
+    ]
+  }
+}

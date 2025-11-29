@@ -1,0 +1,83 @@
+TIMER COUNTDOWN ISSUE - FIX PROMPT
+====================================
+
+PROBLEM: The lesson timer in the Android tablet app does not count down. When "Play" is pressed, the timer remains frozen and does not decrement.
+
+EXPECTED: Timer should count down every second (15:00 → 14:59 → ... → 0:00) and auto-advance to next step.
+
+KEY FILES:
+- shared/lesson-mode/src/hooks/useLessonTimer.ts (lines 373-511) - countdown interval logic
+- shared/lesson-mode/src/components/TimerDisplay.tsx - UI display component
+- shared/lesson-mode/src/components/LessonMode.tsx - parent component
+
+CURRENT STATE:
+The countdown useEffect creates an interval when timerState.isRunning is true:
+```
+useEffect(() => {
+  if (timerState.isRunning) {
+    if (!intervalRef.current && timerState.remainingTime > 0) {
+      intervalRef.current = setInterval(() => {
+        setTimerState(prev => {
+          if (prev.remainingTime <= 0) {
+            return { ...prev, isRunning: false };
+          }
+          const newRemaining = Math.max(0, prev.remainingTime - 1);
+          return { ...prev, remainingTime: newRemaining };
+        });
+      }, 1000);
+    }
+  } else {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+  }
+  return () => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+  };
+}, [timerState.isRunning, timerState.currentStepIndex, steps, autoAdvance, onStepComplete, onLessonComplete, advanceToStep]);
+```
+
+TimerDisplay.tsx displays remainingTime from props (no local countdown).
+
+DEBUGGING CHECKLIST:
+1. Add console.log in useEffect to verify interval is created
+2. Add console.log inside setInterval callback to verify it executes
+3. Check if intervalRef.current is being set correctly
+4. Verify timerState.isRunning is true when Play is pressed
+5. Check if setTimerState updates are being applied
+6. Verify remainingTime prop updates in TimerDisplay
+7. Test if setInterval works in Android WebView (Tauri)
+8. Check for race conditions (interval cleared immediately?)
+
+POTENTIAL ISSUES:
+- Interval not created (condition fails)
+- Interval cleared immediately (cleanup runs too early)
+- State updates not propagating (React batching?)
+- Android WebView setInterval limitations
+- Dependency array causing effect to re-run incorrectly
+
+WHAT'S BEEN TRIED:
+✓ Fixed React/TypeScript imports
+✓ Removed remainingTime from dependency array
+✓ Added condition: isRunning && remainingTime > 0
+✓ Simplified event handlers
+✓ Removed dual countdown (TimerDisplay has no interval)
+
+TESTING:
+1. Launch app → Lesson Mode → Press Play
+2. Timer should count down every second
+3. At 0:00, should auto-advance to next step
+4. Test pause/resume
+5. Test manual adjustment (drag slider)
+
+CONTEXT:
+- Tauri v2 Android app
+- React + TypeScript
+- Must work 100% offline
+- Timer uses setInterval for countdown
+- State managed in useLessonTimer hook
+

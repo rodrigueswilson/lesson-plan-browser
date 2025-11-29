@@ -1,0 +1,233 @@
+#!/usr/bin/env python3
+"""
+Test script to verify metadata retrieval in objectives PDF generation.
+
+This script checks if the metadata in the headers matches the objectives content.
+"""
+
+import json
+import sys
+from pathlib import Path
+
+# Add backend to path
+sys.path.append(str(Path(__file__).parent / "backend"))
+
+from backend.services.objectives_pdf_generator import ObjectivesPDFGenerator
+from backend.services.objectives_printer import ObjectivesPrinter
+
+
+def create_test_lesson_with_mismatched_metadata() -> dict:
+    """Create a test lesson JSON with potentially mismatched metadata."""
+    return {
+        "metadata": {
+            "week_of": "11-17-11-21",
+            "grade": "3",
+            "subject": "ELA",  # This is the overall subject
+            "homeroom": "Room 15",
+            "teacher_name": "Ms. Wilson"
+        },
+        "days": {
+            "monday": {
+                "unit_lesson": "Unit 3 Lesson 9: MEASURE TO FIND THE AREA",
+                "objective": {
+                    "content_objective": "Students will measure area using square units and understand that area is the measure of space inside a shape.",
+                    "student_goal": "I will find the area of shapes using square units.",
+                    "wida_objective": "Students will use language to describe and compare areas of different shapes using square units and mathematical vocabulary."
+                }
+            },
+            "tuesday": {
+                "unit_lesson": "Unit 3 Lesson 10: SOLVE AREA PROBLEMS",
+                "objective": {
+                    "content_objective": "Students will solve real-world problems involving area measurement using addition and multiplication strategies.",
+                    "student_goal": "I will solve area problems using what I know about adding and multiplying.",
+                    "wida_objective": "Students will use language to explain problem-solving strategies for area calculations using mathematical operations and vocabulary."
+                }
+            },
+            # Simulate a Math lesson in the same week (different subject)
+            "wednesday": {
+                "unit_lesson": "Math Chapter 5: MULTIPLICATION FACTS",
+                "objective": {
+                    "content_objective": "Students will memorize multiplication facts up to 12x12.",
+                    "student_goal": "I will memorize my multiplication facts.",
+                    "wida_objective": "Students will use mathematical language to state multiplication facts and explain patterns."
+                }
+            }
+        }
+    }
+
+
+def create_multi_slot_lesson_json() -> dict:
+    """Create a lesson JSON that simulates multi-slot consolidation."""
+    return {
+        "metadata": {
+            "week_of": "11-17-11-21",
+            "grade": "3",
+            "subject": "ELA / Math",  # Multiple subjects
+            "homeroom": "Room 15",
+            "teacher_name": "Ms. Wilson / Mr. Smith"
+        },
+        "days": {
+            "monday": {
+                "unit_lesson": "Unit 3 Lesson 9: MEASURE TO FIND THE AREA",
+                "objective": {
+                    "content_objective": "Students will measure area using square units and understand that area is the measure of space inside a shape.",
+                    "student_goal": "I will find the area of shapes using square units.",
+                    "wida_objective": "Students will use language to describe and compare areas of different shapes using square units and mathematical vocabulary."
+                }
+            },
+            "tuesday": {
+                "unit_lesson": "Math Chapter 5: MULTIPLICATION FACTS",
+                "objective": {
+                    "content_objective": "Students will memorize multiplication facts up to 12x12.",
+                    "student_goal": "I will memorize my multiplication facts.",
+                    "wida_objective": "Students will use mathematical language to state multiplication facts and explain patterns."
+                }
+            }
+        }
+    }
+
+
+def test_metadata_extraction():
+    """Test how metadata is extracted by different generators."""
+    print("=" * 80)
+    print("TESTING METADATA EXTRACTION IN OBJECTIVES GENERATORS")
+    print("=" * 80)
+    print()
+    
+    # Test 1: Simple single-subject lesson
+    print("TEST 1: Single-Subject Lesson")
+    print("-" * 40)
+    
+    lesson_json = create_test_lesson_with_mismatched_metadata()
+    
+    # Test ObjectivesPDFGenerator
+    pdf_gen = ObjectivesPDFGenerator()
+    pdf_objectives = pdf_gen.extract_objectives(lesson_json)
+    
+    print(f"ObjectivesPDFGenerator extracted {len(pdf_objectives)} objectives:")
+    for i, obj in enumerate(pdf_objectives, 1):
+        print(f"  {i}. {obj['day']}: subject='{obj['subject']}', grade='{obj['grade']}', homeroom='{obj['homeroom']}'")
+        print(f"     Unit: {obj['unit_lesson']}")
+    
+    print()
+    
+    # Test ObjectivesPrinter (slot-based)
+    printer = ObjectivesPrinter()
+    
+    # Convert to slot-based structure for testing
+    slot_lesson_json = {
+        "metadata": lesson_json["metadata"],
+        "days": {
+            "monday": {
+                "slots": [{
+                    "slot_number": 1,
+                    "subject": "Math",  # Different from metadata!
+                    "grade": "3",  # Add grade
+                    "unit_lesson": lesson_json["days"]["monday"]["unit_lesson"],
+                    "objective": lesson_json["days"]["monday"]["objective"]
+                }]
+            }
+        }
+    }
+    
+    printer_objectives = printer.extract_objectives(slot_lesson_json)
+    
+    print(f"ObjectivesPrinter extracted {len(printer_objectives)} objectives:")
+    for i, obj in enumerate(printer_objectives, 1):
+        print(f"  DEBUG: obj keys = {list(obj.keys())}")
+        print(f"  {i}. {obj['day']}: subject='{obj['subject']}', slot={obj.get('slot_number', 'N/A')}")
+        print(f"     Unit: {obj['unit_lesson']}")
+    
+    print()
+    
+    # Test 2: Multi-slot consolidated lesson
+    print("TEST 2: Multi-Slot Consolidated Lesson")
+    print("-" * 40)
+    
+    multi_slot_json = create_multi_slot_lesson_json()
+    pdf_objectives_2 = pdf_gen.extract_objectives(multi_slot_json)
+    
+    print(f"ObjectivesPDFGenerator extracted {len(pdf_objectives_2)} objectives:")
+    for i, obj in enumerate(pdf_objectives_2, 1):
+        print(f"  {i}. {obj['day']}: subject='{obj['subject']}', grade='{obj['grade']}")
+        print(f"     Unit: {obj['unit_lesson']}")
+    
+    print()
+    
+    # Test 3: Demonstrate the mismatch problem
+    print("TEST 3: Demonstrating the Mismatch Problem")
+    print("-" * 40)
+    
+    # Show where each generator gets its metadata
+    print("ObjectivesPDFGenerator metadata source:")
+    print("  - Uses lesson_json['metadata'] directly")
+    print("  - subject = metadata.get('subject', 'Unknown')")
+    print("  - grade = metadata.get('grade', 'Unknown')")
+    print("  - homeroom = metadata.get('homeroom', 'Unknown')")
+    print()
+    
+    print("ObjectivesPrinter metadata source:")
+    print("  - Uses lesson_json['metadata'] for base values")
+    print("  - But overrides subject from slot data: slot.get('subject', subject)")
+    print("  - This can cause mismatches!")
+    print()
+    
+    print("Problem Scenario:")
+    print("  1. Metadata says subject='ELA'")
+    print("  2. But Monday's slot has subject='Math'")
+    print("  3. ObjectivesPrinter uses 'Math' (from slot)")
+    print("  4. ObjectivesPDFGenerator uses 'ELA' (from metadata)")
+    print("  5. RESULT: Mismatch between headers and objectives!")
+    print()
+    
+    # Test 4: Show the actual HTML output
+    print("TEST 4: Sample HTML Output (showing the mismatch)")
+    print("-" * 40)
+    
+    try:
+        import tempfile
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.html', delete=False) as f:
+            temp_path = f.name
+        
+        # Generate HTML to see the actual headers
+        pdf_gen.generate_html(lesson_json, temp_path, user_name="Ms. Wilson")
+        
+        # Read and display a portion of the HTML
+        with open(temp_path, 'r') as f:
+            html_content = f.read()
+        
+        # Extract headers from HTML
+        import re
+        headers = re.findall(r'<div class="header">(.*?)</div>', html_content, re.DOTALL)
+        
+        print("Generated HTML headers:")
+        for i, header in enumerate(headers[:3], 1):  # Show first 3
+            print(f"  {i}. {header.strip()}")
+        
+        # Clean up
+        Path(temp_path).unlink()
+        
+    except Exception as e:
+        print(f"Could not generate HTML sample: {e}")
+    
+    print()
+    print("=" * 80)
+    print("ANALYSIS COMPLETE")
+    print("=" * 80)
+    print()
+    print("KEY FINDINGS:")
+    print("1. ObjectivesPDFGenerator uses only metadata for headers")
+    print("2. ObjectivesPrinter can override metadata with slot data")
+    print("3. In multi-slot lessons, metadata may show 'ELA / Math'")
+    print("4. But individual days might be specific subjects")
+    print("5. This causes headers to not match the actual objectives")
+    print()
+    print("RECOMMENDED FIXES:")
+    print("1. For ObjectivesPDFGenerator: Extract subject from each day's content")
+    print("2. For ObjectivesPrinter: Use metadata subject as fallback only")
+    print("3. Add validation to ensure headers match content")
+    print("4. Consider adding unit_lesson parsing to determine actual subject")
+
+
+if __name__ == "__main__":
+    test_metadata_extraction()

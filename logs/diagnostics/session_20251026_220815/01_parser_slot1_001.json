@@ -1,0 +1,76 @@
+{
+  "timestamp": "2025-10-26T22:08:15.556023",
+  "stage": "01_parser_slot1",
+  "data": {
+    "slot_number": 1,
+    "subject": "ELA",
+    "source_file": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W44\\Lang Lesson Plans 10_27_25-10_31_25.docx",
+    "hyperlink_count": 8,
+    "hyperlinks": [
+      {
+        "text": "activity",
+        "url": "https://docs.google.com/presentation/d/1t6_fueJtuhaW_8twpuQOmapOP1SEfm7--YT0-K3KZ3c/edit#slide=id.g2",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "activity",
+        "url": "https://docs.google.com/presentation/d/1t6_fueJtuhaW_8twpuQOmapOP1SEfm7--YT0-K3KZ3c/edit#slide=id.g2",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "navigation by stars",
+        "url": "https://drive.google.com/file/d/12vF_3xQEu1V1VYktmGJ-VMU8eg8xAZfp/view?usp=drive_link",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "activity",
+        "url": "https://docs.google.com/presentation/d/1t6_fueJtuhaW_8twpuQOmapOP1SEfm7--YT0-K3KZ3c/edit#slide=id.g2",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "activity",
+        "url": "https://docs.google.com/presentation/d/1t6_fueJtuhaW_8twpuQOmapOP1SEfm7--YT0-K3KZ3c/edit#slide=id.g2",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Culminating Task: Reading New Jersey Maps",
+        "url": "https://docs.google.com/document/d/1phOiHp5DVEfhpJdkcLVGLoCNDXj-of1elB3X5tGMxpo/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "activity",
+        "url": "https://docs.google.com/presentation/d/1t6_fueJtuhaW_8twpuQOmapOP1SEfm7--YT0-K3KZ3c/edit#slide=id.g2",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "video",
+        "url": "https://drive.google.com/file/d/1UdbyKuHdudZDQNCIYtETDlvBhF77Ry-m/view?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      }
+    ]
+  }
+}

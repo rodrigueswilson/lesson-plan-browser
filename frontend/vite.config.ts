@@ -12,7 +12,16 @@ export default defineConfig({
       '@lesson-api': path.resolve(__dirname, '../shared/lesson-api/src'),
       '@lesson-ui': path.resolve(__dirname, './src/components/ui'),
       '@tauri-apps/api': path.resolve(__dirname, './node_modules/@tauri-apps/api'),
+      // Force shared packages to resolve these deps from the frontend's node_modules
+      'lucide-react': path.resolve(__dirname, './node_modules/lucide-react'),
+      'react': path.resolve(__dirname, './node_modules/react'),
+      'react-dom': path.resolve(__dirname, './node_modules/react-dom'),
+      'zustand': path.resolve(__dirname, './node_modules/zustand'),
+      'clsx': path.resolve(__dirname, './node_modules/clsx'),
+      'tailwind-merge': path.resolve(__dirname, './node_modules/tailwind-merge'),
     },
+    preserveSymlinks: false,
+    dedupe: ['react', 'react-dom', 'lucide-react', 'zustand', 'clsx', 'tailwind-merge', '@tauri-apps/api'],
   },
   clearScreen: false,
   server: {
@@ -42,6 +51,9 @@ export default defineConfig({
     },
   },
   envPrefix: ['VITE_', 'TAURI_'],
+  optimizeDeps: {
+    include: ['lucide-react', 'react', 'react-dom', 'zustand', 'clsx', 'tailwind-merge', '@tauri-apps/api'],
+  },
   build: {
     target: process.env.TAURI_PLATFORM == 'windows' ? 'chrome105' : 'safari13',
     minify: !process.env.TAURI_DEBUG ? 'esbuild' : false,

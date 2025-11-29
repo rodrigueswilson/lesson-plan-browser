@@ -1,0 +1,49 @@
+{
+  "timestamp": "2025-11-02T23:06:30.964489",
+  "stage": "03_before_render_slot1",
+  "data": {
+    "slot_number": 1,
+    "subject": "ELA",
+    "render_type": "single_slot",
+    "metadata_slot_number": 1,
+    "metadata_subject": "ELA",
+    "hyperlink_count": 6,
+    "all_hyperlinks_have_slot": true,
+    "all_hyperlinks_have_subject": true,
+    "hyperlink_slot_distribution": {
+      "1": 6
+    },
+    "sample_hyperlinks": [
+      {
+        "text": "activity",
+        "source_slot": 1,
+        "source_subject": "ELA"
+      },
+      {
+        "text": "activity",
+        "source_slot": 1,
+        "source_subject": "ELA"
+      },
+      {
+        "text": "Culminating Task: Reading New Jersey Maps",
+        "source_slot": 1,
+        "source_subject": "ELA"
+      },
+      {
+        "text": "activity",
+        "source_slot": 1,
+        "source_subject": "ELA"
+      },
+      {
+        "text": "video",
+        "source_slot": 1,
+        "source_subject": "ELA"
+      },
+      {
+        "text": "Scavenger Hunt",
+        "source_slot": 1,
+        "source_subject": "ELA"
+      }
+    ]
+  }
+}

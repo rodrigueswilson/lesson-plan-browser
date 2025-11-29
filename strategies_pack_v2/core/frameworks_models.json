@@ -1,0 +1,444 @@
+{
+  "_meta": {
+    "category": "frameworks_models",
+    "description": "Comprehensive pedagogical frameworks and instructional models",
+    "schema_version": "1.7_enhanced",
+    "strategy_count": 7,
+    "last_updated": "2025-09-14",
+    "wida_aligned": true,
+    "includes_definitions": true
+  },
+  "strategies": [
+    {
+      "id": "translanguaging",
+      "strategy_name": "Translanguaging",
+      "aliases": [
+        "Flexible bilingual pedagogy"
+      ],
+      "present_in": [
+        "ChatGPT",
+        "Gemini"
+      ],
+      "evidence_tier": "research-backed",
+      "core_principle": "Invite students' full linguistic repertoire for meaning-making and expression.",
+      "applicable_contexts": [
+        "Content instruction with multilinguals",
+        "Brainstorming/drafting in L1 before English output"
+      ],
+      "implementation_steps": [
+        "Offer multilingual resources; allow L1 brainstorming/notes; peer translation tasks.",
+        "Bridge to English products with scaffolds and modeling."
+      ],
+      "primary_benefits": [
+        "Affirms identity and increases access",
+        "Develops cognitive flexibility"
+      ],
+      "research_foundation": [
+        "Ofelia García",
+        "Li Wei",
+        "Tatyana Kleyn",
+        "Nelson Flores"
+      ],
+      "cross_refs": [
+        "language_separation",
+        "collaborative_learning",
+        "the_bridge"
+      ],
+      "high_level_categories": ["Cross-Linguistic & Biliteracy", "Instructional Frameworks & Models"],
+      "primary_skill": "integrated",
+      "secondary_skills": ["speaking", "listening", "reading", "writing"],
+      "skill_weights": {
+        "speaking": 0.25,
+        "listening": 0.25,
+        "reading": 0.25,
+        "writing": 0.25
+      },
+      "delivery_modes": ["push-in", "whole-group", "small-group"],
+      "l1_modes": ["translanguaging"],
+      "is_integrated_framework": true,
+      "definitions": {
+        "short_en": "Pedagogy that allows learners to flexibly use their full linguistic repertoires (L1 and English) to learn and express meaning.",
+        "long_en": "Translanguaging is a teaching approach that legitimizes and strategically incorporates students' full linguistic repertoires into classroom learning. It allows learners to use both their L1 and English fluidly for meaning-making, collaboration, and identity expression. In practice, teachers may encourage brainstorming or drafting in L1, peer discussions in mixed languages, or bilingual word walls and resources. Students then bridge back to English for formal outputs, such as essays or presentations. This approach deepens comprehension, affirms cultural identity, and develops metalinguistic awareness. Translanguaging is not the same as random code-switching; it is purposeful, designed with clear objectives, and linked to outcomes in English. Overuse without bridging risks limiting English exposure; the key is balance and intentionality. When implemented thoughtfully, translanguaging transforms bilingualism from a challenge into a resource for learning.",
+        "look_fors": [
+          "Students using L1 resources to support English tasks",
+          "Bilingual displays and word walls in classroom",
+          "Teacher prompts bridging L1 work to English output",
+          "Peer discussions leveraging both languages"
+        ],
+        "non_examples": [
+          "Teacher translating everything directly into L1",
+          "Students using only L1 without bridging to English",
+          "No clear objective guiding multilingual use"
+        ]
+      }
+    },
+    {
+      "id": "siop",
+      "strategy_name": "SIOP (Sheltered Instruction Observation Protocol)",
+      "aliases": [
+        "Sheltered instruction"
+      ],
+      "present_in": [
+        "ChatGPT",
+        "Gemini"
+      ],
+      "evidence_tier": "research-backed",
+      "core_principle": "Deliver grade-level content with language scaffolds, interaction, and comprehensible input.",
+      "applicable_contexts": [
+        "Content classes with ELs",
+        "Mixed proficiency classrooms"
+      ],
+      "implementation_steps": [
+        "Set content + language objectives; use visuals, modeling, and interaction.",
+        "Check comprehension frequently; provide meaningful practice with feedback."
+      ],
+      "primary_benefits": [
+        "Academic achievement in content areas",
+        "Simultaneous language and content development"
+      ],
+      "research_foundation": [
+        "Jana Echevarria",
+        "Deborah Short",
+        "MaryEllen Vogt"
+      ],
+      "cross_refs": [
+        "clil",
+        "scaffolding",
+        "formative_assessment"
+      ],
+      "high_level_categories": ["Instructional Frameworks & Models"],
+      "primary_skill": "integrated",
+      "secondary_skills": ["listening", "reading", "writing", "speaking"],
+      "skill_weights": {
+        "speaking": 0.25,
+        "listening": 0.25,
+        "reading": 0.25,
+        "writing": 0.25
+      },
+      "delivery_modes": ["push-in", "whole-group", "small-group"],
+      "l1_modes": ["translanguaging", "preview-review", "strategic-code-switch"],
+      "is_integrated_framework": true,
+      "definitions": {
+        "short_en": "Research-based framework for delivering grade-level content with systematic language scaffolds and comprehensible input.",
+        "long_en": "SIOP (Sheltered Instruction Observation Protocol) is a comprehensive framework for making grade-level academic content comprehensible to English learners while developing their English language skills. The model includes eight components: lesson preparation, building background, comprehensible input, strategies, interaction, practice and application, lesson delivery, and review and assessment. Teachers set both content and language objectives, use visuals and modeling, provide structured interaction opportunities, and check comprehension frequently. SIOP emphasizes meaningful practice with immediate feedback and connects new learning to students' background knowledge. The framework ensures that English learners have access to rigorous academic content while receiving the language support they need to succeed. Implementation requires systematic planning and attention to both content mastery and language development goals.",
+        "look_fors": [
+          "Clear content and language objectives posted and reviewed",
+          "Systematic use of visuals, modeling, and hands-on activities",
+          "Structured interaction opportunities and comprehension checks",
+          "Meaningful practice with immediate feedback and review"
+        ],
+        "non_examples": [
+          "Content delivery without language objectives or scaffolds",
+          "Lecture-heavy instruction without interaction or visuals",
+          "Assessment without consideration of language proficiency levels"
+        ]
+      }
+    },
+    {
+      "id": "clil",
+      "strategy_name": "Content and Language Integrated Learning (CLIL)",
+      "aliases": [
+        "Content-Based Instruction (CBI)"
+      ],
+      "present_in": [
+        "ChatGPT",
+        "Gemini"
+      ],
+      "evidence_tier": "research-backed",
+      "core_principle": "Plan for simultaneous content objectives and language objectives with scaffolding.",
+      "applicable_contexts": [
+        "Subject-area classes",
+        "Immersion programs"
+      ],
+      "implementation_steps": [
+        "Identify content + language goals; scaffold with visuals, L1 support, and interaction.",
+        "Assess both content mastery and language growth."
+      ],
+      "primary_benefits": [
+        "Authentic language use in meaningful contexts",
+        "Efficient dual learning"
+      ],
+      "research_foundation": [
+        "Do Coyle",
+        "Philip Hood",
+        "David Marsh"
+      ],
+      "cross_refs": [
+        "SIOP",
+        "Task-Based Learning"
+      ],
+      "high_level_categories": ["Instructional Frameworks & Models", "Content & Language Integration"],
+      "primary_skill": "integrated",
+      "secondary_skills": ["listening", "reading", "writing", "speaking"],
+      "skill_weights": {
+        "speaking": 0.25,
+        "listening": 0.25,
+        "reading": 0.25,
+        "writing": 0.25
+      },
+      "delivery_modes": ["push-in", "whole-group", "small-group"],
+      "l1_modes": ["translanguaging", "preview-review"],
+      "is_integrated_framework": true,
+      "definitions": {
+        "short_en": "Educational approach that integrates content learning with language development through meaningful, contextualized instruction.",
+        "long_en": "Content and Language Integrated Learning (CLIL) is an educational approach where subjects are taught through a foreign or second language, with dual objectives of content mastery and language development. The framework emphasizes authentic language use in meaningful academic contexts, where students learn language through content rather than studying language in isolation. CLIL lessons integrate the 4Cs: Content (subject matter), Communication (language skills), Cognition (thinking skills), and Culture (awareness and understanding). Teachers plan lessons with explicit content and language objectives, using scaffolding techniques such as visuals, graphic organizers, and L1 support when appropriate. Assessment addresses both content knowledge and language proficiency growth. This approach is particularly effective because it provides natural, purposeful contexts for language use while maintaining academic rigor in content areas.",
+        "look_fors": [
+          "Explicit content and language objectives in lesson planning",
+          "Authentic use of academic language in content contexts",
+          "Integration of the 4Cs: Content, Communication, Cognition, Culture",
+          "Assessment of both content mastery and language development"
+        ],
+        "non_examples": [
+          "Teaching content and language as separate, unconnected subjects",
+          "Focus only on content without attention to language development",
+          "Language instruction without meaningful content contexts"
+        ]
+      }
+    },
+    {
+      "id": "calla",
+      "strategy_name": "CALLA (Cognitive Academic Language Learning Approach)",
+      "aliases": [
+        "Strategy-based instruction"
+      ],
+      "present_in": [
+        "ChatGPT"
+      ],
+      "evidence_tier": "research-backed",
+      "core_principle": "Teach learning strategies (metacognitive, cognitive, social) alongside content.",
+      "applicable_contexts": [
+        "Upper-elementary and secondary content classes",
+        "Lessons requiring complex texts/problem solving"
+      ],
+      "implementation_steps": [
+        "Set content + strategy goals; model with think-alouds.",
+        "Guide practice (e.g., summarizing, graphic organizers) and reflect on transfer."
+      ],
+      "primary_benefits": [
+        "Builds metacognition and academic language",
+        "Increases learner autonomy"
+      ],
+      "research_foundation": [
+        "Anna Uhl Chamot",
+        "J. Michael O'Malley"
+      ],
+      "cross_refs": [
+        "siop",
+        "metacognitive_strategies"
+      ],
+      "high_level_categories": ["Instructional Frameworks & Models", "Assessment & Scaffolding"],
+      "primary_skill": "integrated",
+      "secondary_skills": ["speaking", "listening", "reading", "writing"],
+      "skill_weights": {
+        "speaking": 0.25,
+        "listening": 0.25,
+        "reading": 0.25,
+        "writing": 0.25
+      },
+      "delivery_modes": ["push-in", "whole-group", "small-group"],
+      "l1_modes": ["translanguaging", "preview-review", "strategic-code-switch"],
+      "is_integrated_framework": true,
+      "definitions": {
+        "short_en": "Framework that explicitly teaches learning strategies alongside academic content to develop both language and cognitive skills.",
+        "long_en": "CALLA (Cognitive Academic Language Learning Approach) is an instructional framework that explicitly teaches learning strategies alongside academic content to help students develop both language proficiency and cognitive academic skills. The model focuses on three types of strategies: metacognitive (planning, monitoring, evaluating), cognitive (note-taking, summarizing, inferencing), and social/affective (cooperation, questioning for clarification). Teachers model strategy use through think-alouds, provide guided practice opportunities, and help students reflect on strategy effectiveness and transfer. CALLA lessons integrate content objectives with strategy objectives, ensuring that students not only learn subject matter but also develop the tools for independent learning. This approach is particularly effective for intermediate and advanced English learners who need to develop academic language and study skills for success in content area classes.",
+        "look_fors": [
+          "Explicit strategy instruction integrated with content learning",
+          "Teacher modeling of metacognitive, cognitive, and social strategies",
+          "Student reflection on strategy use and effectiveness",
+          "Transfer of strategies across different content areas and contexts"
+        ],
+        "non_examples": [
+          "Teaching strategies in isolation without content connection",
+          "Assuming students will naturally develop learning strategies",
+          "Focus only on content without attention to learning processes"
+        ]
+      }
+    },
+    {
+      "id": "differentiated_instruction",
+      "strategy_name": "Differentiated Instruction",
+      "aliases": [
+        "Flexible grouping & tasks"
+      ],
+      "present_in": [
+        "Gemini"
+      ],
+      "evidence_tier": "practice-based/mixed",
+      "core_principle": "Adjust content, process, and product based on proficiency, interests, and readiness.",
+      "applicable_contexts": [
+        "Classes with wide proficiency ranges",
+        "Universal access to grade-level content"
+      ],
+      "implementation_steps": [
+        "Use formative data to group; provide multiple pathways/materials.",
+        "Integrate scaffolds, translanguaging, and varied outputs."
+      ],
+      "primary_benefits": [
+        "Equity of access",
+        "Higher engagement and belonging"
+      ],
+      "research_foundation": [
+        "Carol Ann Tomlinson",
+        "Diane August"
+      ],
+      "cross_refs": [
+        "formative_assessment",
+        "scaffolding"
+      ],
+      "high_level_categories": ["Instructional Frameworks & Models", "Assessment & Scaffolding"],
+      "primary_skill": "integrated",
+      "secondary_skills": ["listening", "reading", "writing", "speaking"],
+      "skill_weights": {
+        "speaking": 0.25,
+        "listening": 0.25,
+        "reading": 0.25,
+        "writing": 0.25
+      },
+      "delivery_modes": ["push-in", "whole-group", "small-group", "individual"],
+      "l1_modes": ["translanguaging", "preview-review"],
+      "is_integrated_framework": true,
+      "definitions": {
+        "short_en": "Instructional approach that adjusts content, process, and products based on student readiness, interests, and learning profiles.",
+        "long_en": "Differentiated Instruction is a framework for teaching that recognizes and responds to student diversity in readiness levels, interests, and learning preferences. Teachers proactively modify content (what students learn), process (how they learn), and products (how they demonstrate learning) to ensure all students can access grade-level curriculum. For multilingual learners, differentiation includes language scaffolds, culturally relevant materials, flexible grouping strategies, and varied assessment options. Teachers use ongoing formative assessment to make instructional decisions and adjust support levels. The approach emphasizes student choice and voice while maintaining high expectations for all learners. Effective differentiation for English learners integrates translanguaging opportunities, visual supports, and multiple ways to demonstrate understanding while building toward English proficiency goals.",
+        "look_fors": [
+          "Flexible grouping based on formative assessment data",
+          "Multiple pathways to access the same learning objectives",
+          "Varied materials and resources at different complexity levels",
+          "Choice in how students demonstrate their learning"
+        ],
+        "non_examples": [
+          "Same instruction and materials for all students regardless of needs",
+          "Lowered expectations or watered-down content for English learners",
+          "Permanent ability grouping without opportunities for movement"
+        ]
+      }
+    },
+    {
+      "id": "project_based_learning",
+      "strategy_name": "Project-Based Learning (PBL)",
+      "aliases": [
+        "Authentic inquiry projects"
+      ],
+      "present_in": [
+        "v1.4 enhancement"
+      ],
+      "evidence_tier": "research-backed",
+      "core_principle": "Engage students in authentic, extended projects that integrate content learning with real-world problem solving.",
+      "applicable_contexts": [
+        "Interdisciplinary units",
+        "Community-connected learning",
+        "Extended inquiry projects"
+      ],
+      "implementation_steps": [
+        "Design authentic driving questions connected to standards.",
+        "Provide scaffolds for research, collaboration, and presentation.",
+        "Include multiple checkpoints and peer feedback opportunities."
+      ],
+      "primary_benefits": [
+        "Develops 21st century skills and deep content knowledge",
+        "Provides authentic contexts for language use"
+      ],
+      "research_foundation": [
+        "John Dewey",
+        "William Kilpatrick",
+        "Buck Institute for Education"
+      ],
+      "cross_refs": [
+        "collaborative_learning",
+        "authentic_assessment",
+        "inquiry_based_learning"
+      ],
+      "high_level_categories": ["Instructional Frameworks & Models", "Social & Interactive Learning"],
+      "primary_skill": "integrated",
+      "secondary_skills": ["speaking", "writing", "reading", "listening"],
+      "skill_weights": {
+        "speaking": 0.3,
+        "listening": 0.2,
+        "reading": 0.2,
+        "writing": 0.3
+      },
+      "delivery_modes": ["push-in", "whole-group", "small-group"],
+      "l1_modes": ["translanguaging", "preview-review"],
+      "is_integrated_framework": true,
+      "definitions": {
+        "short_en": "Extended learning experiences where students investigate authentic problems and create meaningful products for real audiences.",
+        "long_en": "Project-Based Learning (PBL) is an instructional methodology where students learn by actively engaging in authentic, complex projects over extended periods. Students investigate driving questions, conduct research, collaborate with peers, and create products or solutions for real audiences. PBL integrates multiple content areas and develops both academic knowledge and 21st-century skills such as critical thinking, collaboration, and communication. For multilingual learners, PBL provides natural contexts for language development through meaningful interaction, research, and presentation opportunities. Teachers act as facilitators, providing scaffolds, checkpoints, and feedback throughout the process. Projects often connect to community issues or student interests, increasing engagement and relevance. Assessment is ongoing and multifaceted, including self-reflection, peer feedback, and authentic evaluation of final products.",
+        "look_fors": [
+          "Authentic driving questions connected to real-world problems",
+          "Extended timeline with multiple checkpoints and revisions",
+          "Student voice and choice in project direction and products",
+          "Collaboration, research, and presentation opportunities"
+        ],
+        "non_examples": [
+          "Short-term activities or crafts without authentic purpose",
+          "Teacher-directed projects with predetermined outcomes",
+          "Projects without connection to academic standards or real-world relevance"
+        ]
+      }
+    },
+    {
+      "id": "scaffolded_instruction",
+      "strategy_name": "Scaffolded Instruction",
+      "aliases": [
+        "Gradual release of responsibility",
+        "I do, we do, you do"
+      ],
+      "present_in": [
+        "v1.4 enhancement"
+      ],
+      "evidence_tier": "research-backed",
+      "core_principle": "Provide temporary supports that are gradually removed as students develop independence.",
+      "applicable_contexts": [
+        "New skill introduction",
+        "Complex task completion",
+        "Language development activities"
+      ],
+      "implementation_steps": [
+        "Model the skill or strategy with explicit instruction.",
+        "Provide guided practice with decreasing support.",
+        "Monitor independent practice and provide feedback."
+      ],
+      "primary_benefits": [
+        "Builds student confidence and competence",
+        "Supports successful completion of challenging tasks"
+      ],
+      "research_foundation": [
+        "Lev Vygotsky",
+        "Jerome Bruner",
+        "Pauline Gibbons"
+      ],
+      "cross_refs": [
+        "zone_of_proximal_development",
+        "gradual_release",
+        "modeling"
+      ],
+      "high_level_categories": ["Instructional Frameworks & Models", "Assessment & Scaffolding"],
+      "primary_skill": "integrated",
+      "secondary_skills": ["listening", "speaking", "reading", "writing"],
+      "skill_weights": {
+        "speaking": 0.25,
+        "listening": 0.25,
+        "reading": 0.25,
+        "writing": 0.25
+      },
+      "delivery_modes": ["push-in", "whole-group", "small-group", "individual"],
+      "l1_modes": ["translanguaging", "preview-review"],
+      "is_integrated_framework": true,
+      "definitions": {
+        "short_en": "Instructional technique that provides temporary supports which are gradually removed as students develop independence.",
+        "long_en": "Scaffolded Instruction is based on Vygotsky's concept of the Zone of Proximal Development, providing temporary supports that enable students to accomplish tasks they cannot yet complete independently. The process follows a gradual release of responsibility model: teacher modeling (I do), guided practice (we do), and independent practice (you do). Scaffolds can be procedural (step-by-step guides), strategic (thinking processes), or linguistic (sentence frames, vocabulary support). For multilingual learners, scaffolds often include visual supports, L1 connections, peer collaboration, and modified language complexity. The key is to provide just enough support for success while building toward independence. Effective scaffolding requires ongoing assessment to determine when supports can be reduced or removed. The goal is to develop autonomous learners who can transfer skills and strategies to new contexts.",
+        "look_fors": [
+          "Clear modeling and explicit instruction of new skills",
+          "Guided practice with decreasing levels of support",
+          "Multiple types of scaffolds (visual, linguistic, procedural)",
+          "Systematic removal of supports as students gain competence"
+        ],
+        "non_examples": [
+          "Providing supports indefinitely without building independence",
+          "Removing scaffolds too quickly before students are ready",
+          "One-size-fits-all supports without consideration of individual needs"
+        ]
+      }
+    }
+  ]
+}

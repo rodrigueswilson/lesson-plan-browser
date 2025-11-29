@@ -1,0 +1,3004 @@
+[
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 3,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\Lesson Plan Template.docx",
+    "rel_path": "Lesson Plan Template.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP"
+  },
+  {
+    "dimensions": "9x6",
+    "num_rows": 9,
+    "num_cols": 6,
+    "row_labels": [
+      "Day",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:",
+      "Notes:"
+    ],
+    "col_headers": [
+      "Day",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 4,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\22 W39\\01 Science Lonesky Silva Lesson Plans 9_22_25-9_26_25.docx",
+    "rel_path": "22 W39\\01 Science Lonesky Silva Lesson Plans 9_22_25-9_26_25.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP"
+  },
+  {
+    "dimensions": "9x6",
+    "num_rows": 9,
+    "num_cols": 6,
+    "row_labels": [
+      "Day",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:",
+      "Notes:"
+    ],
+    "col_headers": [
+      "Day",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 5,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\22 W39\\02 Math Laverti Silva Lesson Plans 9_22_25-9_26_25.docx",
+    "rel_path": "22 W39\\02 Math Laverti Silva Lesson Plans 9_22_25-9_26_25.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP"
+  },
+  {
+    "dimensions": "13x6",
+    "num_rows": 13,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Essential Question",
+      "Enduring Understanding",
+      "Learning Objectives",
+      "Objective:",
+      "Vocabulary",
+      "Anticipatory Set",
+      "Tailored Instruction",
+      "Anticipated Misconceptions",
+      "Assessment",
+      "Homework",
+      "Notes"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY 9/22",
+      "TUESDAY 9/23",
+      "WEDNESDAY 9/24",
+      "THURSDAY 9/25",
+      "FRIDAY 9/26"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 4,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\22 W39\\03 ELA Piret Silva Lesson Plans 9_22_25-9_26_25.docx",
+    "rel_path": "22 W39\\03 ELA Piret Silva Lesson Plans 9_22_25-9_26_25.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "Day",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "Day",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 3,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\22 W39\\04 Social Sci Lonesky Silva Lesson Plans 9_22_25-9_26_25.docx",
+    "rel_path": "22 W39\\04 Social Sci Lonesky Silva Lesson Plans 9_22_25-9_26_25.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP"
+  },
+  {
+    "dimensions": "4x6",
+    "num_rows": 4,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 5,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\22 W39\\05 ELA SS Morais Silva Lesson Plans 9_22_25-9_26_25.docx",
+    "rel_path": "22 W39\\05 ELA SS Morais Silva Lesson Plans 9_22_25-9_26_25.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 3,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\22 W39\\Laverty Lesson Plan 9_22-9_26.docx",
+    "rel_path": "22 W39\\Laverty Lesson Plan 9_22-9_26.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 6,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\22 W39\\Lonesky Week 4 Lesson Plans SY 25_26.docx",
+    "rel_path": "22 W39\\Lonesky Week 4 Lesson Plans SY 25_26.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 9,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\22 W39\\Morais ELA SS 9_22_25 - 9_26_25.docx",
+    "rel_path": "22 W39\\Morais ELA SS 9_22_25 - 9_26_25.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP"
+  },
+  {
+    "dimensions": "13x6",
+    "num_rows": 13,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:\n05 - Fifth Grade Unit Description and Summary of Key Learning",
+      "Essential Question",
+      "Enduring \nUnderstanding",
+      "Learning Objectives",
+      "Vocabulary",
+      "Anticipatory Set",
+      "Instructional Procedure",
+      "Daily \nInstructional Task",
+      "Differentiation",
+      "Anticipated Misconceptions",
+      "Assessment",
+      "Homework"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY 9/22",
+      "TUESDAY 9/23",
+      "WEDNESDAY 9/24",
+      "THURSDAY 9/25",
+      "FRIDAY 9/26"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 3,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\22 W39\\Piret Lesson Plans 9_22_25-9_26_25.docx",
+    "rel_path": "22 W39\\Piret Lesson Plans 9_22_25-9_26_25.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP"
+  },
+  {
+    "dimensions": "9x6",
+    "num_rows": 9,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:",
+      "Notes:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 11,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\22 W39\\Silva Lesson Plans 9_22_25-9_26_25.docx",
+    "rel_path": "22 W39\\Silva Lesson Plans 9_22_25-9_26_25.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 3,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\25 W38\\Laverty 9_15_25 - 9_19_25.docx",
+    "rel_path": "25 W38\\Laverty 9_15_25 - 9_19_25.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 6,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\25 W38\\Lonesky Week 3 Lesson Plans SY 25_26.docx",
+    "rel_path": "25 W38\\Lonesky Week 3 Lesson Plans SY 25_26.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 9,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\25 W38\\Morais 9_15_25 - 9_19_25.docx",
+    "rel_path": "25 W38\\Morais 9_15_25 - 9_19_25.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP"
+  },
+  {
+    "dimensions": "14x6",
+    "num_rows": 14,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "MAP Testing",
+      "Unit, Lesson #, Module:\n05 - Fifth Grade Unit Description and Summary of Key Learning",
+      "Essential Question",
+      "Enduring \nUnderstanding",
+      "Learning Objectives",
+      "Vocabulary",
+      "Anticipatory Set",
+      "Instructional Procedure",
+      "Daily \nInstructional Task",
+      "Differentiation",
+      "Anticipated Misconceptions",
+      "Assessment",
+      "Homework"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY 9/15",
+      "TUESDAY 9/16",
+      "WEDNESDAY 9/17",
+      "THURSDAY 9/18",
+      "FRIDAY 9/19"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 3,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\25 W38\\Piret Lesson Plans 9_15_25-9_19_25.docx",
+    "rel_path": "25 W38\\Piret Lesson Plans 9_15_25-9_19_25.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP"
+  },
+  {
+    "dimensions": "10x6",
+    "num_rows": 10,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Bilingual Language Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:",
+      "Notes:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 11,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\25 W38\\Silva 9_15_25 - 9_19_25 With comments.docx",
+    "rel_path": "25 W38\\Silva 9_15_25 - 9_19_25 With comments.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP"
+  },
+  {
+    "dimensions": "9x6",
+    "num_rows": 9,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Bilingual Language Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 11,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\25 W38\\Silva 9_15_25 - 9_19_25.docx",
+    "rel_path": "25 W38\\Silva 9_15_25 - 9_19_25.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 3,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\25 W40\\Lesson Plan Template.docx",
+    "rel_path": "25 W40\\Lesson Plan Template.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 6,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\25 W40\\Lonesky Week 5 Lesson Plans SY 25_26.docx",
+    "rel_path": "25 W40\\Lonesky Week 5 Lesson Plans SY 25_26.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconceptions:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 6,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\25 W40\\Name_ Ariel Coleman 9-29.docx",
+    "rel_path": "25 W40\\Name_ Ariel Coleman 9-29.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP"
+  },
+  {
+    "dimensions": "13x6",
+    "num_rows": 13,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:\n05 - Fifth Grade Unit Description and Summary of Key Learning",
+      "Essential Question",
+      "Enduring \nUnderstanding",
+      "Learning Objectives",
+      "Vocabulary",
+      "Anticipatory Set",
+      "Instructional Procedure",
+      "Daily \nInstructional Task",
+      "Differentiation",
+      "Anticipated Misconceptions",
+      "Assessment",
+      "Homework"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY 9/29",
+      "TUESDAY 9/30",
+      "WEDNESDAY 10/1",
+      "THURSDAY 10/2",
+      "FRIDAY 10/3"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 3,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\25 W40\\Piret Lesson Plans 9_29_25-10_3_25.docx",
+    "rel_path": "25 W40\\Piret Lesson Plans 9_29_25-10_3_25.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconceptions:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 11,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\25 W40\\Silva Lesson Plans 09_29_25 __ 10_03_25.docx",
+    "rel_path": "25 W40\\Silva Lesson Plans 09_29_25 __ 10_03_25.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 2,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\25 W40\\_Brooke Laverty - SY'25-26_ week of 9_29.docx",
+    "rel_path": "25 W40\\_Brooke Laverty - SY'25-26_ week of 9_29.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 3,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\25 W41\\Daniela Silva W41 Lesson Plan.docx",
+    "rel_path": "25 W41\\Daniela Silva W41 Lesson Plan.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 4,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\25 W42\\Daniela_Silva_Lesson_plan_W01_10-14-10-18_20251019_010407.docx",
+    "rel_path": "25 W42\\Daniela_Silva_Lesson_plan_W01_10-14-10-18_20251019_010407.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 4,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\25 W42\\Daniela_Silva_Lesson_plan_W01_10-14-10-18_20251019_010455.docx",
+    "rel_path": "25 W42\\Daniela_Silva_Lesson_plan_W01_10-14-10-18_20251019_010455.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 4,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\25 W42\\Daniela_Silva_Lesson_plan_W01_10-14-10-18_20251019_010631.docx",
+    "rel_path": "25 W42\\Daniela_Silva_Lesson_plan_W01_10-14-10-18_20251019_010631.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 4,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\25 W42\\Daniela_Silva_Lesson_plan_W01_10-14-10-18_20251019_010913.docx",
+    "rel_path": "25 W42\\Daniela_Silva_Lesson_plan_W01_10-14-10-18_20251019_010913.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 11,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\25 W42\\Daniela_Silva_Weekly_W01_10-13-10-17.docx",
+    "rel_path": "25 W42\\Daniela_Silva_Weekly_W01_10-13-10-17.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 9,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\25 W42\\Morais 10_13_25 - 10_17_25.docx",
+    "rel_path": "25 W42\\Morais 10_13_25 - 10_17_25.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 3,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\25 W42\\Mrs. Grande Science 10_13- 10_17.docx",
+    "rel_path": "25 W42\\Mrs. Grande Science 10_13- 10_17.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 3,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\25 W42\\_ T. Santiago SS Plans 10_14-10_18.docx",
+    "rel_path": "25 W42\\_ T. Santiago SS Plans 10_14-10_18.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP"
+  },
+  {
+    "status": "no_daily_table",
+    "total_tables": 1,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\33 Strategies organized by 6 categories.docx",
+    "rel_path": "33 Strategies organized by 6 categories.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "status": "no_daily_table",
+    "total_tables": 1,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\33 Strategies organized by 6 categories_small.docx",
+    "rel_path": "33 Strategies organized by 6 categories_small.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "status": "no_daily_table",
+    "total_tables": 0,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\bilingual_strategies_dictionary copy.docx",
+    "rel_path": "bilingual_strategies_dictionary copy.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "status": "no_daily_table",
+    "total_tables": 0,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\bilingual_strategies_dictionary.docx",
+    "rel_path": "bilingual_strategies_dictionary.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 3,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\Lesson Plan Template.docx",
+    "rel_path": "Lesson Plan Template.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 9,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W36\\9_2-9_5 Davies Lesson Plans .docx",
+    "rel_path": "25 W36\\9_2-9_5 Davies Lesson Plans .docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 9,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W36\\9_2-9_5 Rodrigues Lesson Plans  - Copy.docx",
+    "rel_path": "25 W36\\9_2-9_5 Rodrigues Lesson Plans  - Copy.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 9,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W36\\9_2-9_5 Rodrigues Lesson Plans.docx",
+    "rel_path": "25 W36\\9_2-9_5 Rodrigues Lesson Plans.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 6,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W37\\a Lesson Plans 9_8_25-9_12_25.docx",
+    "rel_path": "25 W37\\a Lesson Plans 9_8_25-9_12_25.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 9,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W37\\Copy of 9_8-9_12 Davies Lesson Plans.docx",
+    "rel_path": "25 W37\\Copy of 9_8-9_12 Davies Lesson Plans.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 9,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W37\\Copy of Lang Lesson Plans 9_8_25-9_12_25.docx",
+    "rel_path": "25 W37\\Copy of Lang Lesson Plans 9_8_25-9_12_25.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 9,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W37\\Copy of Ms. Savoca- 9_8_24-9_12_24 Lesson plans.docx",
+    "rel_path": "25 W37\\Copy of Ms. Savoca- 9_8_24-9_12_24 Lesson plans.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "status": "no_daily_table",
+    "total_tables": 0,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W37\\math primary teacher lesson plan.docx",
+    "rel_path": "25 W37\\math primary teacher lesson plan.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 9,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W37\\Rodrigues Lesson Plans 9_8_25-9_12_25.docx",
+    "rel_path": "25 W37\\Rodrigues Lesson Plans 9_8_25-9_12_25.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconceptions:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 0,
+    "total_tables": 1,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W37\\science second grade primary lesson plan.docx",
+    "rel_path": "25 W37\\science second grade primary lesson plan.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "status": "no_daily_table",
+    "total_tables": 159,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W37\\_2nd Grade Science .docx",
+    "rel_path": "25 W37\\_2nd Grade Science .docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 9,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W38\\9_15-9_19 Davies Lesson Plans.docx",
+    "rel_path": "25 W38\\9_15-9_19 Davies Lesson Plans.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 3,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W38\\Debug_User_Weekly_W38_9-15-9-19.docx",
+    "rel_path": "25 W38\\Debug_User_Weekly_W38_9-15-9-19.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 11,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W38\\Full_Week_User_Weekly_W38_9-15-9-19.docx",
+    "rel_path": "25 W38\\Full_Week_User_Weekly_W38_9-15-9-19.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 6,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W38\\Inspect_User_Weekly_W38_9-15-9-19.docx",
+    "rel_path": "25 W38\\Inspect_User_Weekly_W38_9-15-9-19.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 9,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W38\\Lang Lesson Plans 9_15_25-9_19_25.docx",
+    "rel_path": "25 W38\\Lang Lesson Plans 9_15_25-9_19_25.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 4,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W38\\Lang_Lesson_plan_W38_9-15-9-19.docx",
+    "rel_path": "25 W38\\Lang_Lesson_plan_W38_9-15-9-19.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 13,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W38\\Lesson Plan Template SY'25-26 (2).docx",
+    "rel_path": "25 W38\\Lesson Plan Template SY'25-26 (2).docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 9,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W38\\Ms. Savoca- 9_15_24-9_19_24 Lesson plans.docx",
+    "rel_path": "25 W38\\Ms. Savoca- 9_15_24-9_19_24 Lesson plans.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 5,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W38\\Multi_Teacher_Weekly_W38_9-15-9-19.docx",
+    "rel_path": "25 W38\\Multi_Teacher_Weekly_W38_9-15-9-19.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 12,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W38\\Rodrigues Lesson plans W38 9_15-9_19 with comments.docx",
+    "rel_path": "25 W38\\Rodrigues Lesson plans W38 9_15-9_19 with comments.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 13,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W38\\Rodrigues Lesson plans W38 9_15-9_19.docx",
+    "rel_path": "25 W38\\Rodrigues Lesson plans W38 9_15-9_19.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "9x6",
+    "num_rows": 9,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:",
+      "Notes:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY 9/15",
+      "TUESDAY 9/16",
+      "WEDNESDAY 9/17",
+      "THURSDAY 9/18",
+      "FRIDAY 9/19"
+    ],
+    "status": "success",
+    "table_index": 0,
+    "total_tables": 1,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W38\\social studies.docx",
+    "rel_path": "25 W38\\social studies.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 6,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W38\\Structure_Test_Weekly_W38_9-15-9-19.docx",
+    "rel_path": "25 W38\\Structure_Test_Weekly_W38_9-15-9-19.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 9,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W39\\9_22-9_26 Davies Lesson Plans.docx",
+    "rel_path": "25 W39\\9_22-9_26 Davies Lesson Plans.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 9,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W39\\Lang Lesson Plans 9_22_25-9_26_25.docx",
+    "rel_path": "25 W39\\Lang Lesson Plans 9_22_25-9_26_25.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "status": "no_daily_table",
+    "total_tables": 2,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W39\\Lesson Plan Template.docx",
+    "rel_path": "25 W39\\Lesson Plan Template.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 9,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W39\\Ms. Savoca- 922_24-9_26_24 Lesson plans.docx",
+    "rel_path": "25 W39\\Ms. Savoca- 922_24-9_26_24 Lesson plans.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 11,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W39\\OLD Rodrigues Lesson Plans 9_22_25 ____ 9_26_25.docx",
+    "rel_path": "25 W39\\OLD Rodrigues Lesson Plans 9_22_25 ____ 9_26_25.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 3,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W39\\Rodrigues Lesson Plans 9_22_25 ____ 9_26_25.docx",
+    "rel_path": "25 W39\\Rodrigues Lesson Plans 9_22_25 ____ 9_26_25.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 9,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W40\\9_29-10_3 Davies Lesson Plans.docx",
+    "rel_path": "25 W40\\9_29-10_3 Davies Lesson Plans.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 9,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W40\\Lang Lesson Plans 9_29_25-10_3_25.docx",
+    "rel_path": "25 W40\\Lang Lesson Plans 9_29_25-10_3_25.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "9x6",
+    "num_rows": 9,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:",
+      "Notes:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 14,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W40\\Lesson Plan Template.docx",
+    "rel_path": "25 W40\\Lesson Plan Template.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 9,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W40\\Ms. Savoca- 9_29_25-10_3_25 Lesson plans.docx",
+    "rel_path": "25 W40\\Ms. Savoca- 9_29_25-10_3_25 Lesson plans.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "9x6",
+    "num_rows": 9,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:",
+      "Notes:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 3,
+    "total_tables": 13,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W40\\OLD Rodrigues Lesson Plans 09_29_25 __ 10_03_25.docx",
+    "rel_path": "25 W40\\OLD Rodrigues Lesson Plans 09_29_25 __ 10_03_25.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 13,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W40\\Rodrigues Lesson Plans 09_29_25 __ 10_03_25.docx",
+    "rel_path": "25 W40\\Rodrigues Lesson Plans 09_29_25 __ 10_03_25.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 9,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W41\\10_6-10_10 Davies Lesson Plans.docx",
+    "rel_path": "25 W41\\10_6-10_10 Davies Lesson Plans.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "9x6",
+    "num_rows": 9,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "SIPPS",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 9,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W41\\Lang Lesson Plans 10_6_25-10_10_25.docx",
+    "rel_path": "25 W41\\Lang Lesson Plans 10_6_25-10_10_25.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 9,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W41\\Ms. Savoca-10_6_25-10_10_25 Lesson plans.docx",
+    "rel_path": "25 W41\\Ms. Savoca-10_6_25-10_10_25 Lesson plans.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x2",
+    "num_rows": 8,
+    "num_cols": 2,
+    "row_labels": [
+      "THURSDAY",
+      "LESSON 1: WHAT IS AREA?   \n3.2.1 Teacher Guide",
+      "Content: Students will explain orally how to determine which shape covers the most space using informal tools and language.\nStudent Goal: I will explain which shape covers more space.\nWIDA/Bilingual: Students will use language to explain reasoning about area and comparison (ELD-MA.2-3.Explain.Expressive) by using pattern blocks and comparative sentence frames appropriate for WIDA levels 2-4, producing an oral explanation and a labeled comparison.",
+      "Warm-up: How Many Do You See: Arrays (10 minutes)\nBilingual Bridge: Preview cognates: 'area - área', 'shape - forma', 'cover - cobrir'. Show shapes covered with pattern blocks and name them in Portuguese then English.",
+      "Activity 1: Compare Shapes (15 minutes). Activity 2: Pattern Blocks to Compare Shapes (20 minutes). Students compare shapes and decide which is larger by covering with pattern blocks.\nCo-Teaching Model: Station Teaching\nPhase Plan:\n  Warmup (10 min)\n  Bilingual: Introduce bilingual vocabulary and model covering shapes using pattern blocks; demonstrate comparative language with frames.\n  Primary: Lead quick practice identifying shapes and guide initial predictions about which covers more space.\n  Stations - Compare & Measure (25 min)\n  Bilingual: Support a small group measuring area with pattern blocks, prompting students to describe choices using 'more space'/'mais espaço' and count tiles.\n  Primary: Observe and challenge groups to justify choices with evidence; circulate to other groups.\n  Closure (10 min)\n  Bilingual: Facilitate a 2-student compare share using frames: 'Shape A covers more space because _.'\n  Primary: Summarize misconceptions (e.g., length vs area) and reinforce area language.\nELL Support:\n  Concrete Representations with Pattern Blocks (Levels 1-3): Provide pattern blocks and guide students to cover shapes while counting tiles; bilingual teacher models counting in Portuguese then English.\n  Comparative Sentence Frames (Levels 2-4): Frames: 'Shape A covers more space than Shape B because _.' Display frames in Portuguese and English and practice chorally.\n  Visual Anchor Chart (Length vs Area) (Levels 2-4): Show side-by-side images demonstrating length vs area with bilingual labels; refer to chart during student reasoning.\nMaterials: Pattern blocks sets, Pairs of shapes printed for comparing, Visual anchor chart with bilingual labels (area/área; length/comprimento)",
+      "Students may believe length alone is enough to compare two-dimensional shapes rather than considering area.\nLinguistic Note: Portuguese uses 'comprimento' (length) and 'área' (area) distinctly; students may conflate terms when reasoning in English.\nPrevention: Explicitly contrast 'length' and 'area' with bilingual examples and have students demonstrate coverings with tiles while saying both terms.",
+      "Assessment: 3.2.1 Cool Down\nInstrument: Cool Down: orally explain which shape covers more space and why, using informal tools (pattern blocks).\nSupports by Level:\n  Levels 1-2: Allow students to show covered shapes and point to more tiles; permit response in Portuguese with teacher transcription to English.\n  Levels 3-4: Provide comparative sentence frame and allow students to draw covered shapes and label counts.\n  Levels 5-6: Expect students to orally explain using comparative connectors and correct use of 'area' vocabulary in English.",
+      "3.2 Section A: Practice Problems - Problem 5\nFamily Connection: Peça que a família peça à criança para encontrar dois objetos em casa e decidir qual cobre mais espaço, usando as palavras 'mais espaço'/'more space' e desenhar as figuras para comparar."
+    ],
+    "col_headers": [
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 0,
+    "total_tables": 5,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W41\\Observation.docx",
+    "rel_path": "25 W41\\Observation.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 11,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W41\\Wilson_Rodrigues_Weekly_W41_10-06-10-10.docx",
+    "rel_path": "25 W41\\Wilson_Rodrigues_Weekly_W41_10-06-10-10.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 3,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W41\\old\\Integrity_Test_User_Lesson_plan_W41_10-06-10-10.docx",
+    "rel_path": "25 W41\\old\\Integrity_Test_User_Lesson_plan_W41_10-06-10-10.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 3,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W41\\old\\Performance_Test_User_Lesson_plan_W41_10-06-10-10.docx",
+    "rel_path": "25 W41\\old\\Performance_Test_User_Lesson_plan_W41_10-06-10-10.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 3,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W41\\old\\Single_Slot_User_Lesson_plan_W41_10-06-10-10.docx",
+    "rel_path": "25 W41\\old\\Single_Slot_User_Lesson_plan_W41_10-06-10-10.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 3,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W41\\old\\Test_User_Lesson_plan_W41_10-06-10-10.docx",
+    "rel_path": "25 W41\\old\\Test_User_Lesson_plan_W41_10-06-10-10.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "status": "no_daily_table",
+    "total_tables": 4,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W41\\old\\Wilson_Rodrigues_Lesson_plan_W01_10-06-10-10.docx",
+    "rel_path": "25 W41\\old\\Wilson_Rodrigues_Lesson_plan_W01_10-06-10-10.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 3,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W41\\old\\Wilson_Rodrigues_Lesson_plan_W41_10-06-10-10.docx",
+    "rel_path": "25 W41\\old\\Wilson_Rodrigues_Lesson_plan_W41_10-06-10-10.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 3,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W41\\old\\Wilson_Rodrigues_Slot1_ELA_W01_10-06-10-10.docx",
+    "rel_path": "25 W41\\old\\Wilson_Rodrigues_Slot1_ELA_W01_10-06-10-10.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 3,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W41\\old\\Wilson_Rodrigues_Slot2_ELA_SS_W01_10-06-10-10.docx",
+    "rel_path": "25 W41\\old\\Wilson_Rodrigues_Slot2_ELA_SS_W01_10-06-10-10.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 3,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W41\\old\\Wilson_Rodrigues_Slot3_Science_W01_10-06-10-10.docx",
+    "rel_path": "25 W41\\old\\Wilson_Rodrigues_Slot3_Science_W01_10-06-10-10.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 3,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W41\\old\\Wilson_Rodrigues_Slot4_Math_W01_10-06-10-10.docx",
+    "rel_path": "25 W41\\old\\Wilson_Rodrigues_Slot4_Math_W01_10-06-10-10.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 3,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W41\\old\\Wilson_Rodrigues_Slot5_Math_W01_10-06-10-10.docx",
+    "rel_path": "25 W41\\old\\Wilson_Rodrigues_Slot5_Math_W01_10-06-10-10.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 11,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W41\\old\\Wilson_Rodrigues_Weekly_W01_10-06-10-10.docx",
+    "rel_path": "25 W41\\old\\Wilson_Rodrigues_Weekly_W01_10-06-10-10.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 9,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W42\\10_13-10_17 Davies Lesson Plans.docx",
+    "rel_path": "25 W42\\10_13-10_17 Davies Lesson Plans.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "9x6",
+    "num_rows": 9,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:",
+      "SIPPS"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 9,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W42\\Lang Lesson Plans 10_13_25-10_17_25.docx",
+    "rel_path": "25 W42\\Lang Lesson Plans 10_13_25-10_17_25.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 9,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W42\\Ms. Savoca-10_13_25-10_17_25 Lesson plans.docx",
+    "rel_path": "25 W42\\Ms. Savoca-10_13_25-10_17_25 Lesson plans.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 11,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W42\\Wilson_Rodrigues_Weekly_W42_10-13-10-17.docx",
+    "rel_path": "25 W42\\Wilson_Rodrigues_Weekly_W42_10-13-10-17.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 9,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W43\\10_20-10_24 Davies Lesson Plans.docx",
+    "rel_path": "25 W43\\10_20-10_24 Davies Lesson Plans.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 11,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W43\\incorrect format 2 Wilson_Rodrigues_Weekly_W43_10-20-10-24_20251018_205952.docx",
+    "rel_path": "25 W43\\incorrect format 2 Wilson_Rodrigues_Weekly_W43_10-20-10-24_20251018_205952.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 11,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W43\\INCORRECT FORMAT Wilson_Rodrigues_Weekly_W43_10-20-10-24_20251018_202651.docx",
+    "rel_path": "25 W43\\INCORRECT FORMAT Wilson_Rodrigues_Weekly_W43_10-20-10-24_20251018_202651.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "9x6",
+    "num_rows": 9,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:",
+      "SIPPS"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 9,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W43\\Lang Lesson Plans 10_20_25-10_24_25.docx",
+    "rel_path": "25 W43\\Lang Lesson Plans 10_20_25-10_24_25.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 9,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W43\\Ms. Savoca-10_20_25-10_25_25 Lesson plans.docx",
+    "rel_path": "25 W43\\Ms. Savoca-10_20_25-10_25_25 Lesson plans.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 11,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W43\\Wilson_Rodrigues_Weekly_W43_10-20-10-24_20251018_232029.docx",
+    "rel_path": "25 W43\\Wilson_Rodrigues_Weekly_W43_10-20-10-24_20251018_232029.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 11,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W43\\Wilson_Rodrigues_Weekly_W43_10-20-10-24_20251018_233536.docx",
+    "rel_path": "25 W43\\Wilson_Rodrigues_Weekly_W43_10-20-10-24_20251018_233536.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 11,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W43\\Wilson_Rodrigues_Weekly_W43_10-20-10-24_20251018_234853.docx",
+    "rel_path": "25 W43\\Wilson_Rodrigues_Weekly_W43_10-20-10-24_20251018_234853.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 11,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W43\\Wilson_Rodrigues_Weekly_W43_10-20-10-24_20251019_000238.docx",
+    "rel_path": "25 W43\\Wilson_Rodrigues_Weekly_W43_10-20-10-24_20251019_000238.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 11,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W43\\Wilson_Rodrigues_Weekly_W43_10-20-10-24_20251019_012703.docx",
+    "rel_path": "25 W43\\Wilson_Rodrigues_Weekly_W43_10-20-10-24_20251019_012703.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 11,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W43\\Wilson_Rodrigues_Weekly_W43_10-20-10-24_20251019_021620.docx",
+    "rel_path": "25 W43\\Wilson_Rodrigues_Weekly_W43_10-20-10-24_20251019_021620.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 11,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W43\\Wilson_Rodrigues_Weekly_W43_10-20-10-24_20251019_023540.docx",
+    "rel_path": "25 W43\\Wilson_Rodrigues_Weekly_W43_10-20-10-24_20251019_023540.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "status": "error",
+    "error": "[Errno 13] Permission denied: 'F:\\\\rodri\\\\Documents\\\\OneDrive\\\\AS\\\\Lesson Plan\\\\25 W43\\\\Wilson_Rodrigues_Weekly_W43_10-20-10-24_20251019_025901.docx'",
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W43\\Wilson_Rodrigues_Weekly_W43_10-20-10-24_20251019_025901.docx",
+    "rel_path": "25 W43\\Wilson_Rodrigues_Weekly_W43_10-20-10-24_20251019_025901.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 11,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W43\\Wilson_Rodrigues_Weekly_W43_10-20-10-24_20251019_133850.docx",
+    "rel_path": "25 W43\\Wilson_Rodrigues_Weekly_W43_10-20-10-24_20251019_133850.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "dimensions": "8x6",
+    "num_rows": 8,
+    "num_cols": 6,
+    "row_labels": [
+      "",
+      "Unit, Lesson #, Module:",
+      "Objective:",
+      "Anticipatory Set:",
+      "Tailored Instruction:",
+      "Misconception:",
+      "Assessment:",
+      "Homework:"
+    ],
+    "col_headers": [
+      "",
+      "MONDAY",
+      "TUESDAY",
+      "WEDNESDAY",
+      "THURSDAY",
+      "FRIDAY"
+    ],
+    "status": "success",
+    "table_index": 1,
+    "total_tables": 3,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\Code\\Lesson Plan Template SY'25-26 (3).docx",
+    "rel_path": "Code\\Lesson Plan Template SY'25-26 (3).docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "status": "no_daily_table",
+    "total_tables": 0,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\Code\\Prompt Lesson Plan V2.docx",
+    "rel_path": "Code\\Prompt Lesson Plan V2.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  },
+  {
+    "status": "no_daily_table",
+    "total_tables": 0,
+    "file_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\Code\\prompt V1.docx",
+    "rel_path": "Code\\prompt V1.docx",
+    "folder": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan"
+  }
+]

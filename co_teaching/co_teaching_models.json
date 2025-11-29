@@ -1,0 +1,210 @@
+{
+  "_meta": {
+    "schema_version": "1.2",
+    "source": "Model Teaching (2019) via co_teaching_models.csv",
+    "last_updated": "2025-10-04",
+    "description": "Friend & Cook canonical models enriched with decision-ready fields for bilingual co-teaching."
+  },
+  "models": [
+    {
+      "id": "one_observe",
+      "name": "One Teach, One Observe",
+      "overview": "The first teacher teaches the lesson, while the second teacher is making specific and detailed observations. These preplanned and purposeful observations may include academic, behaviors, or social skills.",
+      "classroom_setup": "The first teacher is at the front of the room, where all students have visibility. The second teacher may be stationed somewhere unobtrusive, or may be roaming to make observations.",
+      "advantages": [
+        "Teachers gain valuable data from the observations to guide future instruction."
+      ],
+      "disadvantages": [
+        "May cause students to view the second teacher as just an aide.",
+        "If used too often, may lead to resentment by the first teacher for always leading the instruction."
+      ],
+      "best_for": [
+        "Limited periods of time when something specific needs to be observed",
+        "When one teacher has a stronger content knowledge of the particular skill being taught"
+      ],
+      "when_to_use": [
+        "Data collection cycles",
+        "Pilot/diagnostic lessons",
+        "High-stakes observation of language use patterns"
+      ],
+      "when_to_avoid": [
+        "When parity is a priority for student perception",
+        "If overused across consecutive lessons"
+      ],
+      "prerequisites": { "planning_time_min": 30, "materials_load": "low" },
+      "teacher_roles": { "primary": "leads instruction", "bilingual": "uses observation tool, WIDA-aligned rubrics" },
+      "class_fit": { "class_size_min": 10, "class_size_max": 32, "newcomer_fit": "medium", "behavior_fit": "low" },
+      "language_allocation": { "l1": ["none","incidental"], "l2": ["primary"], "translanguaging_fit": "low" },
+      "delivery_modes": ["push-in", "whole-group"],
+      "evidence_tier": "practice-based"
+    },
+    {
+      "id": "one_assist",
+      "name": "One Teach, One Assist",
+      "overview": "One teacher teaches the lesson, while the second teacher is roaming, helping students as needed or managing behaviors.",
+      "classroom_setup": "The first teacher is at the front of the room, where all students have visibility. The second teacher is roaming to assist individual students.",
+      "advantages": [
+        "Allows the first teacher to teach uninterrupted."
+      ],
+      "disadvantages": [
+        "May place the role of the second teacher as a bad cop and cause resentment among students, if they spend the majority of their time managing behavior."
+      ],
+      "best_for": [
+        "Short periods of time when one teacher has stronger expertise in the subject matter",
+        "When some students will need lots of individual guidance"
+      ],
+      "when_to_use": [
+        "Launch of new routines",
+        "Behavior support days",
+        "Short mini-lessons with just-in-time scaffolds"
+      ],
+      "when_to_avoid": [
+        "If it entrenches aide dynamics",
+        "For extended units without parity rotations"
+      ],
+      "prerequisites": { "planning_time_min": 30, "materials_load": "low" },
+      "teacher_roles": { "primary": "leads content", "bilingual": "roams to scaffold language and behavior" },
+      "class_fit": { "class_size_min": 12, "class_size_max": 34, "newcomer_fit": "medium", "behavior_fit": "medium" },
+      "language_allocation": { "l1": ["clarification","preview-review"], "l2": ["primary"], "translanguaging_fit": "medium" },
+      "delivery_modes": ["push-in", "whole-group", "small-group"],
+      "evidence_tier": "practice-based"
+    },
+    {
+      "id": "parallel",
+      "name": "Parallel Teaching",
+      "overview": "The class is divided into two groups, and each teacher delivers the same instruction to half of the class.",
+      "classroom_setup": "The room is divided into two distinct sections, with one teacher in each section with half the class.",
+      "advantages": [
+        "Students benefit from smaller groups, and groups can be strategically planned (and changed frequently) based on readiness levels."
+      ],
+      "disadvantages": [
+        "Two simultaneous groups could be distracting if there is not enough separation.",
+        "Timing will need to be carefully monitored."
+      ],
+      "best_for": [
+        "Frequent use when students will benefit from a smaller group and more individualized attention",
+        "When teachers have equally strong content knowledge"
+      ],
+      "when_to_use": [
+        "Discussion-heavy lessons",
+        "Mixed proficiency groups",
+        "Ratio reduction for oral language practice"
+      ],
+      "when_to_avoid": [
+        "In cramped spaces with poor acoustics",
+        "When teachers' content expertise differs substantially"
+      ],
+      "prerequisites": { "planning_time_min": 45, "materials_load": "medium" },
+      "teacher_roles": { "primary": "leads one group", "bilingual": "leads the other with language scaffolds" },
+      "class_fit": { "class_size_min": 18, "class_size_max": 34, "newcomer_fit": "high", "behavior_fit": "medium" },
+      "language_allocation": { "l1": ["strategic"], "l2": ["primary"], "translanguaging_fit": "medium" },
+      "wida_fit": { "levels_1_2": "medium", "levels_3_4": "very_high", "levels_5_6": "high", "mixed_range": "high" },
+      "delivery_modes": ["push-in", "whole-group", "small-group"],
+      "evidence_tier": "practice-based"
+    },
+    {
+      "id": "station",
+      "name": "Station Teaching",
+      "overview": "Students and content are divided into three groups. Each teacher teaches one section of content, and the third section is based on independent practice activities. Students rotate between all 3 groups.",
+      "classroom_setup": "Three distinct stations are set up, one for each teacher (might be a carpet space, small group table, or just desks arranged in front of the board) and one for independent student work.",
+      "advantages": [
+        "Smaller groups means more individual student attention.",
+        "Teachers can plan their lesson based on their strengths."
+      ],
+      "disadvantages": [
+        "Timing is critical and may be hard to coordinate perfectly.",
+        "Some students may not be able to manage themselves appropriately in the independent station.",
+        "Requires a great amount of planning."
+      ],
+      "best_for": [
+        "Frequent use when planned well",
+        "When teachers have varying strengths",
+        "When activities can be differentiated"
+      ],
+      "when_to_use": [
+        "Vocabulary development",
+        "Targeted proficiency-banded practice",
+        "Hands-on or multi-step activities"
+      ],
+      "when_to_avoid": [
+        "Time blocks under 25 minutes",
+        "Tight space or low independence",
+        "Insufficient planning time this week"
+      ],
+      "prerequisites": { "planning_time_min": 90, "materials_load": "high" },
+      "teacher_roles": { "primary": "leads content station", "bilingual": "leads language-focused station; manages L1 scaffolds" },
+      "class_fit": { "class_size_min": 18, "class_size_max": 32, "newcomer_fit": "high", "behavior_fit": "medium" },
+      "language_allocation": { "l1": ["explicit at language station","preview-review"], "l2": ["products","content station"], "translanguaging_fit": "high" },
+      "wida_fit": { "levels_1_2": "very_high", "levels_3_4": "very_high", "levels_5_6": "medium", "mixed_range": "very_high" },
+      "delivery_modes": ["push-in", "small-group", "whole-group"],
+      "evidence_tier": "practice-based"
+    },
+    {
+      "id": "alternative",
+      "name": "Alternative Teaching",
+      "overview": "One teacher teaches a lesson to the majority of the class, while a second teacher pulls a small group for an alternate or modified lesson.",
+      "classroom_setup": "The first teacher is at the front of the room leading the instruction, while the second teacher meets with a small group in a separate area.",
+      "advantages": [
+        "Provides an opportunity for enrichment or intervention as needed."
+      ],
+      "disadvantages": [
+        "Students may feel singled out."
+      ],
+      "best_for": [
+        "Times when your data indicates that a small group of students needs extra assistance before moving on",
+        "Deeper enrichment while the majority of the class needs reteaching"
+      ],
+      "when_to_use": [
+        "Pre-teaching for newcomers",
+        "Enrichment for advanced bilinguals",
+        "Reteaching based on formative data"
+      ],
+      "when_to_avoid": [
+        "If small group pull-outs stigmatize students",
+        "Without rotating membership over time"
+      ],
+      "prerequisites": { "planning_time_min": 45, "materials_load": "medium" },
+      "teacher_roles": { "primary": "leads majority group", "bilingual": "leads small group with L1/L2 supports" },
+      "class_fit": { "class_size_min": 14, "class_size_max": 34, "newcomer_fit": "very_high", "behavior_fit": "medium" },
+      "language_allocation": { "l1": ["intensive small group"], "l2": ["majority group"], "translanguaging_fit": "high" },
+      "wida_fit": { "levels_1_2": "very_high", "levels_3_4": "medium", "levels_5_6": "high", "mixed_range": "medium" },
+      "delivery_modes": ["push-in", "small-group"],
+      "evidence_tier": "practice-based"
+    },
+    {
+      "id": "team",
+      "name": "Team Teaching",
+      "overview": "Both teachers are fully involved in delivering the instruction at the same time.",
+      "classroom_setup": "Both teachers are at the front of the room or roaming as needed as they deliver instruction.",
+      "advantages": [
+        "Allows students to see two perspectives of a lesson / topic.",
+        "Models a strong professional relationship between two adults."
+      ],
+      "disadvantages": [
+        "Requires a great amount of planning and coordination."
+      ],
+      "best_for": [
+        "As often as feasible based on the amount of planning required",
+        "When students will benefit from two viewpoints, or two strategies, to learn the content"
+      ],
+      "when_to_use": [
+        "Complex discourse modeling",
+        "Dual-perspective explanations",
+        "Co-modeling sentence frames and talk moves"
+      ],
+      "when_to_avoid": [
+        "When co-planning time is very limited",
+        "For tightly scripted test-prep with single-voice delivery"
+      ],
+      "prerequisites": { "planning_time_min": 60, "materials_load": "medium" },
+      "teacher_roles": { "primary": "co-leads content and modeling", "bilingual": "co-leads language scaffolds and L1 connections" },
+      "class_fit": { "class_size_min": 10, "class_size_max": 34, "newcomer_fit": "high", "behavior_fit": "low" },
+      "language_allocation": { "l1": ["strategic","cognates"], "l2": ["primary"], "translanguaging_fit": "very_high" },
+      "wida_fit": { "levels_1_2": "high", "levels_3_4": "high", "levels_5_6": "very_high", "mixed_range": "very_high" },
+      "delivery_modes": ["push-in", "whole-group", "small-group"],
+      "evidence_tier": "practice-based"
+    }
+  ]
+}
+
+

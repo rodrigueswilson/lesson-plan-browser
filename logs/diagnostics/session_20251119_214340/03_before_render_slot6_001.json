@@ -1,0 +1,69 @@
+{
+  "timestamp": "2025-11-19T22:01:58.172813",
+  "stage": "03_before_render_slot6",
+  "data": {
+    "slot_number": 6,
+    "subject": "ELA",
+    "render_type": "multi_slot",
+    "metadata_slot_number": 6,
+    "metadata_subject": "ELA",
+    "hyperlink_count": 10,
+    "all_hyperlinks_have_slot": true,
+    "all_hyperlinks_have_subject": true,
+    "hyperlink_slot_distribution": {
+      "6": 10
+    },
+    "sample_hyperlinks": [
+      {
+        "text": "Lenni Lenape",
+        "source_slot": 6,
+        "source_subject": "ELA"
+      },
+      {
+        "text": "Lenni Lenape",
+        "source_slot": 6,
+        "source_subject": "ELA"
+      },
+      {
+        "text": "Lenni Lenape",
+        "source_slot": 6,
+        "source_subject": "ELA"
+      },
+      {
+        "text": "Lenni Lenape",
+        "source_slot": 6,
+        "source_subject": "ELA"
+      },
+      {
+        "text": "Lenni Lenape: Digital Vocabulary Notebook ",
+        "source_slot": 6,
+        "source_subject": "ELA"
+      },
+      {
+        "text": "Vocabulary Knowledge Rating Scale",
+        "source_slot": 6,
+        "source_subject": "ELA"
+      },
+      {
+        "text": "Building A Wigwam",
+        "source_slot": 6,
+        "source_subject": "ELA"
+      },
+      {
+        "text": "A is for Arrowhead",
+        "source_slot": 6,
+        "source_subject": "ELA"
+      },
+      {
+        "text": "3-2-1 Response Chart",
+        "source_slot": 6,
+        "source_subject": "ELA"
+      },
+      {
+        "text": "graphic organizer",
+        "source_slot": 6,
+        "source_subject": "ELA"
+      }
+    ]
+  }
+}

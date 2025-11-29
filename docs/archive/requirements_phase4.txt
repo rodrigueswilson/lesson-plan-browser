@@ -1,0 +1,17 @@
+# Phase 4 Requirements
+# Python Renderer Integration
+
+# Core dependencies (from Phase 0-3)
+jsonschema>=4.17.0
+jinja2>=3.1.2
+pydantic>=2.0.0
+pydantic-settings>=2.0.0
+
+# Phase 4 additions
+structlog>=23.1.0  # Structured logging
+python-dotenv>=1.0.0  # Environment variable management
+
+# Optional but recommended
+pytest>=7.4.0  # For testing
+black>=23.0.0  # Code formatting
+flake8>=6.0.0  # Linting

@@ -1,0 +1,763 @@
+[
+  {
+    "timestamp": "2025-11-22T17:11:52.802692",
+    "stage": "01_parser_slot1",
+    "data": {
+      "slot_number": 1,
+      "subject": "ELA/SS",
+      "source_file": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\25 W48\\Morais 11_23 - 11_27.docx",
+      "hyperlink_count": 6,
+      "hyperlinks": [
+        {
+          "text": "Animals Teach Young People a Lot About How to Understand Emotions",
+          "url": "https://docs.google.com/document/d/1OP0s8XVdBgVBpzK6E7NihQqHzaeokl7UmyGWQspXDEk/edit?usp=sharing",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Kindness Unit lesson 12 Vocabulary",
+          "url": "https://docs.google.com/presentation/d/1AYQPKLJtMZN8rijNNryqDkeGoi2SDIJJHf3FROS0_Hw/edit?usp=sharing",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Main Idea Anchor Chart",
+          "url": "https://docs.google.com/document/d/1ulNksJiSFqBQ2Kf1_sbgiiedvZpUazhhXS3qAG7adIs/edit?usp=sharing",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Kindness Unit lesson 12 Vocabulary",
+          "url": "https://docs.google.com/presentation/d/1AYQPKLJtMZN8rijNNryqDkeGoi2SDIJJHf3FROS0_Hw/edit?usp=sharing",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Rubric",
+          "url": "https://docs.google.com/document/d/1YPrVnY710ZVVlHVPPGMAtDSYK99pNYnUmlR3jBfaG_s/edit?usp=sharing",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Rubric",
+          "url": "https://docs.google.com/document/d/1PSepaYP9OgRdfpy7sGUZDrfcXI6oZSvFbvRYkq28ziE/edit?usp=sharing",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-11-22T17:14:58.088548",
+    "stage": "02_lesson_json_slot1",
+    "data": {
+      "slot_number": 1,
+      "subject": "ELA/SS",
+      "metadata_slot_number": null,
+      "metadata_subject": "ELA/SS",
+      "hyperlink_count": 6,
+      "hyperlinks_with_slot_metadata": 0,
+      "hyperlinks_with_subject_metadata": 0,
+      "sample_hyperlinks": [
+        {
+          "text": "Animals Teach Young People a Lot About How to Unde",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "Kindness Unit lesson 12 Vocabulary",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "Main Idea Anchor Chart",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "Kindness Unit lesson 12 Vocabulary",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "Rubric",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "Rubric",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-11-22T17:14:58.223038",
+    "stage": "01_parser_slot2",
+    "data": {
+      "slot_number": 2,
+      "subject": "Social Studies",
+      "source_file": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\25 W48\\_T. Santiago SS Plans 11_24.docx",
+      "hyperlink_count": 10,
+      "hyperlinks": [
+        {
+          "text": " Slides",
+          "url": "https://docs.google.com/presentation/d/1REUjwVnUfdx5ReJYsU87p4e6UsjwSQtC07Ow_86JFqc/edit?usp=sharing",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Scavenger Notes",
+          "url": "https://docs.google.com/document/d/1o5fGUrW-qKEzX6Bg-7H0Sn9nuydp5nUqFadFsEpEBEo/edit?usp=sharing",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": " Slides",
+          "url": "https://docs.google.com/presentation/d/1REUjwVnUfdx5ReJYsU87p4e6UsjwSQtC07Ow_86JFqc/edit?usp=sharing",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Scavenger Notes",
+          "url": "https://docs.google.com/document/d/1o5fGUrW-qKEzX6Bg-7H0Sn9nuydp5nUqFadFsEpEBEo/edit?usp=sharing",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Modified Note Sheet",
+          "url": "https://docs.google.com/document/d/10oIDHzJXZACcbBMYYifpGsMf-gD-vgQePGCbX4_dVnk/edit?usp=sharing",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Modified Note Sheet",
+          "url": "https://docs.google.com/document/d/10oIDHzJXZACcbBMYYifpGsMf-gD-vgQePGCbX4_dVnk/edit?usp=sharing",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Guided Reading",
+          "url": "https://kami.app/QDe-iD8-met-N42",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Spanish Guided Reading",
+          "url": "https://kami.app/u6S-GcG-E6U-mZ1",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Scavenger Notes",
+          "url": "https://docs.google.com/document/d/1o5fGUrW-qKEzX6Bg-7H0Sn9nuydp5nUqFadFsEpEBEo/edit?usp=sharing",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Scavenger Notes",
+          "url": "https://docs.google.com/document/d/1o5fGUrW-qKEzX6Bg-7H0Sn9nuydp5nUqFadFsEpEBEo/edit?usp=sharing",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-11-22T17:18:41.348459",
+    "stage": "02_lesson_json_slot2",
+    "data": {
+      "slot_number": 2,
+      "subject": "Social Studies",
+      "metadata_slot_number": null,
+      "metadata_subject": "Social Studies",
+      "hyperlink_count": 10,
+      "hyperlinks_with_slot_metadata": 0,
+      "hyperlinks_with_subject_metadata": 0,
+      "sample_hyperlinks": [
+        {
+          "text": " Slides",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "Scavenger Notes",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": " Slides",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "Scavenger Notes",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "Modified Note Sheet",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "Modified Note Sheet",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "Guided Reading",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "Spanish Guided Reading",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "Scavenger Notes",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "Scavenger Notes",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-11-22T17:18:41.463147",
+    "stage": "01_parser_slot3",
+    "data": {
+      "slot_number": 3,
+      "subject": "Science",
+      "source_file": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\25 W48\\Mrs. Grande Science 11_24- 11_28.docx",
+      "hyperlink_count": 0,
+      "hyperlinks": []
+    }
+  },
+  {
+    "timestamp": "2025-11-22T17:26:35.678846",
+    "stage": "01_parser_slot4",
+    "data": {
+      "slot_number": 4,
+      "subject": "Science",
+      "source_file": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\25 W48\\Morais 11_23 - 11_27.docx",
+      "hyperlink_count": 3,
+      "hyperlinks": [
+        {
+          "text": " 2nd Grade Science ",
+          "url": "https://docs.google.com/document/d/1nImdZIX6pCavnrr59YDV-iKMuixgzblvrcu5bGunB6Q/edit?tab=t.0",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": " 2nd Grade Science ",
+          "url": "https://docs.google.com/document/d/1nImdZIX6pCavnrr59YDV-iKMuixgzblvrcu5bGunB6Q/edit?tab=t.0",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": " 2nd Grade Science ",
+          "url": "https://docs.google.com/document/d/1nImdZIX6pCavnrr59YDV-iKMuixgzblvrcu5bGunB6Q/edit?tab=t.0",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-11-22T17:30:06.388564",
+    "stage": "02_lesson_json_slot4",
+    "data": {
+      "slot_number": 4,
+      "subject": "Science",
+      "metadata_slot_number": null,
+      "metadata_subject": "Science",
+      "hyperlink_count": 3,
+      "hyperlinks_with_slot_metadata": 0,
+      "hyperlinks_with_subject_metadata": 0,
+      "sample_hyperlinks": [
+        {
+          "text": " 2nd Grade Science ",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": " 2nd Grade Science ",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": " 2nd Grade Science ",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-11-22T17:30:06.557073",
+    "stage": "01_parser_slot5",
+    "data": {
+      "slot_number": 5,
+      "subject": "Math",
+      "source_file": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\25 W48\\Morais 11_23 - 11_27.docx",
+      "hyperlink_count": 5,
+      "hyperlinks": [
+        {
+          "text": "2.3.10 Teacher Guide",
+          "url": "https://drive.google.com/file/d/1Hcf0M0UJ02QEJp5WSy9gQJEFLd-Pyr5f/view?usp=drive_link",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Unit 3: Measuring Length",
+          "url": "https://docs.google.com/document/d/1jS0EN5RQpawPPkDnTkUnbktDeqnLDjeojFHudRl5zGY/edit",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "2.3.10 Cool-down",
+          "url": "https://drive.google.com/file/d/1BQ7KCFSxDDfYAHb4sucGn8jntUXsg-pp/view?usp=drive_link",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "2.3.11 Cool Down",
+          "url": "https://drive.google.com/file/d/19M2gkY3h5gSZiqDHiIEoVW21-zxzMH-Y/view?usp=drive_link",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "2.3.12 Cool Down",
+          "url": "https://drive.google.com/file/d/1u8cXR5-IosF6sCH0WEj53ZYwbb1ux03B/view?usp=drive_link",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-11-22T17:33:26.194333",
+    "stage": "02_lesson_json_slot5",
+    "data": {
+      "slot_number": 5,
+      "subject": "Math",
+      "metadata_slot_number": null,
+      "metadata_subject": "Math",
+      "hyperlink_count": 5,
+      "hyperlinks_with_slot_metadata": 0,
+      "hyperlinks_with_subject_metadata": 0,
+      "sample_hyperlinks": [
+        {
+          "text": "2.3.10 Teacher Guide",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "Unit 3: Measuring Length",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "2.3.10 Cool-down",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "2.3.11 Cool Down",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "2.3.12 Cool Down",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-11-22T17:33:26.244071",
+    "stage": "03_before_render_slot1",
+    "data": {
+      "slot_number": 1,
+      "subject": "ELA/SS",
+      "render_type": "multi_slot",
+      "metadata_slot_number": 1,
+      "metadata_subject": "ELA/SS",
+      "hyperlink_count": 6,
+      "all_hyperlinks_have_slot": true,
+      "all_hyperlinks_have_subject": true,
+      "hyperlink_slot_distribution": {
+        "1": 6
+      },
+      "sample_hyperlinks": [
+        {
+          "text": "Animals Teach Young People a Lot About How to Unde",
+          "source_slot": 1,
+          "source_subject": "ELA/SS"
+        },
+        {
+          "text": "Kindness Unit lesson 12 Vocabulary",
+          "source_slot": 1,
+          "source_subject": "ELA/SS"
+        },
+        {
+          "text": "Main Idea Anchor Chart",
+          "source_slot": 1,
+          "source_subject": "ELA/SS"
+        },
+        {
+          "text": "Kindness Unit lesson 12 Vocabulary",
+          "source_slot": 1,
+          "source_subject": "ELA/SS"
+        },
+        {
+          "text": "Rubric",
+          "source_slot": 1,
+          "source_subject": "ELA/SS"
+        },
+        {
+          "text": "Rubric",
+          "source_slot": 1,
+          "source_subject": "ELA/SS"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-11-22T17:33:26.268987",
+    "stage": "04_renderer_metadata_extracted",
+    "data": {
+      "slot_number": 1,
+      "slot_number_type": "int",
+      "slot_number_is_none": false,
+      "subject": "ELA/SS",
+      "subject_is_none": false,
+      "hyperlink_count": 6,
+      "teacher": "Catarina Morais / Daniela Silva",
+      "filtering_will_activate": true
+    }
+  },
+  {
+    "timestamp": "2025-11-22T17:33:26.380822",
+    "stage": "03_before_render_slot2",
+    "data": {
+      "slot_number": 2,
+      "subject": "Social Studies",
+      "render_type": "multi_slot",
+      "metadata_slot_number": 2,
+      "metadata_subject": "Social Studies",
+      "hyperlink_count": 10,
+      "all_hyperlinks_have_slot": true,
+      "all_hyperlinks_have_subject": true,
+      "hyperlink_slot_distribution": {
+        "2": 10
+      },
+      "sample_hyperlinks": [
+        {
+          "text": " Slides",
+          "source_slot": 2,
+          "source_subject": "Social Studies"
+        },
+        {
+          "text": "Scavenger Notes",
+          "source_slot": 2,
+          "source_subject": "Social Studies"
+        },
+        {
+          "text": " Slides",
+          "source_slot": 2,
+          "source_subject": "Social Studies"
+        },
+        {
+          "text": "Scavenger Notes",
+          "source_slot": 2,
+          "source_subject": "Social Studies"
+        },
+        {
+          "text": "Modified Note Sheet",
+          "source_slot": 2,
+          "source_subject": "Social Studies"
+        },
+        {
+          "text": "Modified Note Sheet",
+          "source_slot": 2,
+          "source_subject": "Social Studies"
+        },
+        {
+          "text": "Guided Reading",
+          "source_slot": 2,
+          "source_subject": "Social Studies"
+        },
+        {
+          "text": "Spanish Guided Reading",
+          "source_slot": 2,
+          "source_subject": "Social Studies"
+        },
+        {
+          "text": "Scavenger Notes",
+          "source_slot": 2,
+          "source_subject": "Social Studies"
+        },
+        {
+          "text": "Scavenger Notes",
+          "source_slot": 2,
+          "source_subject": "Social Studies"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-11-22T17:33:26.406543",
+    "stage": "04_renderer_metadata_extracted",
+    "data": {
+      "slot_number": 2,
+      "slot_number_type": "int",
+      "slot_number_is_none": false,
+      "subject": "Social Studies",
+      "subject_is_none": false,
+      "hyperlink_count": 10,
+      "teacher": "Taina Santiago / Daniela Silva",
+      "filtering_will_activate": true
+    }
+  },
+  {
+    "timestamp": "2025-11-22T17:33:26.822465",
+    "stage": "03_before_render_slot3",
+    "data": {
+      "slot_number": 3,
+      "subject": "Science",
+      "render_type": "multi_slot",
+      "metadata_slot_number": 3,
+      "metadata_subject": "Science",
+      "hyperlink_count": 0,
+      "all_hyperlinks_have_slot": true,
+      "all_hyperlinks_have_subject": true,
+      "hyperlink_slot_distribution": {},
+      "sample_hyperlinks": []
+    }
+  },
+  {
+    "timestamp": "2025-11-22T17:33:26.834737",
+    "stage": "04_renderer_metadata_extracted",
+    "data": {
+      "slot_number": 3,
+      "slot_number_type": "int",
+      "slot_number_is_none": false,
+      "subject": "Science",
+      "subject_is_none": false,
+      "hyperlink_count": 0,
+      "teacher": "Mariela Grande / Daniela Silva",
+      "filtering_will_activate": true
+    }
+  },
+  {
+    "timestamp": "2025-11-22T17:33:26.939655",
+    "stage": "03_before_render_slot4",
+    "data": {
+      "slot_number": 4,
+      "subject": "Science",
+      "render_type": "multi_slot",
+      "metadata_slot_number": 4,
+      "metadata_subject": "Science",
+      "hyperlink_count": 3,
+      "all_hyperlinks_have_slot": true,
+      "all_hyperlinks_have_subject": true,
+      "hyperlink_slot_distribution": {
+        "4": 3
+      },
+      "sample_hyperlinks": [
+        {
+          "text": " 2nd Grade Science ",
+          "source_slot": 4,
+          "source_subject": "Science"
+        },
+        {
+          "text": " 2nd Grade Science ",
+          "source_slot": 4,
+          "source_subject": "Science"
+        },
+        {
+          "text": " 2nd Grade Science ",
+          "source_slot": 4,
+          "source_subject": "Science"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-11-22T17:33:26.961433",
+    "stage": "04_renderer_metadata_extracted",
+    "data": {
+      "slot_number": 4,
+      "slot_number_type": "int",
+      "slot_number_is_none": false,
+      "subject": "Science",
+      "subject_is_none": false,
+      "hyperlink_count": 3,
+      "teacher": "Catarina Morais / Daniela Silva",
+      "filtering_will_activate": true
+    }
+  },
+  {
+    "timestamp": "2025-11-22T17:33:27.073402",
+    "stage": "03_before_render_slot5",
+    "data": {
+      "slot_number": 5,
+      "subject": "Math",
+      "render_type": "multi_slot",
+      "metadata_slot_number": 5,
+      "metadata_subject": "Math",
+      "hyperlink_count": 5,
+      "all_hyperlinks_have_slot": true,
+      "all_hyperlinks_have_subject": true,
+      "hyperlink_slot_distribution": {
+        "5": 5
+      },
+      "sample_hyperlinks": [
+        {
+          "text": "2.3.10 Teacher Guide",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "Unit 3: Measuring Length",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "2.3.10 Cool-down",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "2.3.11 Cool Down",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "2.3.12 Cool Down",
+          "source_slot": 5,
+          "source_subject": "Math"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-11-22T17:33:27.094032",
+    "stage": "04_renderer_metadata_extracted",
+    "data": {
+      "slot_number": 5,
+      "slot_number_type": "int",
+      "slot_number_is_none": false,
+      "subject": "Math",
+      "subject_is_none": false,
+      "hyperlink_count": 5,
+      "teacher": "Catarina Morais / Daniela Silva",
+      "filtering_will_activate": true
+    }
+  }
+]

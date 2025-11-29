@@ -1,0 +1,1475 @@
+{
+  "_meta": {
+    "schema_version": "1.6",
+    "description": "Advanced bilingual teaching strategies with full alignment to Markdown schema - includes skill weights, delivery modes, and L1 usage patterns.",
+    "total_strategies": 27,
+    "completion_status": "complete",
+    "wida_framework_reference": "wida_framework_reference.json",
+    "fields": [
+      "id",
+      "strategy_name",
+      "aliases",
+      "present_in",
+      "evidence_tier",
+      "core_principle",
+      "applicable_contexts",
+      "implementation_steps",
+      "primary_benefits",
+      "research_foundation",
+      "cross_refs",
+      "high_level_categories",
+      "primary_skill",
+      "secondary_skills",
+      "skill_weights",
+      "delivery_modes",
+      "l1_modes",
+      "is_integrated_framework"
+    ],
+    "taxonomy": {
+      "high_level_categories": [
+        "Language Skill Development",
+        "Instructional Frameworks & Models", 
+        "Cross-Linguistic & Biliteracy",
+        "Assessment & Scaffolding",
+        "Social & Interactive Learning",
+        "Cultural & Identity Affirming",
+        "Content & Language Integration",
+        "Cognitive & Metacognitive"
+      ],
+      "skills": [
+        "speaking",
+        "listening", 
+        "reading",
+        "writing",
+        "integrated"
+      ],
+      "delivery_modes": [
+        "push-in",
+        "pull-out", 
+        "whole-group",
+        "small-group",
+        "individual"
+      ],
+      "l1_modes": [
+        "translanguaging",
+        "preview-review",
+        "strategic-code-switch",
+        "none"
+      ]
+    }
+  },
+  "strategies": [
+    {
+      "id": "bilingual_dictionary",
+      "strategy_name": "Bilingual Dictionary and Glossary Use",
+      "aliases": [
+        "Bilingual glossaries"
+      ],
+      "present_in": [
+        "ChatGPT"
+      ],
+      "evidence_tier": "practice-based/mixed",
+      "core_principle": "Leverage L1Ã¢â‚¬â€œL2 dictionaries to clarify new terms and support independent comprehension.",
+      "applicable_contexts": [
+        "Self-directed reading or research",
+        "Content lessons with dense academic vocabulary",
+        "Writing tasks requiring precise word choice"
+      ],
+      "implementation_steps": [
+        "Model context-first inference, then confirm with a bilingual dictionary.",
+        "Embed routine look-ups in reading/writing; teach efficient dictionary skills.",
+        "Verify fit-in-context (e.g., reverse-translation or image check)."
+      ],
+      "primary_benefits": [
+        "Improves comprehension of academic texts",
+        "Builds bilingual vocabulary and learner autonomy"
+      ],
+      "research_foundation": [
+        "Jim Cummins",
+        "Ellen Bialystok"
+      ],
+      "cross_refs": [
+        "Explicit Vocabulary Instruction",
+        "Cognate Awareness"
+      ],
+      "high_level_categories": ["Language Skill Development", "Cross-Linguistic & Biliteracy"],
+      "primary_skill": "reading",
+      "secondary_skills": ["writing"],
+      "skill_weights": {
+        "speaking": 0.0,
+        "listening": 0.0,
+        "reading": 0.5,
+        "writing": 0.5
+      },
+      "delivery_modes": ["push-in", "small-group", "whole-group"],
+      "l1_modes": ["translanguaging", "preview-review"],
+      "is_integrated_framework": false
+    },
+    {
+      "id": "bilingual_word_walls",
+      "strategy_name": "Bilingual Word Walls and Labels",
+      "aliases": [
+        "L1Ã¢â‚¬â€œL2 classroom labels"
+      ],
+      "present_in": [
+        "ChatGPT"
+      ],
+      "evidence_tier": "practice-based/mixed",
+      "core_principle": "Display key terms in English and L1 to make vocabulary constantly visible and meaningful.",
+      "applicable_contexts": [
+        "Vocabulary-heavy units",
+        "Literacy centers/emergent readers",
+        "Thematic launches"
+      ],
+      "implementation_steps": [
+        "Co-create bilingual word cards with visuals; organize by theme or alphabet.",
+        "Routinely reference during instruction and practice via quick games."
+      ],
+      "primary_benefits": [
+        "Reinforces retention through exposure",
+        "Builds inclusion and independence"
+      ],
+      "research_foundation": [
+        "Jim Cummins",
+        "Joanna Conteh"
+      ],
+      "cross_refs": [
+        "Explicit Vocabulary Instruction",
+        "GLAD"
+      ],
+      "high_level_categories": ["Language Skill Development"],
+      "primary_skill": "reading",
+      "secondary_skills": ["speaking", "writing"],
+      "skill_weights": {
+        "speaking": 0.25,
+        "listening": 0.0,
+        "reading": 0.5,
+        "writing": 0.25
+      },
+      "delivery_modes": ["push-in", "whole-group", "small-group"],
+      "l1_modes": ["translanguaging", "preview-review"],
+      "is_integrated_framework": false
+    },
+    {
+      "id": "calla",
+      "strategy_name": "CALLA (Cognitive Academic Language Learning Approach)",
+      "aliases": [
+        "Strategy-based instruction"
+      ],
+      "present_in": [
+        "ChatGPT"
+      ],
+      "evidence_tier": "research-backed",
+      "core_principle": "Teach learning strategies (metacognitive, cognitive, social) alongside content.",
+      "applicable_contexts": [
+        "Upper-elementary and secondary content classes",
+        "Lessons requiring complex texts/problem solving"
+      ],
+      "implementation_steps": [
+        "Set content + strategy goals; model with think-alouds.",
+        "Guide practice (e.g., summarizing, graphic organizers) and reflect on transfer."
+      ],
+      "primary_benefits": [
+        "Builds metacognition and academic language",
+        "Increases learner autonomy"
+      ],
+      "research_foundation": [
+        "Anna Uhl Chamot",
+        "J. Michael O'Malley"
+      ],
+      "cross_refs": [
+        "SIOP",
+        "Metacognitive & Self-Regulation Strategies"
+      ],
+      "high_level_categories": ["Instructional Frameworks & Models", "Assessment & Scaffolding"],
+      "primary_skill": "integrated",
+      "secondary_skills": ["speaking", "listening", "reading", "writing"],
+      "skill_weights": {
+        "speaking": 0.25,
+        "listening": 0.25,
+        "reading": 0.25,
+        "writing": 0.25
+      },
+      "delivery_modes": ["push-in", "whole-group", "small-group"],
+      "l1_modes": ["translanguaging", "preview-review", "strategic-code-switch"],
+      "is_integrated_framework": true
+    },
+    {
+      "id": "clil",
+      "strategy_name": "Content and Language Integrated Learning (CLIL)",
+      "aliases": [
+        "Content-Based Instruction (CBI)"
+      ],
+      "present_in": [
+        "ChatGPT",
+        "Gemini"
+      ],
+      "evidence_tier": "research-backed",
+      "core_principle": "Plan for simultaneous content objectives and language objectives with scaffolding.",
+      "applicable_contexts": [
+        "Dual-language/immersion content",
+        "Mainstream content with ELLs",
+        "Project-based learning"
+      ],
+      "implementation_steps": [
+        "State content + language objectives; pre-teach key terms.",
+        "Use visuals/realia/organizers; build interactive tasks using target language."
+      ],
+      "primary_benefits": [
+        "Promotes content mastery and language growth",
+        "Raises motivation via meaningful context"
+      ],
+      "research_foundation": [
+        "David Marsh",
+        "Do Coyle"
+      ],
+      "cross_refs": [
+        "SIOP",
+        "Scaffolding",
+        "Thematic Instruction"
+      ],
+      "high_level_categories": ["Instructional Frameworks & Models", "Content & Language Integration"],
+      "primary_skill": "integrated",
+      "secondary_skills": ["speaking", "listening", "reading", "writing"],
+      "skill_weights": {
+        "speaking": 0.25,
+        "listening": 0.25,
+        "reading": 0.25,
+        "writing": 0.25
+      },
+      "delivery_modes": ["push-in", "whole-group", "small-group"],
+      "l1_modes": ["translanguaging", "preview-review"],
+      "is_integrated_framework": true
+    },
+    {
+      "id": "cognate_awareness",
+      "strategy_name": "Cognate Awareness",
+      "aliases": [
+        "Cross-language cognates"
+      ],
+      "present_in": [
+        "ChatGPT"
+      ],
+      "evidence_tier": "research-backed",
+      "core_principle": "Make explicit links between cognates (e.g., informaÃƒÂ§ÃƒÂ£oÃ¢â‚¬â€œinformation) and teach false cognates.",
+      "applicable_contexts": [
+        "Reading comprehension",
+        "Vocabulary in content areas",
+        "Greek/Latin roots work"
+      ],
+      "implementation_steps": [
+        "Chart L1Ã¢â‚¬â€œL2 cognates and revisit in units.",
+        "Design recognition and sorting tasks; teach common false pairs."
+      ],
+      "primary_benefits": [
+        "Accelerates vocabulary acquisition",
+        "Builds metalinguistic awareness"
+      ],
+      "research_foundation": [
+        "Diane August",
+        "Claude Goldenberg"
+      ],
+      "cross_refs": [
+        "Explicit Vocabulary Instruction",
+        "The Bridge"
+      ],
+      "high_level_category": "Cross-Linguistic & Biliteracy",
+      "primary_skill": "reading",
+      "secondary_skills": ["writing"],
+      "is_integrated_framework": false
+    },
+    {
+      "id": "contrastive_analysis",
+      "strategy_name": "Contrastive Analysis (Cross-Linguistic Comparison)",
+      "aliases": [
+        "Error analysis using L1Ã¢â‚¬â€œL2 contrasts"
+      ],
+      "present_in": [
+        "ChatGPT"
+      ],
+      "evidence_tier": "practice-based/mixed",
+      "core_principle": "Compare English and L1 structures to address predictable errors and build awareness.",
+      "applicable_contexts": [
+        "Grammar/pronunciation lessons",
+        "Advanced accuracy work"
+      ],
+      "implementation_steps": [
+        "Present side-by-side examples; state rules in both languages.",
+        "Practice with translation/correction tasks; reference during feedback."
+      ],
+      "primary_benefits": [
+        "Reduces L1 interference errors",
+        "Strengthens analytical skills about language"
+      ],
+      "research_foundation": [
+        "Robert Lado",
+        "Larry Selinker"
+      ],
+      "cross_refs": [
+        "Language Separation",
+        "Metacognitive & Self-Regulation Strategies"
+      ],
+      "high_level_category": "Cross-Linguistic & Biliteracy",
+      "primary_skill": "writing",
+      "secondary_skills": ["reading"],
+      "is_integrated_framework": false
+    },
+    {
+      "id": "collaborative_learning",
+      "strategy_name": "Collaborative Learning with L1 Support",
+      "aliases": [
+        "Cooperative Learning",
+        "Think-Pair-Share"
+      ],
+      "present_in": [
+        "ChatGPT",
+        "Gemini"
+      ],
+      "evidence_tier": "research-backed",
+      "core_principle": "Use structured peer interaction, allowing L1 discussion toward English output.",
+      "applicable_contexts": [
+        "Group problem-solving",
+        "Peer tutoring",
+        "ThinkÃ¢â‚¬â€œpairÃ¢â‚¬â€œshare"
+      ],
+      "implementation_steps": [
+        "Group same-L1 peers for comprehension in L1; require English output products.",
+        "Provide protocols and sentence frames; monitor and debrief."
+      ],
+      "primary_benefits": [
+        "Increases interaction and confidence",
+        "Improves quality of English output"
+      ],
+      "research_foundation": [
+        "Margarita CalderÃƒÂ³n",
+        "Robert Slavin",
+        "Spencer Kagan"
+      ],
+      "cross_refs": [
+        "Translanguaging",
+        "SIOP"
+      ],
+      "high_level_category": "Social & Interactive Learning",
+      "primary_skill": "speaking",
+      "secondary_skills": ["listening", "reading", "writing"],
+      "is_integrated_framework": false
+    },
+    {
+      "id": "crt",
+      "strategy_name": "Culturally Responsive Teaching",
+      "aliases": [
+        "Culturally Sustaining Pedagogy"
+      ],
+      "present_in": [
+        "ChatGPT"
+      ],
+      "evidence_tier": "research-backed",
+      "core_principle": "Integrate studentsÃ¢â‚¬â„¢ cultural/linguistic assets into curriculum, relationships, and routines.",
+      "applicable_contexts": [
+        "Diverse multilingual classrooms",
+        "Literature/social studies",
+        "Community-building"
+      ],
+      "implementation_steps": [
+        "Survey/learn about students; select representative texts/examples.",
+        "Validate L1 use; adapt methods to cultural communication norms."
+      ],
+      "primary_benefits": [
+        "Raises engagement and belonging",
+        "Connects new learning to lived experience"
+      ],
+      "research_foundation": [
+        "Geneva Gay",
+        "Gloria Ladson-Billings"
+      ],
+      "cross_refs": [
+        "Translanguaging",
+        "Thematic Instruction"
+      ],
+      "high_level_category": "Cultural & Identity Affirming",
+      "primary_skill": "listening",
+      "secondary_skills": ["speaking", "reading", "writing"],
+      "is_integrated_framework": false
+    },
+    {
+      "id": "dialogue_journals",
+      "strategy_name": "Dialogue Journals",
+      "aliases": [
+        "TeacherÃ¢â‚¬â€œstudent journals"
+      ],
+      "present_in": [
+        "ChatGPT"
+      ],
+      "evidence_tier": "practice-based/mixed",
+      "core_principle": "Sustained written conversations (bilingual as needed) to build fluency and rapport.",
+      "applicable_contexts": [
+        "ESL writing classes",
+        "Newcomers building confidence"
+      ],
+      "implementation_steps": [
+        "Set low-stakes journaling; respond to content, modeling accurate language.",
+        "Gradually prompt increased English use; keep tone supportive."
+      ],
+      "primary_benefits": [
+        "Builds fluency and individualized modeling",
+        "Strengthens teacherÃ¢â‚¬â€œstudent relationship"
+      ],
+      "research_foundation": [
+        "Joy Kreeft Peyton",
+        "Janet Staton"
+      ],
+      "cross_refs": [
+        "Recasting",
+        "Metacognitive & Self-Regulation Strategies"
+      ],
+      "high_level_category": "Language Skill Development",
+      "primary_skill": "writing",
+      "secondary_skills": ["reading"],
+      "is_integrated_framework": false
+    },
+    {
+      "id": "glad",
+      "strategy_name": "GLAD (Guided Language Acquisition Design)",
+      "aliases": [
+        "Project GLAD"
+      ],
+      "present_in": [
+        "ChatGPT"
+      ],
+      "evidence_tier": "practice-based/mixed",
+      "core_principle": "Use visuals, interactive charts, chants, and collaborative structures to teach content + language.",
+      "applicable_contexts": [
+        "Elementary & middle content",
+        "Science/social studies units"
+      ],
+      "implementation_steps": [
+        "Plan pictorial input/observation charts; co-construct sentence patterning charts.",
+        "Leverage chants and expert groups; revisit charts across the unit."
+      ],
+      "primary_benefits": [
+        "High engagement and comprehensible input",
+        "Integrated academic language practice"
+      ],
+      "research_foundation": [
+        "Marcia Brechtel"
+      ],
+      "cross_refs": [
+        "SIOP",
+        "Explicit Vocabulary Instruction",
+        "Scaffolding"
+      ],
+      "high_level_category": "Instructional Frameworks & Models",
+      "primary_skill": "listening",
+      "secondary_skills": ["reading", "writing", "speaking"],
+      "is_integrated_framework": true
+    },
+    {
+      "id": "lea",
+      "strategy_name": "Language Experience Approach (LEA)",
+      "aliases": [
+        "Dictated stories"
+      ],
+      "present_in": [
+        "ChatGPT"
+      ],
+      "evidence_tier": "practice-based/mixed",
+      "core_principle": "Use studentsÃ¢â‚¬â„¢ oral language (L1 and/or English) to generate texts for literacy instruction.",
+      "applicable_contexts": [
+        "Early literacy",
+        "Newcomers with strong L1 oracy"
+      ],
+      "implementation_steps": [
+        "Elicit oral recounts; transcribe faithfully.",
+        "Use text for guided reading/word work; translate collaboratively to bridge."
+      ],
+      "primary_benefits": [
+        "Creates meaningful, comprehensible texts",
+        "Bridges oral-to-written and L1-to-English"
+      ],
+      "research_foundation": [
+        "Sylvia Ashton-Warner",
+        "Roach Van Allen"
+      ],
+      "cross_refs": [
+        "PWIM",
+        "The Bridge"
+      ],
+      "high_level_category": "Language Skill Development",
+      "primary_skill": "reading",
+      "secondary_skills": ["writing", "speaking"],
+      "is_integrated_framework": false
+    },
+    {
+      "id": "pwim",
+      "strategy_name": "Picture Word Inductive Model (PWIM)",
+      "aliases": [
+        "Picture-word labeling"
+      ],
+      "present_in": [
+        "ChatGPT"
+      ],
+      "evidence_tier": "practice-based/mixed",
+      "core_principle": "Start from images to inductively build vocabulary, phonics, and writing.",
+      "applicable_contexts": [
+        "Early literacy and thematic launches",
+        "Mixed-proficiency classes"
+      ],
+      "implementation_steps": [
+        "Label picture elements; review/pronounce; analyze patterns.",
+        "Sort by parts of speech/semantic groups; move to sentence/paragraph writing."
+      ],
+      "primary_benefits": [
+        "Expands vocabulary via student observation",
+        "Links word recognition to writing"
+      ],
+      "research_foundation": [
+        "Emily Calhoun",
+        "Valentina Gonzalez"
+      ],
+      "cross_refs": [
+        "Explicit Vocabulary Instruction",
+        "LEA"
+      ],
+      "high_level_category": "Language Skill Development",
+      "primary_skill": "reading",
+      "secondary_skills": ["writing"],
+      "is_integrated_framework": false
+    },
+    {
+      "id": "preview_review",
+      "strategy_name": "PreviewÃ¢â‚¬â€œReview (L1Ã¢â‚¬â€œL2)",
+      "aliases": [
+        "Bilingual Preview/Review"
+      ],
+      "present_in": [
+        "ChatGPT"
+      ],
+      "evidence_tier": "research-backed",
+      "core_principle": "Brief L1 preview and post-lesson review while main instruction occurs in English.",
+      "applicable_contexts": [
+        "Push-in support",
+        "New units/difficult concepts"
+      ],
+      "implementation_steps": [
+        "Preview key ideas/vocabulary in L1; teach in English; review/clarify in L1.",
+        "Invite L1 explanations to check comprehension; recycle target English terms."
+      ],
+      "primary_benefits": [
+        "Frontloads context and solidifies learning",
+        "Maintains lesson flow without constant translation"
+      ],
+      "research_foundation": [
+        "Claude Goldenberg",
+        "Dorothy Legarreta"
+      ],
+      "cross_refs": [
+        "Strategic Code-Switching",
+        "The Bridge"
+      ],
+      "high_level_category": "Cross-Linguistic & Biliteracy",
+      "primary_skill": "listening",
+      "secondary_skills": ["reading", "writing", "speaking"],
+      "is_integrated_framework": false
+    },
+    {
+      "id": "siop",
+      "strategy_name": "Sheltered Instruction (SIOP Model)",
+      "aliases": [
+        "Sheltered Instruction Observation Protocol"
+      ],
+      "present_in": [
+        "ChatGPT",
+        "Gemini"
+      ],
+      "evidence_tier": "research-backed",
+      "core_principle": "Framework of best practices to make grade-level content comprehensible while developing academic English.",
+      "applicable_contexts": [
+        "Mainstream classes with ELLs",
+        "Designated sheltered courses"
+      ],
+      "implementation_steps": [
+        "State content + language objectives; build background and vocabulary.",
+        "Use visuals/interactions; practice & application; review/assess for both domains."
+      ],
+      "primary_benefits": [
+        "Access to rigorous content",
+        "Accelerated academic language growth"
+      ],
+      "research_foundation": [
+        "Jana EchevarrÃƒÂ­a",
+        "Deborah Short",
+        "MaryEllen Vogt"
+      ],
+      "cross_refs": [
+        "CLIL",
+        "Scaffolding",
+        "Formative Assessment"
+      ],
+      "high_level_category": "Instructional Frameworks & Models",
+      "primary_skill": "listening",
+      "secondary_skills": ["reading", "writing", "speaking"],
+      "is_integrated_framework": true
+    },
+    {
+      "id": "strategic_code_switching",
+      "strategy_name": "Strategic Code-Switching",
+      "aliases": [
+        "Planned L1 clarification"
+      ],
+      "present_in": [
+        "ChatGPT"
+      ],
+      "evidence_tier": "practice-based/mixed",
+      "core_principle": "Brief, purposeful switches to L1 to unlock comprehension, then immediate return to English.",
+      "applicable_contexts": [
+        "Complex concepts/terms",
+        "Task directions/safety info"
+      ],
+      "implementation_steps": [
+        "Clarify in L1 in a sentence or two; immediately restate in English.",
+        "Monitor frequency and reduce as proficiency grows."
+      ],
+      "primary_benefits": [
+        "Prevents misunderstandings and frustration",
+        "Supports confidence and efficiency"
+      ],
+      "research_foundation": [
+        "M. Sakaria",
+        "Dwi Priyana"
+      ],
+      "cross_refs": [
+        "PreviewÃ¢â‚¬â€œReview",
+        "Translanguaging"
+      ],
+      "high_level_category": "Cross-Linguistic & Biliteracy",
+      "primary_skill": "speaking",
+      "secondary_skills": ["listening"],
+      "is_integrated_framework": false
+    },
+    {
+      "id": "the_bridge",
+      "strategy_name": "The Bridge (Cross-Language Transfer)",
+      "aliases": [
+        "Biliteracy Bridge"
+      ],
+      "present_in": [
+        "ChatGPT"
+      ],
+      "evidence_tier": "practice-based/mixed",
+      "core_principle": "Explicitly map learned content/vocabulary from L1 to English (and vice versa) to ensure transfer.",
+      "applicable_contexts": [
+        "Dual-language units",
+        "Push-in review after English lessons"
+      ],
+      "implementation_steps": [
+        "List key L1 concepts; co-create English equivalents in two-column charts.",
+        "Compare cognates/false cognates; apply via English summaries/presentations."
+      ],
+      "primary_benefits": [
+        "Prevents compartmentalization",
+        "Builds biliterate academic vocabulary"
+      ],
+      "research_foundation": [
+        "Karen Beeman",
+        "Cheryl Urow"
+      ],
+      "cross_refs": [
+        "Cognate Awareness",
+        "PreviewÃ¢â‚¬â€œReview"
+      ],
+      "high_level_category": "Cross-Linguistic & Biliteracy",
+      "primary_skill": "reading",
+      "secondary_skills": ["writing", "speaking"],
+      "is_integrated_framework": false
+    },
+    {
+      "id": "tpr",
+      "strategy_name": "Total Physical Response (TPR)",
+      "aliases": [
+        "Listen-and-do"
+      ],
+      "present_in": [
+        "ChatGPT",
+        "Gemini"
+      ],
+      "evidence_tier": "research-backed",
+      "core_principle": "Combine language with physical movement to reduce anxiety and strengthen retention.",
+      "applicable_contexts": [
+        "Introducing action verbs and routines",
+        "Kinesthetic activities for newcomers"
+      ],
+      "implementation_steps": [
+        "Demonstrate simple commands, then sequence into stories.",
+        "Fade movement as vocabulary internalizes."
+      ],
+      "primary_benefits": [
+        "Lowers affective filter",
+        "Improves memory and engagement"
+      ],
+      "research_foundation": [
+        "James J. Asher"
+      ],
+      "cross_refs": [
+        "Explicit Vocabulary Instruction"
+      ],
+      "high_level_category": "Language Skill Development",
+      "primary_skill": "listening",
+      "secondary_skills": ["speaking"],
+      "is_integrated_framework": false
+    },
+    {
+      "id": "translanguaging",
+      "strategy_name": "Translanguaging",
+      "aliases": [
+        "Flexible bilingual pedagogy"
+      ],
+      "present_in": [
+        "ChatGPT",
+        "Gemini"
+      ],
+      "evidence_tier": "research-backed",
+      "core_principle": "Invite studentsÃ¢â‚¬â„¢ full linguistic repertoire for meaning-making and expression.",
+      "applicable_contexts": [
+        "Content instruction with multilinguals",
+        "Brainstorming/drafting in L1 before English output"
+      ],
+      "implementation_steps": [
+        "Offer multilingual resources; allow L1 brainstorming/notes; peer translation tasks.",
+        "Bridge to English products with scaffolds and modeling."
+      ],
+      "primary_benefits": [
+        "Affirms identity and increases access",
+        "Develops cognitive flexibility"
+      ],
+      "research_foundation": [
+        "Ofelia GarcÃƒÂ­a",
+        "Li Wei",
+        "Tatyana Kleyn",
+        "Nelson Flores"
+      ],
+      "cross_refs": [
+        "Language Separation",
+        "Collaborative Learning",
+        "The Bridge"
+      ],
+      "high_level_category": "Cross-Linguistic & Biliteracy",
+      "primary_skill": "speaking",
+      "secondary_skills": ["listening", "reading", "writing"],
+      "is_integrated_framework": false
+    },
+    {
+      "id": "differentiated_instruction",
+      "strategy_name": "Differentiated Instruction",
+      "aliases": [
+        "Flexible grouping & tasks"
+      ],
+      "present_in": [
+        "Gemini"
+      ],
+      "evidence_tier": "practice-based/mixed",
+      "core_principle": "Adjust content, process, and product based on proficiency, interests, and readiness.",
+      "applicable_contexts": [
+        "Classes with wide proficiency ranges",
+        "Universal access to grade-level content"
+      ],
+      "implementation_steps": [
+        "Use formative data to group; provide multiple pathways/materials.",
+        "Integrate scaffolds, translanguaging, and varied outputs."
+      ],
+      "primary_benefits": [
+        "Equity of access",
+        "Higher engagement and belonging"
+      ],
+      "research_foundation": [
+        "Carol Ann Tomlinson",
+        "Diane August"
+      ],
+      "cross_refs": [
+        "Formative Assessment",
+        "Scaffolding"
+      ],
+      "high_level_category": "Assessment & Scaffolding",
+      "primary_skill": "listening",
+      "secondary_skills": ["reading", "writing", "speaking"],
+      "is_integrated_framework": false
+    },
+    {
+      "id": "explicit_vocab",
+      "strategy_name": "Explicit Vocabulary Instruction",
+      "aliases": [
+        "Tier 2 & 3 word teaching"
+      ],
+      "present_in": [
+        "Gemini"
+      ],
+      "evidence_tier": "research-backed",
+      "core_principle": "Directly teach high-utility and content-specific words across multiple, meaningful exposures.",
+      "applicable_contexts": [
+        "All content areas with complex texts",
+        "Bridging L1 knowledge via cognates"
+      ],
+      "implementation_steps": [
+        "Select Tier 2/3 words; use student-friendly definitions and visuals.",
+        "Provide repeated oral/written practice in varied contexts."
+      ],
+      "primary_benefits": [
+        "Deepens conceptual understanding",
+        "Accelerates reading comprehension"
+      ],
+      "research_foundation": [
+        "Isabel Beck",
+        "Margaret McKeown",
+        "Linda Kucan",
+        "Elsa CÃƒÂ¡rdenas-Hagan"
+      ],
+      "cross_refs": [
+        "Cognate Awareness",
+        "GLAD"
+      ],
+      "high_level_category": "Language Skill Development",
+      "primary_skill": "reading",
+      "secondary_skills": ["writing"],
+      "is_integrated_framework": false
+    },
+    {
+      "id": "formative_assessment",
+      "strategy_name": "Formative Assessment",
+      "aliases": [
+        "Assessment for learning"
+      ],
+      "present_in": [
+        "Gemini"
+      ],
+      "evidence_tier": "research-backed",
+      "core_principle": "Gather evidence of learning to adjust instruction and provide actionable feedback in real time.",
+      "applicable_contexts": [
+        "Daily instruction across subjects",
+        "Assess content understanding and language development"
+      ],
+      "implementation_steps": [
+        "Co-define goals/success criteria; collect varied evidence.",
+        "Give timely feedback; allow L1 to assess content knowledge accurately."
+      ],
+      "primary_benefits": [
+        "Closes learning gaps quickly",
+        "Promotes agency and growth mindset"
+      ],
+      "research_foundation": [
+        "SIOP",
+        "Thematic Instruction"
+      ],
+      "high_level_category": "Content & Language Integration",
+      "primary_skill": "listening",
+      "secondary_skills": ["reading", "writing", "speaking"],
+      "is_integrated_framework": true
+    },
+    {
+      "id": "scaffolding",
+      "strategy_name": "Instructional Scaffolding",
+      "aliases": [
+        "Gradual release; supports"
+      ],
+      "present_in": [
+        "Gemini"
+      ],
+      "evidence_tier": "research-backed",
+      "core_principle": "Provide temporary supports (models, visuals, frames) and fade as independence grows.",
+      "applicable_contexts": [
+        "Introducing challenging content",
+        "Mixed proficiency classes"
+      ],
+      "implementation_steps": [
+        "Model (I do–We do–You do); use organizers and manipulatives.",
+        "Provide sentence frames/word banks; gradually remove supports."
+      ],
+      "primary_benefits": [
+        "Enables access to rigor",
+        "Maintains high challenge with support"
+      ],
+      "research_foundation": [
+        "Lev Vygotsky",
+        "Jerome Bruner",
+        "Pauline Gibbons"
+      ],
+      "cross_refs": [
+        "Metacognitive & Self-Regulation Strategies",
+        "Explicit Vocabulary Instruction"
+      ],
+      "high_level_category": "Cognitive & Metacognitive",
+      "primary_skill": "listening",
+      "secondary_skills": ["reading", "writing", "speaking"],
+      "is_integrated_framework": true
+    },
+    {
+      "id": "scaffolding",
+      "strategy_name": "Instructional Scaffolding",
+      "aliases": [
+        "Gradual release; supports"
+      ],
+      "present_in": [
+        "Gemini"
+      ],
+      "evidence_tier": "research-backed",
+      "core_principle": "Provide temporary supports (models, visuals, frames) and fade as independence grows.",
+      "applicable_contexts": [
+        "Introducing challenging content",
+        "Mixed proficiency classes"
+      ],
+      "implementation_steps": [
+        "Model (I do–We do–You do); use organizers and manipulatives.",
+        "Provide sentence frames/word banks; gradually remove supports."
+      ],
+      "primary_benefits": [
+        "Enables access to rigor",
+        "Maintains high challenge with support"
+      ],
+      "research_foundation": [
+        "Lev Vygotsky",
+        "Jerome Bruner",
+        "Pauline Gibbons"
+      ],
+      "cross_refs": [
+        "Metacognitive & Self-Regulation Strategies",
+        "Explicit Vocabulary Instruction"
+      ],
+      "high_level_category": "Cognitive & Metacognitive",
+      "primary_skill": "listening",
+      "secondary_skills": ["reading", "writing", "speaking"],
+      "is_integrated_framework": true
+    },
+    {
+      "id": "language_separation",
+      "strategy_name": "Language Separation",
+      "aliases": [
+        "Language allocation policy"
+      ],
+      "present_in": [
+        "Gemini"
+      ],
+      "evidence_tier": "practice-based/mixed",
+      "core_principle": "Allocate specific languages to times/subjects/activities to strengthen each system.",
+      "applicable_contexts": [
+        "Dual language blocks",
+        "Biliteracy domain development"
+      ],
+      "implementation_steps": [
+        "Set and communicate allocation policy; deliver resources in the designated language.",
+        "Avoid on-the-spot translation; ensure comprehension via non-translation scaffolds."
+      ],
+      "primary_benefits": [
+        "Strengthens language differentiation",
+        "Ensures consistent exposure"
+      ],
+      "research_foundation": [
+        "Jim Cummins",
+        "Kathryn Lindholm-Leary",
+        "CAL"
+      ],
+      "cross_refs": [
+        "Translanguaging",
+        "The Bridge"
+      ],
+      "high_level_category": "Cross-Linguistic & Biliteracy",
+      "primary_skill": "reading",
+      "secondary_skills": ["writing"],
+      "is_integrated_framework": false
+    },
+    {
+      "id": "metacognitive_selfreg",
+      "strategy_name": "Metacognitive & Self-Regulation Strategies",
+      "aliases": [
+        "PlanningÃ¢â‚¬â€œMonitoringÃ¢â‚¬â€œEvaluatingÃ¢â‚¬â€œRegulating"
+      ],
+      "present_in": [
+        "Gemini",
+        "ChatGPT (via CALLA)"
+      ],
+      "evidence_tier": "research-backed",
+      "core_principle": "Teach learners to plan, monitor, evaluate, and regulate their learning strategies.",
+      "applicable_contexts": [
+        "Independent learning and complex assignments",
+        "Reading/writing strategy development"
+      ],
+      "implementation_steps": [
+        "Set goals and plans; monitor progress with checklists/notes.",
+        "Post-task self-evaluation; adjust strategies for next time."
+      ],
+      "primary_benefits": [
+        "Builds autonomy and problem solving",
+        "Leads to more efficient learning"
+      ],
+      "research_foundation": [
+        "Barry Zimmerman",
+        "Paul Pintrich",
+        "Ana Kormos"
+      ],
+      "cross_refs": [
+        "CALLA"
+      ],
+      "high_level_category": "Cognitive & Metacognitive",
+      "primary_skill": "listening",
+      "secondary_skills": ["reading", "writing", "speaking"],
+      "is_integrated_framework": false
+    },
+    {
+      "id": "paired_literacy",
+      "strategy_name": "Paired Literacy",
+      "aliases": [
+        "Literacy Squared"
+      ],
+      "present_in": [
+        "Gemini"
+      ],
+      "evidence_tier": "research-backed",
+      "core_principle": "Develop literacy concurrently in both languages from early grades to foster biliteracy.",
+      "applicable_contexts": [
+        "KÃ¢â‚¬â€œ5 dual language programs",
+        "Late-exit transitional programs"
+      ],
+      "implementation_steps": [
+        "Begin literacy in both languages; use paired/parallel texts.",
+        "Assess biliteracy and teach cross-language connections."
+      ],
+      "primary_benefits": [
+        "Stronger outcomes than sequential literacy",
+        "Maintains/progresses L1 while building English"
+      ],
+      "research_foundation": [
+        "Kathy Escamilla",
+        "Susan Mahaffey"
+      ],
+      "cross_refs": [
+        "The Bridge",
+        "Cognate Awareness"
+      ],
+      "high_level_category": "Cross-Linguistic & Biliteracy",
+      "primary_skill": "reading",
+      "secondary_skills": ["writing"],
+      "is_integrated_framework": false
+    },
+    {
+      "id": "recasting",
+      "strategy_name": "Recasting",
+      "aliases": [
+        "Implicit corrective feedback"
+      ],
+      "present_in": [
+        "Gemini"
+      ],
+      "evidence_tier": "research-backed",
+      "core_principle": "Repeat learner utterance in corrected form without interrupting communication.",
+      "applicable_contexts": [
+        "Informal talk and small groups",
+        "Pronunciation/grammar feedback"
+      ],
+      "implementation_steps": [
+        "Focus on one change at a time; keep flow conversational.",
+        "Acknowledge message content while modeling accurate form."
+      ],
+      "primary_benefits": [
+        "Low-anxiety feedback",
+        "Gradual internalization of target forms"
+      ],
+      "research_foundation": [
+        "Matthew Saxton",
+        "Rod Ellis",
+        "Alan Kamhi"
+      ],
+      "cross_refs": [
+        "Dialogue Journals"
+      ],
+      "high_level_category": "Language Skill Development",
+      "primary_skill": "speaking",
+      "secondary_skills": ["listening"],
+      "is_integrated_framework": false
+    },
+    {
+      "id": "thematic_instruction",
+      "strategy_name": "Thematic Instruction",
+      "aliases": [
+        "Interdisciplinary units"
+      ],
+      "present_in": [
+        "Gemini"
+      ],
+      "evidence_tier": "practice-based/mixed",
+      "core_principle": "Organize around engaging themes to integrate content and all four language domains.",
+      "applicable_contexts": [
+        "Units connecting multiple subjects",
+        "Vocabulary and knowledge retention"
+      ],
+      "implementation_steps": [
+        "Choose flexible themes; map concepts/skills across subjects.",
+        "Plan varied, standards-aligned activities tied to studentsÃ¢â‚¬â„¢ lives."
+      ],
+      "primary_benefits": [
+        "Boosts engagement and retention",
+        "Fosters cross-disciplinary connections"
+      ],
+      "research_foundation": [
+        "Robin Penna Baskinger"
+      ],
+      "cross_refs": [
+        "CLIL",
+        "GLAD"
+      ],
+      "high_level_category": "Content & Language Integration",
+      "primary_skill": "listening",
+      "secondary_skills": ["reading", "writing", "speaking"],
+      "is_integrated_framework": false
+    },
+    {
+      "id": "graphic_organizers",
+      "strategy_name": "Graphic Organizers (as Scaffolds)",
+      "aliases": [
+        "Visual organizers",
+        "Concept maps"
+      ],
+      "present_in": [
+        "v1.4 enhancement"
+      ],
+      "evidence_tier": "research-backed",
+      "core_principle": "Use visual frameworks to organize information and support comprehension across languages.",
+      "applicable_contexts": [
+        "Content area instruction",
+        "Reading comprehension",
+        "Writing planning"
+      ],
+      "implementation_steps": [
+        "Select appropriate organizer type for content structure.",
+        "Model completion with bilingual vocabulary support.",
+        "Allow L1 brainstorming before English output."
+      ],
+      "primary_benefits": [
+        "Improves comprehension and retention",
+        "Supports academic language development"
+      ],
+      "research_foundation": [
+        "David Ausubel",
+        "Richard Mayer"
+      ],
+      "cross_refs": [
+        "SIOP",
+        "Scaffolding"
+      ],
+      "high_level_category": "Assessment & Scaffolding",
+      "primary_skill": "reading",
+      "secondary_skills": ["writing"],
+      "is_integrated_framework": false
+    },
+    {
+      "id": "interactive_read_alouds",
+      "strategy_name": "Interactive Read-Alouds",
+      "aliases": [
+        "Shared reading",
+        "Read-aloud discussions"
+      ],
+      "present_in": [
+        "v1.4 enhancement"
+      ],
+      "evidence_tier": "research-backed",
+      "core_principle": "Engage students in meaningful discussions during and after reading to build comprehension and language.",
+      "applicable_contexts": [
+        "Literacy instruction",
+        "Content area reading",
+        "Vocabulary development"
+      ],
+      "implementation_steps": [
+        "Select culturally relevant texts with rich vocabulary.",
+        "Plan strategic stopping points for discussion.",
+        "Encourage L1 connections and English responses."
+      ],
+      "primary_benefits": [
+        "Builds listening comprehension",
+        "Develops academic discourse skills"
+      ],
+      "research_foundation": [
+        "Isabel Beck",
+        "Linda Kucan"
+      ],
+      "cross_refs": [
+        "Explicit Vocabulary Instruction",
+        "Think-Alouds"
+      ],
+      "high_level_category": "Language Skill Development",
+      "primary_skill": "listening",
+      "secondary_skills": ["reading", "speaking"],
+      "is_integrated_framework": false
+    },
+    {
+      "id": "note_taking",
+      "strategy_name": "Note-Taking Strategies",
+      "aliases": [
+        "Academic note-taking",
+        "Cornell notes"
+      ],
+      "present_in": [
+        "v1.4 enhancement"
+      ],
+      "evidence_tier": "practice-based/mixed",
+      "core_principle": "Teach systematic approaches to capturing and organizing information from lectures and texts.",
+      "applicable_contexts": [
+        "Content area classes",
+        "Research projects",
+        "Test preparation"
+      ],
+      "implementation_steps": [
+        "Model various note-taking formats and systems.",
+        "Allow initial notes in L1 with English summaries.",
+        "Provide sentence frames for academic note structures."
+      ],
+      "primary_benefits": [
+        "Improves information retention",
+        "Develops academic study skills"
+      ],
+      "research_foundation": [
+        "Kenneth Kiewra",
+        "Steve Graham"
+      ],
+      "cross_refs": [
+        "Metacognitive Strategies",
+        "Scaffolding"
+      ],
+      "high_level_category": "Language Skill Development",
+      "primary_skill": "writing",
+      "secondary_skills": ["reading"],
+      "is_integrated_framework": false
+    },
+    {
+      "id": "oral_rehearsal",
+      "strategy_name": "Oral Rehearsal",
+      "aliases": [
+        "Practice speaking",
+        "Verbal rehearsal"
+      ],
+      "present_in": [
+        "v1.4 enhancement"
+      ],
+      "evidence_tier": "practice-based/mixed",
+      "core_principle": "Provide structured opportunities to practice oral language before formal presentations or discussions.",
+      "applicable_contexts": [
+        "Presentation preparation",
+        "Discussion activities",
+        "Oral assessments"
+      ],
+      "implementation_steps": [
+        "Allow L1 planning and peer practice sessions.",
+        "Provide sentence frames and key vocabulary.",
+        "Use partner and small group rehearsal before whole class."
+      ],
+      "primary_benefits": [
+        "Builds confidence in oral communication",
+        "Improves fluency and accuracy"
+      ],
+      "research_foundation": [
+        "Merrill Swain",
+        "Patricia Duff"
+      ],
+      "cross_refs": [
+        "Collaborative Learning",
+        "Think-Pair-Share"
+      ],
+      "high_level_category": "Language Skill Development",
+      "primary_skill": "speaking",
+      "secondary_skills": ["listening"],
+      "is_integrated_framework": false
+    },
+    {
+      "id": "paraphrasing_summarizing",
+      "strategy_name": "Paraphrasing and Summarizing",
+      "aliases": [
+        "Text summarization",
+        "Restating information"
+      ],
+      "present_in": [
+        "v1.4 enhancement"
+      ],
+      "evidence_tier": "research-backed",
+      "core_principle": "Teach students to restate information in their own words to demonstrate understanding.",
+      "applicable_contexts": [
+        "Reading comprehension",
+        "Content area learning",
+        "Writing instruction"
+      ],
+      "implementation_steps": [
+        "Model paraphrasing with think-alouds.",
+        "Allow initial L1 processing before English output.",
+        "Provide templates and sentence starters."
+      ],
+      "primary_benefits": [
+        "Deepens comprehension",
+        "Develops academic language skills"
+      ],
+      "research_foundation": [
+        "Annemarie Palincsar",
+        "Ann Brown"
+      ],
+      "cross_refs": [
+        "Think-Alouds",
+        "Reciprocal Teaching"
+      ],
+      "high_level_category": "Language Skill Development",
+      "primary_skill": "reading",
+      "secondary_skills": ["writing"],
+      "is_integrated_framework": false
+    },
+    {
+      "id": "project_based_learning",
+      "strategy_name": "Project-Based Learning (PBL)",
+      "aliases": [
+        "PBL",
+        "Authentic projects"
+      ],
+      "present_in": [
+        "v1.4 enhancement"
+      ],
+      "evidence_tier": "research-backed",
+      "core_principle": "Engage students in extended, authentic projects that integrate content and language learning.",
+      "applicable_contexts": [
+        "Interdisciplinary units",
+        "Real-world problem solving",
+        "Community connections"
+      ],
+      "implementation_steps": [
+        "Design projects with clear content and language objectives.",
+        "Allow multilingual research and L1 collaboration.",
+        "Scaffold English presentations and final products."
+      ],
+      "primary_benefits": [
+        "Increases engagement and motivation",
+        "Develops 21st-century skills"
+      ],
+      "research_foundation": [
+        "John Dewey",
+        "Seymour Papert"
+      ],
+      "cross_refs": [
+        "CLIL",
+        "Collaborative Learning"
+      ],
+      "high_level_category": "Content & Language Integration",
+      "primary_skill": "listening",
+      "secondary_skills": ["reading", "writing", "speaking"],
+      "is_integrated_framework": false
+    },
+    {
+      "id": "reciprocal_teaching",
+      "strategy_name": "Reciprocal Teaching",
+      "aliases": [
+        "Collaborative reading strategies",
+        "Fab Four strategies"
+      ],
+      "present_in": [
+        "v1.4 enhancement"
+      ],
+      "evidence_tier": "research-backed",
+      "core_principle": "Teach students four key reading strategies: predicting, questioning, clarifying, and summarizing.",
+      "applicable_contexts": [
+        "Reading comprehension instruction",
+        "Content area texts",
+        "Small group work"
+      ],
+      "implementation_steps": [
+        "Model each strategy with explicit instruction.",
+        "Allow L1 discussion during strategy application.",
+        "Rotate student roles as discussion leader."
+      ],
+      "primary_benefits": [
+        "Improves reading comprehension",
+        "Develops metacognitive awareness"
+      ],
+      "research_foundation": [
+        "Annemarie Palincsar",
+        "Ann Brown"
+      ],
+      "cross_refs": [
+        "Think-Alouds",
+        "Collaborative Learning"
+      ],
+      "high_level_category": "Language Skill Development",
+      "primary_skill": "reading",
+      "secondary_skills": ["speaking"],
+      "is_integrated_framework": false
+    },
+    {
+      "id": "think_alouds",
+      "strategy_name": "Think-Alouds",
+      "aliases": [
+        "Modeling thinking",
+        "Cognitive modeling"
+      ],
+      "present_in": [
+        "v1.4 enhancement"
+      ],
+      "evidence_tier": "research-backed",
+      "core_principle": "Verbalize thinking processes to make cognitive strategies visible and teachable.",
+      "applicable_contexts": [
+        "Reading strategy instruction",
+        "Problem-solving in math/science",
+        "Writing process modeling"
+      ],
+      "implementation_steps": [
+        "Model internal thinking processes aloud.",
+        "Encourage student think-alouds in L1 or English.",
+        "Use bilingual think-alouds to bridge languages."
+      ],
+      "primary_benefits": [
+        "Makes thinking visible",
+        "Develops metacognitive skills"
+      ],
+      "research_foundation": [
+        "Peter Afflerbach",
+        "Michael Pressley"
+      ],
+      "cross_refs": [
+        "Metacognitive Strategies",
+        "Reciprocal Teaching"
+      ],
+      "high_level_category": "Cognitive & Metacognitive",
+      "primary_skill": "reading",
+      "secondary_skills": ["speaking"],
+      "is_integrated_framework": false
+    },
+    {
+      "id": "think_pair_share",
+      "strategy_name": "Think-Pair-Share",
+      "aliases": [
+        "TPS",
+        "Structured discussion"
+      ],
+      "present_in": [
+        "v1.4 enhancement"
+      ],
+      "evidence_tier": "research-backed",
+      "core_principle": "Structure individual thinking, paired discussion, and whole-group sharing to maximize participation.",
+      "applicable_contexts": [
+        "Discussion activities",
+        "Comprehension checks",
+        "Problem-solving tasks"
+      ],
+      "implementation_steps": [
+        "Pose question and allow individual think time.",
+        "Pair students for L1 discussion if beneficial.",
+        "Share responses with whole group in English."
+      ],
+      "primary_benefits": [
+        "Increases student participation",
+        "Builds confidence before public speaking"
+      ],
+      "research_foundation": [
+        "Frank Lyman",
+        "Spencer Kagan"
+      ],
+      "cross_refs": [
+        "Collaborative Learning",
+        "Oral Rehearsal"
+      ],
+      "high_level_category": "Social & Interactive Learning",
+      "primary_skill": "speaking",
+      "secondary_skills": ["listening"],
+      "is_integrated_framework": false
+    }
+  ]
+}
+
+

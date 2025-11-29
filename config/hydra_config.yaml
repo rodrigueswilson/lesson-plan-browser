@@ -1,0 +1,55 @@
+# Hydra configuration for slot processing
+# Would need: pip install hydra-core
+
+defaults:
+  - _self_
+  - model: openai
+  - processing: standard
+  - validation: strict
+
+model:
+  provider: openai
+  model_name: gpt-4
+  temperature: 0.7
+  max_tokens: 2000
+  
+processing:
+  batch_size: 5
+  parallel_slots: true
+  cache_enabled: true
+  timeout_seconds: 300
+  retry_attempts: 2
+  
+validation:
+  strict_mode: true
+  validate_input: true
+  validate_output: true
+  min_word_count: 10
+  
+slot_structure:
+  max_slots: 10
+  required_fields:
+    - slot_number
+    - subject
+    - grade
+    - primary_teacher_name
+  optional_fields:
+    - homeroom
+    - proficiency_levels
+    
+file_patterns:
+  lesson_plans: "*Lesson Plans*.docx"
+  weekly_template: "*Template*.docx"
+  
+cache:
+  ttl_hours: 24
+  redis_url: "redis://localhost:6379/0"
+  
+logging:
+  level: INFO
+  format: structured
+  
+performance:
+  track_metrics: true
+  export_csv: true
+  retention_days: 90

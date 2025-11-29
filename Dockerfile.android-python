@@ -1,0 +1,52 @@
+# Dockerfile for cross-compiling Python sidecar for Android
+# Builds a standalone executable for aarch64-linux-android
+
+FROM python:3.11-slim
+
+# Install build dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    gcc-aarch64-linux-gnu \
+    g++-aarch64-linux-gnu \
+    patchelf \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python bundler
+RUN pip install --no-cache-dir nuitka
+
+# Set working directory
+WORKDIR /app
+
+# Copy backend code
+COPY backend/ ./backend/
+COPY requirements.txt .
+
+# Install only sidecar dependencies (minimal set)
+# Note: We exclude FastAPI, uvicorn, and other server dependencies
+RUN pip install --no-cache-dir \
+    supabase>=2.0.0 \
+    postgrest>=0.13.0 \
+    pydantic>=2.9.0 \
+    python-dotenv==1.0.0
+
+# Build standalone executable with Nuitka
+# Note: For Android, we need to cross-compile or use a compatible environment
+# This builds for Linux x86_64 - for Android ARM64, we'd need additional setup
+RUN python -m nuitka \
+    --standalone \
+    --onefile \
+    --include-module=backend \
+    --include-module=backend.sidecar_main \
+    --include-module=backend.ipc_database \
+    --include-module=backend.supabase_database \
+    --include-module=backend.schema \
+    --include-module=backend.config \
+    --include-module=backend.database_interface \
+    --include-package-data=backend \
+    --output-filename=python-sync-processor \
+    --assume-yes-for-downloads \
+    backend/sidecar_main.py
+
+# Output will be in /app/python-sync-processor
+# For Android, rename to: python-sync-processor-aarch64-linux-android
+

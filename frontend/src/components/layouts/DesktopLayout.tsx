@@ -8,12 +8,14 @@ interface DesktopLayoutProps {
   children: ReactNode;
   activeNavItem?: NavItem;
   onNavigate?: (item: NavItem) => void;
+  availableNavItems?: NavItem[]; // Optional filter for available navigation items
 }
 
 export function DesktopLayout({ 
   children, 
   activeNavItem = 'home',
-  onNavigate 
+  onNavigate,
+  availableNavItems
 }: DesktopLayoutProps) {
   // Browser mode uses full screen with compact navigation
   const isBrowserMode = activeNavItem === 'browser' || activeNavItem === 'lesson-mode';
@@ -26,6 +28,7 @@ export function DesktopLayout({
           activeItem={activeNavItem} 
           onNavigate={onNavigate}
           compact={isBrowserMode}
+          availableNavItems={availableNavItems}
         />
       )}
 

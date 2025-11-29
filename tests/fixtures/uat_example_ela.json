@@ -1,0 +1,53 @@
+{
+  "metadata": {
+    "teacher_name": "Ms. Rodriguez",
+    "subject": "English Language Arts",
+    "grade_level": "6",
+    "week_of": "2024-10-07",
+    "school_year": "2024-2025"
+  },
+  "daily_plans": {
+    "monday": {
+      "objective": "Students will analyze character development in narrative texts",
+      "anticipatory_set": {
+        "original_content": "Quick write: Think of a character from a book or movie. How did they change from beginning to end? Share with partner."
+      },
+      "instructional_input": {
+        "original_content": "Mini-lesson on character development: direct vs. indirect characterization, character arc, evidence from text. Model analysis using short story excerpt. Introduce character analysis graphic organizer."
+      },
+      "guided_practice": {
+        "original_content": "Read short story 'The Treasure of Lemon Brown' together. Stop at key points to discuss character traits and changes. Complete graphic organizer as a class for main character."
+      },
+      "independent_practice": {
+        "original_content": "Students complete character analysis for secondary character. Find text evidence for at least 3 character traits. Write paragraph explaining character development."
+      },
+      "assessment": {
+        "original_content": "Review character analysis paragraphs. Check for text evidence and clear explanation of development. Provide feedback on analysis depth."
+      },
+      "homework": {
+        "original_content": "Continue reading assigned novel (chapters 5-7). Complete character tracker for protagonist. Note changes in behavior, thoughts, or relationships."
+      }
+    },
+    "tuesday": {
+      "objective": "Students will write a character analysis essay using text evidence",
+      "anticipatory_set": {
+        "original_content": "Review character development from yesterday. Share one interesting change noticed in homework reading. Discuss: How do authors show character change?"
+      },
+      "instructional_input": {
+        "original_content": "Model writing character analysis essay: thesis statement, topic sentences, text evidence, analysis. Show how to integrate quotes. Demonstrate RACE strategy (Restate, Answer, Cite, Explain)."
+      },
+      "guided_practice": {
+        "original_content": "Work together to write introduction paragraph for class essay. Create thesis statement about character development. Outline body paragraphs with main ideas."
+      },
+      "independent_practice": {
+        "original_content": "Students write character analysis essay (3 paragraphs minimum). Include introduction with thesis, body paragraph with evidence, conclusion. Use RACE strategy for evidence paragraphs."
+      },
+      "assessment": {
+        "original_content": "Formative: Conference with students during writing. Check thesis statements and evidence selection. Provide guidance on analysis vs. summary."
+      },
+      "homework": {
+        "original_content": "Complete essay draft. Bring printed copy for peer review tomorrow. Read chapters 8-10 of novel."
+      }
+    }
+  }
+}

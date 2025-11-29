@@ -7,10 +7,11 @@ interface DesktopNavProps {
   activeItem: NavItem;
   onNavigate: (item: NavItem) => void;
   compact?: boolean;
+  availableNavItems?: NavItem[]; // Optional filter for available navigation items
 }
 
-export function DesktopNav({ activeItem, onNavigate, compact = false }: DesktopNavProps) {
-  const navItems = [
+export function DesktopNav({ activeItem, onNavigate, compact = false, availableNavItems }: DesktopNavProps) {
+  const allNavItems = [
     { id: 'home' as NavItem, label: 'Home', icon: Home },
     { id: 'plans' as NavItem, label: 'Lesson Plans', icon: FileText },
     { id: 'schedule' as NavItem, label: 'Schedule', icon: Calendar },
@@ -18,6 +19,11 @@ export function DesktopNav({ activeItem, onNavigate, compact = false }: DesktopN
     { id: 'history' as NavItem, label: 'History', icon: History },
     { id: 'analytics' as NavItem, label: 'Analytics', icon: BarChart3 },
   ];
+
+  // Filter nav items if availableNavItems is provided
+  const navItems = availableNavItems 
+    ? allNavItems.filter(item => availableNavItems.includes(item.id))
+    : allNavItems;
 
   if (compact) {
     // Compact icon-only navigation for Browser mode

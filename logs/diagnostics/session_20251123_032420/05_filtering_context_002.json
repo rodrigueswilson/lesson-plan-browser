@@ -1,0 +1,13 @@
+{
+  "timestamp": "2025-11-23T03:26:52.319279",
+  "stage": "05_filtering_context",
+  "data": {
+    "current_slot_number": 2,
+    "current_slot_number_is_none": false,
+    "current_subject": null,
+    "current_subject_is_none": true,
+    "pending_hyperlinks_count": 2,
+    "cell": "Tuesday_objective",
+    "filtering_active": true
+  }
+}

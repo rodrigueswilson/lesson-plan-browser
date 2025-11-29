@@ -1,0 +1,242 @@
+{
+  "_meta": {
+    "framework": "WIDA 2020 ELD Standards",
+    "version": "2020",
+    "description": "WIDA Framework components for bilingual strategy integration",
+    "last_updated": "2025-09-20",
+    "schema_version": "1.0"
+  },
+  "eld_standards": {
+    "SI": {
+      "name": "Social and Instructional Language",
+      "description": "Language for social interaction and classroom instructions",
+      "contexts": ["Classroom routines", "Peer interactions", "Teacher-student communication"]
+    },
+    "LA": {
+      "name": "Language Arts",
+      "description": "Language for literature and language arts instruction",
+      "contexts": ["Reading comprehension", "Writing development", "Literary analysis"]
+    },
+    "MA": {
+      "name": "Mathematics",
+      "description": "Language for mathematical reasoning and communication",
+      "contexts": ["Problem solving", "Mathematical discourse", "Numerical reasoning"]
+    },
+    "SC": {
+      "name": "Science",
+      "description": "Language for scientific inquiry and understanding",
+      "contexts": ["Scientific method", "Data analysis", "Scientific explanation"]
+    },
+    "SS": {
+      "name": "Social Studies",
+      "description": "Language for historical thinking and civic engagement",
+      "contexts": ["Historical analysis", "Geographic reasoning", "Civic participation"]
+    }
+  },
+  "proficiency_levels": {
+    "1": {
+      "name": "Entering",
+      "asset_description": "Students can communicate using high-frequency words and phrases, visual supports, and familiar contexts",
+      "characteristics": ["Single words and short phrases", "Heavy reliance on L1 and visual supports", "Gesture and pointing communication"],
+      "supports_needed": ["Visual scaffolds", "L1 support", "Modeling", "Wait time"]
+    },
+    "2": {
+      "name": "Emerging", 
+      "asset_description": "Students can participate in short conversations and express basic academic ideas with support",
+      "characteristics": ["Simple sentences", "Basic academic vocabulary", "Formulaic expressions"],
+      "supports_needed": ["Sentence frames", "Graphic organizers", "Strategic L1 use", "Peer support"]
+    },
+    "3": {
+      "name": "Developing",
+      "asset_description": "Students can engage in academic discussions and produce organized texts with scaffolding",
+      "characteristics": ["Connected sentences", "Expanding academic vocabulary", "More complex structures"],
+      "supports_needed": ["Academic language models", "Structured discussions", "Writing templates"]
+    },
+    "4": {
+      "name": "Expanding",
+      "asset_description": "Students can engage in complex academic tasks and communicate with increasing sophistication",
+      "characteristics": ["Detailed language", "Academic register awareness", "Complex sentence structures"],
+      "supports_needed": ["Advanced graphic organizers", "Academic discourse practice", "Revision support"]
+    },
+    "5": {
+      "name": "Bridging",
+      "asset_description": "Students can engage in cognitively demanding academic tasks with minimal linguistic support",
+      "characteristics": ["Near grade-level proficiency", "Academic language control", "Complex reasoning"],
+      "supports_needed": ["Specialized vocabulary support", "Academic writing refinement"]
+    },
+    "6": {
+      "name": "Reaching",
+      "asset_description": "Students can engage in complex academic discourse comparable to proficient English peers",
+      "characteristics": ["Grade-level academic proficiency", "Sophisticated language use", "Cultural-linguistic flexibility"],
+      "supports_needed": ["Maintenance and enrichment", "Advanced academic challenges"]
+    }
+  },
+  "key_language_uses": {
+    "Narrate": {
+      "description": "Recount events, experiences, or procedures in chronological order",
+      "language_functions": ["Sequence", "Describe", "Recount", "Tell stories"],
+      "grade_clusters": {
+        "K": ["Tell simple stories", "Describe daily events"],
+        "1": ["Recount personal experiences", "Sequence familiar events"],
+        "2-3": ["Narrate fictional and real events", "Use temporal words"],
+        "4-5": ["Provide detailed narratives", "Use complex temporal relationships"],
+        "6-8": ["Construct sophisticated narratives", "Analyze narrative techniques"],
+        "9-12": ["Create complex multi-perspective narratives", "Evaluate narrative impact"]
+      }
+    },
+    "Inform": {
+      "description": "Communicate factual information and explanations",
+      "language_functions": ["Define", "Describe", "Report", "Summarize", "Compare"],
+      "grade_clusters": {
+        "K": ["Name and describe objects", "Share basic information"],
+        "1": ["Describe familiar topics", "Share factual information"],
+        "2-3": ["Explain simple processes", "Compare and contrast"],
+        "4-5": ["Provide detailed explanations", "Synthesize information"],
+        "6-8": ["Analyze complex information", "Evaluate sources"],
+        "9-12": ["Synthesize multiple sources", "Critique information quality"]
+      }
+    },
+    "Explain": {
+      "description": "Make clear the how and why of concepts, processes, and phenomena",
+      "language_functions": ["Clarify", "Give reasons", "Show cause/effect", "Justify"],
+      "grade_clusters": {
+        "K": ["Give simple reasons", "Explain basic needs"],
+        "1": ["Explain simple cause and effect", "Give basic reasons"],
+        "2-3": ["Explain procedures and processes", "Provide evidence"],
+        "4-5": ["Explain complex relationships", "Support with detailed evidence"],
+        "6-8": ["Analyze causal relationships", "Evaluate explanations"],
+        "9-12": ["Construct sophisticated arguments", "Critique reasoning"]
+      }
+    },
+    "Argue": {
+      "description": "Justify claims and persuade others using evidence and reasoning",
+      "language_functions": ["Persuade", "Justify", "Debate", "Advocate", "Critique"],
+      "grade_clusters": {
+        "K": ["Express preferences", "Give simple opinions"],
+        "1": ["State opinions with basic reasons", "Agree or disagree"],
+        "2-3": ["Support opinions with evidence", "Present simple arguments"],
+        "4-5": ["Construct persuasive arguments", "Anticipate counterarguments"],
+        "6-8": ["Develop sophisticated arguments", "Evaluate opposing views"],
+        "9-12": ["Construct complex argumentative discourse", "Synthesize multiple perspectives"]
+      }
+    }
+  },
+  "language_dimensions": {
+    "discourse": {
+      "name": "Discourse Dimension",
+      "description": "Language at the text level - organization, cohesion, and coherence",
+      "components": ["Text organization", "Cohesive devices", "Register appropriateness"],
+      "progression": {
+        "beginning": "Simple text structures, basic connectors",
+        "intermediate": "Organized paragraphs, varied connectors",
+        "advanced": "Complex text organization, sophisticated cohesion"
+      }
+    },
+    "sentence": {
+      "name": "Sentence Dimension", 
+      "description": "Language at the sentence level - syntax and grammatical structures",
+      "components": ["Sentence types", "Grammatical complexity", "Syntactic variety"],
+      "progression": {
+        "beginning": "Simple sentences, basic structures",
+        "intermediate": "Compound sentences, complex structures",
+        "advanced": "Sophisticated syntax, varied structures"
+      }
+    },
+    "word_phrase": {
+      "name": "Word/Phrase Dimension",
+      "description": "Language at the word and phrase level - vocabulary and expressions",
+      "components": ["Academic vocabulary", "Precision of word choice", "Idiomatic expressions"],
+      "progression": {
+        "beginning": "High-frequency words, basic phrases",
+        "intermediate": "Academic vocabulary, specialized terms",
+        "advanced": "Precise word choice, sophisticated expressions"
+      }
+    }
+  },
+  "grade_clusters": {
+    "K": {
+      "developmental_focus": "Emergent language and foundational skills",
+      "cognitive_characteristics": ["Concrete thinking", "Learning through play", "Basic concept development"],
+      "language_expectations": ["Single words to simple phrases", "Routine-based communication", "Visual and gesture support"]
+    },
+    "1": {
+      "developmental_focus": "Building basic academic language",
+      "cognitive_characteristics": ["Developing literacy", "Sequential thinking", "Concrete to abstract transition"],
+      "language_expectations": ["Simple sentences", "Basic academic vocabulary", "Structured conversations"]
+    },
+    "2-3": {
+      "developmental_focus": "Expanding academic language use",
+      "cognitive_characteristics": ["Increased attention span", "Logical reasoning", "Beginning abstract thinking"],
+      "language_expectations": ["Connected sentences", "Academic discourse participation", "Written expression development"]
+    },
+    "4-5": {
+      "developmental_focus": "Developing complex academic language",
+      "cognitive_characteristics": ["Abstract reasoning", "Critical thinking emergence", "Independence in learning"],
+      "language_expectations": ["Complex sentences", "Academic register awareness", "Extended discourse"]
+    },
+    "6-8": {
+      "developmental_focus": "Sophisticated academic discourse",
+      "cognitive_characteristics": ["Formal operational thinking", "Identity development", "Peer influence"],
+      "language_expectations": ["Academic argumentation", "Complex text production", "Register flexibility"]
+    },
+    "9-12": {
+      "developmental_focus": "Advanced academic and professional language",
+      "cognitive_characteristics": ["Abstract reasoning mastery", "Future planning", "Independence"],
+      "language_expectations": ["Sophisticated discourse", "Professional register", "Complex argumentation"]
+    }
+  },
+  "language_objective_templates": {
+    "basic": "Students will use language to [KEY_LANGUAGE_USE] [content_focus] by [language_function] using [supports] appropriate for WIDA levels [range].",
+    "detailed": "Students will use language to [KEY_LANGUAGE_USE] [content_focus] (ELD-[standard].[grade_cluster].[KLU].[mode]) by [language_function] using [proficiency_supports] appropriate for WIDA levels [range], producing [product] that demonstrates [dimension_focus].",
+    "bilingual": "Students will use their bilingual resources to [KEY_LANGUAGE_USE] [content_focus] by [language_function] through [L1_connection] and [English_scaffolds], demonstrating [learning_outcome] appropriate for WIDA levels [range]."
+  },
+  "sentence_frame_templates": {
+    "levels_1_2": {
+      "narrate": ["First, ___", "Then, ___", "Finally, ___"],
+      "inform": ["This is ___", "___ is important because ___", "I learned that ___"],
+      "explain": ["___ happens because ___", "The reason is ___", "This shows ___"],
+      "argue": ["I think ___", "___ is better because ___", "My opinion is ___"]
+    },
+    "levels_3_4": {
+      "narrate": ["In the beginning, ___", "After that, ___", "As a result, ___"],
+      "inform": ["According to ___, ___", "The evidence shows ___", "It is important to note that ___"],
+      "explain": ["One reason why ___ is ___", "This demonstrates that ___", "The connection between ___ and ___ is ___"],
+      "argue": ["I believe ___ because ___", "Although some might say ___, I think ___", "The strongest evidence for ___ is ___"]
+    },
+    "levels_5_6": {
+      "narrate": ["Initially, ___, which led to ___", "Subsequently, ___, resulting in ___", "Ultimately, ___ demonstrates ___"],
+      "inform": ["Research indicates that ___", "Furthermore, ___ suggests ___", "In synthesis, the evidence reveals ___"],
+      "explain": ["The underlying mechanism involves ___", "This phenomenon occurs because ___", "The causal relationship between ___ and ___ demonstrates ___"],
+      "argue": ["While acknowledging that ___, the evidence overwhelmingly supports ___", "Critics might contend that ___, however ___", "The most compelling argument for ___ rests on ___"]
+    }
+  },
+  "assessment_modes": {
+    "interpretive": {
+      "description": "Understanding and interpreting authentic texts",
+      "activities": ["Reading comprehension", "Listening for main ideas", "Analyzing visual information"],
+      "proficiency_adaptations": {
+        "levels_1_2": ["Picture identification", "Simple matching", "Gesture responses"],
+        "levels_3_4": ["Graphic organizers", "Guided questions", "Summary completion"],
+        "levels_5_6": ["Complex analysis", "Critical evaluation", "Synthesis tasks"]
+      }
+    },
+    "interpersonal": {
+      "description": "Interactive communication and collaboration",
+      "activities": ["Discussions", "Negotiations", "Information sharing"],
+      "proficiency_adaptations": {
+        "levels_1_2": ["Structured dialogue", "Sentence frames", "Visual supports"],
+        "levels_3_4": ["Guided conversations", "Role-plays", "Collaborative tasks"],
+        "levels_5_6": ["Academic debates", "Complex negotiations", "Peer teaching"]
+      }
+    },
+    "presentational": {
+      "description": "Presenting information to an audience",
+      "activities": ["Oral presentations", "Written reports", "Creative products"],
+      "proficiency_adaptations": {
+        "levels_1_2": ["Show and tell", "Simple descriptions", "Visual presentations"],
+        "levels_3_4": ["Structured presentations", "Written summaries", "Project explanations"],
+        "levels_5_6": ["Formal presentations", "Research reports", "Argumentative essays"]
+      }
+    }
+  }
+}

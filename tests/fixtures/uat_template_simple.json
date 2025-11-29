@@ -1,0 +1,32 @@
+{
+  "metadata": {
+    "teacher_name": "[Your Name]",
+    "subject": "[Your Subject]",
+    "grade_level": "[Grade]",
+    "week_of": "2024-09-15",
+    "school_year": "2024-2025"
+  },
+  "daily_plans": {
+    "monday": {
+      "objective": "[What will students learn today?]",
+      "anticipatory_set": {
+        "original_content": "[How will you hook students' interest?]"
+      },
+      "instructional_input": {
+        "original_content": "[What will you teach?]"
+      },
+      "guided_practice": {
+        "original_content": "[How will students practice with your guidance?]"
+      },
+      "independent_practice": {
+        "original_content": "[What will students do independently?]"
+      },
+      "assessment": {
+        "original_content": "[How will you check understanding?]"
+      },
+      "homework": {
+        "original_content": "[What homework will you assign?]"
+      }
+    }
+  }
+}

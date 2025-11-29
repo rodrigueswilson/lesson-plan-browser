@@ -1,0 +1,504 @@
+{
+  "metadata": {
+    "week_of": "10/6-10/10",
+    "grade": "7",
+    "subject": "Social Studies"
+  },
+  "days": {
+    "monday": {
+      "unit_lesson": "Unit One Lesson Seven",
+      "objective": {
+        "content_objective": "Students will be able to explain how systems of law and banking enabled growth in trade, wealth, and peace",
+        "student_goal": "I will explain Roman systems using evidence and a graphic organizer",
+        "wida_objective": "Students will use language to explain how Roman law, banking, and Pax Romana enabled economic growth (ELD-SS.6-8.Explain.Reading/Writing) by using cognate awareness and graphic organizers with Portuguese-English vocabulary bridges appropriate for WIDA levels 2-5, producing a written explanation that demonstrates understanding of cause-effect relationships in historical systems."
+      },
+      "anticipatory_set": {
+        "original_content": "Students will respond to an everybody writes.",
+        "bilingual_bridge": "Preview key Portuguese-English cognates on board: lei/law, banco/bank, comércio/trade, paz/peace. Quick L1 connection: 'Como as leis ajudam o comércio?' (How do laws help trade?)"
+      },
+      "tailored_instruction": {
+        "original_content": "Engage / Introduction: Briefly introduce the key systems that helped Rome grow: Roman law, banking, and the Pax Romana.",
+        "co_teaching_model": {
+          "model_name": "Station Teaching",
+          "rationale": "Mixed range (4+ levels) needs differentiated stations",
+          "wida_context": "Mixed range with typical 7th grade distribution (Levels 2-5), requiring differentiated small-group support",
+          "phase_plan": [
+            {
+              "phase_name": "Warmup",
+              "minutes": 5,
+              "bilingual_teacher_role": "Introduce stations and preview vocabulary in L1",
+              "primary_teacher_role": "Explain content objective and station expectations"
+            },
+            {
+              "phase_name": "Practice",
+              "minutes": 30,
+              "bilingual_teacher_role": "Station 1: Intensive vocabulary work with Levels 2-3",
+              "primary_teacher_role": "Station 2: Content application with Levels 4-5",
+              "details": "Station 3 (Independent): Bilingual materials practice. Rotation: 10 minutes per station"
+            },
+            {
+              "phase_name": "Closure",
+              "minutes": 10,
+              "bilingual_teacher_role": "Whole-group debrief and exit ticket check",
+              "primary_teacher_role": "Whole-group debrief and exit ticket check"
+            }
+          ],
+          "implementation_notes": [
+            "Prepare 3 station signs, rotation chart, visual timer",
+            "Station 1 materials: Cognate cards, bilingual vocabulary chart"
+          ]
+        },
+        "ell_support": [
+          {
+            "strategy_id": "cognate_awareness",
+            "strategy_name": "Cognate Awareness",
+            "implementation": "Create bilingual vocabulary anchor chart with Portuguese-English cognates: lei/law, sistema/system, economia/economy, império/empire. Post visibly during slideshow.",
+            "proficiency_levels": "Levels 2-5"
+          },
+          {
+            "strategy_id": "graphic_organizers",
+            "strategy_name": "Graphic Organizers",
+            "implementation": "Provide Cornell Notes template with pre-filled headers in both languages. Left column: 'Conceitos Principais/Key Concepts.' Right: 'Detalhes/Details.'",
+            "proficiency_levels": "Levels 2-4"
+          },
+          {
+            "strategy_id": "sentence_frames",
+            "strategy_name": "Sentence Frames",
+            "implementation": "Exit ticket frames: 'Roman ___ helped Rome grow because ___.' / 'O sistema romano de ___ ajudou porque ___.'",
+            "proficiency_levels": "Levels 2-3"
+          }
+        ],
+        "special_needs_support": [
+          "Visual timeline of Roman systems; color-code law (blue), banking (green), Pax Romana (gold)"
+        ],
+        "materials": [
+          "Bilingual vocabulary chart (poster paper)",
+          "Cornell Notes template (handout)",
+          "Sentence frame strips"
+        ]
+      },
+      "misconceptions": {
+        "original_content": "Students may believe there is no correlation between trade and law",
+        "linguistic_note": {
+          "pattern_id": "subject_pronoun_omission",
+          "note": "Portuguese speakers often drop subject pronouns ('Go to school' instead of 'I go to school') because verb conjugation shows the person",
+          "prevention_tip": "Use sentence frames that explicitly include subject pronouns: 'I [verb]...', 'She [verb]...', 'They [verb]...'"
+        }
+      },
+      "assessment": {
+        "primary_assessment": "Exit Ticket",
+        "bilingual_overlay": {
+          "instrument": "Written exit ticket (1-2 sentences)",
+          "wida_mapping": "Explain + ELD-SS.6-8.Writing + Levels 2-5",
+          "supports_by_level": {
+            "levels_1_2": "Sentence frame provided, word bank with cognates, allow L1 draft then translate",
+            "levels_3_4": "Sentence starter provided, cognate chart reference, bilingual dictionary allowed",
+            "levels_5_6": "Open response, optional sentence frames, focus on academic vocabulary"
+          },
+          "scoring_lens": "Accept responses showing understanding of cause-effect relationship; credit use of academic vocabulary (law/lei, banking/banco, peace/paz); allow code-switching if meaning is clear",
+          "constraints_honored": "No new materials; uses existing exit ticket format"
+        }
+      },
+      "homework": {
+        "original_content": "",
+        "family_connection": "Ask family: 'Como as leis ajudam nossa comunidade?' (How do laws help our community?) Discuss in Portuguese/English and share one example in class."
+      }
+    },
+    "tuesday": {
+      "unit_lesson": "Unit One Lesson Eight",
+      "objective": {
+        "content_objective": "Students will analyze Roman engineering achievements",
+        "student_goal": "I will describe Roman buildings using evidence",
+        "wida_objective": "Students will use language to describe Roman engineering (ELD-SS.6-8.Inform.Speaking/Writing) using visual aids and sentence frames appropriate for WIDA levels 2-5."
+      },
+      "anticipatory_set": {
+        "original_content": "Show images of Roman architecture.",
+        "bilingual_bridge": "Preview cognates: aqueduto/aqueduct, coliseu/coliseum, ponte/bridge. Ask: 'Que construções romanas você conhece?'"
+      },
+      "tailored_instruction": {
+        "original_content": "Discuss Roman engineering innovations.",
+        "co_teaching_model": {
+          "model_name": "Parallel Teaching",
+          "rationale": "Balanced proficiency distribution allows parallel groups",
+          "wida_context": "Levels 2-5 with balanced distribution, both teachers can lead content instruction",
+          "phase_plan": [
+            {
+              "phase_name": "Input",
+              "minutes": 15,
+              "bilingual_teacher_role": "Group A: Content delivery with L1 support and visuals",
+              "primary_teacher_role": "Group B: Content delivery with academic language focus"
+            },
+            {
+              "phase_name": "Practice",
+              "minutes": 25,
+              "bilingual_teacher_role": "Group A: Guided practice with bilingual materials",
+              "primary_teacher_role": "Group B: Independent practice with scaffolds"
+            },
+            {
+              "phase_name": "Closure",
+              "minutes": 5,
+              "bilingual_teacher_role": "Whole-group synthesis",
+              "primary_teacher_role": "Whole-group synthesis"
+            }
+          ],
+          "implementation_notes": [
+            "Divide class into two balanced groups by proficiency",
+            "Both groups cover same content with different scaffolding"
+          ]
+        },
+        "ell_support": [
+          {
+            "strategy_id": "visual_aids",
+            "strategy_name": "Visual Aids",
+            "implementation": "Use images of Roman structures with bilingual labels",
+            "proficiency_levels": "Levels 1-4"
+          },
+          {
+            "strategy_id": "sentence_frames",
+            "strategy_name": "Sentence Frames",
+            "implementation": "Provide frames: 'The Romans built ___ to ___.'",
+            "proficiency_levels": "Levels 2-3"
+          },
+          {
+            "strategy_id": "cognate_awareness",
+            "strategy_name": "Cognate Awareness",
+            "implementation": "Highlight architecture cognates in both languages",
+            "proficiency_levels": "Levels 2-5"
+          }
+        ],
+        "special_needs_support": [
+          "Provide 3D models or diagrams of Roman structures"
+        ],
+        "materials": [
+          "Image set of Roman architecture",
+          "Bilingual vocabulary cards",
+          "Sentence frame handouts"
+        ]
+      },
+      "misconceptions": {
+        "original_content": "Students may think all ancient civilizations had similar technology",
+        "linguistic_note": {
+          "pattern_id": "adjective_placement",
+          "note": "Portuguese places adjectives after nouns ('casa grande' = house big). English places adjectives before nouns.",
+          "prevention_tip": "Visual word order chart: Article + Adjective + Noun. Color-code adjectives (blue) before nouns (red)."
+        }
+      },
+      "assessment": {
+        "primary_assessment": "Diagram labeling activity",
+        "bilingual_overlay": {
+          "instrument": "Label diagram of Roman aqueduct (5-7 labels)",
+          "wida_mapping": "Inform + ELD-SS.6-8.Writing + Levels 2-5",
+          "supports_by_level": {
+            "levels_1_2": "Word bank provided in both languages, allow drawing with labels",
+            "levels_3_4": "Word bank in English only, sentence frames for descriptions",
+            "levels_5_6": "No word bank, write short descriptions of each part"
+          },
+          "scoring_lens": "Credit accurate identification of structures; accept Portuguese terms if concept is clear; focus on technical vocabulary acquisition",
+          "constraints_honored": "Uses existing diagram from textbook; no new materials"
+        }
+      },
+      "homework": {
+        "original_content": "Read pages 52-55",
+        "family_connection": "Find examples of arches or bridges in your community. Take a photo or draw a picture. Discuss: 'Por que os arcos são fortes?' (Why are arches strong?)"
+      }
+    },
+    "wednesday": {
+      "unit_lesson": "Unit One Lesson Nine",
+      "objective": {
+        "content_objective": "Students will compare Roman and modern government systems",
+        "student_goal": "I will compare governments using a Venn diagram",
+        "wida_objective": "Students will use language to compare government systems (ELD-SS.6-8.Argue.Writing) using graphic organizers and contrastive analysis appropriate for WIDA levels 3-5."
+      },
+      "anticipatory_set": {
+        "original_content": "Brainstorm: What is government?",
+        "bilingual_bridge": "Preview: governo/government, democracia/democracy, república/republic. Connect to Brazil's government structure."
+      },
+      "tailored_instruction": {
+        "original_content": "Compare Roman Republic to modern democracy.",
+        "co_teaching_model": {
+          "model_name": "Team Teaching",
+          "rationale": "Complex comparison benefits from dual perspectives and translanguaging",
+          "wida_context": "Levels 3-5 dominant, can handle complex content with strategic L1 support",
+          "phase_plan": [
+            {
+              "phase_name": "Input",
+              "minutes": 20,
+              "bilingual_teacher_role": "Co-present with L1 clarification of key concepts",
+              "primary_teacher_role": "Co-present with academic language modeling",
+              "details": "Both teachers alternate explaining, bilingual teacher bridges concepts in Portuguese"
+            },
+            {
+              "phase_name": "Practice",
+              "minutes": 20,
+              "bilingual_teacher_role": "Circulate supporting Venn diagram completion",
+              "primary_teacher_role": "Circulate supporting Venn diagram completion"
+            },
+            {
+              "phase_name": "Closure",
+              "minutes": 5,
+              "bilingual_teacher_role": "Co-facilitate whole-group sharing",
+              "primary_teacher_role": "Co-facilitate whole-group sharing"
+            }
+          ],
+          "implementation_notes": [
+            "Plan transitions and who speaks when",
+            "Bilingual teacher clarifies complex terms in L1 as needed"
+          ]
+        },
+        "ell_support": [
+          {
+            "strategy_id": "graphic_organizers",
+            "strategy_name": "Graphic Organizers",
+            "implementation": "Provide Venn diagram template with bilingual headers: 'República Romana/Roman Republic', 'Ambos/Both', 'Democracia Moderna/Modern Democracy'",
+            "proficiency_levels": "Levels 3-5"
+          },
+          {
+            "strategy_id": "contrastive_analysis",
+            "strategy_name": "Contrastive Analysis",
+            "implementation": "Explicitly compare government terms in Portuguese and English, noting similarities and differences",
+            "proficiency_levels": "Levels 3-5"
+          },
+          {
+            "strategy_id": "translanguaging",
+            "strategy_name": "Translanguaging",
+            "implementation": "Allow students to use both languages when discussing complex concepts, then translate to English for writing",
+            "proficiency_levels": "Levels 3-4"
+          }
+        ],
+        "special_needs_support": [
+          "Provide partially completed Venn diagram with some examples filled in"
+        ],
+        "materials": [
+          "Venn diagram template (bilingual)",
+          "Government comparison chart",
+          "Bilingual vocabulary list"
+        ]
+      },
+      "misconceptions": {
+        "original_content": "Students may think democracy is a modern invention",
+        "linguistic_note": {
+          "pattern_id": "false_cognate_actual",
+          "note": "Portuguese 'atual' means 'current/present-day'. English 'actual' means 'real/factual'. Students may confuse these.",
+          "prevention_tip": "Explicit vocabulary: 'Actual = real (not current). Current in Portuguese is atual.' Use contrastive examples."
+        }
+      },
+      "assessment": {
+        "primary_assessment": "Completed Venn diagram with 5+ items in each section",
+        "bilingual_overlay": {
+          "instrument": "Venn diagram comparing Roman and modern government (5+ items per section)",
+          "wida_mapping": "Argue + ELD-SS.6-8.Writing + Levels 3-5",
+          "supports_by_level": {
+            "levels_1_2": "Not applicable - lesson targets Levels 3-5",
+            "levels_3_4": "Sentence starters provided, word bank available, allow L1 notes then translate",
+            "levels_5_6": "Independent completion, focus on academic vocabulary and complete sentences"
+          },
+          "scoring_lens": "Credit accurate comparisons; accept code-switching in notes; require English for final submission; focus on conceptual understanding over grammar",
+          "constraints_honored": "Uses standard Venn diagram format; no additional materials"
+        }
+      },
+      "homework": {
+        "original_content": "Complete Venn diagram if not finished",
+        "family_connection": "Discuss with family: 'Como funciona o governo no Brasil? E nos Estados Unidos?' (How does government work in Brazil? And in the United States?) Share one similarity and one difference."
+      }
+    },
+    "thursday": {
+      "unit_lesson": "Unit One Lesson Ten",
+      "objective": {
+        "content_objective": "Students will evaluate the legacy of Roman civilization",
+        "student_goal": "I will explain Roman influence on today using examples",
+        "wida_objective": "Students will use language to explain Roman legacy (ELD-SS.6-8.Explain.Speaking/Writing) using evidence and academic vocabulary appropriate for WIDA levels 3-5."
+      },
+      "anticipatory_set": {
+        "original_content": "Quick write: What do we still use from Rome?",
+        "bilingual_bridge": "Brainstorm in pairs (Portuguese OK): 'O que usamos hoje que vem dos romanos?' Share out in English with bilingual teacher support."
+      },
+      "tailored_instruction": {
+        "original_content": "Discuss Roman contributions to modern society: language, law, architecture, engineering.",
+        "co_teaching_model": {
+          "model_name": "Alternative Teaching",
+          "rationale": "Small group of Levels 3-4 needs intensive support for complex synthesis",
+          "wida_context": "Most students Levels 4-5, but 5-6 students at Levels 3 need targeted instruction",
+          "phase_plan": [
+            {
+              "phase_name": "Input",
+              "minutes": 15,
+              "bilingual_teacher_role": "Small group (Levels 3): Pre-teach key vocabulary and concepts with L1 support",
+              "primary_teacher_role": "Large group (Levels 4-5): Introduction to Roman legacy"
+            },
+            {
+              "phase_name": "Practice",
+              "minutes": 25,
+              "bilingual_teacher_role": "Small group rejoins; provide additional scaffolding during practice",
+              "primary_teacher_role": "Lead whole-group practice activity"
+            },
+            {
+              "phase_name": "Closure",
+              "minutes": 5,
+              "bilingual_teacher_role": "Check understanding with small group",
+              "primary_teacher_role": "Whole-group synthesis"
+            }
+          ],
+          "implementation_notes": [
+            "Identify 5-6 students for small group ahead of time",
+            "Pre-teach vocabulary: legacy/legado, influence/influência, contribution/contribuição"
+          ]
+        },
+        "ell_support": [
+          {
+            "strategy_id": "explicit_vocabulary",
+            "strategy_name": "Explicit Vocabulary Instruction",
+            "implementation": "Pre-teach tier 3 vocabulary: legacy, influence, contribution, innovation. Provide definitions in both languages with examples.",
+            "proficiency_levels": "Levels 3-5"
+          },
+          {
+            "strategy_id": "sentence_frames",
+            "strategy_name": "Sentence Frames",
+            "implementation": "Provide frames: 'The Romans contributed ___ to modern society. We still use this today because ___.  / 'Os romanos contribuíram ___ para a sociedade moderna. Ainda usamos isso hoje porque ___.'",
+            "proficiency_levels": "Levels 3-4"
+          },
+          {
+            "strategy_id": "cognate_awareness",
+            "strategy_name": "Cognate Awareness",
+            "implementation": "Create cognate chart: legado/legacy, influência/influence, contribuição/contribution, inovação/innovation",
+            "proficiency_levels": "Levels 3-5"
+          }
+        ],
+        "special_needs_support": [
+          "Provide graphic organizer with categories: Language, Law, Architecture, Engineering"
+        ],
+        "materials": [
+          "Bilingual vocabulary cards",
+          "Sentence frame handouts",
+          "Graphic organizer template"
+        ]
+      },
+      "misconceptions": {
+        "original_content": "Students may think ancient civilizations have no relevance today",
+        "linguistic_note": {
+          "pattern_id": "past_tense_ed_dropping",
+          "note": "Portuguese rarely has consonant clusters at word end. Students may drop -ed endings: 'walk' instead of 'walked'",
+          "prevention_tip": "Editing checklist: 'Did I add -ed to past tense verbs?' Highlight all verbs and check for -ed endings."
+        }
+      },
+      "assessment": {
+        "primary_assessment": "Written paragraph explaining one Roman contribution",
+        "bilingual_overlay": {
+          "instrument": "Written paragraph (5-7 sentences) explaining one Roman contribution to modern society",
+          "wida_mapping": "Explain + ELD-SS.6-8.Writing + Levels 3-5",
+          "supports_by_level": {
+            "levels_1_2": "Not applicable - lesson targets Levels 3-5",
+            "levels_3_4": "Sentence frames provided, word bank with cognates, allow L1 outline then translate to English",
+            "levels_5_6": "Independent writing, focus on academic vocabulary and complex sentences, optional sentence starters"
+          },
+          "scoring_lens": "Credit clear explanation of contribution and modern relevance; accept code-switching in drafts; require English final draft; focus on content and evidence over grammar; credit use of academic vocabulary (legacy, influence, contribution)",
+          "constraints_honored": "Standard paragraph format; no new materials beyond sentence frames"
+        }
+      },
+      "homework": {
+        "original_content": "Revise paragraph for grammar and spelling",
+        "family_connection": "Share your paragraph with family. Ask: 'Que outras coisas dos romanos ainda usamos?' (What other things from the Romans do we still use?) Add one family idea to your paragraph."
+      }
+    },
+    "friday": {
+      "unit_lesson": "Unit One Review",
+      "objective": {
+        "content_objective": "Students will synthesize learning about Roman civilization",
+        "student_goal": "I will review Roman systems, engineering, and government",
+        "wida_objective": "Students will use language to synthesize understanding of Roman civilization (ELD-SS.6-8.Inform.Speaking/Writing) using multiple modalities appropriate for WIDA levels 2-5."
+      },
+      "anticipatory_set": {
+        "original_content": "Gallery walk of student work from the week",
+        "bilingual_bridge": "Students add sticky notes in Portuguese or English: 'O que aprendi/What I learned' and 'Perguntas/Questions'"
+      },
+      "tailored_instruction": {
+        "original_content": "Review key concepts from Unit One through games and activities.",
+        "co_teaching_model": {
+          "model_name": "Station Teaching",
+          "rationale": "Review activities benefit from differentiated stations",
+          "wida_context": "Mixed Levels 2-5, stations allow targeted review at different proficiency levels",
+          "phase_plan": [
+            {
+              "phase_name": "Warmup",
+              "minutes": 5,
+              "bilingual_teacher_role": "Introduce review stations and expectations",
+              "primary_teacher_role": "Explain rotation schedule and assessment preview"
+            },
+            {
+              "phase_name": "Review Stations",
+              "minutes": 30,
+              "bilingual_teacher_role": "Station 1: Vocabulary review game with bilingual support (Levels 2-3)",
+              "primary_teacher_role": "Station 2: Concept review and practice questions (Levels 4-5)",
+              "details": "Station 3 (Independent): Review packet with answer key (all levels). Rotation: 10 minutes per station"
+            },
+            {
+              "phase_name": "Closure",
+              "minutes": 10,
+              "bilingual_teacher_role": "Preview next week's unit assessment in L1 and L2",
+              "primary_teacher_role": "Preview next week's unit assessment"
+            }
+          ],
+          "implementation_notes": [
+            "Station 1: Vocabulary matching game, cognate bingo, flashcards",
+            "Station 2: Practice questions similar to assessment format",
+            "Station 3: Self-paced review packet with bilingual glossary"
+          ]
+        },
+        "ell_support": [
+          {
+            "strategy_id": "review_games",
+            "strategy_name": "Review Games",
+            "implementation": "Vocabulary bingo with Portuguese-English cognates, matching games, Kahoot with bilingual questions",
+            "proficiency_levels": "Levels 2-5"
+          },
+          {
+            "strategy_id": "bilingual_glossary",
+            "strategy_name": "Bilingual Glossary",
+            "implementation": "Provide comprehensive glossary of unit vocabulary in Portuguese and English for review",
+            "proficiency_levels": "Levels 2-5"
+          },
+          {
+            "strategy_id": "peer_tutoring",
+            "strategy_name": "Peer Tutoring",
+            "implementation": "Pair higher proficiency students with lower proficiency for review activities",
+            "proficiency_levels": "Levels 2-5"
+          }
+        ],
+        "special_needs_support": [
+          "Provide review guide with key concepts highlighted and simplified"
+        ],
+        "materials": [
+          "Vocabulary bingo cards",
+          "Review packet",
+          "Bilingual glossary",
+          "Practice questions"
+        ]
+      },
+      "misconceptions": {
+        "original_content": "Review and clarify any misconceptions from the week",
+        "linguistic_note": {
+          "pattern_id": "default",
+          "note": "Portuguese speakers may omit subject pronouns ('Go to school') or place adjectives after nouns ('house big').",
+          "prevention_tip": "Use sentence frames with explicit subjects and adjectives before nouns. Example: 'I [verb]...' and 'The [adjective] [noun]...'"
+        }
+      },
+      "assessment": {
+        "primary_assessment": "Participation in review activities",
+        "bilingual_overlay": {
+          "instrument": "Observation of participation in review stations and completion of review packet",
+          "wida_mapping": "Inform + ELD-SS.6-8.Speaking/Writing + Levels 2-5",
+          "supports_by_level": {
+            "levels_1_2": "Focus on vocabulary recognition and matching; allow pointing and gestures; bilingual support throughout",
+            "levels_3_4": "Expect verbal participation in L1 or L2; written responses with sentence frames; peer support encouraged",
+            "levels_5_6": "Independent completion of review materials; verbal explanations in English; help support lower proficiency peers"
+          },
+          "scoring_lens": "Credit engagement and effort; focus on growth and understanding over accuracy; note areas needing additional support for unit assessment",
+          "constraints_honored": "Formative assessment only; no new materials"
+        }
+      },
+      "homework": {
+        "original_content": "Study for Unit One assessment next week",
+        "family_connection": "Review unit vocabulary with family. Create flashcards together in Portuguese and English. Quiz each other: 'O que significa...?' (What does... mean?)"
+      }
+    }
+  }
+}

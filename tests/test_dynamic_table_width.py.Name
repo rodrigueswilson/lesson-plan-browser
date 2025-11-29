@@ -1,0 +1,204 @@
+"""
+Test that the renderer correctly calculates and applies dynamic table widths
+based on the template's page setup.
+"""
+
+from docx import Document
+from docx.shared import Inches
+from pathlib import Path
+import json
+import tempfile
+import os
+
+# Test with the actual template
+TEMPLATE_PATH = r'F:\rodri\Documents\OneDrive\AS\Lesson Plan\Lesson Plan Template.docx'
+
+def test_template_page_setup():
+    """Verify the template has the expected page setup."""
+    print("=" * 80)
+    print("TEST 1: Template Page Setup")
+    print("=" * 80)
+    
+    doc = Document(TEMPLATE_PATH)
+    section = doc.sections[0]
+    
+    page_width_inches = section.page_width.inches
+    page_height_inches = section.page_height.inches
+    left_margin_inches = section.left_margin.inches
+    right_margin_inches = section.right_margin.inches
+    
+    print(f"\nPage dimensions:")
+    print(f"  Width: {page_width_inches:.2f} inches")
+    print(f"  Height: {page_height_inches:.2f} inches")
+    print(f"  Orientation: {'Landscape' if page_width_inches > page_height_inches else 'Portrait'}")
+    
+    print(f"\nMargins:")
+    print(f"  Left: {left_margin_inches:.2f} inches")
+    print(f"  Right: {right_margin_inches:.2f} inches")
+    
+    available_width_emus = section.page_width - section.left_margin - section.right_margin
+    available_width_inches = available_width_emus / 914400
+    
+    print(f"\nAvailable width for content:")
+    print(f"  {available_width_inches:.2f} inches")
+    
+    # Expected values for landscape 11x8.5 with 0.5" margins
+    assert abs(page_width_inches - 11.0) < 0.1, f"Expected 11\" width, got {page_width_inches:.2f}\""
+    assert abs(page_height_inches - 8.5) < 0.1, f"Expected 8.5\" height, got {page_height_inches:.2f}\""
+    assert abs(left_margin_inches - 0.5) < 0.1, f"Expected 0.5\" left margin, got {left_margin_inches:.2f}\""
+    assert abs(right_margin_inches - 0.5) < 0.1, f"Expected 0.5\" right margin, got {right_margin_inches:.2f}\""
+    assert abs(available_width_inches - 10.0) < 0.1, f"Expected 10\" available width, got {available_width_inches:.2f}\""
+    
+    print("\n✓ Template page setup is correct!")
+    return available_width_inches
+
+def test_renderer_dynamic_width():
+    """Test that the renderer applies the correct dynamic width."""
+    print("\n" + "=" * 80)
+    print("TEST 2: Renderer Dynamic Width Calculation")
+    print("=" * 80)
+    
+    from tools.docx_renderer import DOCXRenderer
+    
+    # Create minimal test JSON
+    test_json = {
+        "metadata": {
+            "teacher_name": "Test Teacher",
+            "grade": "3rd",
+            "subject": "Math",
+            "week_of": "11-04-11-08",
+            "homeroom": "101"
+        },
+        "days": {
+            "monday": {
+                "unit": "Unit 1",
+                "lesson_number": "Lesson 1",
+                "module": "Module A",
+                "objective": {"content": "Test objective"},
+                "anticipatory_set": "Test anticipatory set",
+                "tailored_strategies": "Test strategies",
+                "assessment": "Test assessment",
+                "homework": "Test homework"
+            }
+        }
+    }
+    
+    # Create temporary output file
+    with tempfile.NamedTemporaryFile(mode='w', suffix='.docx', delete=False) as tmp:
+        output_path = tmp.name
+    
+    try:
+        # Render
+        renderer = DOCXRenderer(TEMPLATE_PATH)
+        success = renderer.render(test_json, output_path)
+        
+        assert success, "Rendering failed"
+        print("\n✓ Rendering succeeded")
+        
+        # Check output document
+        output_doc = Document(output_path)
+        
+        # Check that tables exist
+        assert len(output_doc.tables) >= 2, f"Expected at least 2 tables, got {len(output_doc.tables)}"
+        print(f"✓ Found {len(output_doc.tables)} tables in output")
+        
+        # Check table widths
+        print("\nTable widths in output:")
+        for i, table in enumerate(output_doc.tables):
+            if table.columns:
+                total_width = sum(col.width for col in table.columns)
+                total_width_inches = total_width / 914400
+                print(f"  Table {i+1}: {total_width_inches:.4f} inches")
+                
+                # Should be approximately 10 inches (allowing small rounding errors)
+                assert abs(total_width_inches - 10.0) < 0.01, \
+                    f"Table {i+1} width {total_width_inches:.4f}\" != expected 10.0\""
+        
+        print("\n✓ All tables have correct 10-inch width!")
+        
+        # Check page setup is preserved
+        section = output_doc.sections[0]
+        output_width = section.page_width.inches
+        output_height = section.page_height.inches
+        
+        print(f"\nOutput document page setup:")
+        print(f"  Width: {output_width:.2f} inches")
+        print(f"  Height: {output_height:.2f} inches")
+        
+        assert abs(output_width - 11.0) < 0.1, "Page width not preserved"
+        assert abs(output_height - 8.5) < 0.1, "Page height not preserved"
+        
+        print("✓ Page setup preserved correctly!")
+        
+    finally:
+        # Cleanup
+        if os.path.exists(output_path):
+            os.unlink(output_path)
+
+def test_docx_utils_function():
+    """Test that docx_utils functions work with dynamic width."""
+    print("\n" + "=" * 80)
+    print("TEST 3: docx_utils Functions with Dynamic Width")
+    print("=" * 80)
+    
+    from tools.docx_utils import normalize_all_tables
+    
+    # Load template
+    doc = Document(TEMPLATE_PATH)
+    section = doc.sections[0]
+    
+    # Calculate dynamic width
+    available_width_emus = section.page_width - section.left_margin - section.right_margin
+    available_width_inches = available_width_emus / 914400
+    
+    print(f"\nCalculated width: {available_width_inches:.4f} inches")
+    
+    # Normalize tables
+    count = normalize_all_tables(doc, total_width_inches=available_width_inches)
+    
+    print(f"✓ Normalized {count} tables")
+    
+    # Verify widths
+    print("\nVerifying table widths:")
+    for i, table in enumerate(doc.tables):
+        if table.columns:
+            total_width = sum(col.width for col in table.columns)
+            total_width_inches = total_width / 914400
+            print(f"  Table {i+1}: {total_width_inches:.4f} inches")
+            
+            assert abs(total_width_inches - 10.0) < 0.01, \
+                f"Table {i+1} width {total_width_inches:.4f}\" != expected 10.0\""
+    
+    print("\n✓ All tables correctly normalized to 10 inches!")
+
+if __name__ == "__main__":
+    print("\n" + "=" * 80)
+    print("DYNAMIC TABLE WIDTH TEST SUITE")
+    print("=" * 80)
+    
+    try:
+        # Test 1: Verify template setup
+        expected_width = test_template_page_setup()
+        
+        # Test 2: Test renderer
+        test_renderer_dynamic_width()
+        
+        # Test 3: Test utility functions
+        test_docx_utils_function()
+        
+        print("\n" + "=" * 80)
+        print("ALL TESTS PASSED!")
+        print("=" * 80)
+        print("\nSummary:")
+        print("✓ Template has correct 11\" x 8.5\" landscape setup with 0.5\" margins")
+        print("✓ Renderer dynamically calculates 10\" width from page setup")
+        print("✓ All output tables are correctly sized to 10 inches")
+        print("✓ docx_utils functions work correctly with dynamic width")
+        print("\n" + "=" * 80)
+        
+    except AssertionError as e:
+        print(f"\n✗ TEST FAILED: {e}")
+        raise
+    except Exception as e:
+        print(f"\n✗ ERROR: {e}")
+        raise

@@ -1,0 +1,10 @@
+{
+  "session_dir": "logs\\diagnostics\\session_20251107_162809",
+  "total_stages": 4,
+  "stages": [
+    "01_parser_slot3",
+    "02_lesson_json_slot3",
+    "03_before_render_slot3",
+    "04_renderer_metadata_extracted"
+  ]
+}

@@ -1,0 +1,87 @@
+{
+  "_meta": {
+    "version": "1.0",
+    "purpose": "High-frequency Portuguese→English interference patterns for linguistic misconception prediction",
+    "entries": 6,
+    "last_updated": "2025-10-04",
+    "usage": "Simple keyword matching on lesson vocabulary/objectives to provide targeted linguistic warnings"
+  },
+  "high_frequency_patterns": [
+    {
+      "pattern_id": "subject_pronoun_omission",
+      "pattern_name": "Subject Pronoun Omission (Pro-Drop)",
+      "frequency": "very_high",
+      "grade_levels": ["all"],
+      "trigger_keywords": ["write", "sentence", "paragraph", "essay", "compose", "writing"],
+      "linguistic_note": "Portuguese speakers often drop subject pronouns ('Go to school' instead of 'I go to school') because verb conjugation shows the person",
+      "prevention_tip": "Use sentence frames that explicitly include subject pronouns: 'I [verb]...', 'She [verb]...', 'They [verb]...'",
+      "example_error": "Go to school every day",
+      "example_correct": "I go to school every day",
+      "compatible_strategies": ["sentence_frames", "contrastive_analysis"]
+    },
+    {
+      "pattern_id": "adjective_placement",
+      "pattern_name": "Adjective After Noun",
+      "frequency": "very_high",
+      "grade_levels": ["K", "1", "2-3", "4-5"],
+      "trigger_keywords": ["describe", "adjective", "descriptive", "writing", "detail"],
+      "linguistic_note": "Portuguese places adjectives after nouns ('casa grande' = house big). English places adjectives before nouns.",
+      "prevention_tip": "Visual word order chart: Article + Adjective + Noun. Color-code adjectives (blue) before nouns (red).",
+      "example_error": "The house big is beautiful",
+      "example_correct": "The big house is beautiful",
+      "compatible_strategies": ["sentence_frames", "graphic_organizers", "contrastive_analysis"]
+    },
+    {
+      "pattern_id": "past_tense_ed_dropping",
+      "pattern_name": "Past Tense -ed Ending Omission",
+      "frequency": "very_high",
+      "grade_levels": ["1", "2-3", "4-5", "6-8", "9-12"],
+      "trigger_keywords": ["past tense", "yesterday", "last", "ago", "narrative", "story", "happened"],
+      "linguistic_note": "Portuguese rarely has consonant clusters at word end. Students may drop -ed endings: 'walk' instead of 'walked'",
+      "prevention_tip": "Editing checklist: 'Did I add -ed to past tense verbs?' Highlight all verbs and check for -ed endings.",
+      "example_error": "I walk to school yesterday",
+      "example_correct": "I walked to school yesterday",
+      "compatible_strategies": ["sentence_frames", "explicit_grammar_instruction", "editing_checklists"]
+    },
+    {
+      "pattern_id": "preposition_depend_on",
+      "pattern_name": "Preposition: depend ON (not 'of')",
+      "frequency": "very_high",
+      "grade_levels": ["4-5", "6-8", "9-12"],
+      "trigger_keywords": ["depend", "rely"],
+      "linguistic_note": "Portuguese uses 'depender DE' (depend of). English uses 'depend ON'.",
+      "prevention_tip": "Anchor chart: 'depend ON' (not 'depend of'). Sentence frame: 'I depend ON [noun]'",
+      "example_error": "I depend of my family",
+      "example_correct": "I depend on my family",
+      "compatible_strategies": ["sentence_frames", "contrastive_analysis", "anchor_charts"]
+    },
+    {
+      "pattern_id": "false_cognate_actual",
+      "pattern_name": "False Cognate: actual (real, not current)",
+      "frequency": "high",
+      "grade_levels": ["6-8", "9-12"],
+      "trigger_keywords": ["actual"],
+      "linguistic_note": "Portuguese 'atual' means 'current/present-day'. English 'actual' means 'real/factual'. Students may confuse these.",
+      "prevention_tip": "Explicit vocabulary: 'Actual = real (not current). Current in Portuguese is atual.' Use contrastive examples.",
+      "example_error": "The actual president is Biden (meaning current)",
+      "example_correct": "The actual temperature is 72°F (meaning real/factual)",
+      "compatible_strategies": ["cognate_awareness", "contrastive_analysis", "explicit_vocabulary"]
+    },
+    {
+      "pattern_id": "false_cognate_library",
+      "pattern_name": "False Cognate: library (not bookstore)",
+      "frequency": "very_high",
+      "grade_levels": ["K", "1", "2-3", "4-5"],
+      "trigger_keywords": ["library", "book", "read"],
+      "linguistic_note": "Portuguese 'livraria' means 'bookstore' (buy books). English 'library' means 'biblioteca' (borrow books, free).",
+      "prevention_tip": "Visual comparison chart: Library (borrow, free) vs. Bookstore/Livraria (buy, pay). Use pictures.",
+      "example_error": "I bought a book at the library",
+      "example_correct": "I borrowed a book from the library",
+      "compatible_strategies": ["cognate_awareness", "contrastive_analysis", "visual_aids"]
+    }
+  ],
+  "default_reminder": {
+    "linguistic_note": "Portuguese speakers may omit subject pronouns ('Go to school') or place adjectives after nouns ('house big').",
+    "prevention_tip": "Use sentence frames with explicit subjects and adjectives before nouns. Example: 'I [verb]...' and 'The [adjective] [noun]...'"
+  }
+}

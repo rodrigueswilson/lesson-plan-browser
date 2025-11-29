@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "types": ["vite/client", "node", "react"],
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@lesson-mode": ["../../shared/lesson-mode/src/index.ts"],
+      "@lesson-mode/*": ["../../shared/lesson-mode/src/*"],
+      "@lesson-browser": ["../../shared/lesson-browser/src/index.ts"],
+      "@lesson-browser/*": ["../../shared/lesson-browser/src/*"],
+      "@lesson-api": ["../../shared/lesson-api/src/index.ts"],
+      "@lesson-api/*": ["../../shared/lesson-api/src/*"],
+      "@lesson-ui/*": ["./src/components/ui/*"],
+      "*": ["./node_modules/*", "./src/*"]
+    }
+  },
+  "include": ["src", "../../shared/lesson-mode/src", "../../shared/lesson-browser/src", "../../shared/lesson-api/src"],
+  "references": [{ "path": "./tsconfig.node.json" }]
+}
+
