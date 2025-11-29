@@ -16,6 +16,14 @@ docs/archive/
 │   ├── strategies/    # Deprecated strategy JSON files
 │   ├── samples/       # Deprecated sample files
 │   └── ARCHIVE_INDEX.md
+├── root-documentation/ # Root directory MD files
+├── android-documentation/ # Android-specific docs
+├── test-files/        # Test and debug files
+├── temp-files/        # Temporary files
+├── scripts/           # Archived scripts
+│   ├── batch/         # Batch scripts
+│   └── powershell/    # PowerShell scripts
+├── ROOT_ARCHIVE_INDEX.md # Root archive index
 └── README.md          # This file
 ```
 
@@ -39,6 +47,22 @@ Contains archived files from the `deprecated/` directory:
 
 **Index**: [deprecated/ARCHIVE_INDEX.md](deprecated/ARCHIVE_INDEX.md)
 
+### Root Directory Archive
+
+Contains files archived from the project root directory:
+- **root-documentation/**: ~95 documentation MD files (analysis, status, guides)
+- **android-documentation/**: 5 Android-specific documentation files
+- **test-files/**: ~20 test files, debug files, and samples
+- **temp-files/**: Temporary files kept for reference
+- **scripts/**: Archived batch and PowerShell scripts
+  - **batch/**: ~26 batch scripts
+  - **powershell/**: ~15 PowerShell scripts
+
+**Python Scripts**: Moved to `tools/archive/root-scripts/` (~56 files)  
+**Log Files**: Moved to `logs/archive/` (~11 files)
+
+**Index**: [ROOT_ARCHIVE_INDEX.md](ROOT_ARCHIVE_INDEX.md)
+
 ## Archive Maintenance
 
 ### Adding Files to Archive
@@ -61,7 +85,17 @@ Contains archived files from the `deprecated/` directory:
 
 **Frontend Archive**: 5 files  
 **Deprecated Archive**: 27 files  
-**Total Archived**: 32 files
+**Root Directory Archive**: ~230 files
+  - Documentation: ~95 files
+  - Python Scripts: ~56 files
+  - Batch Scripts: ~26 files
+  - Test Files: ~20 files
+  - PowerShell Scripts: ~15 files
+  - Log Files: ~11 files
+  - Android Docs: 5 files
+  - Other: ~2 files
+
+**Total Archived**: ~260+ files
 
 ## Related Documents
 
