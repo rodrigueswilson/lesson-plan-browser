@@ -24,6 +24,7 @@ Each archived file is documented with:
 | `frontend/src/App.tsx` | `docs/archive/frontend/pc-version/App.tsx.backup` | 2025-01-27 | Superseded | `lesson-plan-browser/frontend/src/App.tsx` (unified) | pc-version |
 | `frontend/src/components/mobile/MobileNav.tsx` | `docs/archive/frontend/pc-version/components/MobileNav.tsx` | 2025-01-27 | Not needed | Tablet has no navigation (unified frontend) | pc-version |
 | `frontend/src/components/mobile/MobileNav.test.tsx` | `docs/archive/frontend/pc-version/components/MobileNav.test.tsx` | 2025-01-27 | Not needed | Tablet has no navigation (unified frontend) | pc-version |
+| `FRONTEND_VERSIONS_DOCUMENTATION.md` | `docs/archive/frontend/documentation/FRONTEND_VERSIONS_DOCUMENTATION.md` | 2025-01-27 | Superseded | `docs/implementation/UNIFIED_FRONTEND_IMPLEMENTATION_GUIDE.md` | documentation |
 
 ### Tablet Version Files
 
@@ -36,6 +37,8 @@ Each archived file is documented with:
 | Original Path | Archive Location | Date | Reason | Replacement | Component |
 |---------------|------------------|------|--------|-------------|-----------|
 | `FRONTEND_VERSIONS_DOCUMENTATION.md` | `docs/archive/frontend/documentation/FRONTEND_VERSIONS_DOCUMENTATION.md` | 2025-01-27 | Superseded | `docs/implementation/UNIFIED_FRONTEND_IMPLEMENTATION_GUIDE.md` | documentation |
+
+**Note**: Original files have been removed from active codebase after archiving.
 
 ### Build Scripts
 
@@ -93,9 +96,9 @@ When archiving a new file:
 ## Archive Statistics
 
 **Total Archived Files**: 5  
-**PC Version Files**: 3  
+**PC Version Files**: 3 (originals removed)  
 **Tablet Version Files**: 1  
-**Documentation Files**: 1  
+**Documentation Files**: 1 (original removed)  
 **Build Scripts**: 0 (referenced only)
 
 ## Related Documents

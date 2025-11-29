@@ -47,6 +47,7 @@ Each entry documents:
 | 2025-01-27 | 4 | `lesson-plan-browser/frontend/src/App.tsx` | Modified | Fixed import paths for PC-only components (changed from `../../frontend/` to `../../../frontend/`) | AI | Build test | Complete |
 | 2025-01-27 | 7 | Android APK Build | Verified | Build successful - APK created in 22s, all steps completed | AI | Build test | Complete |
 | 2025-01-27 | 8 | Android Device Testing | Verified | App working correctly on Android device - all tests passed | User | Device test | Complete |
+| 2025-01-27 | 10 | Codebase Decluttering | Complete | Archived 30 files (3 frontend, 27 deprecated), removed originals, created archive indexes | AI | Archiving | Complete |
 
 ## Phase 3: Feature Gating Hook
 
