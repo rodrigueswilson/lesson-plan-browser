@@ -26,7 +26,7 @@ powershell -ExecutionPolicy Bypass -File "%~dp0start-prometheus.ps1" -ErrorActio
 
 echo Starting Backend API Server...
 echo.
-start "Backend API" cmd /k "cd /d %~dp0 && .venv\Scripts\python.exe -m uvicorn backend.api:app --reload --port 8000"
+start "Backend API" cmd /k "cd /d %~dp0 && .venv\Scripts\python.exe -m uvicorn backend.api:app --reload --host 0.0.0.0 --port 8000"
 
 REM Wait for backend to start
 timeout /t 3 /nobreak >nul

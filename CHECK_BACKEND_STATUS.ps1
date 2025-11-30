@@ -55,7 +55,7 @@ Write-Host "Opening in new window. Check that window for any errors." -Foregroun
 Write-Host ""
 
 # Start backend in new window
-Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$PWD'; python -m uvicorn backend.api:app --reload --port 8000"
+Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$PWD'; python -m uvicorn backend.api:app --reload --host 0.0.0.0 --port 8000"
 
 Write-Host "Waiting 5 seconds for backend to start..." -ForegroundColor Yellow
 Start-Sleep -Seconds 5
