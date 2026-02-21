@@ -46,7 +46,7 @@ Thank you for your interest in contributing! This guide will help you set up you
 
 4. **Initialize database**
    ```bash
-   python -c "from backend.database import init_db; init_db()"
+   python -c "from backend.database import Database; db = Database(); db.init_db()"
    ```
 
 5. **Set up frontend** (if working on UI)

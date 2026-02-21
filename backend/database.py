@@ -2,7 +2,8 @@ import json
 import logging
 from contextlib import contextmanager
 from datetime import datetime, timedelta
-from typing import Any, Dict, List, Optional, Tuple
+from pathlib import Path as PathType
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 from sqlalchemy import func, case, or_
 from sqlmodel import Session, SQLModel, create_engine, delete, desc, select
@@ -27,26 +28,43 @@ logger = logging.getLogger(__name__)
 class SQLiteDatabase(DatabaseInterface):
     """SQLite implementation of DatabaseInterface using SQLModel."""
 
-    def __init__(self, use_ipc: bool = False):
+    def __init__(
+        self,
+        db_path: Optional[Union[str, PathType]] = None,
+        use_ipc: bool = False,
+        **kwargs,
+    ):
         """
         Initialize database.
 
         Args:
+            db_path: Optional path to SQLite file, or ":memory:" for in-memory DB.
+                If None, uses settings.SQLITE_DB_PATH. Also accepted as keyword
+                (e.g. db_path=path) for backward compatibility.
             use_ipc: If True, route SQL through Rust IPC (for Android sidecar mode)
+            **kwargs: For backward compatibility; db_path may be passed as keyword.
         """
         self.use_ipc = use_ipc
+        path_arg = db_path if db_path is not None else kwargs.get("db_path")
 
         if use_ipc:
             from backend.ipc_database import IPCDatabaseAdapter
 
             self._adapter = IPCDatabaseAdapter()
         else:
-            # Existing SQLAlchemy setup
-            self.db_path = settings.SQLITE_DB_PATH
-            # Ensure directory exists
-            self.db_path.parent.mkdir(parents=True, exist_ok=True)
-            # check_same_thread=False is needed for FastAPI concurrency with SQLite
-            sqlite_url = f"sqlite:///{self.db_path}"
+            if path_arg is not None:
+                path_str = str(path_arg)
+                if path_str == ":memory:":
+                    self.db_path = PathType(":memory:")
+                    sqlite_url = "sqlite:///:memory:"
+                else:
+                    self.db_path = PathType(path_arg) if not isinstance(path_arg, PathType) else path_arg
+                    self.db_path.parent.mkdir(parents=True, exist_ok=True)
+                    sqlite_url = f"sqlite:///{self.db_path}"
+            else:
+                self.db_path = settings.SQLITE_DB_PATH
+                self.db_path.parent.mkdir(parents=True, exist_ok=True)
+                sqlite_url = f"sqlite:///{self.db_path}"
             self.engine = create_engine(
                 sqlite_url, connect_args={"check_same_thread": False}
             )
@@ -1731,6 +1749,10 @@ class SQLiteDatabase(DatabaseInterface):
         except Exception as e:
             logger.error(f"Error ending lesson mode session: {e}")
             return False
+
+
+# Backward compatibility: tests and tools import Database
+Database = SQLiteDatabase
 
 
 # Global database instance
