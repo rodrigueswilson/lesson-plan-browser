@@ -8,6 +8,8 @@ and falls back appropriately when not supported.
 import json
 import os
 from pathlib import Path
+
+import pytest
 from dotenv import load_dotenv
 
 from backend.llm_service import LLMService, get_llm_service
@@ -235,8 +237,9 @@ def test_gpt5_mini_specific():
     print("[OK] All GPT-5 Mini specific tests passed\n")
 
 
+@pytest.mark.timeout(300)
 def test_integration_with_real_api():
-    """Test actual LLM call with structured outputs (requires API key)"""
+    """Test actual LLM call with structured outputs (requires API key; can take minutes)."""
     print("=" * 60)
     print("TEST 5: Integration Test (Real API)")
     print("=" * 60)

@@ -19,12 +19,8 @@ from pathlib import Path
 # Add parent directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from fastapi.testclient import TestClient
-from backend.api import app
 from tools.validate_schema import validate_json, load_schema
 from tools.docx_renderer import DOCXRenderer
-
-client = TestClient(app)
 
 
 class TestEndToEnd:
@@ -36,7 +32,7 @@ class TestEndToEnd:
         with open(f"tests/fixtures/{filename}", "r", encoding="utf-8") as f:
             return json.load(f)
     
-    def test_complete_workflow(self):
+    def test_complete_workflow(self, client):
         """Test complete workflow: validate → render → download."""
         print("\n" + "="*60)
         print("Test: Complete Workflow")
@@ -95,7 +91,7 @@ class TestEndToEnd:
         
         return True
     
-    def test_error_handling_workflow(self):
+    def test_error_handling_workflow(self, client):
         """Test error handling throughout workflow."""
         print("\n" + "="*60)
         print("Test: Error Handling Workflow")
@@ -144,7 +140,7 @@ class TestEndToEnd:
         print(f"\n✓ ERROR HANDLING PASSED")
         return True
     
-    def test_performance_benchmarks(self):
+    def test_performance_benchmarks(self, client):
         """Test performance benchmarks."""
         print("\n" + "="*60)
         print("Test: Performance Benchmarks")
@@ -198,7 +194,7 @@ class TestEndToEnd:
         print(f"\n✓ PERFORMANCE BENCHMARKS PASSED")
         return True
     
-    def test_component_integration(self):
+    def test_component_integration(self, client):
         """Test integration of all components."""
         print("\n" + "="*60)
         print("Test: Component Integration")
@@ -241,7 +237,7 @@ class TestEndToEnd:
         print(f"\n✓ COMPONENT INTEGRATION PASSED")
         return True
     
-    def test_data_integrity(self):
+    def test_data_integrity(self, client):
         """Test data integrity through the pipeline."""
         print("\n" + "="*60)
         print("Test: Data Integrity")

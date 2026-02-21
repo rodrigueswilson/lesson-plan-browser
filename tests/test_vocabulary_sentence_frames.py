@@ -114,6 +114,7 @@ class TestSentenceFrame:
                 proficiency_level="levels_1_2",
                 english="This is ___",
                 portuguese="Isto é ___",
+                language_function="identify",
                 frame_type="stem"
             )
         assert "frame_type 'frame'" in str(exc_info.value)
@@ -125,6 +126,7 @@ class TestSentenceFrame:
                 proficiency_level="levels_3_4",
                 english="First ___, then ___",
                 portuguese="Primeiro ___, depois ___",
+                language_function="sequence",
                 frame_type="open_question"
             )
         assert "frame_type 'frame'" in str(exc_info.value)
@@ -136,6 +138,7 @@ class TestSentenceFrame:
                 proficiency_level="levels_5_6",
                 english="Evidence suggests that ___",
                 portuguese="As evidências sugerem que ___",
+                language_function="argue",
                 frame_type="frame"
             )
         assert "frame_type 'stem' or 'open_question'" in str(exc_info.value)
@@ -147,6 +150,7 @@ class TestSentenceFrame:
                 proficiency_level="invalid_level",
                 english="This is ___",
                 portuguese="Isto é ___",
+                language_function="identify",
                 frame_type="frame"
             )
 
@@ -157,6 +161,7 @@ class TestSentenceFrame:
                 proficiency_level="levels_1_2",
                 english="This is ___",
                 portuguese="Isto é ___",
+                language_function="identify",
                 frame_type="invalid_type"
             )
 
@@ -473,10 +478,13 @@ class TestSchemaValidation:
         assert frames_def["minItems"] == 8
         assert frames_def["maxItems"] == 8
         
-        # Check that sentence_frames is in day_plan required fields
-        day_plan = schema["definitions"]["day_plan"]
-        assert "sentence_frames" in day_plan["required"]
-        assert "vocabulary_cognates" in day_plan["required"]
+        # Check that sentence_frames and vocabulary_cognates are required in day formats
+        single_slot = schema["definitions"]["day_plan_single_slot"]
+        assert "sentence_frames" in single_slot["required"]
+        assert "vocabulary_cognates" in single_slot["required"]
+        slot_plan = schema["definitions"]["slot_plan"]
+        assert "sentence_frames" in slot_plan["required"]
+        assert "vocabulary_cognates" in slot_plan["required"]
 
 
 if __name__ == "__main__":

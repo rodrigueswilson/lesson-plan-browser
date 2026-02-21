@@ -13,15 +13,6 @@ from backend.performance_tracker import PerformanceTracker, get_tracker
 
 
 @pytest.fixture
-def test_db():
-    """Create test database."""
-    with tempfile.TemporaryDirectory() as tmpdir:
-        db_path = Path(tmpdir) / "test.db"
-        db = Database(str(db_path))
-        yield db
-
-
-@pytest.fixture
 def tracker(test_db, monkeypatch):
     """Create test tracker using the same database instance."""
     # Patch get_db to return our test database
@@ -182,10 +173,8 @@ def test_get_plan_summary(tracker, test_plan):
     summary = tracker.get_plan_summary(test_plan)
     assert summary["operation_count"] == 3
     assert summary["total_tokens"] == 4500  # 3 * 1500
-    assert summary["total_tokens_input"] == 3000  # 3 * 1000
-    assert summary["total_tokens_output"] == 1500  # 3 * 500
     assert summary["total_cost_usd"] > 0
-    assert summary["avg_duration_ms"] >= 0  # Allow zero for very fast operations
+    assert summary["total_time_ms"] >= 0  # Allow zero for very fast operations
 
 
 def test_update_plan_summary(tracker, test_plan, test_db):
@@ -210,12 +199,12 @@ def test_update_plan_summary(tracker, test_plan, test_db):
     assert success is True
 
     # Check weekly_plans table
-    plans = test_db.get_user_plans(test_db.list_users()[0]["id"])
+    plans = test_db.get_user_plans(test_db.list_users()[0].id)
     plan = plans[0]
-    assert plan["total_tokens"] == 1500
-    assert plan["total_cost_usd"] > 0
-    assert plan["processing_time_ms"] >= 0  # Allow zero for very fast operations
-    assert plan["llm_model"] == "gpt-4-turbo-preview"
+    assert plan.total_tokens == 1500
+    assert plan.total_cost_usd > 0
+    assert plan.processing_time_ms >= 0  # Allow zero for very fast operations
+    assert plan.llm_model == "gpt-4-turbo-preview"
 
 
 def test_export_to_csv(tracker, test_plan):

@@ -17,13 +17,10 @@ from pathlib import Path
 # Add parent directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from fastapi.testclient import TestClient
 from backend.api import app
 
-client = TestClient(app)
 
-
-def test_health_check():
+def test_health_check(client):
     """Test health check endpoint."""
     print("\nTest: Health Check")
     
@@ -38,7 +35,7 @@ def test_health_check():
     print("  PASS: Health check works")
 
 
-def test_validate_valid_json():
+def test_validate_valid_json(client):
     """Test validation with valid JSON."""
     print("\nTest: Validate Valid JSON")
     
@@ -56,7 +53,7 @@ def test_validate_valid_json():
     print("  PASS: Valid JSON validation works")
 
 
-def test_validate_invalid_json():
+def test_validate_invalid_json(client):
     """Test validation with invalid JSON."""
     print("\nTest: Validate Invalid JSON")
     
@@ -80,7 +77,7 @@ def test_validate_invalid_json():
     print("  PASS: Invalid JSON validation works")
 
 
-def test_render_lesson_plan():
+def test_render_lesson_plan(client):
     """Test rendering lesson plan to DOCX."""
     print("\nTest: Render Lesson Plan")
     
@@ -107,7 +104,7 @@ def test_render_lesson_plan():
     print("  PASS: Rendering works")
 
 
-def test_render_invalid_json():
+def test_render_invalid_json(client):
     """Test rendering with invalid JSON."""
     print("\nTest: Render Invalid JSON")
     
@@ -123,7 +120,7 @@ def test_render_invalid_json():
     print("  PASS: Invalid JSON handling works")
 
 
-def test_render_missing_template():
+def test_render_missing_template(client):
     """Test rendering with missing template."""
     print("\nTest: Render Missing Template")
     
@@ -142,7 +139,7 @@ def test_render_missing_template():
     print("  PASS: Missing template handling works")
 
 
-def test_download_rendered_file():
+def test_download_rendered_file(client):
     """Test downloading rendered file."""
     print("\nTest: Download Rendered File")
     
@@ -169,7 +166,7 @@ def test_download_rendered_file():
     print("  PASS: File download works")
 
 
-def test_download_nonexistent_file():
+def test_download_nonexistent_file(client):
     """Test downloading nonexistent file."""
     print("\nTest: Download Nonexistent File")
     
@@ -180,7 +177,7 @@ def test_download_nonexistent_file():
     print("  PASS: Nonexistent file handling works")
 
 
-def test_progress_stream():
+def test_progress_stream(client):
     """Test progress streaming endpoint."""
     print("\nTest: Progress Stream")
     
@@ -196,7 +193,7 @@ def test_progress_stream():
     print("  PASS: Progress streaming works")
 
 
-def test_api_docs():
+def test_api_docs(client):
     """Test API documentation endpoints."""
     print("\nTest: API Documentation")
     

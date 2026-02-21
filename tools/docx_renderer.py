@@ -106,8 +106,12 @@ class DOCXRenderer:
     METADATA_TABLE_IDX = 0  # First table contains metadata (Name, Grade, etc.)
     DAILY_PLANS_TABLE_IDX = 1  # Second table contains daily lesson plans
 
-    # Row indices in the daily plans table
+    # Row indices in the daily plans table (typical layout; dynamic via _get_row_index when structure is detected)
     UNIT_LESSON_ROW = 1  # Unit/Lesson row (first data row after headers)
+    OBJECTIVE_ROW = 2  # Objective row
+    ANTICIPATORY_SET_ROW = 3  # Anticipatory set row
+    INSTRUCTION_ROW = 4  # Tailored instruction row
+    ASSESSMENT_ROW = 6  # Assessment row
 
     def __init__(self, template_path: str):
         """Initialize renderer with template path.
@@ -1707,9 +1711,11 @@ class DOCXRenderer:
 
         # FALLBACK: Append media that belongs to this section but wasn't placed inline
         # This ensures "orphan" media stays with its relevant section
-        if section_name and (pending_hyperlinks or pending_images):
+        links = pending_hyperlinks or []
+        imgs = pending_images or []
+        if section_name and (links or imgs):
             # Check for hyperlinks with matching section hint
-            for hyperlink in pending_hyperlinks[:]:
+            for hyperlink in links[:]:
                 # Check if this hyperlink belongs to this slot/subject
                 if current_slot_number is not None:
                     link_slot = hyperlink.get("_source_slot")
@@ -1760,14 +1766,15 @@ class DOCXRenderer:
                         run.font.name = "Times New Roman"
                         run.font.size = Pt(8)
 
-                    pending_hyperlinks.remove(hyperlink)
+                    if pending_hyperlinks is not None:
+                        pending_hyperlinks.remove(hyperlink)
                     logger.info(
                         "hyperlink_placed_fallback",
                         extra={"text": hyperlink["text"], "section": section_name},
                     )
 
             # Check for images with matching section hint
-            for image in pending_images[:]:
+            for image in imgs[:]:
                 # Check slot/subject (similar to hyperlinks)
                 if current_slot_number is not None:
                     img_slot = image.get("_source_slot")
@@ -1801,7 +1808,8 @@ class DOCXRenderer:
                     self._inject_image_inline(
                         cell, image, max_width=1.3
                     )  # approx column width
-                    pending_images.remove(image)
+                    if pending_images is not None:
+                        pending_images.remove(image)
                     logger.info(
                         "image_placed_fallback",
                         extra={"filename": image["filename"], "section": section_name},

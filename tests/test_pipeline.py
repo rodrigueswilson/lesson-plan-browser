@@ -1,7 +1,6 @@
 """
-Test the complete lesson plan pipeline.
+Test the complete lesson plan pipeline (and JSON repair when pipeline is in archive).
 """
-
 import json
 import sys
 from pathlib import Path
@@ -9,96 +8,58 @@ from pathlib import Path
 # Add parent directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from tools.lesson_plan_pipeline import create_pipeline
 from tools.json_repair import validate_and_repair
+
+try:
+    from tools.lesson_plan_pipeline import create_pipeline
+except ImportError:
+    create_pipeline = None
 
 
 def test_pipeline_with_valid_json():
-    """Test pipeline with valid JSON fixture."""
-    print("=" * 60)
-    print("Test 1: Pipeline with Valid JSON")
-    print("=" * 60)
-    
-    # Load valid fixture
-    fixture_path = Path('tests/fixtures/valid_lesson_minimal.json')
-    with open(fixture_path, 'r', encoding='utf-8') as f:
+    """Test pipeline with valid JSON fixture (skips if lesson_plan_pipeline not installed)."""
+    import pytest
+    if create_pipeline is None:
+        pytest.skip("tools.lesson_plan_pipeline not available (may be in archive)")
+    fixture_path = Path(__file__).parent / "fixtures" / "valid_lesson_minimal.json"
+    with open(fixture_path, "r", encoding="utf-8") as f:
         json_data = json.load(f)
-    
-    # Create pipeline
     pipeline = create_pipeline()
-    
-    # Process
     success, output, error = pipeline.process_from_json(
         json_data=json_data,
         lesson_id="test-001",
-        output_path=Path('output/test_pipeline.md')
+        output_path=Path("output/test_pipeline.md"),
     )
-    
-    if success:
-        print(f"✓ Pipeline succeeded")
-        print(f"  Output size: {len(output)} characters")
-        print(f"  Saved to: output/test_pipeline.md")
-    else:
-        print(f"✗ Pipeline failed: {error}")
-    
-    return success
+    assert success, error
 
 
 def test_json_repair():
     """Test JSON repair functionality."""
-    print("\n" + "=" * 60)
-    print("Test 2: JSON Repair")
-    print("=" * 60)
-    
     test_cases = [
-        ('Valid JSON', '{"key": "value"}', True),
-        ('Trailing comma', '{"key": "value",}', True),
-        ('Markdown block', '```json\n{"key": "value"}\n```', True),
-        ('Missing brace', '{"key": "value"', True),
-        ('Comments', '{"key": "value" /* comment */}', True),
+        ("Valid JSON", '{"key": "value"}', True),
+        ("Trailing comma", '{"key": "value",}', True),
+        ("Markdown block", '```json\n{"key": "value"}\n```', True),
+        ("Missing brace", '{"key": "value"', True),
+        ("Comments", '{"key": "value" /* comment */}', True),
     ]
-    
-    passed = 0
     for name, json_str, should_pass in test_cases:
         success, data, message = validate_and_repair(json_str)
-        
-        if success == should_pass:
-            print(f"✓ {name}: {message}")
-            passed += 1
-        else:
-            print(f"✗ {name}: Expected {should_pass}, got {success}")
-    
-    print(f"\nPassed: {passed}/{len(test_cases)}")
-    return passed == len(test_cases)
+        assert success == should_pass, f"{name}: expected {should_pass}, got {success}"
 
 
 def test_validation_errors():
-    """Test validation error handling."""
-    print("\n" + "=" * 60)
-    print("Test 3: Validation Errors")
-    print("=" * 60)
-    
-    # Load invalid fixture
-    fixture_path = Path('tests/fixtures/invalid_missing_required.json')
-    with open(fixture_path, 'r', encoding='utf-8') as f:
+    """Test validation error handling (skips if pipeline not available)."""
+    import pytest
+    if create_pipeline is None:
+        pytest.skip("tools.lesson_plan_pipeline not available")
+    fixture_path = Path(__file__).parent / "fixtures" / "invalid_missing_required.json"
+    with open(fixture_path, "r", encoding="utf-8") as f:
         json_data = json.load(f)
-    
-    # Create pipeline
     pipeline = create_pipeline()
-    
-    # Process (should fail validation)
     success, output, error = pipeline.process_from_json(
-        json_data=json_data,
-        lesson_id="test-002"
+        json_data=json_data, lesson_id="test-002"
     )
-    
-    if not success:
-        print(f"✓ Validation correctly failed")
-        print(f"  Error: {error[:100]}...")
-        return True
-    else:
-        print(f"✗ Validation should have failed but passed")
-        return False
+    assert not success, "Validation should have failed"
 
 
 def main():

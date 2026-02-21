@@ -32,20 +32,20 @@ async def test_diagnostics():
         return
     
     user = users[0]
-    print(f"\n✓ Using user: {user['name']}")
+    print(f"\n✓ Using user: {user.name}")
     
     # Get user's slots
-    slots = db.get_user_slots(user['id'])
+    slots = db.get_user_slots(user.id)
     if not slots:
-        print(f"\n❌ No slots configured for user {user['name']}")
+        print(f"\n❌ No slots configured for user {user.name}")
         print("Please configure slots using the frontend.")
         return
     
     slot = slots[0]
-    print(f"✓ Using slot: {slot['subject']} (Slot {slot['slot_number']})")
+    print(f"✓ Using slot: {slot.subject} (Slot {slot.slot_number})")
     
     # Check for input file
-    primary_file = slot.get('primary_teacher_file')
+    primary_file = getattr(slot, 'primary_teacher_file', None)
     if not primary_file or not Path(primary_file).exists():
         print(f"\n❌ Primary teacher file not found: {primary_file}")
         print("Please ensure the file path is correct in the slot configuration.")
@@ -73,10 +73,10 @@ async def test_diagnostics():
     
     try:
         result = await processor.process_user_week(
-            user_id=user['id'],
+            user_id=user.id,
             week_of="10/21-10/25",  # Sample week
             provider="openai",
-            slot_ids=[slot['id']]  # Process only this slot
+            slot_ids=[slot.id]  # Process only this slot
         )
         
         print(f"\n{'='*80}")

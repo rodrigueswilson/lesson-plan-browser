@@ -58,3 +58,12 @@ Implementation lives in `tools/batch_processor_pkg/` so that `tools/batch_proces
 - `tools/batch_processor_pkg/combined_original.py` — combined original DOCX
 - `tools/batch_processor_pkg/orchestrator.py` — BatchProcessor class and process_batch (full implementation; can be split into transform/combine/etc. in future increments)
 - `tools/batch_processor.py` — facade (imports from batch_processor_pkg, re-exports; also re-exports get_db, get_file_manager, get_tracker for test patching)
+
+## Performance
+
+The refactor was **structural only**: same logic, same I/O, same LLM and asyncio flow, moved into separate modules. No algorithmic changes, caching, or concurrency changes were made.
+
+- **Runtime:** No before/after benchmarks were run. The code should be **effectively the same speed** (one extra import level via the facade is negligible).
+- **Import time:** Loading several modules instead of one large file can be marginally different; not measured.
+- **Analytics data in the database:** The app’s analytics module reads from the same DB: table `performance_metrics` (per-operation timing, tokens, cost, `operation_type`, `plan_id`) and `weekly_plans` (e.g. `processing_time_ms`, `total_cost_usd`, `generated_at`). The backend exposes this via `PerformanceTracker` (e.g. `get_aggregate_stats`, `get_daily_breakdown`, `get_operation_stats`) and the `/api/analytics/*` routes. That data can be used to compare batch runs before vs after refactors (e.g. filter by date or plan_id and compare duration/cost for similar workloads).
+- To claim or compare performance in the future, run a fixed workload (e.g. `process_batch` for a given user/week) and either compare wall-clock or query the same analytics data (e.g. aggregate by `operation_type` or by plan) for similar runs before and after.

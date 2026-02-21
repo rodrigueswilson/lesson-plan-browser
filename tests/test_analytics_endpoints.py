@@ -11,17 +11,10 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 import pytest
 from datetime import datetime, timedelta
+from sqlalchemy import text
+
 from backend.database import Database
 from backend.performance_tracker import PerformanceTracker
-
-
-@pytest.fixture
-def db():
-    """Create a test database."""
-    db = Database(":memory:")
-    # Initialize schema
-    db.init_db()
-    yield db
 
 
 @pytest.fixture
@@ -50,79 +43,32 @@ def sample_data(db):
         plan_ids.append(plan_id)
     
     # Add performance metrics
-    with db.get_connection() as conn:
-        cursor = conn.cursor()
-        
+    insert_sql = text("""
+        INSERT INTO performance_metrics
+        (id, plan_id, operation_type, duration_ms, tokens_input, tokens_output,
+         tokens_total, llm_model, llm_provider, cost_usd, started_at, completed_at)
+        VALUES (:id, :plan_id, :operation_type, :duration_ms, :tokens_input, :tokens_output,
+                :tokens_total, :llm_model, :llm_provider, :cost_usd, :started_at, :completed_at)
+    """)
+    with db.get_connection() as session:
+        row_num = 0
         for idx, plan_id in enumerate(plan_ids):
-            # Add parse operations
-            cursor.execute(
-                """
-                INSERT INTO performance_metrics 
-                (plan_id, operation_type, duration_ms, tokens_input, tokens_output, 
-                 tokens_total, llm_model, llm_provider, cost_usd, started_at, completed_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """,
-                (
-                    plan_id,
-                    "parse_slot",
-                    1500 + idx * 100,
-                    0,
-                    0,
-                    0,
-                    None,
-                    None,
-                    0.0,
-                    (datetime.now() - timedelta(days=idx)).isoformat(),
-                    (datetime.now() - timedelta(days=idx)).isoformat(),
-                ),
-            )
-            
-            # Add process operations
-            cursor.execute(
-                """
-                INSERT INTO performance_metrics 
-                (plan_id, operation_type, duration_ms, tokens_input, tokens_output, 
-                 tokens_total, llm_model, llm_provider, cost_usd, started_at, completed_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """,
-                (
-                    plan_id,
-                    "process_slot",
-                    3000 + idx * 200,
-                    1000 + idx * 100,
-                    500 + idx * 50,
-                    1500 + idx * 150,
-                    "gpt-4o-mini",
-                    "openai",
-                    0.002 + idx * 0.001,
-                    (datetime.now() - timedelta(days=idx)).isoformat(),
-                    (datetime.now() - timedelta(days=idx)).isoformat(),
-                ),
-            )
-            
-            # Add render operations
-            cursor.execute(
-                """
-                INSERT INTO performance_metrics 
-                (plan_id, operation_type, duration_ms, tokens_input, tokens_output, 
-                 tokens_total, llm_model, llm_provider, cost_usd, started_at, completed_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """,
-                (
-                    plan_id,
-                    "render_document",
-                    2000 + idx * 150,
-                    0,
-                    0,
-                    0,
-                    None,
-                    None,
-                    0.0,
-                    (datetime.now() - timedelta(days=idx)).isoformat(),
-                    (datetime.now() - timedelta(days=idx)).isoformat(),
-                ),
-            )
-    
+            ts = (datetime.now() - timedelta(days=idx)).isoformat()
+            for op_type, duration, ti, to, tt, model, provider, cost in [
+                ("parse_slot", 1500 + idx * 100, 0, 0, 0, None, None, 0.0),
+                ("process_slot", 3000 + idx * 200, 1000 + idx * 100, 500 + idx * 50,
+                 1500 + idx * 150, "gpt-4o-mini", "openai", 0.002 + idx * 0.001),
+                ("render_document", 2000 + idx * 150, 0, 0, 0, None, None, 0.0),
+            ]:
+                session.execute(insert_sql, {
+                    "id": f"metric-{plan_id}-{op_type}-{row_num}",
+                    "plan_id": plan_id, "operation_type": op_type, "duration_ms": duration,
+                    "tokens_input": ti, "tokens_output": to, "tokens_total": tt,
+                    "llm_model": model, "llm_provider": provider, "cost_usd": cost,
+                    "started_at": ts, "completed_at": ts,
+                })
+                row_num += 1
+
     return {"user_id": user_id, "plan_ids": plan_ids}
 
 

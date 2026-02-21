@@ -141,7 +141,7 @@ def test_multi_user():
     users = db.list_users()
     print(f"Existing Users: {len(users)}")
     for user in users:
-        print(f"  - {user['name']} (ID: {user['id'][:8]}...)")
+        print(f"  - {user.name} (ID: {user.id[:8]}...)")
     print()
     
     # Create test users if needed
@@ -152,7 +152,7 @@ def test_multi_user():
         db.update_user(maria_id, name="Maria Rodriguez")  # Add base_path when schema supports it
         print(f"  Created: {maria_id[:8]}...")
     else:
-        print(f"Maria Rodriguez exists: {maria_user['id'][:8]}...")
+        print(f"Maria Rodriguez exists: {maria_user.id[:8]}...")
     print()
     
     daniela_user = db.get_user_by_name("Daniela Silva")
@@ -161,7 +161,7 @@ def test_multi_user():
         daniela_id = db.create_user("Daniela Silva", "daniela@school.edu")
         print(f"  Created: {daniela_id[:8]}...")
     else:
-        print(f"Daniela Silva exists: {daniela_user['id'][:8]}...")
+        print(f"Daniela Silva exists: {daniela_user.id[:8]}...")
     print()
     
     # Summary

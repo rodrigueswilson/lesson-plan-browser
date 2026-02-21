@@ -3,7 +3,6 @@ Simplified integration test for performance tracking.
 Tests tracking without full document rendering.
 """
 
-import tempfile
 from pathlib import Path
 from unittest.mock import Mock
 
@@ -12,15 +11,6 @@ import pytest
 from backend.database import Database
 from backend.llm_service import LLMService
 from backend.performance_tracker import PerformanceTracker
-
-
-@pytest.fixture
-def test_db():
-    """Create test database."""
-    with tempfile.TemporaryDirectory() as tmpdir:
-        db_path = Path(tmpdir) / "test.db"
-        db = Database(str(db_path))
-        yield db
 
 
 @pytest.fixture

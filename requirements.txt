@@ -27,9 +27,10 @@ supabase>=2.0.0
 postgrest>=0.13.0
 sqlmodel>=0.0.14
 
-# Testing (optional)
+# Testing (optional; httpx<0.28 required for Starlette TestClient compatibility)
 pytest==7.4.3
 pytest-asyncio==0.21.1
+httpx>=0.24,<0.28
 
 # Rate Limiting
 slowapi==0.1.9

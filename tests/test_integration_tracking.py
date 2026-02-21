@@ -3,7 +3,6 @@ Integration test for performance tracking system.
 Tests the complete workflow with mock LLM responses.
 """
 
-import tempfile
 from pathlib import Path
 from unittest.mock import Mock, patch
 
@@ -13,15 +12,6 @@ from backend.database import Database
 from backend.llm_service import LLMService
 from backend.performance_tracker import PerformanceTracker
 from tools.batch_processor import BatchProcessor
-
-
-@pytest.fixture
-def test_db():
-    """Create test database."""
-    with tempfile.TemporaryDirectory() as tmpdir:
-        db_path = Path(tmpdir) / "test.db"
-        db = Database(str(db_path))
-        yield db
 
 
 @pytest.fixture
