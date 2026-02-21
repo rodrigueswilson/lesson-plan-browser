@@ -1,0 +1,85 @@
+{
+  "timestamp": "2025-12-14T20:10:26.942696",
+  "stage": "02_lesson_json_slot1",
+  "data": {
+    "slot_number": 1,
+    "subject": "ELA",
+    "metadata_slot_number": null,
+    "metadata_subject": "ELA",
+    "hyperlink_count": 13,
+    "hyperlinks_with_slot_metadata": 0,
+    "hyperlinks_with_subject_metadata": 0,
+    "sample_hyperlinks": [
+      {
+        "text": "Lenni Lenape",
+        "has_source_slot": false,
+        "source_slot": null,
+        "has_source_subject": false,
+        "source_subject": null
+      },
+      {
+        "text": "Lenni Lenape",
+        "has_source_slot": false,
+        "source_slot": null,
+        "has_source_subject": false,
+        "source_subject": null
+      },
+      {
+        "text": "Lenni Lenape",
+        "has_source_slot": false,
+        "source_slot": null,
+        "has_source_subject": false,
+        "source_subject": null
+      },
+      {
+        "text": "Lenni Lenape",
+        "has_source_slot": false,
+        "source_slot": null,
+        "has_source_subject": false,
+        "source_subject": null
+      },
+      {
+        "text": "Lenni Lenape",
+        "has_source_slot": false,
+        "source_slot": null,
+        "has_source_subject": false,
+        "source_subject": null
+      },
+      {
+        "text": "Native-Land.ca",
+        "has_source_slot": false,
+        "source_slot": null,
+        "has_source_subject": false,
+        "source_subject": null
+      },
+      {
+        "text": "Spotlight On Native Americans: Delaware Lenape",
+        "has_source_slot": false,
+        "source_slot": null,
+        "has_source_subject": false,
+        "source_subject": null
+      },
+      {
+        "text": "note catcher ",
+        "has_source_slot": false,
+        "source_slot": null,
+        "has_source_subject": false,
+        "source_subject": null
+      },
+      {
+        "text": " Biography Slide Template",
+        "has_source_slot": false,
+        "source_slot": null,
+        "has_source_subject": false,
+        "source_subject": null
+      },
+      {
+        "text": " Culture Preservation Graphic Organizer",
+        "has_source_slot": false,
+        "source_slot": null,
+        "has_source_subject": false,
+        "source_subject": null
+      }
+    ]
+  }
+}

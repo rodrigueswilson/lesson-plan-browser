@@ -1,0 +1,85 @@
+{
+  "timestamp": "2025-11-29T20:51:33.827805",
+  "stage": "02_lesson_json_slot1",
+  "data": {
+    "slot_number": 1,
+    "subject": "ELA",
+    "metadata_slot_number": null,
+    "metadata_subject": "ELA",
+    "hyperlink_count": 12,
+    "hyperlinks_with_slot_metadata": 0,
+    "hyperlinks_with_subject_metadata": 0,
+    "sample_hyperlinks": [
+      {
+        "text": "Lenni Lenape",
+        "has_source_slot": false,
+        "source_slot": null,
+        "has_source_subject": false,
+        "source_subject": null
+      },
+      {
+        "text": "Lenni Lenape",
+        "has_source_slot": false,
+        "source_slot": null,
+        "has_source_subject": false,
+        "source_subject": null
+      },
+      {
+        "text": "Lenni Lenape",
+        "has_source_slot": false,
+        "source_slot": null,
+        "has_source_subject": false,
+        "source_subject": null
+      },
+      {
+        "text": "Lenni Lenape",
+        "has_source_slot": false,
+        "source_slot": null,
+        "has_source_subject": false,
+        "source_subject": null
+      },
+      {
+        "text": "Lenni Lenape",
+        "has_source_slot": false,
+        "source_slot": null,
+        "has_source_subject": false,
+        "source_subject": null
+      },
+      {
+        "text": "Cause and Effects T-Chart",
+        "has_source_slot": false,
+        "source_slot": null,
+        "has_source_subject": false,
+        "source_subject": null
+      },
+      {
+        "text": "Opening: Cause and Effect ",
+        "has_source_slot": false,
+        "source_slot": null,
+        "has_source_subject": false,
+        "source_subject": null
+      },
+      {
+        "text": " graphic organizer",
+        "has_source_slot": false,
+        "source_slot": null,
+        "has_source_subject": false,
+        "source_subject": null
+      },
+      {
+        "text": "3-2-1 sheet",
+        "has_source_slot": false,
+        "source_slot": null,
+        "has_source_subject": false,
+        "source_subject": null
+      },
+      {
+        "text": " Cause and Effect Template ",
+        "has_source_slot": false,
+        "source_slot": null,
+        "has_source_subject": false,
+        "source_subject": null
+      }
+    ]
+  }
+}

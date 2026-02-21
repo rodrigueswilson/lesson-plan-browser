@@ -16,12 +16,13 @@ if sys.platform == "win32":
     sys.stdout.reconfigure(encoding="utf-8")
     sys.stderr.reconfigure(encoding="utf-8")
 
+import asyncio
 import time
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from fastapi import BackgroundTasks, Depends, FastAPI, HTTPException, Request
+from fastapi import BackgroundTasks, Body, Depends, FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, Response
 from sse_starlette.sse import EventSourceResponse
@@ -45,6 +46,7 @@ from backend.errors import (
     validation_error_handler,
 )
 from backend.llm_service import get_llm_service
+from backend.maintenance import DatabaseMaintenance, run_maintenance
 from backend.metrics import get_metrics_response
 from backend.mock_llm_service import get_mock_llm_service
 from backend.models import (
@@ -65,6 +67,9 @@ from backend.models import (
     ScheduleEntryCreate,
     ScheduleEntryResponse,
     ScheduleEntryUpdate,
+    TabletExportDbCounts,
+    TabletExportDbRequest,
+    TabletExportDbResponse,
     TransformRequest,
     TransformResponse,
     UserCreate,
@@ -73,6 +78,7 @@ from backend.models import (
     ValidationRequest,
     ValidationResponse,
     WeeklyPlanResponse,
+    WeekStatusResponse,
 )
 from backend.models import ValidationError as ValidationErrorModel
 from backend.performance_tracker import get_tracker
@@ -83,7 +89,14 @@ from backend.rate_limiter import (
     rate_limit_general,
     setup_rate_limiting,
 )
+from backend.routers.analytics import router as analytics_router
 from backend.services.objectives_utils import normalize_objectives_in_lesson
+from backend.services.sorting_utils import sort_slots
+from backend.settings_store import (
+    get_supabase_sync_enabled,
+    set_supabase_sync_enabled,
+)
+from backend.tablet_db_export import TabletDbExportError, export_user_tablet_db
 from backend.telemetry import logger
 from backend.utils.schedule_utils import prepare_schedule_entry
 from backend.week_detector import detect_weeks_from_folder, format_week_display
@@ -105,6 +118,9 @@ app = FastAPI(
     docs_url="/api/docs",
     redoc_url="/api/redoc",
 )
+
+# Include Analytics Router (prefix=/api so routes are /api/analytics/*)
+app.include_router(analytics_router, prefix="/api")
 
 # Add CORS middleware for Tauri frontend
 app.add_middleware(
@@ -138,23 +154,284 @@ except ImportError:
 @app.on_event("startup")
 async def startup_event():
     """
-    Clear cache on startup for a fresh start.
+    Initialize application on startup.
     """
     import gc
 
-    gc.collect()  # Force garbage collection
-    print("Cache cleared on startup")
+    try:
+        # Initialize database connection early to catch any issues
+        db = get_db()
+        # Try to verify database is working by checking if we can access it
+        try:
+            # Simple test query - just check if we can get a connection
+            if hasattr(db, "engine"):
+                # SQLite database - connection is verified
+                logger.info("Database initialized successfully (SQLite)")
+            elif hasattr(db, "client"):
+                # Supabase database - connection is verified
+                logger.info("Database initialized successfully (Supabase)")
+            else:
+                logger.warning("Database initialized but type unknown")
+        except Exception as db_test_error:
+            logger.warning(
+                f"Database initialized but test query failed: {db_test_error}",
+                exc_info=True,
+            )
+
+        # Clean up old completed tasks in progress tracker
+        from backend.progress import progress_tracker
+
+        progress_tracker._cleanup_old_tasks()
+
+        # Force garbage collection
+        gc.collect()
+        print("Cache cleared on startup")
+        logger.info("Application startup completed")
+    except Exception as e:
+        logger.error(
+            f"Startup error during database initialization: {e}",
+            exc_info=True,
+        )
+        # Don't raise - let the app start anyway, errors will be caught on first request
+        # This allows graceful degradation if database is temporarily unavailable
+        print(f"Warning: Startup initialization had issues: {e}")
+        print("Application will continue to start, but database operations may fail.")
+
+
+def enrich_lesson_json_with_times(lesson_json: Dict[str, Any], user_id: str) -> None:
+    """Enrich lesson_json with start_time and end_time from schedules table.
+
+    Matches slots to schedule entries by (day, subject, grade, homeroom) since schedule
+    slot_numbers may differ from class slot_numbers. This ensures correct chronological
+    ordering for each day based on the actual schedule, considering all three attributes:
+    subject, grade, and room (homeroom).
+    """
+    if not lesson_json or "days" not in lesson_json:
+        return
+
+    db = get_db(user_id=user_id)
+    schedule = db.get_user_schedule(user_id=user_id)
+
+    # Build maps for flexible matching
+    # Map (day, subject, grade, homeroom) -> list of (start_time, end_time, slot_number)
+    # This allows matching by all three attributes even if slot_numbers don't match
+    full_match_map = {}
+    # Map (day, subject, grade) -> list of (start_time, end_time, slot_number, homeroom)
+    # Fallback if homeroom doesn't match
+    subject_grade_map = {}
+    # Map (day, subject) -> list of (start_time, end_time, slot_number, grade, homeroom)
+    # Fallback if grade/homeroom don't match
+    subject_time_map = {}
+    # Map (day, slot_number, subject) -> (start_time, end_time) for exact slot matches
+    exact_map = {}
+
+    def normalize_value(val):
+        """Normalize a value for comparison (lowercase, strip, handle None)."""
+        if val is None:
+            return None
+        return str(val).lower().strip() if str(val).strip() else None
+
+    for entry in schedule:
+        day = entry.day_of_week.lower()
+        slot_num = entry.slot_number
+        subject = normalize_value(entry.subject)
+        grade = normalize_value(entry.grade)
+        homeroom = normalize_value(entry.homeroom)
+
+        # Exact match map (day, slot_number, subject)
+        exact_map[(day, slot_num, subject)] = (entry.start_time, entry.end_time)
+
+        # Full match: (day, subject, grade, homeroom)
+        key_full = (day, subject, grade, homeroom)
+        if key_full not in full_match_map:
+            full_match_map[key_full] = []
+        full_match_map[key_full].append((entry.start_time, entry.end_time, slot_num))
+
+        # Subject + Grade match: (day, subject, grade)
+        key_sg = (day, subject, grade)
+        if key_sg not in subject_grade_map:
+            subject_grade_map[key_sg] = []
+        subject_grade_map[key_sg].append(
+            (entry.start_time, entry.end_time, slot_num, homeroom)
+        )
+
+        # Subject only match: (day, subject)
+        key_subj = (day, subject)
+        if key_subj not in subject_time_map:
+            subject_time_map[key_subj] = []
+        subject_time_map[key_subj].append(
+            (entry.start_time, entry.end_time, slot_num, grade, homeroom)
+        )
+
+    # Sort all map entries by time
+    for key in full_match_map:
+        full_match_map[key].sort(key=lambda x: x[0])
+    for key in subject_grade_map:
+        subject_grade_map[key].sort(key=lambda x: x[0])
+    for key in subject_time_map:
+        subject_time_map[key].sort(key=lambda x: x[0])
+
+    for day_name, day_data in lesson_json["days"].items():
+        day_lower = day_name.lower()
+        slots = day_data.get("slots", [])
+
+        if not isinstance(slots, list):
+            if isinstance(slots, dict):
+                slots = list(slots.values())
+            else:
+                continue
+
+        # Track which schedule entries we've already used for each subject
+        # This ensures we match slots to schedule entries in chronological order
+        used_entries = {}  # (day, subject) -> list of used indices
+
+        def get_times(slot_dict, slot_index_in_day):
+            """Get times for a slot, trying multiple matching strategies.
+
+            Tries matching in order of specificity:
+            1. Exact match by (day, slot_number, subject)
+            2. Full match by (day, subject, grade, homeroom)
+            3. Match by (day, subject, grade)
+            4. Match by (day, subject) - fallback
+            """
+            slot_num = slot_dict.get("slot_number")
+            subject = normalize_value(slot_dict.get("subject"))
+            grade = normalize_value(slot_dict.get("grade"))
+            homeroom = normalize_value(slot_dict.get("homeroom"))
+
+            if not subject:
+                return None
+
+            # Strategy 1: Exact match by (day, slot_number, subject)
+            if slot_num is not None:
+                times = exact_map.get((day_lower, slot_num, subject))
+                if times:
+                    return times
+
+            # Strategy 2: Full match by (day, subject, grade, homeroom)
+            key_full = (day_lower, subject, grade, homeroom)
+            candidates = full_match_map.get(key_full, [])
+            if candidates:
+                key = key_full
+                if key not in used_entries:
+                    used_entries[key] = []
+                existing_time = slot_dict.get("start_time")
+                if existing_time:
+                    for idx, (start_time, end_time, _) in enumerate(candidates):
+                        if start_time == existing_time and idx not in used_entries[key]:
+                            used_entries[key].append(idx)
+                            return (start_time, end_time)
+                for idx, (start_time, end_time, _) in enumerate(candidates):
+                    if idx not in used_entries[key]:
+                        used_entries[key].append(idx)
+                        return (start_time, end_time)
+
+            # Strategy 3: Match by (day, subject, grade)
+            if grade:
+                key_sg = (day_lower, subject, grade)
+                candidates = subject_grade_map.get(key_sg, [])
+                if candidates:
+                    key = key_sg
+                    if key not in used_entries:
+                        used_entries[key] = []
+                    existing_time = slot_dict.get("start_time")
+                    if existing_time:
+                        for idx, (start_time, end_time, _, _) in enumerate(candidates):
+                            if (
+                                start_time == existing_time
+                                and idx not in used_entries[key]
+                            ):
+                                used_entries[key].append(idx)
+                                return (start_time, end_time)
+                    for idx, (start_time, end_time, _, _) in enumerate(candidates):
+                        if idx not in used_entries[key]:
+                            used_entries[key].append(idx)
+                            return (start_time, end_time)
+
+            # Strategy 4: Match by (day, subject) - fallback
+            key_subj = (day_lower, subject)
+            candidates = subject_time_map.get(key_subj, [])
+            if not candidates:
+                return None
+
+            if key_subj not in used_entries:
+                used_entries[key_subj] = []
+
+            existing_time = slot_dict.get("start_time")
+            if existing_time:
+                for idx, (start_time, end_time, _, _, _) in enumerate(candidates):
+                    if (
+                        start_time == existing_time
+                        and idx not in used_entries[key_subj]
+                    ):
+                        used_entries[key_subj].append(idx)
+                        return (start_time, end_time)
+
+            for idx, (start_time, end_time, _, _, _) in enumerate(candidates):
+                if idx not in used_entries[key_subj]:
+                    used_entries[key_subj].append(idx)
+                    return (start_time, end_time)
+
+            return None
+
+        # Sort slots by their current start_time (if available) or slot_number
+        # This ensures we match them to schedule entries in the right order
+        def get_slot_sort_key(slot):
+            start_time = slot.get("start_time", "")
+            slot_num = slot.get("slot_number", 0)
+            try:
+                slot_num = int(slot_num)
+            except (ValueError, TypeError):
+                slot_num = 0
+
+            if start_time:
+                try:
+                    parts = str(start_time).split(":")
+                    if len(parts) >= 2:
+                        time_sort = int(parts[0]) * 60 + int(parts[1])
+                        return (0, time_sort, slot_num)
+                except (ValueError, TypeError):
+                    pass
+            return (1, 0, slot_num)
+
+        # Sort slots to match them in chronological order
+        sorted_slots = sorted(
+            [s for s in slots if isinstance(s, dict)], key=get_slot_sort_key
+        )
+
+        # Now match each slot to schedule entries
+        for slot in sorted_slots:
+            times = get_times(slot, None)
+            if times:
+                slot["start_time"] = times[0]
+                slot["end_time"] = times[1]
+
+        # Re-sort slots after updating times to ensure chronological order
+        final_slots = sort_slots(sorted_slots)
+
+        # Update the original slots list with correctly sorted order
+        # Always update day_data["slots"] with enriched and sorted slots
+        day_data["slots"] = final_slots
 
 
 @app.on_event("shutdown")
 async def shutdown_event():
     """
-    Clear cache on shutdown to free memory.
+    Cleanup on shutdown to free memory.
     """
     import gc
 
-    gc.collect()  # Force garbage collection
-    print("✓ Cache cleared on shutdown")
+    try:
+        # Save progress tracker state before shutdown
+        from backend.progress import progress_tracker
+
+        progress_tracker._save_state()
+
+        gc.collect()  # Force garbage collection
+        print("✓ Cache cleared on shutdown")
+        logger.info("Application shutdown completed")
+    except Exception as e:
+        logger.error(f"Shutdown error: {e}", exc_info=True)
 
 
 @app.get("/", tags=["System"], status_code=307)
@@ -222,6 +499,84 @@ async def database_health():
     return info
 
 
+@app.post(
+    "/api/tablet/export-db", response_model=TabletExportDbResponse, tags=["Tablet"]
+)
+async def export_tablet_db(
+    request: TabletExportDbRequest,
+    current_user_id: Optional[str] = Depends(get_current_user_id),
+):
+    """
+    Export a user-only SQLite DB suitable for bundling into the tablet APK.
+
+    Output path:
+      data/tablet_db_exports/<user_id>/lesson_planner.db
+    """
+    user_id = request.user_id
+    verify_user_access(
+        user_id, current_user_id
+    )  # header optional, enforced if provided
+
+    source_db = settings.SQLITE_DB_PATH
+    output_path = Path("data") / "tablet_db_exports" / user_id / "lesson_planner.db"
+    output_path = (Path(__file__).resolve().parents[1] / output_path).resolve()
+
+    try:
+        result = export_user_tablet_db(
+            source_db_path=source_db,
+            user_id=user_id,
+            output_db_path=output_path,
+            vacuum=True,
+            keep_previous_backup=True,
+        )
+        return TabletExportDbResponse(
+            user_id=result.user_id,
+            output_path=result.output_path,
+            output_bytes=result.output_bytes,
+            created_at=result.created_at,
+            counts=TabletExportDbCounts(
+                users=result.counts.users,
+                class_slots=result.counts.class_slots,
+                weekly_plans=result.counts.weekly_plans,
+                schedules=result.counts.schedules,
+                lesson_steps=result.counts.lesson_steps,
+                lesson_mode_sessions=result.counts.lesson_mode_sessions,
+            ),
+        )
+    except TabletDbExportError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:  # noqa: BLE001
+        logger.exception("Tablet DB export failed")
+        raise HTTPException(status_code=500, detail=f"Tablet DB export failed: {e}")
+
+
+@app.get("/api/settings/supabase-sync", tags=["Settings"])
+async def get_supabase_sync_setting():
+    """
+    Get the Supabase sync enabled setting.
+
+    Returns:
+        Dictionary with enable_supabase_sync boolean
+    """
+    return {"enable_supabase_sync": get_supabase_sync_enabled()}
+
+
+@app.put("/api/settings/supabase-sync", tags=["Settings"])
+async def set_supabase_sync_setting(enabled: bool = Body(..., embed=True)):
+    """
+    Set the Supabase sync enabled setting.
+
+    Args:
+        enabled: Boolean to enable/disable Supabase sync (sent in request body as {"enabled": true/false})
+
+    Returns:
+        Dictionary with updated setting
+    """
+    set_supabase_sync_enabled(enabled)
+    logger.info(f"Supabase sync setting updated: {enabled}")
+    return {"enable_supabase_sync": enabled, "message": "Setting updated successfully"}
+
+
 @app.get("/api/health/redis", tags=["System"])
 async def redis_health():
     """
@@ -277,6 +632,32 @@ async def metrics_endpoint():
     """
     metrics_data, content_type = get_metrics_response()
     return Response(content=metrics_data, media_type=content_type)
+
+
+@app.get("/api/admin/maintenance/stats", tags=["System"])
+async def get_maintenance_stats():
+    """Get database maintenance statistics."""
+    try:
+        m = DatabaseMaintenance()
+        return m.get_stats()
+    except Exception as e:
+        logger.error(f"Error getting maintenance stats: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/admin/maintenance", tags=["System"])
+async def trigger_maintenance(background_tasks: BackgroundTasks):
+    """Trigger full database maintenance."""
+    try:
+        # Run in background to avoid timeout
+        background_tasks.add_task(run_maintenance)
+        return {
+            "status": "started",
+            "message": "Database maintenance started in background",
+        }
+    except Exception as e:
+        logger.error(f"Error triggering maintenance: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.get("/api/test-weeks", tags=["System"])
@@ -570,18 +951,22 @@ async def poll_task_progress(task_id: str):
     print(f"DEBUG: Polling progress for task_id: {task_id}")
     print(f"DEBUG: Available task IDs: {list(progress_tracker.tasks.keys())[:5]}")
 
-    if task_id not in progress_tracker.tasks:
-        print(f"DEBUG: Task {task_id} not found in progress tracker")
+    # Use get_task which will try loading from persistence if not in memory
+    task = progress_tracker.get_task(task_id)
+
+    if not task:
+        print(
+            f"DEBUG: Task {task_id} not found in progress tracker (may have completed or expired)"
+        )
         return {
             "status": "not_found",
             "progress": 0,
-            "message": "Task not found",
+            "message": "Task not found. It may have completed, expired, or the server was restarted.",
             "stage": "unknown",
             "current": 0,
             "total": 0,
         }
 
-    task = progress_tracker.tasks[task_id]
     progress_pct = task.get("progress", 0)
 
     # Calculate current/total from progress percentage
@@ -629,14 +1014,49 @@ async def transform_lesson(request: TransformRequest):
     start_time = time.time()
 
     try:
-        # Try to get real LLM service, fall back to mock if no API key or if it fails
+        # Try to get real LLM service. Do not fall back to mock data on failure.
         try:
             llm_service = get_llm_service(provider=request.provider)
-            logger.info("using_real_llm", extra={"provider": request.provider})
-        except (ValueError, Exception) as e:
-            # No API key available or service failed, use mock service
-            logger.info("using_mock_llm", extra={"reason": str(e)})
-            llm_service = get_mock_llm_service()
+            logger.info(
+                "llm_service_initialized",
+                extra={
+                    "provider": request.provider,
+                    "service_type": "real",
+                    "message": "Using real LLM service (OpenAI/Anthropic API)",
+                },
+            )
+        except ValueError as e:
+            # API key missing or invalid
+            error_msg = str(e)
+            logger.error(
+                "llm_service_failed_api_key",
+                extra={
+                    "provider": request.provider,
+                    "error": error_msg,
+                    "reason": "API key missing or invalid",
+                },
+            )
+            raise HTTPException(
+                status_code=500,
+                detail=f"LLM Configuration Error: {error_msg}. Please check your .env file.",
+            )
+        except Exception as e:
+            # Other initialization errors
+            error_msg = str(e)
+            error_type = type(e).__name__
+            logger.error(
+                "llm_service_failed_initialization",
+                extra={
+                    "provider": request.provider,
+                    "error_type": error_type,
+                    "error": error_msg,
+                    "reason": "LLM service initialization failed",
+                },
+                exc_info=True,
+            )
+            raise HTTPException(
+                status_code=500, detail=f"Failed to initialize LLM service: {error_msg}"
+            )
 
         # Transform content
         success, lesson_json, error = llm_service.transform_lesson(
@@ -656,6 +1076,15 @@ async def transform_lesson(request: TransformRequest):
             )
             if isinstance(lesson_json, dict):
                 normalize_objectives_in_lesson(lesson_json)
+                # Enrich with schedule times
+                enrich_lesson_json_with_times(
+                    lesson_json,
+                    request.user_id
+                    if hasattr(request, "user_id")
+                    else currentUser.id
+                    if "currentUser" in locals()
+                    else "",
+                )
             return TransformResponse(
                 success=True,
                 lesson_json=lesson_json,
@@ -667,6 +1096,8 @@ async def transform_lesson(request: TransformRequest):
                 success=False, error=error, transform_time_ms=transform_time_ms
             )
 
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error("llm_transform_error", extra={"error": str(e)})
         raise HTTPException(status_code=500, detail=f"Transformation failed: {str(e)}")
@@ -750,6 +1181,13 @@ async def list_users():
             from backend.config import Settings
             from backend.supabase_database import SupabaseDatabase
 
+            # Supabase connection failures are expected until fully implemented in a later stage.
+            # SQLite fallback below handles it when Supabase is unreachable (e.g. offline).
+            _supabase_note = (
+                "Supabase will be fully implemented in a later stage. "
+                "SQLite fallback in use. This warning is expected."
+            )
+
             # Query project1 if configured
             if settings.SUPABASE_URL_PROJECT1 and settings.SUPABASE_KEY_PROJECT1:
                 try:
@@ -764,7 +1202,8 @@ async def list_users():
                     )
                 except Exception as e:
                     logger.warning(
-                        "users_load_project1_failed", extra={"error": str(e)}
+                        "users_load_project1_failed",
+                        extra={"error": str(e), "note": _supabase_note},
                     )
 
             # Query project2 if configured
@@ -781,7 +1220,24 @@ async def list_users():
                     )
                 except Exception as e:
                     logger.warning(
-                        "users_load_project2_failed", extra={"error": str(e)}
+                        "users_load_project2_failed",
+                        extra={"error": str(e), "note": _supabase_note},
+                    )
+
+            # Fallback to SQLite when Supabase is unreachable (e.g. getaddrinfo failed)
+            if not all_users:
+                try:
+                    db = get_db()
+                    fallback_users = db.list_users()
+                    all_users.extend(fallback_users)
+                    logger.info(
+                        "users_loaded_from_sqlite_fallback",
+                        extra={"count": len(fallback_users)},
+                    )
+                except Exception as e:
+                    logger.warning(
+                        "users_load_sqlite_fallback_failed",
+                        extra={"error": str(e)},
                     )
         else:
             # Use SQLite
@@ -822,10 +1278,12 @@ async def get_recent_weeks(
     current_user_id: Optional[str] = Depends(get_current_user_id),
 ):
     """
-    Get recent weeks from user's lesson plan folder.
+    Get recent weeks from folder detection or database.
 
-    Scans the user's base_path_override folder for week subfolders
-    and returns the most recent weeks with auto-detected dates.
+    First attempts to detect week folders from the user's base_path_override directory
+    (e.g., folders like "25 W47", "25 W48", "25 W49"). If no folders are found or
+    base_path_override is not set, falls back to querying the database for already
+    generated weeks.
 
     Args:
         user_id: User ID
@@ -847,25 +1305,110 @@ async def get_recent_weeks(
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
 
-        base_path = user.base_path_override
-        if not base_path:
-            logger.info("recent_weeks_no_base_path", extra={"user_id": user_id})
-            return []
+        result = []
 
-        weeks = detect_weeks_from_folder(base_path, limit=limit)
+        # First, try to detect weeks from folder structure if base_path_override is configured
+        if user.base_path_override:
+            try:
+                logger.info(
+                    "detecting_weeks_from_folder",
+                    extra={"path": user.base_path_override, "user_id": user_id},
+                )
+                detected_weeks = detect_weeks_from_folder(
+                    user.base_path_override, limit=limit
+                )
+
+                if detected_weeks:
+                    # Format detected weeks for frontend
+                    for week_info in detected_weeks:
+                        week_of = week_info.get("week_of")
+                        folder_name = week_info.get("folder_name", week_of)
+
+                        if week_of:
+                            # Use format_week_display to create display string
+                            display = format_week_display(week_info)
+
+                            result.append(
+                                {
+                                    "week_of": week_of,
+                                    "display": display,
+                                    "folder_name": folder_name,
+                                }
+                            )
+
+                    logger.info(
+                        "weeks_detected_from_folder",
+                        extra={"count": len(result), "user_id": user_id},
+                    )
+                    return result
+                else:
+                    logger.info(
+                        "no_weeks_found_in_folder",
+                        extra={"path": user.base_path_override, "user_id": user_id},
+                    )
+            except Exception as folder_error:
+                logger.warning(
+                    "folder_detection_failed",
+                    extra={
+                        "error": str(folder_error),
+                        "path": user.base_path_override,
+                        "user_id": user_id,
+                    },
+                )
+                # Continue to database fallback
+
+        # Fallback: Query database for distinct weeks
+        from sqlmodel import Session, select
+
+        from backend.schema import WeeklyPlan
+
+        with Session(db.engine) as session:
+            # Get distinct week_of values, ordered by most recent generated_at
+            statement = (
+                select(WeeklyPlan.week_of)
+                .where(WeeklyPlan.user_id == user_id)
+                .where(WeeklyPlan.week_of.isnot(None))
+                .distinct()
+                .order_by(WeeklyPlan.generated_at.desc())
+                .limit(limit)
+            )
+            # Execute and get unique weeks (in case of duplicates)
+            rows = session.exec(statement).all()
+            # Get unique weeks while preserving order
+            seen_weeks = set()
+            unique_weeks = []
+            for week_of in rows:
+                if week_of and week_of not in seen_weeks:
+                    seen_weeks.add(week_of)
+                    unique_weeks.append(week_of)
+                    if len(unique_weeks) >= limit:
+                        break
 
         # Format for frontend
-        result = []
-        for week in weeks:
+        for week_of in unique_weeks:
+            # Format display name
+            try:
+                parts = week_of.split("-")
+                if len(parts) == 4:
+                    start = f"{parts[0]}/{parts[1]}"
+                    end = f"{parts[2]}/{parts[3]}"
+                    display = f"{start} to {end}"
+                else:
+                    display = week_of
+            except Exception:
+                display = week_of
+
             result.append(
                 {
-                    "week_of": week["week_of"],
-                    "display": format_week_display(week),
-                    "folder_name": week.get("folder_name", ""),
+                    "week_of": week_of,
+                    "display": display,
+                    "folder_name": week_of,  # Use week_of as folder_name for compatibility
                 }
             )
 
-        logger.info("recent_weeks_found", extra={"count": len(result)})
+        logger.info(
+            "recent_weeks_found", extra={"count": len(result), "source": "database"}
+        )
         return result
 
     except Exception as e:
@@ -1258,7 +1801,7 @@ async def update_class_slot(
         # Get the slot to find its user_id and verify ownership
         # For SQLite, we can directly query. For Supabase, we need to find the project first.
         db = get_db()
-        
+
         # If using Supabase and we have a current_user_id, try that database first
         if settings.USE_SUPABASE and current_user_id:
             try:
@@ -1266,21 +1809,35 @@ async def update_class_slot(
                 slot_check = db_with_user.get_slot(slot_id)
                 if slot_check:
                     db = db_with_user
-                    logger.info("slot_found_in_user_db", extra={"slot_id": slot_id, "user_id": current_user_id})
+                    logger.info(
+                        "slot_found_in_user_db",
+                        extra={"slot_id": slot_id, "user_id": current_user_id},
+                    )
             except Exception as e:
-                logger.debug("slot_not_in_user_db_trying_default", extra={"slot_id": slot_id, "error": str(e)})
-        
+                logger.debug(
+                    "slot_not_in_user_db_trying_default",
+                    extra={"slot_id": slot_id, "error": str(e)},
+                )
+
         # If slot not found and using Supabase, try searching all projects
         if settings.USE_SUPABASE:
             slot_check = db.get_slot(slot_id)
             if not slot_check:
-                logger.info("slot_not_found_in_default_db_searching_all_projects", extra={"slot_id": slot_id})
+                logger.info(
+                    "slot_not_found_in_default_db_searching_all_projects",
+                    extra={"slot_id": slot_id},
+                )
                 slot_found = False
                 # Try project1
-                if not slot_found and settings.SUPABASE_URL_PROJECT1 and settings.SUPABASE_KEY_PROJECT1:
+                if (
+                    not slot_found
+                    and settings.SUPABASE_URL_PROJECT1
+                    and settings.SUPABASE_KEY_PROJECT1
+                ):
                     try:
                         from backend.config import Settings
                         from backend.supabase_database import SupabaseDatabase
+
                         s1 = Settings()
                         s1.SUPABASE_PROJECT = "project1"
                         db1 = SupabaseDatabase(custom_settings=s1)
@@ -1288,25 +1845,40 @@ async def update_class_slot(
                         if slot1:
                             db = db1
                             slot_found = True
-                            logger.info("slot_found_in_project1", extra={"slot_id": slot_id})
+                            logger.info(
+                                "slot_found_in_project1", extra={"slot_id": slot_id}
+                            )
                     except Exception as e:
-                        logger.debug("slot_not_in_project1", extra={"slot_id": slot_id, "error": str(e)})
-                
+                        logger.debug(
+                            "slot_not_in_project1",
+                            extra={"slot_id": slot_id, "error": str(e)},
+                        )
+
                 # Try project2
-                if not slot_found and settings.SUPABASE_URL_PROJECT2 and settings.SUPABASE_KEY_PROJECT2:
+                if (
+                    not slot_found
+                    and settings.SUPABASE_URL_PROJECT2
+                    and settings.SUPABASE_KEY_PROJECT2
+                ):
                     try:
                         from backend.config import Settings
                         from backend.supabase_database import SupabaseDatabase
+
                         s2 = Settings()
                         s2.SUPABASE_PROJECT = "project2"
                         db2 = SupabaseDatabase(custom_settings=s2)
                         slot2 = db2.get_slot(slot_id)
                         if slot2:
                             db = db2
-                            logger.info("slot_found_in_project2", extra={"slot_id": slot_id})
+                            logger.info(
+                                "slot_found_in_project2", extra={"slot_id": slot_id}
+                            )
                     except Exception as e:
-                        logger.debug("slot_not_in_project2", extra={"slot_id": slot_id, "error": str(e)})
-        
+                        logger.debug(
+                            "slot_not_in_project2",
+                            extra={"slot_id": slot_id, "error": str(e)},
+                        )
+
         user_id = verify_slot_ownership(
             slot_id, current_user_id, db, allow_if_none=True
         )
@@ -1317,7 +1889,7 @@ async def update_class_slot(
         update_data = slot_update.dict(exclude_unset=True)
         logger.info(
             "slot_update_attempt",
-            extra={"slot_id": slot_id, "update_fields": list(update_data.keys())}
+            extra={"slot_id": slot_id, "update_fields": list(update_data.keys())},
         )
         success = db.update_class_slot(slot_id, **update_data)
 
@@ -1325,14 +1897,21 @@ async def update_class_slot(
             # Verify slot exists to provide better error message
             slot_check = db.get_slot(slot_id)
             if not slot_check:
-                raise HTTPException(status_code=404, detail=f"Slot not found: {slot_id}")
+                raise HTTPException(
+                    status_code=404, detail=f"Slot not found: {slot_id}"
+                )
             else:
                 # Slot exists but update failed for another reason
                 logger.error(
                     "slot_update_returned_false",
-                    extra={"slot_id": slot_id, "update_fields": list(update_data.keys())}
+                    extra={
+                        "slot_id": slot_id,
+                        "update_fields": list(update_data.keys()),
+                    },
                 )
-                raise HTTPException(status_code=500, detail=f"Failed to update slot: {slot_id}")
+                raise HTTPException(
+                    status_code=500, detail=f"Failed to update slot: {slot_id}"
+                )
 
         slot = db.get_slot(slot_id)
         logger.info("slot_updated", extra={"slot_id": slot_id})
@@ -1341,8 +1920,17 @@ async def update_class_slot(
         raise
     except Exception as e:
         error_msg = str(e) if str(e) else repr(e)
-        logger.error("slot_update_failed", extra={"error": error_msg, "slot_id": slot_id, "error_type": type(e).__name__})
-        raise HTTPException(status_code=500, detail=f"Failed to update slot: {error_msg}")
+        logger.error(
+            "slot_update_failed",
+            extra={
+                "error": error_msg,
+                "slot_id": slot_id,
+                "error_type": type(e).__name__,
+            },
+        )
+        raise HTTPException(
+            status_code=500, detail=f"Failed to update slot: {error_msg}"
+        )
 
 
 @app.delete("/api/slots/{slot_id}", tags=["Class Slots"])
@@ -1620,6 +2208,7 @@ async def update_schedule_entry(
         # Normalize subject if being updated
         if "subject" in update_data:
             from backend.utils.schedule_utils import (
+                is_meeting_period,
                 is_non_class_period,
                 prepare_schedule_entry,
             )
@@ -1637,8 +2226,8 @@ async def update_schedule_entry(
 
             update_data["subject"] = normalized_subject
 
-            # Auto-clear homeroom/grade for non-class periods
-            if is_non_class_period(normalized_subject):
+            # Auto-clear homeroom/grade for non-class periods (meetings PLC/GLM may keep grade/room)
+            if is_non_class_period(normalized_subject) and not is_meeting_period(normalized_subject):
                 update_data["homeroom"] = None
                 update_data["grade"] = None
                 update_data["is_active"] = False
@@ -1894,6 +2483,17 @@ async def get_plan_detail(
         # we would use: db = get_db(user_id=plan.user_id) to ensure we use the
         # plan owner's database (correct Supabase project)
 
+        # Log week_of for debugging
+        logger.info(
+            "plan_detail_retrieved",
+            extra={
+                "plan_id": plan_id,
+                "week_of": plan.week_of,
+                "user_id": plan.user_id,
+                "has_lesson_json": plan.lesson_json is not None,
+            },
+        )
+
         # Ensure lesson_json is a dict (SQLite stores JSON as TEXT, so parse if string)
         lesson_json = plan.lesson_json
         if isinstance(lesson_json, str):
@@ -1916,6 +2516,13 @@ async def get_plan_detail(
         import copy
 
         lesson_json = copy.deepcopy(lesson_json)
+
+        # Extract vocabulary_cognates and sentence_frames from lesson steps if missing from lesson_json
+        # This ensures DOCX export includes vocabulary/frames even if they're not in the original JSON
+        from backend.utils.lesson_json_enricher import enrich_lesson_json_from_steps
+
+        db_for_plan = get_db(user_id=plan.user_id)
+        lesson_json = enrich_lesson_json_from_steps(lesson_json, plan_id, db_for_plan)
 
         # Debug: Check if vocabulary and sentence frames are in the response
         # Check for Monday slot 2 specifically
@@ -2135,26 +2742,42 @@ async def get_lesson_steps(
                 extra={"plan_id": plan_id, "count": len(steps)},
             )
         except Exception as e:
+            # Import here to avoid circular dependency
+            from backend.supabase_database import LessonStepsTableMissingError
+
             # If table doesn't exist, get_lesson_steps should return empty list
             # But if it still raises, catch it here
             error_msg = str(e)
-            if (
+            error_type = type(e).__name__
+
+            # Handle the specific exception type for missing table
+            if isinstance(e, LessonStepsTableMissingError) or (
                 "PGRST205" in error_msg
                 or "Could not find the table" in error_msg
                 or "lesson_steps" in error_msg.lower()
+                or error_type == "LessonStepsTableMissingError"
             ):
                 logger.warning(
                     "lesson_steps_table_missing",
-                    extra={"plan_id": plan_id, "error": error_msg},
+                    extra={
+                        "plan_id": plan_id,
+                        "error": error_msg,
+                        "error_type": error_type,
+                    },
                 )
                 steps = []
             else:
-                # Re-raise other errors
-                logger.error(
+                # For other errors, log but return empty list instead of raising
+                # This prevents 500 errors when steps don't exist or can't be fetched
+                logger.warning(
                     "error_fetching_steps_from_plan_owner_db",
-                    extra={"plan_id": plan_id, "error": str(e)},
+                    extra={
+                        "plan_id": plan_id,
+                        "error": str(e),
+                        "error_type": error_type,
+                    },
                 )
-                raise
+                steps = []
 
         # If no steps found in plan owner's database, try the database where we found the plan
         # This handles cases where steps might have been created in a different database
@@ -2182,10 +2805,18 @@ async def get_lesson_steps(
                     )
             except Exception as e:
                 # Silently fail - we already tried the plan owner's database
+                # Don't raise, just log and continue with empty steps
                 logger.debug(
                     "error_checking_fallback_db",
-                    extra={"plan_id": plan_id, "error": str(e)},
+                    extra={
+                        "plan_id": plan_id,
+                        "error": str(e),
+                        "error_type": type(e).__name__,
+                    },
                 )
+                # Ensure steps is set to empty list if exception occurred
+                if "steps" not in locals() or steps is None:
+                    steps = []
 
         # If still no steps, try the default database as a last resort
         # This handles cases where steps might be in the default SQLite or default Supabase
@@ -2208,10 +2839,18 @@ async def get_lesson_steps(
                             extra={"plan_id": plan_id, "count": len(steps)},
                         )
             except Exception as e:
+                # Silently fail - this is a last resort attempt
                 logger.debug(
                     "error_checking_default_db",
-                    extra={"plan_id": plan_id, "error": str(e)},
+                    extra={
+                        "plan_id": plan_id,
+                        "error": str(e),
+                        "error_type": type(e).__name__,
+                    },
                 )
+                # Ensure steps is set to empty list if exception occurred
+                if "steps" not in locals() or steps is None:
+                    steps = []
 
         # If no steps found and we have lesson_json, log a message
         # The frontend can handle empty steps or call generate endpoint
@@ -2225,17 +2864,40 @@ async def get_lesson_steps(
         # FastAPI should handle this automatically with from_attributes=True,
         # but we'll do it explicitly to ensure proper serialization
         # Use model_validate with mode='python' to ensure all fields are included
-        step_responses = [
-            LessonStepResponse.model_validate(
-                {
-                    **step.__dict__,
-                    'vocabulary_cognates': getattr(step, 'vocabulary_cognates', None),
-                    'sentence_frames': getattr(step, 'sentence_frames', None),
-                },
-                mode='python'
-            ) 
-            for step in steps
-        ]
+        step_responses = []
+        for step in steps:
+            try:
+                # Handle potential serialization issues with vocabulary_cognates
+                # If it's a string (JSON), we might need to parse it if the model expects a list
+                vocab = getattr(step, "vocabulary_cognates", None)
+                if isinstance(vocab, str):
+                    try:
+                        import json
+
+                        vocab = json.loads(vocab)
+                    except:
+                        vocab = []
+
+                step_responses.append(
+                    LessonStepResponse.model_validate(
+                        {
+                            **step.__dict__,
+                            "vocabulary_cognates": vocab,
+                            "sentence_frames": getattr(step, "sentence_frames", None),
+                        }
+                    )
+                )
+            except Exception as e:
+                logger.warning(
+                    "step_validation_failed",
+                    extra={
+                        "plan_id": plan_id,
+                        "step_id": getattr(step, "id", "unknown"),
+                        "error": str(e),
+                    },
+                )
+                # Continue processing other steps
+                continue
         logger.info(
             "returning_lesson_steps",
             extra={
@@ -2263,12 +2925,22 @@ async def get_lesson_steps(
 
         return step_responses
     except HTTPException:
+        # Re-raise HTTP exceptions
         raise
     except Exception as e:
-        logger.error("lesson_steps_failed", extra={"error": str(e)})
-        raise HTTPException(
-            status_code=500, detail=f"Failed to get lesson steps: {str(e)}"
+        import traceback
+
+        traceback.print_exc()
+        logger.error(
+            "get_lesson_steps_failed_unhandled",
+            extra={
+                "plan_id": plan_id,
+                "error": str(e),
+                "traceback": traceback.format_exc(),
+            },
         )
+        # Return empty list on failure instead of 500
+        return []
 
 
 @app.post(
@@ -2311,6 +2983,25 @@ async def generate_lesson_steps(
         if current_user_id:
             db = get_db(user_id=current_user_id)
             plan = db.get_weekly_plan(plan_id)
+
+        # [REGENERATION FIX] Delete existing steps for this specific plan/day/slot
+        # to prevent stale data or duplicates when the user triggers regeneration.
+        try:
+            logger.info(
+                "clearing_existing_steps_before_regeneration",
+                extra={"plan_id": plan_id, "day": day, "slot": slot},
+            )
+            # Find the database again to ensure we have the right one for deletion
+            db_to_clear = (
+                get_db(user_id=current_user_id) if current_user_id else get_db()
+            )
+            db_to_clear.delete_lesson_steps(
+                plan_id, day_of_week=day.lower(), slot_number=slot
+            )
+        except Exception as e:
+            logger.warning(
+                "failed_to_clear_steps_before_regeneration", extra={"error": str(e)}
+            )
 
         # If not found and using Supabase, try both projects
         if not plan and settings.USE_SUPABASE:
@@ -2374,8 +3065,6 @@ async def generate_lesson_steps(
         # Get lesson JSON
         lesson_json = plan.lesson_json
         if isinstance(lesson_json, str):
-            import json
-
             try:
                 lesson_json = json.loads(lesson_json)
             except json.JSONDecodeError:
@@ -2457,28 +3146,42 @@ async def generate_lesson_steps(
                     f"[DEBUG] Using matched slot_data: slot_number={slot_data.get('slot_number')}"
                 )
             else:
-                # No matching slot found - use first slot but log a warning
-                slot_data = slots_for_day[0]
-                logger.warning(
-                    "slot_not_found_using_first",
+                # No matching slot found - return 404 error instead of silently using wrong slot
+                available_slots = [
+                    s.get("slot_number") for s in slots_for_day if isinstance(s, dict)
+                ]
+                logger.error(
+                    "slot_not_found_in_plan",
                     extra={
                         "plan_id": plan_id,
                         "requested_slot": slot,
-                        "available_slots": [
-                            s.get("slot_number")
-                            for s in slots_for_day
-                            if isinstance(s, dict)
-                        ],
-                        "using_slot": slot_data.get("slot_number"),
+                        "requested_day": day,
+                        "available_slots": available_slots,
                     },
                 )
-                print(
-                    f"[DEBUG] WARNING: Slot {slot} not found, using first slot: {slot_data.get('slot_number')}"
+                raise HTTPException(
+                    status_code=404,
+                    detail=f"Slot {slot} not found in {day}. Available slots: {available_slots}",
                 )
 
             print(
                 f"[DEBUG] Final slot_data: slot_number={slot_data.get('slot_number')}, has_vocabulary_cognates={bool(slot_data.get('vocabulary_cognates'))}"
             )
+
+            # [NO SCHOOL FIX] Skip generation if this is a "No School" slot
+            unit_lesson = slot_data.get("unit_lesson", "")
+            if unit_lesson and "no school" in unit_lesson.lower():
+                logger.info(
+                    "skipping_step_generation_for_no_school",
+                    extra={
+                        "plan_id": plan_id,
+                        "day": day,
+                        "slot": slot,
+                        "unit_lesson": unit_lesson,
+                    },
+                )
+                return []
+
             print(f"[DEBUG] slot_data keys (first 20): {list(slot_data.keys())[:20]}")
 
             # Check if vocabulary_cognates exists in slot_data
@@ -2497,8 +3200,18 @@ async def generate_lesson_steps(
                         f"[DEBUG] WARNING: Found vocabulary-related keys but vocabulary_cognates missing: {vocab_keys}"
                     )
                 else:
+                    # Log as info instead of warning - this is expected for older plans
+                    logger.info(
+                        "vocabulary_cognates_not_found_in_slot",
+                        extra={
+                            "plan_id": plan_id,
+                            "day": day,
+                            "slot": slot,
+                            "message": "vocabulary_cognates not found in slot_data. This may mean the plan was generated before vocabulary_cognates was added to the schema. Consider regenerating the plan to include vocabulary data.",
+                        },
+                    )
                     print(
-                        "[DEBUG] WARNING: vocabulary_cognates not found in slot_data. "
+                        "[DEBUG] INFO: vocabulary_cognates not found in slot_data. "
                         "This may mean the plan was generated before vocabulary_cognates was added to the schema. "
                         "Consider regenerating the plan to include vocabulary data."
                     )
@@ -2516,7 +3229,18 @@ async def generate_lesson_steps(
                     )
 
         # Extract phase_plan from tailored_instruction (slot-level when present)
-        tailored_instruction = slot_data.get("tailored_instruction", {})
+        # Check multiple possible locations for phase_plan to handle different data structures
+        slot_tailored_instruction = slot_data.get("tailored_instruction", {})
+        day_tailored_instruction = day_data.get("tailored_instruction", {})
+
+        # Use slot-level tailored_instruction if available, otherwise fall back to day-level
+        # This ensures later code (like ell_support extraction) uses the best available data
+        tailored_instruction = (
+            slot_tailored_instruction
+            if slot_tailored_instruction
+            else day_tailored_instruction
+        )
+
         logger.info(
             "tailored_instruction_extracted",
             extra={
@@ -2527,10 +3251,98 @@ async def generate_lesson_steps(
                 "tailored_instruction_keys": list(tailored_instruction.keys())
                 if tailored_instruction
                 else [],
+                "has_day_tailored_instruction": bool(day_tailored_instruction),
+                "day_tailored_instruction_keys": list(day_tailored_instruction.keys())
+                if day_tailored_instruction
+                else [],
             },
         )
 
-        co_teaching_model = tailored_instruction.get("co_teaching_model", {})
+        # Try multiple locations for phase_plan:
+        # 1. slot_data.tailored_instruction.co_teaching_model.phase_plan (preferred)
+        # 2. slot_data.tailored_instruction.phase_plan (direct)
+        # 3. day_data.tailored_instruction.co_teaching_model.phase_plan (day-level fallback)
+        # 4. day_data.tailored_instruction.phase_plan (day-level direct)
+
+        phase_plan = None
+        co_teaching_model = slot_tailored_instruction.get("co_teaching_model", {})
+
+        # Check slot-level: tailored_instruction.co_teaching_model.phase_plan
+        if co_teaching_model:
+            phase_plan = co_teaching_model.get("phase_plan")
+            if phase_plan:
+                logger.info(
+                    "phase_plan_found_in_slot_co_teaching_model",
+                    extra={
+                        "plan_id": plan_id,
+                        "day": day,
+                        "slot": slot,
+                        "location": "slot_data.tailored_instruction.co_teaching_model.phase_plan",
+                        "phase_plan_count": len(phase_plan)
+                        if isinstance(phase_plan, list)
+                        else 0,
+                    },
+                )
+
+        # Check slot-level: tailored_instruction.phase_plan (direct)
+        if not phase_plan:
+            phase_plan = slot_tailored_instruction.get("phase_plan")
+            if phase_plan:
+                logger.info(
+                    "phase_plan_found_in_slot_direct",
+                    extra={
+                        "plan_id": plan_id,
+                        "day": day,
+                        "slot": slot,
+                        "location": "slot_data.tailored_instruction.phase_plan",
+                        "phase_plan_count": len(phase_plan)
+                        if isinstance(phase_plan, list)
+                        else 0,
+                    },
+                )
+
+        # Check day-level: day_data.tailored_instruction.co_teaching_model.phase_plan
+        if not phase_plan:
+            day_co_teaching_model = day_tailored_instruction.get(
+                "co_teaching_model", {}
+            )
+            if day_co_teaching_model:
+                phase_plan = day_co_teaching_model.get("phase_plan")
+                if phase_plan:
+                    logger.info(
+                        "phase_plan_found_in_day_co_teaching_model",
+                        extra={
+                            "plan_id": plan_id,
+                            "day": day,
+                            "slot": slot,
+                            "location": "day_data.tailored_instruction.co_teaching_model.phase_plan",
+                            "phase_plan_count": len(phase_plan)
+                            if isinstance(phase_plan, list)
+                            else 0,
+                        },
+                    )
+
+        # Check day-level: day_data.tailored_instruction.phase_plan (direct)
+        if not phase_plan:
+            phase_plan = day_tailored_instruction.get("phase_plan")
+            if phase_plan:
+                logger.info(
+                    "phase_plan_found_in_day_direct",
+                    extra={
+                        "plan_id": plan_id,
+                        "day": day,
+                        "slot": slot,
+                        "location": "day_data.tailored_instruction.phase_plan",
+                        "phase_plan_count": len(phase_plan)
+                        if isinstance(phase_plan, list)
+                        else 0,
+                    },
+                )
+
+        # Normalize to empty list if None
+        if phase_plan is None:
+            phase_plan = []
+
         logger.info(
             "co_teaching_model_extracted",
             extra={
@@ -2542,7 +3354,17 @@ async def generate_lesson_steps(
             },
         )
 
-        phase_plan = co_teaching_model.get("phase_plan", [])
+        logger.info(
+            "phase_plan_extracted",
+            extra={
+                "plan_id": plan_id,
+                "day": day,
+                "slot": slot,
+                "phase_plan_count": len(phase_plan) if phase_plan else 0,
+                "phase_plan_is_list": isinstance(phase_plan, list),
+                "phase_plan_is_none": phase_plan is None,
+            },
+        )
         logger.info(
             "phase_plan_extracted",
             extra={
@@ -2553,11 +3375,6 @@ async def generate_lesson_steps(
                 "phase_plan_is_list": isinstance(phase_plan, list),
             },
         )
-
-        if not phase_plan:
-            raise HTTPException(
-                status_code=400, detail="No phase_plan found in lesson data"
-            )
 
         # Delete existing steps for this lesson
         deleted_count = db_for_plan.delete_lesson_steps(
@@ -2572,18 +3389,62 @@ async def generate_lesson_steps(
                 "deleted_count": deleted_count,
             },
         )
-        print(
-            f"[DEBUG] Starting step generation, phase_plan has {len(phase_plan)} phases"
-        )
 
-        # Generate steps from phase_plan
+        # Generate steps from phase_plan or use default steps if phase_plan is missing
         import uuid
+        from datetime import datetime
 
         from backend.schema import LessonStep
 
         start_time_offset = 0
         generated_steps = []  # Store steps in memory in case table doesn't exist
         print("[DEBUG] Initialized generated_steps list (empty)")
+
+        if not phase_plan:
+            # Generate default lesson steps when phase_plan is missing
+            logger.warning(
+                "phase_plan_missing_using_defaults",
+                extra={
+                    "plan_id": plan_id,
+                    "day": day,
+                    "slot": slot,
+                },
+            )
+            print("[DEBUG] No phase_plan found, generating default lesson steps")
+
+            # Create default 45-minute lesson structure: Warmup (5), Input (15), Practice (20), Closure (5)
+            default_phases = [
+                {
+                    "phase_name": "Warmup",
+                    "minutes": 5,
+                    "content_type": "instruction",
+                    "details": "Engage students with a brief activity to activate prior knowledge and prepare them for the lesson.",
+                },
+                {
+                    "phase_name": "Input",
+                    "minutes": 15,
+                    "content_type": "instruction",
+                    "details": "Present new content, concepts, or skills to students. This is the main teaching phase of the lesson.",
+                },
+                {
+                    "phase_name": "Practice",
+                    "minutes": 20,
+                    "content_type": "instruction",
+                    "details": "Students practice the new skills or concepts with teacher support and then independently.",
+                },
+                {
+                    "phase_name": "Closure",
+                    "minutes": 5,
+                    "content_type": "assessment",
+                    "details": "Wrap up the lesson by reviewing key concepts, checking for understanding, and preparing for the next lesson.",
+                },
+            ]
+            phase_plan = default_phases
+            print(f"[DEBUG] Using default phase_plan with {len(phase_plan)} phases")
+        else:
+            print(
+                f"[DEBUG] Starting step generation, phase_plan has {len(phase_plan)} phases"
+            )
 
         for idx, phase in enumerate(phase_plan, start=1):
             print(
@@ -2631,8 +3492,6 @@ async def generate_lesson_steps(
             # Allow sentence_frames and materials from phase if present, otherwise empty
             sentence_frames = phase.get("sentence_frames", [])
             materials = phase.get("materials", [])
-
-            from datetime import datetime
 
             step_data = {
                 "id": step_id,
@@ -2711,7 +3570,7 @@ async def generate_lesson_steps(
         # ============================================================================
         # VOCABULARY/COGNATES AND SENTENCE FRAMES STEP GENERATION
         # ============================================================================
-        # 
+        #
         # CRITICAL: vocabulary_cognates and sentence_frames should be present in
         # lesson_json under days[day]["slots"][slot_number]. If these are missing
         # or empty arrays, vocabulary/frames steps will NOT be created.
@@ -2732,7 +3591,7 @@ async def generate_lesson_steps(
         # Fallback: We check both slot-level and day-level data for backwards
         # compatibility with legacy plans that stored vocabulary/frames at day level.
         # ============================================================================
-        
+
         # Get vocabulary and sentence frames from slot-level (preferred) or day-level (fallback)
         vocabulary_cognates = (
             slot_data.get("vocabulary_cognates")
@@ -2742,7 +3601,7 @@ async def generate_lesson_steps(
         day_sentence_frames = (
             slot_data.get("sentence_frames") or day_data.get("sentence_frames") or []
         )
-        
+
         # Validate: Warn if vocabulary/frames are missing when they should be present
         # This helps catch cases where lesson_json was not properly populated
         if not vocabulary_cognates and not day_sentence_frames:
@@ -2760,8 +3619,10 @@ async def generate_lesson_steps(
                     ),
                 },
             )
-        
-        logger.info(f"DEBUG: Generating steps for slot {slot}. Vocab count: {len(vocabulary_cognates)}. Frames count: {len(day_sentence_frames)}")
+
+        logger.info(
+            f"DEBUG: Generating steps for slot {slot}. Vocab count: {len(vocabulary_cognates)}. Frames count: {len(day_sentence_frames)}"
+        )
         print(
             f"[DEBUG] Vocabulary check: vocabulary_cognates exists={bool(vocabulary_cognates)}, type={type(vocabulary_cognates)}, length={len(vocabulary_cognates) if isinstance(vocabulary_cognates, list) else 'N/A'}"
         )
@@ -2839,62 +3700,60 @@ async def generate_lesson_steps(
                     "hidden_content": [],
                     "sentence_frames": [],
                     "materials_needed": [],
-                    "vocabulary_cognates": vocabulary_cognates,  # Include structured data for frontend
+                    "vocabulary_cognates": json.dumps(vocabulary_cognates)
+                    if settings.USE_SUPABASE
+                    else vocabulary_cognates,  # Include structured data for frontend
                 }
-                
-                # DEBUG: Log vocabulary_cognates before saving
-                print(f"[DEBUG] vocab_step vocabulary_cognates: type={type(vocabulary_cognates)}, value={vocabulary_cognates}, length={len(vocabulary_cognates) if isinstance(vocabulary_cognates, list) else 'N/A'}")
-                logger.info(
-                    "vocab_step_before_save",
-                    extra={
-                        "plan_id": plan_id,
-                        "vocab_type": str(type(vocabulary_cognates)),
-                        "vocab_is_list": isinstance(vocabulary_cognates, list),
-                        "vocab_length": len(vocabulary_cognates) if isinstance(vocabulary_cognates, list) else 0,
-                        "vocab_sample": vocabulary_cognates[0] if isinstance(vocabulary_cognates, list) and len(vocabulary_cognates) > 0 else None,
-                    },
-                )
 
-                try:
-                    created_id = db_for_plan.create_lesson_step(vocab_step)
-                    logger.debug(
-                        "Vocab step created in database", extra={"step_id": created_id}
-                    )
-                    # Also add to generated_steps for consistency (even if table exists)
-                    # This ensures the step is always returned
+            # DEBUG: Log vocabulary_cognates before saving
+            print(
+                f"[DEBUG] vocab_step vocabulary_cognates: type={type(vocabulary_cognates)}, value={vocabulary_cognates}, length={len(vocabulary_cognates) if isinstance(vocabulary_cognates, list) else 'N/A'}"
+            )
+            logger.info(
+                "vocab_step_before_save",
+                extra={
+                    "plan_id": plan_id,
+                    "vocab_type": str(type(vocabulary_cognates)),
+                    "vocab_is_list": isinstance(vocabulary_cognates, list),
+                    "vocab_length": len(vocabulary_cognates)
+                    if isinstance(vocabulary_cognates, list)
+                    else 0,
+                    "vocab_sample": vocabulary_cognates[0]
+                    if isinstance(vocabulary_cognates, list)
+                    and len(vocabulary_cognates) > 0
+                    else None,
+                },
+            )
+
+            try:
+                created_id = db_for_plan.create_lesson_step(vocab_step)
+                logger.debug(
+                    "Vocab step created in database", extra={"step_id": created_id}
+                )
+            except Exception as create_error:
+                error_type = type(create_error).__name__
+                error_msg = str(create_error)
+                is_table_missing = (
+                    error_type == "LessonStepsTableMissingError"
+                    or "lesson_steps table does not exist" in error_msg
+                    or "PGRST205" in error_msg
+                    or "Could not find the table" in error_msg
+                    or "lesson_steps" in error_msg.lower()
+                )
+                if is_table_missing:
                     vocab_step_with_timestamps = {
                         **vocab_step,
                         "created_at": datetime.utcnow(),
                         "updated_at": None,
                     }
                     generated_steps.append(LessonStep(**vocab_step_with_timestamps))
+                    logger.debug("Stored vocab step in memory (table missing)")
                     print(
-                        f"[DEBUG] Vocab step added to generated_steps, total: {len(generated_steps)}"
+                        f"[DEBUG] Vocab step stored in memory, total steps: {len(generated_steps)}"
                     )
-                except Exception as create_error:
-                    error_type = type(create_error).__name__
-                    error_msg = str(create_error)
-                    is_table_missing = (
-                        error_type == "LessonStepsTableMissingError"
-                        or "lesson_steps table does not exist" in error_msg
-                        or "PGRST205" in error_msg
-                        or "Could not find the table" in error_msg
-                        or "lesson_steps" in error_msg.lower()
-                    )
-                    if is_table_missing:
-                        vocab_step_with_timestamps = {
-                            **vocab_step,
-                            "created_at": datetime.utcnow(),
-                            "updated_at": None,
-                        }
-                        generated_steps.append(LessonStep(**vocab_step_with_timestamps))
-                        logger.debug("Stored vocab step in memory (table missing)")
-                        print(
-                            f"[DEBUG] Vocab step stored in memory, total steps: {len(generated_steps)}"
-                        )
-                    else:
-                        raise
-                start_time_offset += 5
+                else:
+                    raise
+            start_time_offset += 5
 
         # Append a sentence-frames step sourced from slot-level
         # sentence_frames when available, falling back to any legacy
@@ -2940,13 +3799,12 @@ async def generate_lesson_steps(
                                     )
                                 break
 
-
             # Create display content for sentence frames
             # Combine strategy text with the actual frames for robust display
             frames_display_parts = []
             if frames_strategy_text:
                 frames_display_parts.append(frames_strategy_text)
-            
+
             if day_sentence_frames:
                 frames_display_parts.append("\nReference Frames:")
                 for frame in day_sentence_frames:
@@ -2954,8 +3812,12 @@ async def generate_lesson_steps(
                         english = frame.get("english", "")
                         if english:
                             frames_display_parts.append(f"- {english}")
-            
-            frames_display_content = "\n\n".join(frames_display_parts) if frames_display_parts else frames_strategy_text
+
+            frames_display_content = (
+                "\n\n".join(frames_display_parts)
+                if frames_display_parts
+                else frames_strategy_text
+            )
 
             frames_step = {
                 "id": frames_step_id,
@@ -3001,6 +3863,7 @@ async def generate_lesson_steps(
                     )
                 else:
                     raise
+            start_time_offset += 5
 
         # If we have in-memory steps (table doesn't exist), return those
         # Otherwise, fetch from database
@@ -3144,7 +4007,7 @@ async def create_lesson_mode_session(
 
             # Keep datetimes ISO formatted before hitting Supabase/PostgREST.
             # Otherwise json.dumps inside the client raises "datetime is not JSON serializable".
-            session_dict = session_data.model_dump(mode='json')
+            session_dict = session_data.model_dump(mode="json")
             updated = db.update_lesson_mode_session(existing.id, session_dict)
             if updated:
                 updated_session = db.get_lesson_mode_session(existing.id)
@@ -3159,7 +4022,7 @@ async def create_lesson_mode_session(
             import uuid
 
             # Same JSON-friendly dump here so inserts never carry raw datetime objects.
-            session_dict = session_data.model_dump(mode='json')
+            session_dict = session_data.model_dump(mode="json")
             session_dict["id"] = str(uuid.uuid4())
 
             session_id = db.create_lesson_mode_session(session_dict)
@@ -3394,14 +4257,150 @@ async def get_user_plans(
         # Verify user access
         verify_user_access(user_id, current_user_id, allow_if_none=True)
 
+        logger.info(
+            f"[DEBUG] get_user_plans: Request for user_id={user_id}, current_user={current_user_id}"
+        )
+
         db = get_db(user_id=user_id)
         plans = db.get_user_plans(user_id, limit)
+
+        logger.info(
+            f"[DEBUG] get_user_plans: Found {len(plans)} plans for user_id={user_id}"
+        )
+
+        # Log week_of values for debugging
+        logger.info(
+            "plans_retrieved",
+            extra={
+                "user_id": user_id,
+                "plan_count": len(plans),
+                "week_of_values": [p.week_of for p in plans if p.week_of],
+                "first_plan_week_of": plans[0].week_of if plans else None,
+            },
+        )
+
         return plans
+    except Exception as e:
+        logger.error(f"Error getting user plans: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get(
+    "/api/plans/status/{user_id}/{week_of}",
+    response_model=WeekStatusResponse,
+    tags=["Weekly Plans"],
+)
+@rate_limit_general
+async def get_week_status(
+    request: Request,
+    user_id: str,
+    week_of: str,
+    current_user_id: Optional[str] = Depends(get_current_user_id),
+):
+    """
+    Get the status of slots for a specific week.
+    Returns which slots are already 'done' (have data in lesson_json).
+    """
+    try:
+        # Verify user access
+        verify_user_access(user_id, current_user_id, allow_if_none=True)
+
+        db = get_db(user_id=user_id)
+
+        # Get user slots to know what *should* be there
+        slots_raw = await asyncio.to_thread(db.get_user_slots, user_id)
+        total_slots_count = len(slots_raw)
+        all_slot_numbers = [s.slot_number for s in slots_raw]
+
+        # Get existing plans for this week
+        plans = db.get_user_plans(user_id, limit=20)
+        plan = next((p for p in plans if p.week_of == week_of), None)
+
+        if not plan:
+            return WeekStatusResponse(
+                week_of=week_of,
+                status=None,
+                done_slots=[],
+                missing_slots=all_slot_numbers,
+                total_slots=total_slots_count,
+            )
+
+        # Get plan detail to see lesson_json (using await to_thread because get_plan_detail might be slow/complex)
+        full_plan = await asyncio.to_thread(db.get_weekly_plan, plan.id)
+        if not full_plan:
+            return WeekStatusResponse(
+                week_of=week_of,
+                status=plan.status,
+                plan_id=plan.id,
+                done_slots=[],
+                missing_slots=all_slot_numbers,
+                total_slots=total_slots_count,
+                generated_at=plan.generated_at,
+            )
+
+        done_slots_set = set()
+        if full_plan.lesson_json:
+            lj = full_plan.lesson_json
+
+            # Case 1: Merged Structure (days -> {day} -> slots -> [...])
+            if "days" in lj and isinstance(lj["days"], dict):
+                for day_name, day_data in lj["days"].items():
+                    if isinstance(day_data, dict) and "slots" in day_data:
+                        for s in day_data["slots"]:
+                            if isinstance(s, dict) and s.get("slot_number"):
+                                try:
+                                    done_slots_set.add(int(s["slot_number"]))
+                                except (ValueError, TypeError):
+                                    pass
+
+            # Case 2: Top-level metadata (Fallback/Single-slot)
+            if "metadata" in lj and isinstance(lj["metadata"], dict):
+                if lj["metadata"].get("slot_number"):
+                    try:
+                        done_slots_set.add(int(lj["metadata"]["slot_number"]))
+                    except (ValueError, TypeError):
+                        pass
+
+            # Case 3: Top-level slots (Fallback for other potential structures)
+            if "slots" in lj and isinstance(lj["slots"], dict):
+                for k in lj["slots"].keys():
+                    if k.isdigit():
+                        done_slots_set.add(int(k))
+
+            # Case 4: Nested lesson_json (Legacy/Wrapper)
+            if "lesson_json" in lj and isinstance(lj["lesson_json"], dict):
+                inner = lj["lesson_json"]
+                if (
+                    "metadata" in inner
+                    and isinstance(inner, dict)
+                    and inner.get("metadata", {}).get("slot_number")
+                ):
+                    try:
+                        done_slots_set.add(int(inner["metadata"]["slot_number"]))
+                    except (ValueError, TypeError):
+                        pass
+
+        done_slots = sorted(list(done_slots_set))
+        missing_slots = [s for s in all_slot_numbers if s not in done_slots]
+
+        return WeekStatusResponse(
+            week_of=week_of,
+            status=full_plan.status,
+            plan_id=full_plan.id,
+            done_slots=done_slots,
+            missing_slots=missing_slots,
+            total_slots=total_slots_count,
+            generated_at=full_plan.generated_at,
+        )
+
     except HTTPException:
         raise
     except Exception as e:
-        logger.error("plans_get_failed", extra={"error": str(e)})
-        raise HTTPException(status_code=500, detail=f"Failed to get plans: {str(e)}")
+        logger.error(f"Error getting week status: {e}")
+        import traceback
+
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.post(
@@ -3436,8 +4435,54 @@ async def process_week(
         # Get LLM service
         try:
             llm_service = get_llm_service(provider=batch_request.provider)
+            logger.info(
+                "llm_service_initialized",
+                extra={
+                    "provider": batch_request.provider,
+                    "service_type": "real",
+                    "message": "Using real LLM service (OpenAI/Anthropic API)",
+                },
+            )
+        except ValueError as e:
+            # API key missing or invalid
+            error_msg = str(e)
+            logger.warning(
+                "llm_service_failed_api_key",
+                extra={
+                    "provider": batch_request.provider,
+                    "error": error_msg,
+                    "reason": "API key missing or invalid",
+                    "fallback": "MockLLMService",
+                },
+            )
+            logger.warning(f"⚠️  LLM API Key Issue: {error_msg}")
+            logger.warning(f"   Provider: {batch_request.provider}")
+            logger.warning("   Falling back to MockLLMService (mock data)")
+            logger.warning(
+                f"   To use real LLM: Set {batch_request.provider.upper()}_API_KEY in .env file"
+            )
+            llm_service = get_mock_llm_service()
         except Exception as e:
-            logger.warning(f"Failed to get LLM service, using mock: {e}")
+            # Other initialization errors
+            error_msg = str(e)
+            error_type = type(e).__name__
+            logger.error(
+                "llm_service_failed_initialization",
+                extra={
+                    "provider": batch_request.provider,
+                    "error_type": error_type,
+                    "error": error_msg,
+                    "reason": "LLM service initialization failed",
+                    "fallback": "MockLLMService",
+                },
+                exc_info=True,
+            )
+            logger.error(
+                f"❌ Failed to initialize LLM service: {error_type}: {error_msg}"
+            )
+            logger.error(f"   Provider: {batch_request.provider}")
+            logger.error("   Falling back to MockLLMService (mock data)")
+            logger.error("   Check your API key configuration and network connectivity")
             llm_service = get_mock_llm_service()
 
         # Create processor
@@ -3469,16 +4514,32 @@ async def process_week(
                     detail="No matching slots found for provided slot_ids",
                 )
 
-        # Create plan record immediately
-        is_consolidated = len(slots) > 1
-        plan_id = db.create_weekly_plan(
-            batch_request.user_id,
-            batch_request.week_of,
-            output_file="",
-            week_folder_path="",
-            consolidated=is_consolidated,
-            total_slots=len(slots),
-        )
+        # If partial, check if we already have a plan for this week to reuse its ID
+        plan_id = None
+        if batch_request.partial or batch_request.missing_only:
+            existing_plans = db.get_user_plans(batch_request.user_id, limit=10)
+            existing_plan = next(
+                (p for p in existing_plans if p.week_of == batch_request.week_of), None
+            )
+            if existing_plan:
+                plan_id = existing_plan.id
+                logger.info(
+                    "reusing_existing_plan_id",
+                    extra={"plan_id": plan_id, "week_of": batch_request.week_of},
+                )
+
+        if not plan_id:
+            # Create plan record immediately
+            is_consolidated = len(slots) > 1
+            plan_id = db.create_weekly_plan(
+                batch_request.user_id,
+                batch_request.week_of,
+                output_file="",
+                week_folder_path="",
+                consolidated=is_consolidated,
+                total_slots=len(slots),
+            )
+
         db.update_weekly_plan(plan_id, status="processing")
 
         # Initialize progress tracker with this plan_id
@@ -3501,6 +4562,9 @@ async def process_week(
                     batch_request.provider,
                     slot_ids=batch_request.slot_ids,
                     plan_id=plan_id,
+                    partial=batch_request.partial,
+                    missing_only=batch_request.missing_only,
+                    force_slots=batch_request.force_slots or [],
                 )
 
                 # Note: BatchProcessor.process_user_week already updates the database status
@@ -3536,20 +4600,22 @@ async def process_week(
                             errors = [error_msg]
                         else:
                             # If no errors collected, create a generic message
-                            errors = ["Processing failed: No output file generated and no errors were collected. Check logs for details."]
-                    
+                            errors = [
+                                "Processing failed: No output file generated and no errors were collected. Check logs for details."
+                            ]
+
                     # Ensure errors is a list
                     if not isinstance(errors, list):
                         errors = [str(errors)] if errors else ["Unknown error"]
-                    
+
                     logger.error(
-                        "batch_process_failed", 
+                        "batch_process_failed",
                         extra={
                             "errors": errors,
                             "success": result.get("success"),
                             "output_file": result.get("output_file"),
                             "processed_slots": result.get("processed_slots", 0),
-                        }
+                        },
                     )
                     # Update progress tracker with error result
                     progress_tracker.update(

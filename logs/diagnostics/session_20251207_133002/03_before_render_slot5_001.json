@@ -1,0 +1,54 @@
+{
+  "timestamp": "2025-12-07T13:48:58.003705",
+  "stage": "03_before_render_slot5",
+  "data": {
+    "slot_number": 5,
+    "subject": "Math",
+    "render_type": "multi_slot",
+    "metadata_slot_number": 5,
+    "metadata_subject": "Math",
+    "hyperlink_count": 7,
+    "all_hyperlinks_have_slot": true,
+    "all_hyperlinks_have_subject": true,
+    "hyperlink_slot_distribution": {
+      "5": 7
+    },
+    "sample_hyperlinks": [
+      {
+        "text": "2.4.1 Teacher Guide",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Unit 4: Addition and Subtraction on the Number Lin",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "2.3.14 Cool Down",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "2.3.15 Cool Down",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "2.3.16 Cool Down",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "2.4.1 Cool Down",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "U4 L1 Math hw.pdf",
+        "source_slot": 5,
+        "source_subject": "Math"
+      }
+    ]
+  }
+}

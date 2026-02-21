@@ -1,0 +1,164 @@
+{
+  "timestamp": "2025-12-27T11:36:51.309060",
+  "stage": "01_parser_slot5",
+  "data": {
+    "slot_number": 5,
+    "subject": "Math",
+    "source_file": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\26 W02\\Morais 1_5-1_9.docx",
+    "hyperlink_count": 19,
+    "hyperlinks": [
+      {
+        "text": "2.4.1 Teacher Guide",
+        "url": "https://drive.google.com/file/d/1TmY3Ay_64_ZmB1uact8Oz1YcYRGiVHMR/view?usp=drive_link",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "2.4.3 Teacher Guide",
+        "url": "https://drive.google.com/file/d/1E3ki9EoICdgm_N0uKNCo2oTAXe8AFqao/view?usp=drive_link",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "2.4.4 Teacher Guide",
+        "url": "https://drive.google.com/file/d/1G3FWwm025AhUBY5VrWX1dIT1Dh7c1OMZ/view?usp=drive_link",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "2.4.5 Teacher Guide",
+        "url": "https://drive.google.com/file/d/1IcVfSWgc1N-5lz922x8uLaRc3gvh3wH8/view?usp=drive_link",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Unit 4: Addition and Subtraction on the Number Line",
+        "url": "https://docs.google.com/document/d/1x8ll9eW0ZVYdBOKIdDfEPk1X_79X3dyOtq_zyByvpe4/edit?tab=t.0",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Unit 4: Addition and Subtraction on the Number Line",
+        "url": "https://docs.google.com/document/d/1x8ll9eW0ZVYdBOKIdDfEPk1X_79X3dyOtq_zyByvpe4/edit?tab=t.0",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Unit 4: Addition and Subtraction on the Number Line",
+        "url": "https://docs.google.com/document/d/1x8ll9eW0ZVYdBOKIdDfEPk1X_79X3dyOtq_zyByvpe4/edit?tab=t.0",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Unit 4: Addition and Subtraction on the Number Line",
+        "url": "https://docs.google.com/document/d/1x8ll9eW0ZVYdBOKIdDfEPk1X_79X3dyOtq_zyByvpe4/edit?tab=t.0",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Unit 4: Addition and Subtraction on the Number Line",
+        "url": "https://docs.google.com/document/d/1x8ll9eW0ZVYdBOKIdDfEPk1X_79X3dyOtq_zyByvpe4/edit?tab=t.0",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "2.4.1 Cool Down",
+        "url": "https://drive.google.com/file/d/1fsmxYqaGuLlTBsUunm_Q1sNY46uYvey4/view?usp=share_link",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "2.4.2 Cool Down",
+        "url": "https://drive.google.com/file/d/1yM5n_6Pnf0L3AYpAHs6GIc9881NTRp5q/view?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "2.4.3 Cool Down",
+        "url": "https://drive.google.com/file/d/1UK0aKF1QcIOp05quEfabh8M1QaLfylGe/view?usp=share_link",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "2.4.4 Cool Down",
+        "url": "https://drive.google.com/file/d/1GabETFXGkbRQuOwx1lk1CsBLlV07Byqc/view?usp=share_link",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "2.5.5 Cool Down",
+        "url": "https://drive.google.com/file/d/12B0lLzbm7Y7OvWLt6ncVWd0bSqpaxOYJ/view?usp=share_link",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Grade 02 Unit 4 Section A Checkpoint (English)",
+        "url": "https://drive.google.com/file/d/18ZtjoPEbKpSLenvhbTg24zkn97GldlhF/view?usp=drive_link",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "U4 L1 Math hw.pdf",
+        "url": "https://drive.google.com/file/d/1VoqodhYIYhg840kNZV43WNuq8MewiMiN/view?usp=drive_link",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "ADM-2-4-02-SE-practice-1E.pdf",
+        "url": "https://drive.google.com/file/d/1JklmM8Vi_H4tjh0GvKwoc9UzM17ExVi1/view?usp=drive_link",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "ADM-G2-U4-L3-additional-practice-1E.pdf",
+        "url": "https://drive.google.com/file/d/1ho7by3zo7YbWnAMuEC9AodcPojILpUxW/view?usp=drive_link",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "ADM-2-4-04-SE-practice-1E.pdf",
+        "url": "https://drive.google.com/file/d/1cDZB6rzJLgp0YPxHkgtw3vsh_zSlvM9E/view?usp=drive_link",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      }
+    ]
+  }
+}

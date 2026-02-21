@@ -2,22 +2,25 @@ import { useState, useEffect, lazy, Suspense } from 'react';
 import { BookOpen } from 'lucide-react';
 import { LessonPlanBrowser, UserSelector, useStore } from '@lesson-browser';
 import { ScheduleEntry } from '@lesson-api';
-import { isMobile, isDesktop } from './lib/platform';
+import { isMobile } from './lib/platform';
 import { usePlatformFeatures } from './hooks/usePlatformFeatures';
 
 // Lazy load Lesson Mode for code splitting
-const LessonMode = lazy(() => 
+const LessonMode = lazy(() =>
   import('@lesson-mode/components/LessonMode').then(module => ({ default: module.LessonMode }))
 );
 
 // Lazy load PC-only components (not included in tablet bundle)
 // Path: lesson-plan-browser/frontend/src/ -> ../../../frontend/src/ (3 levels up to root, then into frontend)
-const ScheduleInput = lazy(() => import('../../../frontend/src/components/ScheduleInput'));
-const Analytics = lazy(() => import('../../../frontend/src/components/Analytics'));
-const PlanHistory = lazy(() => import('../../../frontend/src/components/PlanHistory'));
-const BatchProcessor = lazy(() => import('../../../frontend/src/components/BatchProcessor'));
-const SlotConfigurator = lazy(() => import('../../../frontend/src/components/SlotConfigurator'));
-const SyncTestButton = lazy(() => import('../../../frontend/src/components/SyncTestButton'));
+const ScheduleInput = lazy(() => import('../../../frontend/src/components/ScheduleInput').then(module => ({ default: module.ScheduleInput })));
+const Analytics = lazy(() => import('../../../frontend/src/components/Analytics').then(module => ({ default: module.Analytics })));
+const PlanHistory = lazy(() => import('../../../frontend/src/components/PlanHistory').then(module => ({ default: module.PlanHistory })));
+const BatchProcessor = lazy(() => import('../../../frontend/src/components/BatchProcessor').then(module => ({ default: module.BatchProcessor })));
+const SlotConfigurator = lazy(() => import('../../../frontend/src/components/SlotConfigurator').then(module => ({ default: module.SlotConfigurator })));
+const SyncTestButton = lazy(() => import('../../../frontend/src/components/SyncTestButton').then(module => ({ default: module.SyncTestButton })));
+const SupabaseSyncToggle = lazy(() => import('../../../frontend/src/components/SupabaseSyncToggle').then(module => ({ default: module.SupabaseSyncToggle })));
+const DatabaseSettings = lazy(() => import('../../../frontend/src/components/DatabaseSettings').then(module => ({ default: module.DatabaseSettings })));
+const TabletSync = lazy(() => import('../../../frontend/src/components/TabletSync').then(module => ({ default: module.TabletSync })));
 
 // Lazy load PC-only layout components
 const DesktopLayout = lazy(() => import('../../../frontend/src/components/layouts/DesktopLayout').then(module => ({ default: module.DesktopLayout })));
@@ -32,7 +35,7 @@ if (isMobile) {
   });
 }
 
-type NavItem = 'home' | 'plans' | 'schedule' | 'browser' | 'lesson-mode' | 'history' | 'analytics' | 'settings';
+type NavItem = 'home' | 'plans' | 'schedule' | 'browser' | 'lesson-mode' | 'history' | 'analytics' | 'settings' | 'database' | 'tablet';
 type View = 'browser' | 'lesson-mode';
 
 interface LessonModeProps {
@@ -44,7 +47,7 @@ interface LessonModeProps {
 }
 
 function App() {
-  const { currentUser } = useStore();
+  const { currentUser, users } = useStore();
   const features = usePlatformFeatures();
 
   // Tablet state (browser + lesson mode only)
@@ -121,9 +124,9 @@ function App() {
       setView('lesson-mode');
     };
 
-    const handleExitLessonMode = (day?: string, slot?: number) => {
+    const handleExitLessonMode = (day?: string) => {
       console.log('[App] Exiting lesson mode, previousViewInfo:', previousViewInfo);
-      
+
       // If we came from lesson view, restore it using initialLesson (don't set exitDay)
       if (previousViewInfo?.viewMode === 'lesson' && previousViewInfo.lessonInfo) {
         // Don't set exitDay - initialLesson will handle restoring the lesson view
@@ -154,10 +157,12 @@ function App() {
 
     // Show user selector if no user selected
     if (!currentUser) {
+      // Tablet: show UserSelector. It handles loading, auto-select when users exist,
+      // and displays the dropdown so users can pick or add a profile.
       return (
         <div className="min-h-screen p-4">
           <div className="max-w-md mx-auto mt-8">
-            <UserSelector />
+            <UserSelector autoSelect="first" />
           </div>
         </div>
       );
@@ -199,10 +204,10 @@ function App() {
           initialLesson={
             previousViewInfo?.viewMode === 'lesson' && previousViewInfo.lessonInfo
               ? {
-                  scheduleEntry: previousViewInfo.lessonInfo.scheduleEntry,
-                  day: previousViewInfo.lessonInfo.day,
-                  slot: previousViewInfo.lessonInfo.slot,
-                }
+                scheduleEntry: previousViewInfo.lessonInfo.scheduleEntry,
+                day: previousViewInfo.lessonInfo.day,
+                slot: previousViewInfo.lessonInfo.slot,
+              }
               : null
           }
         />
@@ -244,6 +249,11 @@ function App() {
           return (
             <div className="space-y-8">
               {userSelectorSection}
+              <section>
+                <Suspense fallback={<div className="p-4">Loading...</div>}>
+                  <SupabaseSyncToggle />
+                </Suspense>
+              </section>
               <section>
                 <Suspense fallback={<div className="p-4">Loading...</div>}>
                   <SyncTestButton />
@@ -299,9 +309,9 @@ function App() {
 
         case 'browser':
           return (
-            <LessonPlanBrowser 
+            <LessonPlanBrowser
               onEnterLessonMode={(scheduleEntry, day?: string, slot?: number, planId?: string) => {
-                setLessonModeEntry({ 
+                setLessonModeEntry({
                   scheduleEntry,
                   day,
                   slot,
@@ -351,7 +361,7 @@ function App() {
                   planId={lessonModeEntry?.planId}
                   day={lessonModeEntry?.day}
                   slot={lessonModeEntry?.slot}
-                  onExit={(exitDay, exitSlot) => {
+                  onExit={(exitDay?: string, exitSlot?: number) => {
                     // Preserve the lesson mode entry data when exiting
                     setLessonModeEntry({
                       scheduleEntry: lessonModeEntry?.scheduleEntry,
@@ -385,6 +395,30 @@ function App() {
                     </Suspense>
                   </div>
                 </div>
+              </section>
+            </div>
+          );
+
+        case 'database':
+          return (
+            <div className="space-y-8">
+              {userSelectorSection}
+              <section>
+                <Suspense fallback={<div className="p-4">Loading...</div>}>
+                  <DatabaseSettings />
+                </Suspense>
+              </section>
+            </div>
+          );
+
+        case 'tablet':
+          return (
+            <div className="space-y-8">
+              {userSelectorSection}
+              <section>
+                <Suspense fallback={<div className="p-4">Loading...</div>}>
+                  <TabletSync />
+                </Suspense>
               </section>
             </div>
           );
@@ -428,8 +462,8 @@ function App() {
           </div>
         </div>
       }>
-        <DesktopLayout 
-          activeNavItem={activeNavItem} 
+        <DesktopLayout
+          activeNavItem={activeNavItem}
           onNavigate={handleNavigate}
         >
           {content}

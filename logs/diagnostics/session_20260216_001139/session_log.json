@@ -1,0 +1,474 @@
+[
+  {
+    "timestamp": "2026-02-16T00:11:39.325034",
+    "stage": "04_renderer_metadata_extracted",
+    "data": {
+      "slot_number": 1,
+      "slot_number_type": "int",
+      "slot_number_is_none": false,
+      "subject": "ELA/SS",
+      "subject_is_none": false,
+      "hyperlink_count": 0,
+      "teacher": "Catarina Morais",
+      "filtering_will_activate": true
+    }
+  },
+  {
+    "timestamp": "2026-02-16T00:11:39.421034",
+    "stage": "04_renderer_metadata_extracted",
+    "data": {
+      "slot_number": 2,
+      "slot_number_type": "int",
+      "slot_number_is_none": false,
+      "subject": "Social Studies",
+      "subject_is_none": false,
+      "hyperlink_count": 0,
+      "teacher": "Taina Santiago",
+      "filtering_will_activate": true
+    }
+  },
+  {
+    "timestamp": "2026-02-16T00:11:39.488035",
+    "stage": "04_renderer_metadata_extracted",
+    "data": {
+      "slot_number": 3,
+      "slot_number_type": "int",
+      "slot_number_is_none": false,
+      "subject": "Science",
+      "subject_is_none": false,
+      "hyperlink_count": 0,
+      "teacher": "Mariela Grande",
+      "filtering_will_activate": true
+    }
+  },
+  {
+    "timestamp": "2026-02-16T00:11:39.550547",
+    "stage": "04_renderer_metadata_extracted",
+    "data": {
+      "slot_number": 4,
+      "slot_number_type": "int",
+      "slot_number_is_none": false,
+      "subject": "Science",
+      "subject_is_none": false,
+      "hyperlink_count": 0,
+      "teacher": "Catarina Morais",
+      "filtering_will_activate": true
+    }
+  },
+  {
+    "timestamp": "2026-02-16T00:11:39.615570",
+    "stage": "04_renderer_metadata_extracted",
+    "data": {
+      "slot_number": 5,
+      "slot_number_type": "int",
+      "slot_number_is_none": false,
+      "subject": "Math",
+      "subject_is_none": false,
+      "hyperlink_count": 0,
+      "teacher": "Catarina Morais",
+      "filtering_will_activate": true
+    }
+  },
+  {
+    "timestamp": "2026-02-16T00:13:23.568037",
+    "stage": "03_before_render_slot1",
+    "data": {
+      "slot_number": 1,
+      "subject": "ELA/SS",
+      "render_type": "multi_slot",
+      "metadata_slot_number": 1,
+      "metadata_subject": "ELA/SS",
+      "hyperlink_count": 0,
+      "all_hyperlinks_have_slot": true,
+      "all_hyperlinks_have_subject": true,
+      "hyperlink_slot_distribution": {},
+      "sample_hyperlinks": []
+    }
+  },
+  {
+    "timestamp": "2026-02-16T00:13:23.581043",
+    "stage": "04_renderer_metadata_extracted",
+    "data": {
+      "slot_number": 1,
+      "slot_number_type": "int",
+      "slot_number_is_none": false,
+      "subject": "ELA/SS",
+      "subject_is_none": false,
+      "hyperlink_count": 0,
+      "teacher": "Catarina Morais / Daniela Silva",
+      "filtering_will_activate": true
+    }
+  },
+  {
+    "timestamp": "2026-02-16T00:13:23.699078",
+    "stage": "03_before_render_slot2",
+    "data": {
+      "slot_number": 2,
+      "subject": "Social Studies",
+      "render_type": "multi_slot",
+      "metadata_slot_number": 2,
+      "metadata_subject": "Social Studies",
+      "hyperlink_count": 0,
+      "all_hyperlinks_have_slot": true,
+      "all_hyperlinks_have_subject": true,
+      "hyperlink_slot_distribution": {},
+      "sample_hyperlinks": []
+    }
+  },
+  {
+    "timestamp": "2026-02-16T00:13:23.712079",
+    "stage": "04_renderer_metadata_extracted",
+    "data": {
+      "slot_number": 2,
+      "slot_number_type": "int",
+      "slot_number_is_none": false,
+      "subject": "Social Studies",
+      "subject_is_none": false,
+      "hyperlink_count": 0,
+      "teacher": "Taina Santiago / Daniela Silva",
+      "filtering_will_activate": true
+    }
+  },
+  {
+    "timestamp": "2026-02-16T00:13:23.827079",
+    "stage": "03_before_render_slot3",
+    "data": {
+      "slot_number": 3,
+      "subject": "Science",
+      "render_type": "multi_slot",
+      "metadata_slot_number": 3,
+      "metadata_subject": "Science",
+      "hyperlink_count": 0,
+      "all_hyperlinks_have_slot": true,
+      "all_hyperlinks_have_subject": true,
+      "hyperlink_slot_distribution": {},
+      "sample_hyperlinks": []
+    }
+  },
+  {
+    "timestamp": "2026-02-16T00:13:23.839078",
+    "stage": "04_renderer_metadata_extracted",
+    "data": {
+      "slot_number": 3,
+      "slot_number_type": "int",
+      "slot_number_is_none": false,
+      "subject": "Science",
+      "subject_is_none": false,
+      "hyperlink_count": 0,
+      "teacher": "Mariela Grande / Daniela Silva",
+      "filtering_will_activate": true
+    }
+  },
+  {
+    "timestamp": "2026-02-16T00:13:23.964105",
+    "stage": "03_before_render_slot4",
+    "data": {
+      "slot_number": 4,
+      "subject": "Science",
+      "render_type": "multi_slot",
+      "metadata_slot_number": 4,
+      "metadata_subject": "Science",
+      "hyperlink_count": 3,
+      "all_hyperlinks_have_slot": true,
+      "all_hyperlinks_have_subject": true,
+      "hyperlink_slot_distribution": {
+        "4": 3
+      },
+      "sample_hyperlinks": [
+        {
+          "text": "2nd Grade Science",
+          "source_slot": 4,
+          "source_subject": "Science"
+        },
+        {
+          "text": "2nd Grade Science",
+          "source_slot": 4,
+          "source_subject": "Science"
+        },
+        {
+          "text": "2nd Grade Science",
+          "source_slot": 4,
+          "source_subject": "Science"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2026-02-16T00:13:23.977105",
+    "stage": "04_renderer_metadata_extracted",
+    "data": {
+      "slot_number": 4,
+      "slot_number_type": "int",
+      "slot_number_is_none": false,
+      "subject": "Science",
+      "subject_is_none": false,
+      "hyperlink_count": 3,
+      "teacher": "Catarina Morais / Daniela Silva",
+      "filtering_will_activate": true
+    }
+  },
+  {
+    "timestamp": "2026-02-16T00:13:23.978106",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 4,
+      "current_slot_number_is_none": false,
+      "current_subject": "Science",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 3,
+      "cell": "monday_unit_lesson",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-02-16T00:13:24.106133",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 4,
+      "current_slot_number_is_none": false,
+      "current_subject": "Science",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 3,
+      "cell": "tuesday_unit_lesson",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-02-16T00:13:24.108135",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 4,
+      "current_slot_number_is_none": false,
+      "current_subject": "Science",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 3,
+      "cell": "tuesday_objective",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-02-16T00:13:24.109135",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 4,
+      "current_slot_number_is_none": false,
+      "current_subject": "Science",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 3,
+      "cell": "tuesday_anticipatory_set",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-02-16T00:13:24.111135",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 4,
+      "current_slot_number_is_none": false,
+      "current_subject": "Science",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 2,
+      "cell": "tuesday_instruction",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-02-16T00:13:24.122133",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 4,
+      "current_slot_number_is_none": false,
+      "current_subject": "Science",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 2,
+      "cell": "tuesday_misconceptions",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-02-16T00:13:24.124134",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 4,
+      "current_slot_number_is_none": false,
+      "current_subject": "Science",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 2,
+      "cell": "tuesday_assessment",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-02-16T00:13:24.126133",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 4,
+      "current_slot_number_is_none": false,
+      "current_subject": "Science",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 2,
+      "cell": "tuesday_homework",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-02-16T00:13:24.127133",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 4,
+      "current_slot_number_is_none": false,
+      "current_subject": "Science",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 2,
+      "cell": "wednesday_unit_lesson",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-02-16T00:13:24.128134",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 4,
+      "current_slot_number_is_none": false,
+      "current_subject": "Science",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 2,
+      "cell": "wednesday_objective",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-02-16T00:13:24.130133",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 4,
+      "current_slot_number_is_none": false,
+      "current_subject": "Science",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 2,
+      "cell": "wednesday_anticipatory_set",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-02-16T00:13:24.133134",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 4,
+      "current_slot_number_is_none": false,
+      "current_subject": "Science",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 1,
+      "cell": "wednesday_instruction",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-02-16T00:13:24.144137",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 4,
+      "current_slot_number_is_none": false,
+      "current_subject": "Science",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 1,
+      "cell": "wednesday_misconceptions",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-02-16T00:13:24.146137",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 4,
+      "current_slot_number_is_none": false,
+      "current_subject": "Science",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 1,
+      "cell": "wednesday_assessment",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-02-16T00:13:24.148137",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 4,
+      "current_slot_number_is_none": false,
+      "current_subject": "Science",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 1,
+      "cell": "wednesday_homework",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-02-16T00:13:24.149137",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 4,
+      "current_slot_number_is_none": false,
+      "current_subject": "Science",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 1,
+      "cell": "thursday_unit_lesson",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-02-16T00:13:24.150137",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 4,
+      "current_slot_number_is_none": false,
+      "current_subject": "Science",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 1,
+      "cell": "thursday_objective",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-02-16T00:13:24.152137",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 4,
+      "current_slot_number_is_none": false,
+      "current_subject": "Science",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 1,
+      "cell": "thursday_anticipatory_set",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-02-16T00:13:24.206726",
+    "stage": "03_before_render_slot5",
+    "data": {
+      "slot_number": 5,
+      "subject": "Math",
+      "render_type": "multi_slot",
+      "metadata_slot_number": 5,
+      "metadata_subject": "Math",
+      "hyperlink_count": 0,
+      "all_hyperlinks_have_slot": true,
+      "all_hyperlinks_have_subject": true,
+      "hyperlink_slot_distribution": {},
+      "sample_hyperlinks": []
+    }
+  },
+  {
+    "timestamp": "2026-02-16T00:13:24.219725",
+    "stage": "04_renderer_metadata_extracted",
+    "data": {
+      "slot_number": 5,
+      "slot_number_type": "int",
+      "slot_number_is_none": false,
+      "subject": "Math",
+      "subject_is_none": false,
+      "hyperlink_count": 0,
+      "teacher": "Catarina Morais / Daniela Silva",
+      "filtering_will_activate": true
+    }
+  }
+]

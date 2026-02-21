@@ -1,0 +1,14 @@
+{
+  "timestamp": "2025-12-29T16:52:36.926563",
+  "stage": "04_renderer_metadata_extracted",
+  "data": {
+    "slot_number": null,
+    "slot_number_type": "NoneType",
+    "slot_number_is_none": true,
+    "subject": "ELA",
+    "subject_is_none": false,
+    "hyperlink_count": 0,
+    "teacher": "Kelsey Lang",
+    "filtering_will_activate": false
+  }
+}

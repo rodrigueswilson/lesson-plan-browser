@@ -1,0 +1,34 @@
+{
+  "timestamp": "2025-12-30T14:37:12.404131",
+  "stage": "03_before_render_slot1",
+  "data": {
+    "slot_number": 1,
+    "subject": "ELA",
+    "render_type": "multi_slot",
+    "metadata_slot_number": 1,
+    "metadata_subject": "ELA",
+    "hyperlink_count": 3,
+    "all_hyperlinks_have_slot": true,
+    "all_hyperlinks_have_subject": true,
+    "hyperlink_slot_distribution": {
+      "1": 3
+    },
+    "sample_hyperlinks": [
+      {
+        "text": "note catcher",
+        "source_slot": 1,
+        "source_subject": "ELA"
+      },
+      {
+        "text": "Biography Slide Template",
+        "source_slot": 1,
+        "source_subject": "ELA"
+      },
+      {
+        "text": "Culture Preservation Graphic Organizer",
+        "source_slot": 1,
+        "source_subject": "ELA"
+      }
+    ]
+  }
+}

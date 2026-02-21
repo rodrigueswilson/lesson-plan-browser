@@ -1,0 +1,652 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>Sentence Frames - Week of Unknown</title>
+            <style>
+                
+        @import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600&display=swap');
+
+        @page {
+            size: 8.5in 11in; /* Portrait US Letter - exact size for printer */
+            margin: 0; /* No margins - use full page for maximum space */
+            /* Ensure no scaling - printers should respect exact page size */
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Source Sans Pro', 'Inter', 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: white;
+        }
+
+        .frames-page {
+            width: 8.5in;  /* Full page width */
+            height: 11in;  /* Full page height */
+            position: relative;
+            margin: 0;
+            page-break-after: always;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            position: absolute;
+            top: 0.39in; /* 1 cm from top for printer safety */
+            left: 0.39in; /* 1 cm from left for printer safety */
+            height: 0.35in;
+            font-size: 10pt;
+            color: #808080; /* 50% gray */
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            z-index: 10; /* Ensure header appears above panels */
+            border: none;
+            border-bottom: none;
+        }
+
+        .panels {
+            position: relative;
+            height: 11in; /* Full page height for accurate three-way division */
+            display: flex;
+            flex-direction: column;
+            border-top: none;
+        }
+
+        .panel {
+            height: 3.67in; /* 11in / 3 = 3.67in per panel (exact equal division for folding) */
+            box-sizing: border-box; /* Include padding in height calculation */
+            padding: 0.25in 0.3in;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            flex-shrink: 0; /* Prevent panels from shrinking */
+            flex-grow: 0; /* Prevent panels from growing */
+        }
+
+        .panel-title {
+            font-size: 10pt;
+            font-weight: 600;
+            color: #808080;
+            margin-bottom: 0.1in;
+        }
+
+        .frame-text {
+            font-size: 28pt;
+            font-weight: 600;
+            color: #000000;
+            line-height: 1.2;
+            margin-bottom: 0.1in;
+            word-wrap: break-word;
+            max-width: 100%;
+        }
+
+        .frame-text strong {
+            font-weight: 700; /* Ensure bold vocabulary words are clearly visible */
+        }
+
+        .frame-function {
+            font-size: 11pt;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #808080;
+        }
+
+        .bundle-frame-row {
+            margin: 0.05in 0;
+        }
+
+        .bundle-frame-text {
+            font-size: 18pt;
+            font-weight: 600;
+            color: #000000;
+            line-height: 1.2;
+        }
+
+        .bundle-frame-text strong {
+            font-weight: 700; /* Ensure bold vocabulary words are clearly visible */
+        }
+
+        .bundle-frame-function {
+            font-size: 9pt;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #808080;
+        }
+
+        .fold-line {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 0;
+            border-top: 1px solid rgba(128, 128, 128, 0.4); /* Thin gray line at 40% opacity */
+            z-index: 1;
+            /* Use fixed positions based on full 11" page height for printer accuracy */
+        }
+
+        /* Fold lines positioned to match exact panel divisions */
+        /* Since .panels has position: relative, fold lines are positioned relative to .panels container */
+        /* Each panel is exactly 3.67in tall (11in / 3) */
+        /* First fold: at the end of first panel = 3.67in from top of .panels */
+        .fold-line-1 {
+            top: 3.67in; /* End of first panel, start of second panel */
+        }
+
+        /* Second fold: at the end of second panel = 3.67in + 3.67in = 7.33in from top of .panels */
+        .fold-line-2 {
+            top: 7.33in; /* End of second panel, start of third panel */
+        }
+
+        @media print {
+            .frames-page {
+                page-break-after: always;
+                /* Ensure exact dimensions for print */
+                width: 8.5in !important;
+                height: 11in !important;
+            }
+            .frames-page:last-child {
+                page-break-after: auto;
+            }
+            .panels {
+                height: 11in !important; /* Enforce full page height for print */
+            }
+            .panel {
+                height: 3.67in !important; /* Enforce exact panel height for print (11in / 3) */
+                flex-shrink: 0 !important;
+                flex-grow: 0 !important;
+            }
+        }
+        
+            </style>
+        </head>
+        <body>
+            
+        <div class="frames-page frames-page-1">
+            <div class="header">Unknown | Monday | Math</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                
+                <div class="panel panel-1">
+                    <div class="frame-text"></div>
+                    <div class="frame-function"></div>
+                </div>
+            
+                <div class="panel panel-2">
+                    <div class="frame-text"></div>
+                    <div class="frame-function"></div>
+                </div>
+            
+                <div class="panel panel-3">
+                    <div class="frame-text"></div>
+                    <div class="frame-function"></div>
+                </div>
+            
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-2">
+            <div class="header">Unknown | Monday | Math</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                <div class="panel panel-1">
+                    <div class="panel-title">Levels 1-2</div>
+                    
+                </div>
+                <div class="panel panel-2">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text"></div>
+                    <div class="frame-function"></div>
+                </div>
+                <div class="panel panel-3">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text"></div>
+                    <div class="frame-function"></div>
+                </div>
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-1">
+            <div class="header">Unknown | Monday | Science</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                
+                <div class="panel panel-1">
+                    <div class="frame-text"></div>
+                    <div class="frame-function"></div>
+                </div>
+            
+                <div class="panel panel-2">
+                    <div class="frame-text"></div>
+                    <div class="frame-function"></div>
+                </div>
+            
+                <div class="panel panel-3">
+                    <div class="frame-text"></div>
+                    <div class="frame-function"></div>
+                </div>
+            
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-2">
+            <div class="header">Unknown | Monday | Science</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                <div class="panel panel-1">
+                    <div class="panel-title">Levels 1-2</div>
+                    
+                </div>
+                <div class="panel panel-2">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text"></div>
+                    <div class="frame-function"></div>
+                </div>
+                <div class="panel panel-3">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text"></div>
+                    <div class="frame-function"></div>
+                </div>
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-1">
+            <div class="header">Unknown | Tuesday | Math</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                
+                <div class="panel panel-1">
+                    <div class="frame-text"></div>
+                    <div class="frame-function"></div>
+                </div>
+            
+                <div class="panel panel-2">
+                    <div class="frame-text"></div>
+                    <div class="frame-function"></div>
+                </div>
+            
+                <div class="panel panel-3">
+                    <div class="frame-text"></div>
+                    <div class="frame-function"></div>
+                </div>
+            
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-2">
+            <div class="header">Unknown | Tuesday | Math</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                <div class="panel panel-1">
+                    <div class="panel-title">Levels 1-2</div>
+                    
+                </div>
+                <div class="panel panel-2">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text"></div>
+                    <div class="frame-function"></div>
+                </div>
+                <div class="panel panel-3">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text"></div>
+                    <div class="frame-function"></div>
+                </div>
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-1">
+            <div class="header">Unknown | Tuesday | Science</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                
+                <div class="panel panel-1">
+                    <div class="frame-text"></div>
+                    <div class="frame-function"></div>
+                </div>
+            
+                <div class="panel panel-2">
+                    <div class="frame-text"></div>
+                    <div class="frame-function"></div>
+                </div>
+            
+                <div class="panel panel-3">
+                    <div class="frame-text"></div>
+                    <div class="frame-function"></div>
+                </div>
+            
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-2">
+            <div class="header">Unknown | Tuesday | Science</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                <div class="panel panel-1">
+                    <div class="panel-title">Levels 1-2</div>
+                    
+                </div>
+                <div class="panel panel-2">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text"></div>
+                    <div class="frame-function"></div>
+                </div>
+                <div class="panel panel-3">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text"></div>
+                    <div class="frame-function"></div>
+                </div>
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-1">
+            <div class="header">Unknown | Wednesday | Math</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                
+                <div class="panel panel-1">
+                    <div class="frame-text"></div>
+                    <div class="frame-function"></div>
+                </div>
+            
+                <div class="panel panel-2">
+                    <div class="frame-text"></div>
+                    <div class="frame-function"></div>
+                </div>
+            
+                <div class="panel panel-3">
+                    <div class="frame-text"></div>
+                    <div class="frame-function"></div>
+                </div>
+            
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-2">
+            <div class="header">Unknown | Wednesday | Math</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                <div class="panel panel-1">
+                    <div class="panel-title">Levels 1-2</div>
+                    
+                </div>
+                <div class="panel panel-2">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text"></div>
+                    <div class="frame-function"></div>
+                </div>
+                <div class="panel panel-3">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text"></div>
+                    <div class="frame-function"></div>
+                </div>
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-1">
+            <div class="header">Unknown | Wednesday | Science</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                
+                <div class="panel panel-1">
+                    <div class="frame-text"></div>
+                    <div class="frame-function"></div>
+                </div>
+            
+                <div class="panel panel-2">
+                    <div class="frame-text"></div>
+                    <div class="frame-function"></div>
+                </div>
+            
+                <div class="panel panel-3">
+                    <div class="frame-text"></div>
+                    <div class="frame-function"></div>
+                </div>
+            
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-2">
+            <div class="header">Unknown | Wednesday | Science</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                <div class="panel panel-1">
+                    <div class="panel-title">Levels 1-2</div>
+                    
+                </div>
+                <div class="panel panel-2">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text"></div>
+                    <div class="frame-function"></div>
+                </div>
+                <div class="panel panel-3">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text"></div>
+                    <div class="frame-function"></div>
+                </div>
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-1">
+            <div class="header">Unknown | Thursday | Math</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                
+                <div class="panel panel-1">
+                    <div class="frame-text"></div>
+                    <div class="frame-function"></div>
+                </div>
+            
+                <div class="panel panel-2">
+                    <div class="frame-text"></div>
+                    <div class="frame-function"></div>
+                </div>
+            
+                <div class="panel panel-3">
+                    <div class="frame-text"></div>
+                    <div class="frame-function"></div>
+                </div>
+            
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-2">
+            <div class="header">Unknown | Thursday | Math</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                <div class="panel panel-1">
+                    <div class="panel-title">Levels 1-2</div>
+                    
+                </div>
+                <div class="panel panel-2">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text"></div>
+                    <div class="frame-function"></div>
+                </div>
+                <div class="panel panel-3">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text"></div>
+                    <div class="frame-function"></div>
+                </div>
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-1">
+            <div class="header">Unknown | Thursday | Science</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                
+                <div class="panel panel-1">
+                    <div class="frame-text"></div>
+                    <div class="frame-function"></div>
+                </div>
+            
+                <div class="panel panel-2">
+                    <div class="frame-text"></div>
+                    <div class="frame-function"></div>
+                </div>
+            
+                <div class="panel panel-3">
+                    <div class="frame-text"></div>
+                    <div class="frame-function"></div>
+                </div>
+            
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-2">
+            <div class="header">Unknown | Thursday | Science</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                <div class="panel panel-1">
+                    <div class="panel-title">Levels 1-2</div>
+                    
+                </div>
+                <div class="panel panel-2">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text"></div>
+                    <div class="frame-function"></div>
+                </div>
+                <div class="panel panel-3">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text"></div>
+                    <div class="frame-function"></div>
+                </div>
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-1">
+            <div class="header">Unknown | Friday | Math</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                
+                <div class="panel panel-1">
+                    <div class="frame-text"></div>
+                    <div class="frame-function"></div>
+                </div>
+            
+                <div class="panel panel-2">
+                    <div class="frame-text"></div>
+                    <div class="frame-function"></div>
+                </div>
+            
+                <div class="panel panel-3">
+                    <div class="frame-text"></div>
+                    <div class="frame-function"></div>
+                </div>
+            
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-2">
+            <div class="header">Unknown | Friday | Math</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                <div class="panel panel-1">
+                    <div class="panel-title">Levels 1-2</div>
+                    
+                </div>
+                <div class="panel panel-2">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text"></div>
+                    <div class="frame-function"></div>
+                </div>
+                <div class="panel panel-3">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text"></div>
+                    <div class="frame-function"></div>
+                </div>
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-1">
+            <div class="header">Unknown | Friday | Science</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                
+                <div class="panel panel-1">
+                    <div class="frame-text"></div>
+                    <div class="frame-function"></div>
+                </div>
+            
+                <div class="panel panel-2">
+                    <div class="frame-text"></div>
+                    <div class="frame-function"></div>
+                </div>
+            
+                <div class="panel panel-3">
+                    <div class="frame-text"></div>
+                    <div class="frame-function"></div>
+                </div>
+            
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-2">
+            <div class="header">Unknown | Friday | Science</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                <div class="panel panel-1">
+                    <div class="panel-title">Levels 1-2</div>
+                    
+                </div>
+                <div class="panel panel-2">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text"></div>
+                    <div class="frame-function"></div>
+                </div>
+                <div class="panel panel-3">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text"></div>
+                    <div class="frame-function"></div>
+                </div>
+            </div>
+        </div>
+        
+        </body>
+        </html>
+        

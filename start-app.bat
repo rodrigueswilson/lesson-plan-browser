@@ -22,11 +22,27 @@ if %errorlevel% neq 0 (
 )
 
 echo Starting Prometheus Monitoring (if needed)...
-powershell -ExecutionPolicy Bypass -File "%~dp0start-prometheus.ps1" -ErrorAction SilentlyContinue
+if exist "%~dp0start-prometheus.ps1" (
+    powershell -ExecutionPolicy Bypass -File "%~dp0start-prometheus.ps1" -ErrorAction SilentlyContinue
+) else (
+    echo [INFO] Prometheus script not found, skipping...
+)
+
+REM Check if virtual environment exists
+if not exist "%~dp0.venv\Scripts\activate.bat" (
+    echo ERROR: Virtual environment not found!
+    echo Expected: %~dp0.venv\Scripts\activate.bat
+    echo Please create the virtual environment first:
+    echo   python -m venv .venv
+    echo   .venv\Scripts\activate.bat
+    echo   pip install -r requirements.txt
+    pause
+    exit /b 1
+)
 
 echo Starting Backend API Server...
 echo.
-start "Backend API" cmd /k "cd /d %~dp0 && .venv\Scripts\python.exe -m uvicorn backend.api:app --reload --host 0.0.0.0 --port 8000"
+start "Backend API" cmd /k "cd /d %~dp0 && .venv\Scripts\activate.bat && python -m uvicorn backend.api:app --reload --host 0.0.0.0 --port 8000"
 
 REM Wait for backend to start
 timeout /t 3 /nobreak >nul

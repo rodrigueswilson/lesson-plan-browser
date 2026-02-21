@@ -1,0 +1,10 @@
+{
+  "timestamp": "2025-12-21T14:54:30.529983",
+  "stage": "06_hyperlink_filtered",
+  "data": {
+    "text": "tem UIN - VF656717",
+    "link_slot": 5,
+    "current_slot": 6,
+    "reason": "slot_mismatch"
+  }
+}

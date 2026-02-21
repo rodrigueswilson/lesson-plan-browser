@@ -247,8 +247,21 @@ class WeeklyPlanResponse(BaseModel):
     output_file: Optional[str] = None
     status: str
     error_message: Optional[str] = None
+    total_slots: Optional[int] = None
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class WeekStatusResponse(BaseModel):
+    """Status of slots for a specific week."""
+
+    week_of: str
+    status: Optional[str] = None  # 'processing', 'completed', 'partial', etc.
+    plan_id: Optional[str] = None
+    done_slots: List[int] = Field(default_factory=list)
+    missing_slots: List[int] = Field(default_factory=list)
+    total_slots: int = 0
+    generated_at: Optional[datetime] = None
 
 
 class BatchProcessRequest(BaseModel):
@@ -261,6 +274,17 @@ class BatchProcessRequest(BaseModel):
     )
     slot_ids: Optional[List[str]] = Field(
         None, description="Optional list of specific slot IDs to process"
+    )
+    partial: bool = Field(
+        False, description="Whether to merge with an existing plan for the week"
+    )
+    missing_only: bool = Field(
+        False,
+        description="Whether to automatically identify and process only missing slots",
+    )
+    force_slots: Optional[List[int]] = Field(
+        default_factory=list,
+        description="Optional list of slot numbers to force AI transformation even if cached",
     )
 
 
@@ -468,3 +492,31 @@ class LessonModeSessionResponse(BaseModel):
         return str(v)
 
     model_config = ConfigDict(from_attributes=True)
+
+
+# Tablet DB export models
+
+
+class TabletExportDbRequest(BaseModel):
+    """Request to export a single-user tablet SQLite database."""
+
+    user_id: str = Field(..., description="User ID to export")
+
+
+class TabletExportDbCounts(BaseModel):
+    users: int
+    class_slots: int
+    weekly_plans: int
+    schedules: int
+    lesson_steps: int
+    lesson_mode_sessions: int
+
+
+class TabletExportDbResponse(BaseModel):
+    """Response for a tablet DB export operation."""
+
+    user_id: str
+    output_path: str
+    output_bytes: int
+    created_at: str
+    counts: TabletExportDbCounts

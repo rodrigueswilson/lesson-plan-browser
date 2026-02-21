@@ -1,0 +1,85 @@
+{
+  "timestamp": "2025-12-29T17:41:49.571898",
+  "stage": "02_lesson_json_slot5",
+  "data": {
+    "slot_number": 5,
+    "subject": "Math",
+    "metadata_slot_number": null,
+    "metadata_subject": "Math",
+    "hyperlink_count": 59,
+    "hyperlinks_with_slot_metadata": 59,
+    "hyperlinks_with_subject_metadata": 59,
+    "sample_hyperlinks": [
+      {
+        "text": "3.1.6 Teacher Guide",
+        "has_source_slot": true,
+        "source_slot": 5,
+        "has_source_subject": true,
+        "source_subject": "Math"
+      },
+      {
+        "text": "3.1.7 Teacher Guide",
+        "has_source_slot": true,
+        "source_slot": 5,
+        "has_source_subject": true,
+        "source_subject": "Math"
+      },
+      {
+        "text": "3.1.8 Teacher Guide",
+        "has_source_slot": true,
+        "source_slot": 5,
+        "has_source_subject": true,
+        "source_subject": "Math"
+      },
+      {
+        "text": "3.1.9 Teacher Guide",
+        "has_source_slot": true,
+        "source_slot": 5,
+        "has_source_subject": true,
+        "source_subject": "Math"
+      },
+      {
+        "text": "3.1.10 Teacher Guide",
+        "has_source_slot": true,
+        "source_slot": 5,
+        "has_source_subject": true,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Sort and Display",
+        "has_source_slot": true,
+        "source_slot": 5,
+        "has_source_subject": true,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Stage 3",
+        "has_source_slot": true,
+        "source_slot": 5,
+        "has_source_subject": true,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Five in a Row: Addition and Subtraction",
+        "has_source_slot": true,
+        "source_slot": 5,
+        "has_source_subject": true,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Stage 6",
+        "has_source_slot": true,
+        "source_slot": 5,
+        "has_source_subject": true,
+        "source_subject": "Math"
+      },
+      {
+        "text": "3.1 Section A: Additional Practice Problems",
+        "has_source_slot": true,
+        "source_slot": 5,
+        "has_source_subject": true,
+        "source_subject": "Math"
+      }
+    ]
+  }
+}

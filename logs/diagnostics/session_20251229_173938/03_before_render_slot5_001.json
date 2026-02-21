@@ -1,0 +1,94 @@
+{
+  "timestamp": "2025-12-29T17:39:53.019451",
+  "stage": "03_before_render_slot5",
+  "data": {
+    "slot_number": 5,
+    "subject": "Math",
+    "render_type": "multi_slot",
+    "metadata_slot_number": 5,
+    "metadata_subject": "Math",
+    "hyperlink_count": 59,
+    "all_hyperlinks_have_slot": true,
+    "all_hyperlinks_have_subject": true,
+    "hyperlink_slot_distribution": {
+      "5": 59
+    },
+    "sample_hyperlinks": [
+      {
+        "text": "3.1.6 Teacher Guide",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "3.1.7 Teacher Guide",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "3.1.8 Teacher Guide",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "3.1.9 Teacher Guide",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "3.1.10 Teacher Guide",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Sort and Display",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Stage 3",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Five in a Row: Addition and Subtraction",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Stage 6",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "3.1 Section A: Additional Practice Problems",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Five in a Row: Addition and Subtraction Directions",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Stage 7",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "3.1 Section A: Additional Practice Problems",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Sort and Display",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Stage 3",
+        "source_slot": 5,
+        "source_subject": "Math"
+      }
+    ]
+  }
+}

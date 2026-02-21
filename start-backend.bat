@@ -12,6 +12,10 @@ if %errorlevel% neq 0 (
     exit /b 1
 )
 
+REM Check for existing processes on port 8000 and stop them
+echo Checking for existing backend servers...
+powershell -ExecutionPolicy Bypass -Command "Get-NetTCPConnection -LocalPort 8000 -ErrorAction SilentlyContinue | ForEach-Object { $proc = Get-Process -Id $_.OwningProcess -ErrorAction SilentlyContinue; if ($proc) { Write-Host 'Stopping existing server (PID: ' $_.OwningProcess ')'; Stop-Process -Id $_.OwningProcess -Force -ErrorAction SilentlyContinue; Start-Sleep -Seconds 2 } }"
+
 REM Check if uvicorn is installed
 python -c "import uvicorn" >nul 2>&1
 if %errorlevel% neq 0 (

@@ -96,7 +96,7 @@ class TableStructureDetector:
         'objective': ['objective', 'essential question', 'learning goal'],
         'anticipatory': ['anticipatory set', 'warm-up', 'do now', 'hook'],
         'instruction': ['tailored instruction', 'instruction', 'teaching', 'activity', 'procedure'],
-        'misconception': ['misconception', 'common error'],
+        'misconception': ['misconception', 'misconceptions', 'common error'],
         'assessment': ['assessment', 'check for understanding', 'evaluate', 'exit ticket'],
         'homework': ['homework', 'independent practice', 'extension', 'assignment']
     }
@@ -151,9 +151,23 @@ class TableStructureDetector:
         if len(row_labels) < len(self.STANDARD_ROWS):
             return False
         
-        for i, expected in enumerate(self.STANDARD_ROWS):
-            if expected and row_labels[i] != expected:
+        # Row 0 is header, ignore
+        # Check remaining rows against standard patterns
+        pattern_keys = ['unit', 'objective', 'anticipatory', 'instruction', 'misconception', 'assessment', 'homework']
+        
+        for i, key in enumerate(pattern_keys):
+            row_idx = i + 1
+            if row_idx >= len(row_labels):
                 return False
+            
+            label = row_labels[row_idx].lower().strip()
+            patterns = self.ROW_PATTERNS[key]
+            
+            if not any(p in label for p in patterns):
+                # Also check standard row value directly as fallback
+                expected = self.STANDARD_ROWS[row_idx]
+                if expected and label != expected:
+                    return False
         
         return True
     

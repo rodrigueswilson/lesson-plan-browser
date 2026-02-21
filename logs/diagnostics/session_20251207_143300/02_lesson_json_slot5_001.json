@@ -1,0 +1,85 @@
+{
+  "timestamp": "2025-12-07T14:47:04.105009",
+  "stage": "02_lesson_json_slot5",
+  "data": {
+    "slot_number": 5,
+    "subject": "Math",
+    "metadata_slot_number": null,
+    "metadata_subject": "Math",
+    "hyperlink_count": 66,
+    "hyperlinks_with_slot_metadata": 0,
+    "hyperlinks_with_subject_metadata": 0,
+    "sample_hyperlinks": [
+      {
+        "text": "3.3.8 Teacher Guide",
+        "has_source_slot": false,
+        "source_slot": null,
+        "has_source_subject": false,
+        "source_subject": null
+      },
+      {
+        "text": "3.3.9 Teacher Guide",
+        "has_source_slot": false,
+        "source_slot": null,
+        "has_source_subject": false,
+        "source_subject": null
+      },
+      {
+        "text": "3.3.10 Teacher Guide",
+        "has_source_slot": false,
+        "source_slot": null,
+        "has_source_subject": false,
+        "source_subject": null
+      },
+      {
+        "text": "3.3.11 Teacher Guide",
+        "has_source_slot": false,
+        "source_slot": null,
+        "has_source_subject": false,
+        "source_subject": null
+      },
+      {
+        "text": "SUBTRACT ",
+        "has_source_slot": false,
+        "source_slot": null,
+        "has_source_subject": false,
+        "source_subject": null
+      },
+      {
+        "text": "STRATEGICALLY",
+        "has_source_slot": false,
+        "source_slot": null,
+        "has_source_subject": false,
+        "source_subject": null
+      },
+      {
+        "text": "3.3.12 Teacher Guide",
+        "has_source_slot": false,
+        "source_slot": null,
+        "has_source_subject": false,
+        "source_subject": null
+      },
+      {
+        "text": "Five in a Row: Mult. & Division ",
+        "has_source_slot": false,
+        "source_slot": null,
+        "has_source_subject": false,
+        "source_subject": null
+      },
+      {
+        "text": "Stage 2",
+        "has_source_slot": false,
+        "source_slot": null,
+        "has_source_subject": false,
+        "source_subject": null
+      },
+      {
+        "text": "How Close?",
+        "has_source_slot": false,
+        "source_slot": null,
+        "has_source_subject": false,
+        "source_subject": null
+      }
+    ]
+  }
+}

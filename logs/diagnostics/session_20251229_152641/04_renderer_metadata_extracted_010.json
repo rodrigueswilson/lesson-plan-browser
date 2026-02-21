@@ -1,0 +1,14 @@
+{
+  "timestamp": "2025-12-29T15:31:53.748831",
+  "stage": "04_renderer_metadata_extracted",
+  "data": {
+    "slot_number": null,
+    "slot_number_type": "NoneType",
+    "slot_number_is_none": true,
+    "subject": "Science",
+    "subject_is_none": false,
+    "hyperlink_count": 0,
+    "teacher": "Donna Savoca",
+    "filtering_will_activate": false
+  }
+}

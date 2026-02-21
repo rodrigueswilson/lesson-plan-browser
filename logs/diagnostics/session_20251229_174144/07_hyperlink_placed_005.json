@@ -1,0 +1,11 @@
+{
+  "timestamp": "2025-12-29T17:41:52.041962",
+  "stage": "07_hyperlink_placed",
+  "data": {
+    "text": "Higher Order Thinking Questions",
+    "slot": null,
+    "subject": "ELA",
+    "cell": "monday_assessment",
+    "confidence": 1.0
+  }
+}

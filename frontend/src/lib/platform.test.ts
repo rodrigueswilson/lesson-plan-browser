@@ -20,7 +20,7 @@ describe('Platform Detection', () => {
     it('should detect desktop platform when Tauri is present', () => {
       // Mock Tauri environment
       (global as any).window = {
-        __TAURI_INTERNALS__: {},
+        __TAURI_INTERNALS__: { invoke: () => Promise.resolve(null) },
       };
 
       expect(getPlatform()).toBe('desktop');
@@ -45,7 +45,7 @@ describe('Platform Detection', () => {
     it('should prioritize Tauri over Capacitor', () => {
       // Mock both environments (Tauri should take precedence)
       (global as any).window = {
-        __TAURI_INTERNALS__: {},
+        __TAURI_INTERNALS__: { invoke: () => Promise.resolve(null) },
         Capacitor: {},
       };
 
@@ -61,7 +61,7 @@ describe('Platform Detection', () => {
   describe('Platform checks', () => {
     it('isDesktop should be true when platform is desktop', async () => {
       (global as any).window = {
-        __TAURI_INTERNALS__: {},
+        __TAURI_INTERNALS__: { invoke: () => Promise.resolve(null) },
       };
       // Re-import to get fresh values
       const platformModule = await import('./platform');
@@ -84,7 +84,7 @@ describe('Platform Detection', () => {
 
     it('isNative should be true for desktop or mobile', async () => {
       (global as any).window = {
-        __TAURI_INTERNALS__: {},
+        __TAURI_INTERNALS__: { invoke: () => Promise.resolve(null) },
       };
       const platformModule = await import('./platform');
       expect(platformModule.isNative).toBe(true);

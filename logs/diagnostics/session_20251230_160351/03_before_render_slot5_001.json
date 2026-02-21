@@ -1,0 +1,64 @@
+{
+  "timestamp": "2025-12-30T16:03:52.589908",
+  "stage": "03_before_render_slot5",
+  "data": {
+    "slot_number": 5,
+    "subject": "Math",
+    "render_type": "multi_slot",
+    "metadata_slot_number": 5,
+    "metadata_subject": "Math",
+    "hyperlink_count": 9,
+    "all_hyperlinks_have_slot": true,
+    "all_hyperlinks_have_subject": true,
+    "hyperlink_slot_distribution": {
+      "5": 9
+    },
+    "sample_hyperlinks": [
+      {
+        "text": "Target Numbers",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Target Numbers",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Capture Squares",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Target Numbers",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Capture Squares",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Target Numbers",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Capture Squares",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Tic Tac Round",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Stage 1",
+        "source_slot": 5,
+        "source_subject": "Math"
+      }
+    ]
+  }
+}

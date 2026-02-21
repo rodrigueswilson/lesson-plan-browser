@@ -1,0 +1,11 @@
+{
+  "timestamp": "2025-12-29T17:41:58.766076",
+  "stage": "07_hyperlink_placed",
+  "data": {
+    "text": "Five in a Row: Addition and Subtraction Directions",
+    "slot": null,
+    "subject": "Math",
+    "cell": "monday_instruction",
+    "confidence": 1.0
+  }
+}

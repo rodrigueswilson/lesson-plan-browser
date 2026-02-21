@@ -1,0 +1,84 @@
+{
+  "timestamp": "2025-12-07T13:33:30.076405",
+  "stage": "01_parser_slot2",
+  "data": {
+    "slot_number": 2,
+    "subject": "Social Studies",
+    "source_file": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\25 W50\\_T. Santiago SS Plans 12_8.docx",
+    "hyperlink_count": 9,
+    "hyperlinks": [
+      {
+        "text": "Kush DBQ ",
+        "url": "https://d43fweuh3sg51.cloudfront.net/media/media_files/4nfg7ajubm8klslcr8icrnlmkimnr6pm.pdf",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Kush DBQ ",
+        "url": "https://d43fweuh3sg51.cloudfront.net/media/media_files/4nfg7ajubm8klslcr8icrnlmkimnr6pm.pdf",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Egypt/Kush DBQ Slides",
+        "url": "https://docs.google.com/presentation/d/1mFmXzM8Xflp96f5c0C6Rsg8h87_TKifN3cEZTFarvLY/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Kush DBQ ",
+        "url": "https://d43fweuh3sg51.cloudfront.net/media/media_files/4nfg7ajubm8klslcr8icrnlmkimnr6pm.pdf",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Egypt/Kush DBQ Slides",
+        "url": "https://docs.google.com/presentation/d/1mFmXzM8Xflp96f5c0C6Rsg8h87_TKifN3cEZTFarvLY/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Kush DBQ ",
+        "url": "https://d43fweuh3sg51.cloudfront.net/media/media_files/4nfg7ajubm8klslcr8icrnlmkimnr6pm.pdf",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Egypt/Kush DBQ Slides",
+        "url": "https://docs.google.com/presentation/d/1mFmXzM8Xflp96f5c0C6Rsg8h87_TKifN3cEZTFarvLY/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "The Mummification Project Reading",
+        "url": "https://docs.google.com/document/d/1aFQ3vMX_uW29u49oo_Fi2_8FMpj0QESwK2qClVKkAME/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "The Mummy Project Assignment Sheet",
+        "url": "https://docs.google.com/document/d/1weqL9ufVsIwt4dRd5pXIqSXwf5d4NkQyLDeiG5COsG8/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      }
+    ]
+  }
+}

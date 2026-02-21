@@ -1,0 +1,11 @@
+{
+  "timestamp": "2025-12-29T17:41:53.504720",
+  "stage": "07_hyperlink_placed",
+  "data": {
+    "text": "2.1.5 Teacher Guide",
+    "slot": null,
+    "subject": "Math",
+    "cell": "tuesday_anticipatory_set",
+    "confidence": 1.0
+  }
+}

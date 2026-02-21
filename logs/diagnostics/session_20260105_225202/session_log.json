@@ -1,0 +1,2337 @@
+[
+  {
+    "timestamp": "2026-01-05T22:52:02.635654",
+    "stage": "04_renderer_metadata_extracted",
+    "data": {
+      "slot_number": 1,
+      "slot_number_type": "int",
+      "slot_number_is_none": false,
+      "subject": "ELA",
+      "subject_is_none": false,
+      "hyperlink_count": 0,
+      "teacher": "Lang",
+      "filtering_will_activate": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:02.709062",
+    "stage": "04_renderer_metadata_extracted",
+    "data": {
+      "slot_number": 2,
+      "slot_number_type": "int",
+      "slot_number_is_none": false,
+      "subject": "ELA/SS",
+      "subject_is_none": false,
+      "hyperlink_count": 0,
+      "teacher": "Unknown",
+      "filtering_will_activate": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:02.756101",
+    "stage": "04_renderer_metadata_extracted",
+    "data": {
+      "slot_number": 4,
+      "slot_number_type": "int",
+      "slot_number_is_none": false,
+      "subject": "Math",
+      "subject_is_none": false,
+      "hyperlink_count": 0,
+      "teacher": "Unknown",
+      "filtering_will_activate": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:02.799961",
+    "stage": "04_renderer_metadata_extracted",
+    "data": {
+      "slot_number": 5,
+      "slot_number_type": "int",
+      "slot_number_is_none": false,
+      "subject": "Math",
+      "subject_is_none": false,
+      "hyperlink_count": 0,
+      "teacher": "Davies",
+      "filtering_will_activate": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:02.874895",
+    "stage": "04_renderer_metadata_extracted",
+    "data": {
+      "slot_number": 6,
+      "slot_number_type": "int",
+      "slot_number_is_none": false,
+      "subject": "Science",
+      "subject_is_none": false,
+      "hyperlink_count": 0,
+      "teacher": "Unknown",
+      "filtering_will_activate": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.102660",
+    "stage": "03_before_render_slot1",
+    "data": {
+      "slot_number": 1,
+      "subject": "ELA",
+      "render_type": "multi_slot",
+      "metadata_slot_number": 1,
+      "metadata_subject": "ELA",
+      "hyperlink_count": 4,
+      "all_hyperlinks_have_slot": true,
+      "all_hyperlinks_have_subject": true,
+      "hyperlink_slot_distribution": {
+        "1": 4
+      },
+      "sample_hyperlinks": [
+        {
+          "text": "Native-Land.ca",
+          "source_slot": 1,
+          "source_subject": "ELA"
+        },
+        {
+          "text": "note catcher",
+          "source_slot": 1,
+          "source_subject": "ELA"
+        },
+        {
+          "text": "Native-Land.ca",
+          "source_slot": 1,
+          "source_subject": "ELA"
+        },
+        {
+          "text": "because, but, so",
+          "source_slot": 1,
+          "source_subject": "ELA"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.112854",
+    "stage": "04_renderer_metadata_extracted",
+    "data": {
+      "slot_number": 1,
+      "slot_number_type": "int",
+      "slot_number_is_none": false,
+      "subject": "ELA",
+      "subject_is_none": false,
+      "hyperlink_count": 4,
+      "teacher": "Kelsey Lang / Wilson Rodrigues",
+      "filtering_will_activate": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.112854",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 1,
+      "current_slot_number_is_none": false,
+      "current_subject": "ELA",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 4,
+      "cell": "monday_unit_lesson",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.129662",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 1,
+      "current_slot_number_is_none": false,
+      "current_subject": "ELA",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 4,
+      "cell": "monday_objective",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.130662",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 1,
+      "current_slot_number_is_none": false,
+      "current_subject": "ELA",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 4,
+      "cell": "monday_anticipatory_set",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.132688",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 1,
+      "current_slot_number_is_none": false,
+      "current_subject": "ELA",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 4,
+      "cell": "monday_instruction",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.146642",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 1,
+      "current_slot_number_is_none": false,
+      "current_subject": "ELA",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 3,
+      "cell": "monday_misconceptions",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.147644",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 1,
+      "current_slot_number_is_none": false,
+      "current_subject": "ELA",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 3,
+      "cell": "monday_assessment",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.150146",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 1,
+      "current_slot_number_is_none": false,
+      "current_subject": "ELA",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 3,
+      "cell": "monday_homework",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.150670",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 1,
+      "current_slot_number_is_none": false,
+      "current_subject": "ELA",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 3,
+      "cell": "tuesday_unit_lesson",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.151672",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 1,
+      "current_slot_number_is_none": false,
+      "current_subject": "ELA",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 3,
+      "cell": "tuesday_objective",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.152672",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 1,
+      "current_slot_number_is_none": false,
+      "current_subject": "ELA",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 3,
+      "cell": "tuesday_anticipatory_set",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.154174",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 1,
+      "current_slot_number_is_none": false,
+      "current_subject": "ELA",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 3,
+      "cell": "tuesday_instruction",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.169032",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 1,
+      "current_slot_number_is_none": false,
+      "current_subject": "ELA",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 2,
+      "cell": "tuesday_misconceptions",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.170032",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 1,
+      "current_slot_number_is_none": false,
+      "current_subject": "ELA",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 2,
+      "cell": "tuesday_assessment",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.172037",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 1,
+      "current_slot_number_is_none": false,
+      "current_subject": "ELA",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 2,
+      "cell": "tuesday_homework",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.174042",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 1,
+      "current_slot_number_is_none": false,
+      "current_subject": "ELA",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 2,
+      "cell": "wednesday_unit_lesson",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.175073",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 1,
+      "current_slot_number_is_none": false,
+      "current_subject": "ELA",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 2,
+      "cell": "wednesday_objective",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.177072",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 1,
+      "current_slot_number_is_none": false,
+      "current_subject": "ELA",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 2,
+      "cell": "wednesday_anticipatory_set",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.179073",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 1,
+      "current_slot_number_is_none": false,
+      "current_subject": "ELA",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 2,
+      "cell": "wednesday_instruction",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.191931",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 1,
+      "current_slot_number_is_none": false,
+      "current_subject": "ELA",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 1,
+      "cell": "wednesday_misconceptions",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.192934",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 1,
+      "current_slot_number_is_none": false,
+      "current_subject": "ELA",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 1,
+      "cell": "wednesday_assessment",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.195441",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 1,
+      "current_slot_number_is_none": false,
+      "current_subject": "ELA",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 1,
+      "cell": "wednesday_homework",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.197459",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 1,
+      "current_slot_number_is_none": false,
+      "current_subject": "ELA",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 1,
+      "cell": "thursday_unit_lesson",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.198459",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 1,
+      "current_slot_number_is_none": false,
+      "current_subject": "ELA",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 1,
+      "cell": "thursday_objective",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.200037",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 1,
+      "current_slot_number_is_none": false,
+      "current_subject": "ELA",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 1,
+      "cell": "thursday_anticipatory_set",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.201542",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 1,
+      "current_slot_number_is_none": false,
+      "current_subject": "ELA",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 1,
+      "cell": "thursday_instruction",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.261731",
+    "stage": "03_before_render_slot2",
+    "data": {
+      "slot_number": 2,
+      "subject": "ELA/SS",
+      "render_type": "multi_slot",
+      "metadata_slot_number": 2,
+      "metadata_subject": "ELA/SS",
+      "hyperlink_count": 7,
+      "all_hyperlinks_have_slot": true,
+      "all_hyperlinks_have_subject": true,
+      "hyperlink_slot_distribution": {
+        "2": 7
+      },
+      "sample_hyperlinks": [
+        {
+          "text": "02 - Second Grade Unit Description and Summary of ",
+          "source_slot": 2,
+          "source_subject": "ELA/SS"
+        },
+        {
+          "text": "02 - Second Grade Unit Description and Summary of ",
+          "source_slot": 2,
+          "source_subject": "ELA/SS"
+        },
+        {
+          "text": "02 - Second Grade Unit Description and Summary of ",
+          "source_slot": 2,
+          "source_subject": "ELA/SS"
+        },
+        {
+          "text": "02 - Second Grade Unit Description and Summary of ",
+          "source_slot": 2,
+          "source_subject": "ELA/SS"
+        },
+        {
+          "text": "02 - Second Grade Unit Description and Summary of ",
+          "source_slot": 2,
+          "source_subject": "ELA/SS"
+        },
+        {
+          "text": "Strong Verbs Anchor Chart",
+          "source_slot": 2,
+          "source_subject": "ELA/SS"
+        },
+        {
+          "text": "Retelling Map",
+          "source_slot": 2,
+          "source_subject": "ELA/SS"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.270901",
+    "stage": "04_renderer_metadata_extracted",
+    "data": {
+      "slot_number": 2,
+      "slot_number_type": "int",
+      "slot_number_is_none": false,
+      "subject": "ELA/SS",
+      "subject_is_none": false,
+      "hyperlink_count": 7,
+      "teacher": "Kelsey Lang / Wilson Rodrigues",
+      "filtering_will_activate": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.271913",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 2,
+      "current_slot_number_is_none": false,
+      "current_subject": "ELA/SS",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 7,
+      "cell": "monday_unit_lesson",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.272918",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 2,
+      "current_slot_number_is_none": false,
+      "current_subject": "ELA/SS",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 6,
+      "cell": "monday_objective",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.275230",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 2,
+      "current_slot_number_is_none": false,
+      "current_subject": "ELA/SS",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 6,
+      "cell": "monday_anticipatory_set",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.276229",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 2,
+      "current_slot_number_is_none": false,
+      "current_subject": "ELA/SS",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 6,
+      "cell": "monday_instruction",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.288404",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 2,
+      "current_slot_number_is_none": false,
+      "current_subject": "ELA/SS",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 6,
+      "cell": "monday_misconceptions",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.290531",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 2,
+      "current_slot_number_is_none": false,
+      "current_subject": "ELA/SS",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 6,
+      "cell": "monday_assessment",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.292681",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 2,
+      "current_slot_number_is_none": false,
+      "current_subject": "ELA/SS",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 6,
+      "cell": "monday_homework",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.294693",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 2,
+      "current_slot_number_is_none": false,
+      "current_subject": "ELA/SS",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 6,
+      "cell": "tuesday_unit_lesson",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.295697",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 2,
+      "current_slot_number_is_none": false,
+      "current_subject": "ELA/SS",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 5,
+      "cell": "tuesday_objective",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.297205",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 2,
+      "current_slot_number_is_none": false,
+      "current_subject": "ELA/SS",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 5,
+      "cell": "tuesday_anticipatory_set",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.298205",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 2,
+      "current_slot_number_is_none": false,
+      "current_subject": "ELA/SS",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 5,
+      "cell": "tuesday_instruction",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.311730",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 2,
+      "current_slot_number_is_none": false,
+      "current_subject": "ELA/SS",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 5,
+      "cell": "tuesday_misconceptions",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.313436",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 2,
+      "current_slot_number_is_none": false,
+      "current_subject": "ELA/SS",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 5,
+      "cell": "tuesday_assessment",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.315964",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 2,
+      "current_slot_number_is_none": false,
+      "current_subject": "ELA/SS",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 5,
+      "cell": "tuesday_homework",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.316979",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 2,
+      "current_slot_number_is_none": false,
+      "current_subject": "ELA/SS",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 5,
+      "cell": "wednesday_unit_lesson",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.317994",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 2,
+      "current_slot_number_is_none": false,
+      "current_subject": "ELA/SS",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 4,
+      "cell": "wednesday_objective",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.320031",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 2,
+      "current_slot_number_is_none": false,
+      "current_subject": "ELA/SS",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 3,
+      "cell": "wednesday_anticipatory_set",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.321312",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 2,
+      "current_slot_number_is_none": false,
+      "current_subject": "ELA/SS",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 3,
+      "cell": "wednesday_instruction",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.335774",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 2,
+      "current_slot_number_is_none": false,
+      "current_subject": "ELA/SS",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 3,
+      "cell": "wednesday_misconceptions",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.337310",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 2,
+      "current_slot_number_is_none": false,
+      "current_subject": "ELA/SS",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 3,
+      "cell": "wednesday_assessment",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.339918",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 2,
+      "current_slot_number_is_none": false,
+      "current_subject": "ELA/SS",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 3,
+      "cell": "wednesday_homework",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.341497",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 2,
+      "current_slot_number_is_none": false,
+      "current_subject": "ELA/SS",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 3,
+      "cell": "thursday_unit_lesson",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.342500",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 2,
+      "current_slot_number_is_none": false,
+      "current_subject": "ELA/SS",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 2,
+      "cell": "thursday_objective",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.346150",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 2,
+      "current_slot_number_is_none": false,
+      "current_subject": "ELA/SS",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 2,
+      "cell": "thursday_anticipatory_set",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.347663",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 2,
+      "current_slot_number_is_none": false,
+      "current_subject": "ELA/SS",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 2,
+      "cell": "thursday_instruction",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.360469",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 2,
+      "current_slot_number_is_none": false,
+      "current_subject": "ELA/SS",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 2,
+      "cell": "thursday_misconceptions",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.362484",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 2,
+      "current_slot_number_is_none": false,
+      "current_subject": "ELA/SS",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 2,
+      "cell": "thursday_assessment",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.364521",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 2,
+      "current_slot_number_is_none": false,
+      "current_subject": "ELA/SS",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 2,
+      "cell": "thursday_homework",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.366055",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 2,
+      "current_slot_number_is_none": false,
+      "current_subject": "ELA/SS",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 2,
+      "cell": "friday_unit_lesson",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.367078",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 2,
+      "current_slot_number_is_none": false,
+      "current_subject": "ELA/SS",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 1,
+      "cell": "friday_objective",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.412823",
+    "stage": "03_before_render_slot4",
+    "data": {
+      "slot_number": 4,
+      "subject": "Math",
+      "render_type": "multi_slot",
+      "metadata_slot_number": 4,
+      "metadata_subject": "Math",
+      "hyperlink_count": 19,
+      "all_hyperlinks_have_slot": true,
+      "all_hyperlinks_have_subject": true,
+      "hyperlink_slot_distribution": {
+        "4": 19
+      },
+      "sample_hyperlinks": [
+        {
+          "text": "2.4.1 Teacher Guide",
+          "source_slot": 4,
+          "source_subject": "Math"
+        },
+        {
+          "text": "2.4.3 Teacher Guide",
+          "source_slot": 4,
+          "source_subject": "Math"
+        },
+        {
+          "text": "2.4.4 Teacher Guide",
+          "source_slot": 4,
+          "source_subject": "Math"
+        },
+        {
+          "text": "2.4.5 Teacher Guide",
+          "source_slot": 4,
+          "source_subject": "Math"
+        },
+        {
+          "text": "Unit 4: Addition and Subtraction on the Number Lin",
+          "source_slot": 4,
+          "source_subject": "Math"
+        },
+        {
+          "text": "Unit 4: Addition and Subtraction on the Number Lin",
+          "source_slot": 4,
+          "source_subject": "Math"
+        },
+        {
+          "text": "Unit 4: Addition and Subtraction on the Number Lin",
+          "source_slot": 4,
+          "source_subject": "Math"
+        },
+        {
+          "text": "Unit 4: Addition and Subtraction on the Number Lin",
+          "source_slot": 4,
+          "source_subject": "Math"
+        },
+        {
+          "text": "Unit 4: Addition and Subtraction on the Number Lin",
+          "source_slot": 4,
+          "source_subject": "Math"
+        },
+        {
+          "text": "2.4.1 Cool Down",
+          "source_slot": 4,
+          "source_subject": "Math"
+        },
+        {
+          "text": "2.4.2 Cool Down",
+          "source_slot": 4,
+          "source_subject": "Math"
+        },
+        {
+          "text": "2.4.3 Cool Down",
+          "source_slot": 4,
+          "source_subject": "Math"
+        },
+        {
+          "text": "2.4.4 Cool Down",
+          "source_slot": 4,
+          "source_subject": "Math"
+        },
+        {
+          "text": "2.5.5 Cool Down",
+          "source_slot": 4,
+          "source_subject": "Math"
+        },
+        {
+          "text": "Grade 02 Unit 4 Section A Checkpoint (English)",
+          "source_slot": 4,
+          "source_subject": "Math"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.422084",
+    "stage": "04_renderer_metadata_extracted",
+    "data": {
+      "slot_number": 4,
+      "slot_number_type": "int",
+      "slot_number_is_none": false,
+      "subject": "Math",
+      "subject_is_none": false,
+      "hyperlink_count": 19,
+      "teacher": "Kelsey Lang / Wilson Rodrigues",
+      "filtering_will_activate": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.422594",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 4,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 19,
+      "cell": "monday_unit_lesson",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.424655",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 4,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 18,
+      "cell": "monday_objective",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.426179",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 4,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 18,
+      "cell": "monday_anticipatory_set",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.427689",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 4,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 17,
+      "cell": "monday_instruction",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.441090",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 4,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 16,
+      "cell": "monday_misconceptions",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.442616",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 4,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 16,
+      "cell": "monday_assessment",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.444197",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 4,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 15,
+      "cell": "monday_homework",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.446748",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 4,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 15,
+      "cell": "tuesday_unit_lesson",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.447768",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 4,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 15,
+      "cell": "tuesday_objective",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.449304",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 4,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 15,
+      "cell": "tuesday_anticipatory_set",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.450840",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 4,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 14,
+      "cell": "tuesday_instruction",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.464110",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 4,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 13,
+      "cell": "tuesday_misconceptions",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.465642",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 4,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 13,
+      "cell": "tuesday_assessment",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.467664",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 4,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 13,
+      "cell": "tuesday_homework",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.469596",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 4,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 12,
+      "cell": "wednesday_unit_lesson",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.471118",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 4,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 11,
+      "cell": "wednesday_objective",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.472120",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 4,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 11,
+      "cell": "wednesday_anticipatory_set",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.474121",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 4,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 10,
+      "cell": "wednesday_instruction",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.488481",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 4,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 9,
+      "cell": "wednesday_misconceptions",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.490527",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 4,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 9,
+      "cell": "wednesday_assessment",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.492602",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 4,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 9,
+      "cell": "wednesday_homework",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.494652",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 4,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 8,
+      "cell": "thursday_unit_lesson",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.496186",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 4,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 7,
+      "cell": "thursday_objective",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.497211",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 4,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 7,
+      "cell": "thursday_anticipatory_set",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.498724",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 4,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 6,
+      "cell": "thursday_instruction",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.512852",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 4,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 5,
+      "cell": "thursday_misconceptions",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.512852",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 4,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 5,
+      "cell": "thursday_assessment",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.515376",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 4,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 5,
+      "cell": "thursday_homework",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.516388",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 4,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 4,
+      "cell": "friday_unit_lesson",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.518895",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 4,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 3,
+      "cell": "friday_objective",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.519894",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 4,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 3,
+      "cell": "friday_anticipatory_set",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.521947",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 4,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 2,
+      "cell": "friday_instruction",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.535523",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 4,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 1,
+      "cell": "friday_misconceptions",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.536848",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 4,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 1,
+      "cell": "friday_assessment",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.568020",
+    "stage": "03_before_render_slot5",
+    "data": {
+      "slot_number": 5,
+      "subject": "Math",
+      "render_type": "multi_slot",
+      "metadata_slot_number": 5,
+      "metadata_subject": "Math",
+      "hyperlink_count": 13,
+      "all_hyperlinks_have_slot": true,
+      "all_hyperlinks_have_subject": true,
+      "hyperlink_slot_distribution": {
+        "5": 13
+      },
+      "sample_hyperlinks": [
+        {
+          "text": "Target Numbers",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "Capture Squares",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "Tic Tac Round",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "Stage 1",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "Five in a Row: Mult. & Division",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "Tic Tac Round",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "Stage 1",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "Five in a Row: Mult. & Division",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "Tic Tac Round",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "Stage 1",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "Five in a Row: Mult. & Division",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "Tic Tac Round",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "Stage 1",
+          "source_slot": 5,
+          "source_subject": "Math"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.577119",
+    "stage": "04_renderer_metadata_extracted",
+    "data": {
+      "slot_number": 5,
+      "slot_number_type": "int",
+      "slot_number_is_none": false,
+      "subject": "Math",
+      "subject_is_none": false,
+      "hyperlink_count": 13,
+      "teacher": "Kelsey Lang / Wilson Rodrigues",
+      "filtering_will_activate": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.578120",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 5,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 13,
+      "cell": "monday_unit_lesson",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.579120",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 5,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 13,
+      "cell": "monday_objective",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.581121",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 5,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 13,
+      "cell": "monday_anticipatory_set",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.582622",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 5,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 13,
+      "cell": "monday_instruction",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.597358",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 5,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 11,
+      "cell": "monday_misconceptions",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.598358",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 5,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 11,
+      "cell": "monday_assessment",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.600938",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 5,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 11,
+      "cell": "monday_homework",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.601942",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 5,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 11,
+      "cell": "tuesday_unit_lesson",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.603941",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 5,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 11,
+      "cell": "tuesday_objective",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.605468",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 5,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 11,
+      "cell": "tuesday_anticipatory_set",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.606468",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 5,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 11,
+      "cell": "tuesday_instruction",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.619183",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 5,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 9,
+      "cell": "tuesday_misconceptions",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.620686",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 5,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 9,
+      "cell": "tuesday_assessment",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.622210",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 5,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 9,
+      "cell": "tuesday_homework",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.623735",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 5,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 9,
+      "cell": "wednesday_unit_lesson",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.624738",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 5,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 9,
+      "cell": "wednesday_objective",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.626920",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 5,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 9,
+      "cell": "wednesday_anticipatory_set",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.627920",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 5,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 9,
+      "cell": "wednesday_instruction",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.642355",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 5,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 6,
+      "cell": "wednesday_misconceptions",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.643859",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 5,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 6,
+      "cell": "wednesday_assessment",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.645960",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 5,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 6,
+      "cell": "wednesday_homework",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.645960",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 5,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 6,
+      "cell": "thursday_unit_lesson",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.648469",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 5,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 6,
+      "cell": "thursday_objective",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.649973",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 5,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 6,
+      "cell": "thursday_anticipatory_set",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.650504",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 5,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 6,
+      "cell": "thursday_instruction",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.665771",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 5,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 3,
+      "cell": "thursday_misconceptions",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.666773",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 5,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 3,
+      "cell": "thursday_assessment",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.669790",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 5,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 3,
+      "cell": "thursday_homework",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.671039",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 5,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 3,
+      "cell": "friday_unit_lesson",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.672042",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 5,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 3,
+      "cell": "friday_objective",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.674089",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 5,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 3,
+      "cell": "friday_anticipatory_set",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.675093",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 5,
+      "current_slot_number_is_none": false,
+      "current_subject": "Math",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 3,
+      "cell": "friday_instruction",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.720787",
+    "stage": "03_before_render_slot6",
+    "data": {
+      "slot_number": 6,
+      "subject": "Science",
+      "render_type": "multi_slot",
+      "metadata_slot_number": 6,
+      "metadata_subject": "Science",
+      "hyperlink_count": 4,
+      "all_hyperlinks_have_slot": true,
+      "all_hyperlinks_have_subject": true,
+      "hyperlink_slot_distribution": {
+        "6": 4
+      },
+      "sample_hyperlinks": [
+        {
+          "text": " 2nd Grade Science ",
+          "source_slot": 6,
+          "source_subject": "Science"
+        },
+        {
+          "text": " 2nd Grade Science ",
+          "source_slot": 6,
+          "source_subject": "Science"
+        },
+        {
+          "text": " 2nd Grade Science ",
+          "source_slot": 6,
+          "source_subject": "Science"
+        },
+        {
+          "text": " 2nd Grade Science ",
+          "source_slot": 6,
+          "source_subject": "Science"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.730261",
+    "stage": "04_renderer_metadata_extracted",
+    "data": {
+      "slot_number": 6,
+      "slot_number_type": "int",
+      "slot_number_is_none": false,
+      "subject": "Science",
+      "subject_is_none": false,
+      "hyperlink_count": 4,
+      "teacher": "Kelsey Lang / Wilson Rodrigues",
+      "filtering_will_activate": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.731261",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 6,
+      "current_slot_number_is_none": false,
+      "current_subject": "Science",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 4,
+      "cell": "monday_unit_lesson",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.732261",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 6,
+      "current_slot_number_is_none": false,
+      "current_subject": "Science",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 4,
+      "cell": "monday_objective",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.733831",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 6,
+      "current_slot_number_is_none": false,
+      "current_subject": "Science",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 4,
+      "cell": "monday_anticipatory_set",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.735368",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 6,
+      "current_slot_number_is_none": false,
+      "current_subject": "Science",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 3,
+      "cell": "monday_instruction",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.748954",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 6,
+      "current_slot_number_is_none": false,
+      "current_subject": "Science",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 3,
+      "cell": "monday_misconceptions",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.750459",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 6,
+      "current_slot_number_is_none": false,
+      "current_subject": "Science",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 3,
+      "cell": "monday_assessment",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.752462",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 6,
+      "current_slot_number_is_none": false,
+      "current_subject": "Science",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 3,
+      "cell": "monday_homework",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.752462",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 6,
+      "current_slot_number_is_none": false,
+      "current_subject": "Science",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 3,
+      "cell": "tuesday_unit_lesson",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.754492",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 6,
+      "current_slot_number_is_none": false,
+      "current_subject": "Science",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 3,
+      "cell": "tuesday_objective",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.756064",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 6,
+      "current_slot_number_is_none": false,
+      "current_subject": "Science",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 3,
+      "cell": "tuesday_anticipatory_set",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.758081",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 6,
+      "current_slot_number_is_none": false,
+      "current_subject": "Science",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 2,
+      "cell": "tuesday_instruction",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.769721",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 6,
+      "current_slot_number_is_none": false,
+      "current_subject": "Science",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 2,
+      "cell": "tuesday_misconceptions",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.771904",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 6,
+      "current_slot_number_is_none": false,
+      "current_subject": "Science",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 2,
+      "cell": "tuesday_assessment",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.773903",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 6,
+      "current_slot_number_is_none": false,
+      "current_subject": "Science",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 2,
+      "cell": "tuesday_homework",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.775937",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 6,
+      "current_slot_number_is_none": false,
+      "current_subject": "Science",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 2,
+      "cell": "wednesday_unit_lesson",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.775937",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 6,
+      "current_slot_number_is_none": false,
+      "current_subject": "Science",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 2,
+      "cell": "wednesday_objective",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.778121",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 6,
+      "current_slot_number_is_none": false,
+      "current_subject": "Science",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 2,
+      "cell": "wednesday_anticipatory_set",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.779121",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 6,
+      "current_slot_number_is_none": false,
+      "current_subject": "Science",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 1,
+      "cell": "wednesday_instruction",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.792329",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 6,
+      "current_slot_number_is_none": false,
+      "current_subject": "Science",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 1,
+      "cell": "wednesday_misconceptions",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.794357",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 6,
+      "current_slot_number_is_none": false,
+      "current_subject": "Science",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 1,
+      "cell": "wednesday_assessment",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.795862",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 6,
+      "current_slot_number_is_none": false,
+      "current_subject": "Science",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 1,
+      "cell": "wednesday_homework",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.796864",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 6,
+      "current_slot_number_is_none": false,
+      "current_subject": "Science",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 1,
+      "cell": "thursday_unit_lesson",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.797864",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 6,
+      "current_slot_number_is_none": false,
+      "current_subject": "Science",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 1,
+      "cell": "thursday_objective",
+      "filtering_active": true
+    }
+  },
+  {
+    "timestamp": "2026-01-05T22:52:03.798865",
+    "stage": "05_filtering_context",
+    "data": {
+      "current_slot_number": 6,
+      "current_slot_number_is_none": false,
+      "current_subject": "Science",
+      "current_subject_is_none": false,
+      "pending_hyperlinks_count": 1,
+      "cell": "thursday_anticipatory_set",
+      "filtering_active": true
+    }
+  }
+]

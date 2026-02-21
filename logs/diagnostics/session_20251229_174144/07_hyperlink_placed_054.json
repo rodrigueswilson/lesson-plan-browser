@@ -1,0 +1,11 @@
+{
+  "timestamp": "2025-12-29T17:41:58.789965",
+  "stage": "07_hyperlink_placed",
+  "data": {
+    "text": "Stage 7",
+    "slot": null,
+    "subject": "Math",
+    "cell": "monday_instruction",
+    "confidence": 1.0
+  }
+}

@@ -1,0 +1,400 @@
+﻿01-12 21:16:26.860 E/SurfaceFlinger( 1175): MtkDuration override mode is disabled
+01-12 21:16:27.083 E/WifiStaIfaceAidlImpl(31649): getCachedScanData failed with service-specific exception: android.os.ServiceSpecificException:  (code 4)
+01-12 21:16:27.414 E/SurfaceFlinger( 1175): MtkDuration override mode is disabled
+01-12 21:16:27.574 E/SurfaceFlinger( 1175): MtkDuration override mode is disabled
+01-12 21:16:28.143 E/SeslFastScroller(32583): Error occured during layoutTrack() because bottom[576] is less than top[576].
+01-12 21:16:28.168 E/frs     ( 3238): Failed to open /sys/kernel/thermal/frs_nl_id: No such file or directory
+01-12 21:16:28.385 E/SurfaceFlinger( 1175): alpha changed 0.000 -> 1.000 - Surface(name=c3490d1 InputMethod)/@0xd5ce0c2 - animation-leash of insets_animation#12305
+01-12 21:16:28.433 E/SeslFastScroller(32583): Error occured during layoutTrack() because bottom[576] is less than top[576].
+01-12 21:16:29.045 E/SurfaceFlinger( 1175): MtkDuration override mode is disabled
+01-12 21:16:29.245 E/SurfaceFlinger( 1175): MtkDuration override mode is disabled
+01-12 21:16:29.500 E/SurfaceFlinger( 1175): MtkDuration override mode is disabled
+01-12 21:16:29.649 E/SurfaceFlinger( 1175): MtkDuration override mode is disabled
+01-12 21:16:29.768 E/CompatUIController(32122): no activity bounds
+01-12 21:16:29.769 E/LayerState( 1175): Stripped attempt to set eTrustedOverlay in sanitize
+01-12 21:16:29.777 E/SurfaceFlinger( 1175): alpha changed 1.000 -> 0.000 - Surface(name=Task=180)/@0xd9749d6_transition-leash#12363
+01-12 21:16:29.802 E/SurfaceFlinger( 1175): alpha changed 0.000 -> 0.698 - Surface(name=Task=180)/@0xd9749d6_transition-leash#12363
+01-12 21:16:29.842 E/SeslFastScroller(32583): Error occured during layoutTrack() because bottom[576] is less than top[576].
+01-12 21:16:29.849 E/SeslFastScroller(32583): Error occured during layoutTrack() because bottom[576] is less than top[576].
+01-12 21:16:29.858 E/SeslFastScroller(32583): Error occured during layoutTrack() because bottom[576] is less than top[576].
+01-12 21:16:29.910 E/ashmem  ( 5996): Pinning is deprecated since Android Q. Please use trim or other methods.
+01-12 21:16:29.915 E/pageboostd( 3212): Received HALT command code 2
+01-12 21:16:29.918 E/LessonPlanBrowser( 5996): Failed to seed bundled database
+01-12 21:16:29.918 E/LessonPlanBrowser( 5996): java.io.FileNotFoundException: databases/lesson_planner.db
+01-12 21:16:29.918 E/LessonPlanBrowser( 5996): 	at android.content.res.AssetManager.nativeOpenAsset(Native Method)
+01-12 21:16:29.918 E/LessonPlanBrowser( 5996): 	at android.content.res.AssetManager.open(AssetManager.java:1075)
+01-12 21:16:29.918 E/LessonPlanBrowser( 5996): 	at android.content.res.AssetManager.open(AssetManager.java:1052)
+01-12 21:16:29.918 E/LessonPlanBrowser( 5996): 	at com.lessonplanner.browser.MainActivity.ensureBundledDatabase(MainActivity.kt:58)
+01-12 21:16:29.918 E/LessonPlanBrowser( 5996): 	at com.lessonplanner.browser.MainActivity.onCreate(MainActivity.kt:16)
+01-12 21:16:29.918 E/LessonPlanBrowser( 5996): 	at android.app.Activity.performCreate(Activity.java:9519)
+01-12 21:16:29.918 E/LessonPlanBrowser( 5996): 	at android.app.Activity.performCreate(Activity.java:9488)
+01-12 21:16:29.918 E/LessonPlanBrowser( 5996): 	at android.app.Instrumentation.callActivityOnCreate(Instrumentation.java:1524)
+01-12 21:16:29.918 E/LessonPlanBrowser( 5996): 	at android.app.ActivityThread.performLaunchActivity(ActivityThread.java:4622)
+01-12 21:16:29.918 E/LessonPlanBrowser( 5996): 	at android.app.ActivityThread.handleLaunchActivity(ActivityThread.java:4871)
+01-12 21:16:29.918 E/LessonPlanBrowser( 5996): 	at android.app.servertransaction.LaunchActivityItem.execute(LaunchActivityItem.java:222)
+01-12 21:16:29.918 E/LessonPlanBrowser( 5996): 	at android.app.servertransaction.TransactionExecutor.executeNonLifecycleItem(TransactionExecutor.java:133)
+01-12 21:16:29.918 E/LessonPlanBrowser( 5996): 	at android.app.servertransaction.TransactionExecutor.executeTransactionItems(TransactionExecutor.java:103)
+01-12 21:16:29.918 E/LessonPlanBrowser( 5996): 	at android.app.servertransaction.TransactionExecutor.execute(TransactionExecutor.java:80)
+01-12 21:16:29.918 E/LessonPlanBrowser( 5996): 	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:3103)
+01-12 21:16:29.918 E/LessonPlanBrowser( 5996): 	at android.os.Handler.dispatchMessage(Handler.java:110)
+01-12 21:16:29.918 E/LessonPlanBrowser( 5996): 	at android.os.Looper.loopOnce(Looper.java:273)
+01-12 21:16:29.918 E/LessonPlanBrowser( 5996): 	at android.os.Looper.loop(Looper.java:363)
+01-12 21:16:29.918 E/LessonPlanBrowser( 5996): 	at android.app.ActivityThread.main(ActivityThread.java:9983)
+01-12 21:16:29.918 E/LessonPlanBrowser( 5996): 	at java.lang.reflect.Method.invoke(Native Method)
+01-12 21:16:29.918 E/LessonPlanBrowser( 5996): 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:632)
+01-12 21:16:29.918 E/LessonPlanBrowser( 5996): 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:975)
+01-12 21:16:29.918 E/LessonPlanBrowser( 5996): Failed to seed lesson plan JSON assets
+01-12 21:16:29.918 E/LessonPlanBrowser( 5996): java.io.FileNotFoundException: lesson-plans
+01-12 21:16:29.918 E/LessonPlanBrowser( 5996): 	at android.content.res.AssetManager.nativeOpenAsset(Native Method)
+01-12 21:16:29.918 E/LessonPlanBrowser( 5996): 	at android.content.res.AssetManager.open(AssetManager.java:1075)
+01-12 21:16:29.918 E/LessonPlanBrowser( 5996): 	at android.content.res.AssetManager.open(AssetManager.java:1052)
+01-12 21:16:29.918 E/LessonPlanBrowser( 5996): 	at com.lessonplanner.browser.MainActivity.copyAssetDirectory(MainActivity.kt:107)
+01-12 21:16:29.918 E/LessonPlanBrowser( 5996): 	at com.lessonplanner.browser.MainActivity.ensureBundledLessonPlans(MainActivity.kt:79)
+01-12 21:16:29.918 E/LessonPlanBrowser( 5996): 	at com.lessonplanner.browser.MainActivity.onCreate(MainActivity.kt:17)
+01-12 21:16:29.918 E/LessonPlanBrowser( 5996): 	at android.app.Activity.performCreate(Activity.java:9519)
+01-12 21:16:29.918 E/LessonPlanBrowser( 5996): 	at android.app.Activity.performCreate(Activity.java:9488)
+01-12 21:16:29.918 E/LessonPlanBrowser( 5996): 	at android.app.Instrumentation.callActivityOnCreate(Instrumentation.java:1524)
+01-12 21:16:29.918 E/LessonPlanBrowser( 5996): 	at android.app.ActivityThread.performLaunchActivity(ActivityThread.java:4622)
+01-12 21:16:29.918 E/LessonPlanBrowser( 5996): 	at android.app.ActivityThread.handleLaunchActivity(ActivityThread.java:4871)
+01-12 21:16:29.918 E/LessonPlanBrowser( 5996): 	at android.app.servertransaction.LaunchActivityItem.execute(LaunchActivityItem.java:222)
+01-12 21:16:29.918 E/LessonPlanBrowser( 5996): 	at android.app.servertransaction.TransactionExecutor.executeNonLifecycleItem(TransactionExecutor.java:133)
+01-12 21:16:29.918 E/LessonPlanBrowser( 5996): 	at android.app.servertransaction.TransactionExecutor.executeTransactionItems(TransactionExecutor.java:103)
+01-12 21:16:29.918 E/LessonPlanBrowser( 5996): 	at android.app.servertransaction.TransactionExecutor.execute(TransactionExecutor.java:80)
+01-12 21:16:29.918 E/LessonPlanBrowser( 5996): 	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:3103)
+01-12 21:16:29.918 E/LessonPlanBrowser( 5996): 	at android.os.Handler.dispatchMessage(Handler.java:110)
+01-12 21:16:29.918 E/LessonPlanBrowser( 5996): 	at android.os.Looper.loopOnce(Looper.java:273)
+01-12 21:16:29.918 E/LessonPlanBrowser( 5996): 	at android.os.Looper.loop(Looper.java:363)
+01-12 21:16:29.918 E/LessonPlanBrowser( 5996): 	at android.app.ActivityThread.main(ActivityThread.java:9983)
+01-12 21:16:29.918 E/LessonPlanBrowser( 5996): 	at java.lang.reflect.Method.invoke(Native Method)
+01-12 21:16:29.918 E/LessonPlanBrowser( 5996): 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:632)
+01-12 21:16:29.918 E/LessonPlanBrowser( 5996): 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:975)
+01-12 21:16:29.948 E/planner.browser( 5996): [perfctl] 5996 5996 FPSGO ver:0
+01-12 21:16:29.948 E/planner.browser( 5996): [perfctl] 0 0 0 0
+01-12 21:16:29.965 E/pageboostd( 3212): Received HALT command code 2
+01-12 21:16:29.969 E/WindowManager(31649): win=Window{e5cfb55 u0 com.sec.android.app.launcher/com.samsung.app.honeyspace.edge.edgepanel.app.CocktailBarService} destroySurfaces: appStopped=true cleanupOnResume=false win.mWindowRemovalAllowed=false win.mRemoveOnExit=false win.mViewVisibility=8 caller=com.android.server.wm.WindowManagerService.tryStartExitingAnimation:134 com.android.server.wm.WindowManagerService.relayoutWindow:1138 com.android.server.wm.Session.relayout:27 android.view.IWindowSession$Stub.onTransact:829 com.android.server.wm.Session.onTransact:1 android.os.Binder.execTransactInternal:1457 android.os.Binder.execTransact:1401 
+01-12 21:16:29.978 E/WindowManager(31649): win=Window{fecd723 u0 Handle Input Layer of task 180} destroySurfaces: appStopped=true cleanupOnResume=false win.mWindowRemovalAllowed=false win.mRemoveOnExit=false win.mViewVisibility=8 caller=com.android.server.wm.WindowManagerService.tryStartExitingAnimation:134 com.android.server.wm.WindowManagerService.relayoutWindow:1138 com.android.server.wm.Session.relayout:27 android.view.IWindowSession$Stub.onTransact:829 com.android.server.wm.Session.onTransact:1 android.os.Binder.execTransactInternal:1462 android.os.Binder.execTransact:1401 
+01-12 21:16:29.980 F/libc    ( 5996): Fatal signal 6 (SIGABRT), code -1 (SI_QUEUE) in tid 6018 (planner.browser), pid 5996 (planner.browser)
+01-12 21:16:29.980 E/AndroidRuntime( 5996): FATAL EXCEPTION: main
+01-12 21:16:29.980 E/AndroidRuntime( 5996): Process: com.lessonplanner.browser, PID: 5996
+01-12 21:16:29.980 E/AndroidRuntime( 5996): java.lang.RuntimeException: java.lang.reflect.InvocationTargetException
+01-12 21:16:29.980 E/AndroidRuntime( 5996): 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:642)
+01-12 21:16:29.980 E/AndroidRuntime( 5996): 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:975)
+01-12 21:16:29.980 E/AndroidRuntime( 5996): Caused by: java.lang.reflect.InvocationTargetException
+01-12 21:16:29.980 E/AndroidRuntime( 5996): 	at java.lang.reflect.Method.invoke(Native Method)
+01-12 21:16:29.980 E/AndroidRuntime( 5996): 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:632)
+01-12 21:16:29.980 E/AndroidRuntime( 5996): 	... 1 more
+01-12 21:16:29.980 E/AndroidRuntime( 5996): Caused by: java.lang.ClassNotFoundException: com.plugin.fs.FsPlugin
+01-12 21:16:29.980 E/AndroidRuntime( 5996): 	at java.lang.Class.classForName(Native Method)
+01-12 21:16:29.980 E/AndroidRuntime( 5996): 	at java.lang.Class.forName(Class.java:597)
+01-12 21:16:29.980 E/AndroidRuntime( 5996): 	at java.lang.Class.forName(Class.java:502)
+01-12 21:16:29.980 E/AndroidRuntime( 5996): 	at com.lessonplanner.browser.WryActivity.getAppClass(WryActivity.kt:116)
+01-12 21:16:29.980 E/AndroidRuntime( 5996): 	at android.os.MessageQueue.nativePollOnce(Native Method)
+01-12 21:16:29.980 E/AndroidRuntime( 5996): 	at android.os.MessageQueue.nextLegacy(MessageQueue.java:945)
+01-12 21:16:29.980 E/AndroidRuntime( 5996): 	at android.os.MessageQueue.next(MessageQueue.java:1057)
+01-12 21:16:29.980 E/AndroidRuntime( 5996): 	at android.os.Looper.loopOnce(Looper.java:221)
+01-12 21:16:29.980 E/AndroidRuntime( 5996): 	at android.os.Looper.loop(Looper.java:363)
+01-12 21:16:29.980 E/AndroidRuntime( 5996): 	at android.app.ActivityThread.main(ActivityThread.java:9983)
+01-12 21:16:29.980 E/AndroidRuntime( 5996): 	... 3 more
+01-12 21:16:29.980 E/AndroidRuntime( 5996): Caused by: java.lang.ClassNotFoundException: Didn't find class "com.plugin.fs.FsPlugin" on path: DexPathList[[zip file "/data/app/~~BtJFEzRJntDnsCWLL3XyRA==/com.lessonplanner.browser-Wtr_HfKwvrLI6bxtWf6Xog==/base.apk"],nativeLibraryDirectories=[/data/app/~~BtJFEzRJntDnsCWLL3XyRA==/com.lessonplanner.browser-Wtr_HfKwvrLI6bxtWf6Xog==/lib/arm64, /data/app/~~BtJFEzRJntDnsCWLL3XyRA==/com.lessonplanner.browser-Wtr_HfKwvrLI6bxtWf6Xog==/base.apk!/lib/arm64-v8a, /system/lib64, /system_ext/lib64]]
+01-12 21:16:29.980 E/AndroidRuntime( 5996): 	at dalvik.system.BaseDexClassLoader.findClass(BaseDexClassLoader.java:259)
+01-12 21:16:29.980 E/AndroidRuntime( 5996): 	at java.lang.ClassLoader.loadClass(ClassLoader.java:637)
+01-12 21:16:29.980 E/AndroidRuntime( 5996): 	at java.lang.ClassLoader.loadClass(ClassLoader.java:573)
+01-12 21:16:29.980 E/AndroidRuntime( 5996): 	... 13 more
+01-12 21:16:29.985 E/AccessibilityService(20444): bindInput must be paired with unbindInput.
+01-12 21:16:30.001 E/DEBUG   ( 6040): failed to open directory /proc/6018/fd: No such file or directory
+01-12 21:16:30.001 F/crash_dump64( 6040): crash_dump.cpp:692] failed to get process threads: No such file or directory
+01-12 21:16:30.002 E/SurfaceFlinger( 1175): alpha changed 1.000 -> 0.000 - Surface(name=c3490d1 InputMethod)/@0xd5ce0c2 - animation-leash of insets_animation#12374
+01-12 21:16:30.002 E/tombstoned(  814): unexpected dump type: kDebuggerdAnyIntercept
+01-12 21:16:30.002 E/tombstoned(  814): failed to get crash output for type kDebuggerdAnyIntercept
+01-12 21:16:30.002 E/libc    ( 6040): failed to read response to DumpRequest packet: No message of desired type
+01-12 21:16:30.002 E/crash_dump64( 6040): failed to connected to tombstoned to report failure
+01-12 21:16:30.035 E/SurfaceFlinger( 1175): alpha changed 1.000 -> 0.000 - Surface(name=64fd240 StatusBar)/@0x224bcee - animation-leash of insets_animation#12376
+01-12 21:16:30.035 E/SurfaceFlinger( 1175): alpha changed 1.000 -> 0.000 - Surface(name=5348d98 TaskbarWindow)/@0x2ef9b40 - animation-leash of insets_animation#12377
+01-12 21:16:30.045 E/ActivityManager(31649): Sending non-protected broadcast com.sec.android.intent.action.APP_HQM_SEND_REQ from system 1145:com.sec.android.diagmonagent/1000 pkg com.sec.android.diagmonagent
+01-12 21:16:30.045 E/ActivityManager(31649): java.lang.Throwable
+01-12 21:16:30.045 E/ActivityManager(31649): 	at com.android.server.am.BroadcastController.checkBroadcastFromSystem(qb/104284295 3da40752b1e0445b20423a771b971fd2cecd1442f5cca491732d14c141d56b2a:252)
+01-12 21:16:30.045 E/ActivityManager(31649): 	at com.android.server.am.BroadcastController.broadcastIntentLockedTraced(qb/104284295 3da40752b1e0445b20423a771b971fd2cecd1442f5cca491732d14c141d56b2a:344)
+01-12 21:16:30.045 E/ActivityManager(31649): 	at com.android.server.am.BroadcastController.broadcastIntentLocked(qb/104284295 3da40752b1e0445b20423a771b971fd2cecd1442f5cca491732d14c141d56b2a:18)
+01-12 21:16:30.045 E/ActivityManager(31649): 	at com.android.server.am.ActivityManagerService.broadcastIntentWithFeature(qb/104284295 3da40752b1e0445b20423a771b971fd2cecd1442f5cca491732d14c141d56b2a:149)
+01-12 21:16:30.045 E/ActivityManager(31649): 	at android.app.IActivityManager$Stub.onTransact$broadcastIntentWithFeature$(IActivityManager.java:12282)
+01-12 21:16:30.045 E/ActivityManager(31649): 	at android.app.IActivityManager$Stub.onTransact(IActivityManager.java:3167)
+01-12 21:16:30.045 E/ActivityManager(31649): 	at com.android.server.am.ActivityManagerService.onTransact(qb/104284295 3da40752b1e0445b20423a771b971fd2cecd1442f5cca491732d14c141d56b2a:425)
+01-12 21:16:30.045 E/ActivityManager(31649): 	at android.os.Binder.execTransactInternal(Binder.java:1462)
+01-12 21:16:30.045 E/ActivityManager(31649): 	at android.os.Binder.execTransact(Binder.java:1401)
+01-12 21:16:30.068 E/SurfaceFlinger( 1175): alpha changed 0.000 -> 1.000 - Surface(name=5348d98 TaskbarWindow)/@0x2ef9b40 - animation-leash of insets_animation#12377
+01-12 21:16:30.068 E/SurfaceFlinger( 1175): alpha changed 0.000 -> 1.000 - Surface(name=64fd240 StatusBar)/@0x224bcee - animation-leash of insets_animation#12376
+01-12 21:16:30.069 E/IPCThreadState(21747): Binder transaction failure. id: 31486475, BR_*: 29189, error: -22 (Invalid argument)
+01-12 21:16:30.089 E/WifiStaIfaceAidlImpl(31649): getCachedScanData failed with service-specific exception: android.os.ServiceSpecificException:  (code 4)
+01-12 21:16:30.093 E/SurfaceFlinger( 1175): alpha changed 1.000 -> 0.000 - Surface(name=c3490d1 InputMethod)/@0xd5ce0c2 - animation-leash of insets_animation#12381
+01-12 21:16:30.318 E/SurfaceFlinger( 1175): alpha changed 0.002 -> 0.000 - Surface(name=Task=180)/@0xd9749d6_transition-leash#12363
+01-12 21:16:30.412 E/IPCThreadState(31649): Binder transaction failure. id: 31487676, BR_*: 29189, error: -22 (Invalid argument)
+01-12 21:16:30.435 E/BpTransactionCompletedListener( 1175): Failed to transact (-32)
+01-12 21:16:30.449 E/GoogleApiManager( 5550): Failed to get service from broker. 
+01-12 21:16:30.449 E/GoogleApiManager( 5550): java.lang.SecurityException: Unknown calling package name 'com.google.android.gms'.
+01-12 21:16:30.449 E/GoogleApiManager( 5550): 	at android.os.Parcel.createExceptionOrNull(Parcel.java:3354)
+01-12 21:16:30.449 E/GoogleApiManager( 5550): 	at android.os.Parcel.createException(Parcel.java:3338)
+01-12 21:16:30.449 E/GoogleApiManager( 5550): 	at android.os.Parcel.readException(Parcel.java:3321)
+01-12 21:16:30.449 E/GoogleApiManager( 5550): 	at android.os.Parcel.readException(Parcel.java:3263)
+01-12 21:16:30.449 E/GoogleApiManager( 5550): 	at bddz.a(:com.google.android.gms@254932035@25.49.32 (260400-843446962):36)
+01-12 21:16:30.449 E/GoogleApiManager( 5550): 	at bdca.z(:com.google.android.gms@254932035@25.49.32 (260400-843446962):143)
+01-12 21:16:30.449 E/GoogleApiManager( 5550): 	at bcid.run(:com.google.android.gms@254932035@25.49.32 (260400-843446962):42)
+01-12 21:16:30.449 E/GoogleApiManager( 5550): 	at android.os.Handler.handleCallback(Handler.java:995)
+01-12 21:16:30.449 E/GoogleApiManager( 5550): 	at android.os.Handler.dispatchMessage(Handler.java:103)
+01-12 21:16:30.449 E/GoogleApiManager( 5550): 	at cqne.mv(:com.google.android.gms@254932035@25.49.32 (260400-843446962):1)
+01-12 21:16:30.449 E/GoogleApiManager( 5550): 	at cqne.dispatchMessage(:com.google.android.gms@254932035@25.49.32 (260400-843446962):5)
+01-12 21:16:30.449 E/GoogleApiManager( 5550): 	at android.os.Looper.loopOnce(Looper.java:273)
+01-12 21:16:30.449 E/GoogleApiManager( 5550): 	at android.os.Looper.loop(Looper.java:363)
+01-12 21:16:30.449 E/GoogleApiManager( 5550): 	at android.os.HandlerThread.run(HandlerThread.java:85)
+01-12 21:16:30.579 E/WindowManager(31649): win=Window{c3490d1 u0 InputMethod} destroySurfaces: appStopped=true cleanupOnResume=false win.mWindowRemovalAllowed=false win.mRemoveOnExit=false win.mViewVisibility=8 caller=com.android.server.wm.WindowManagerService.tryStartExitingAnimation:134 com.android.server.wm.WindowManagerService.relayoutWindow:1138 com.android.server.wm.Session.relayout:27 android.view.IWindowSession$Stub.onTransact:829 com.android.server.wm.Session.onTransact:1 android.os.Binder.execTransactInternal:1457 android.os.Binder.execTransact:1401 
+01-12 21:16:30.593 E/SurfaceFlinger( 1175): alpha changed 1.000 -> 0.000 - Surface(name=c3490d1 InputMethod)/@0xd5ce0c2 - animation-leash of insets_animation#12383
+01-12 21:16:31.090 E/SurfaceFlinger( 1175): MtkDuration override mode is disabled
+01-12 21:16:31.810 E/SurfaceFlinger( 1175): MtkDuration override mode is disabled
+01-12 21:16:32.067 E/SurfaceFlinger( 1175): MtkDuration override mode is disabled
+01-12 21:16:32.318 E/HeatmapThread( 1169): !@ CAM New BSOH: 100
+01-12 21:16:32.325 E/BatteryDump( 1131): !@new_battery_dump : 4214,192,750,850,83,252,251,272,0,267,289,272,0,Charging,NO_CHARGING,Normal,Good,USB,1,Normal,0,0,8580,0x20008000,0x10010000,0x0,0,0,0,v0004,0,0/0-0-0-0,0000,0000,00000000,0,0,0,0,0,0,8,4211,8310,990,0,
+01-12 21:16:32.439 E/SurfaceFlinger( 1175): MtkDuration override mode is disabled
+01-12 21:16:32.979 E/Pageboost(31649): ioinfo read failed
+01-12 21:16:33.094 E/WifiStaIfaceAidlImpl(31649): getCachedScanData failed with service-specific exception: android.os.ServiceSpecificException:  (code 4)
+01-12 21:16:33.143 E/e:iwhInfService( 6054): Not starting debugger since process cannot load the jdwp agent.
+01-12 21:16:33.168 E/frs     ( 3238): Failed to open /sys/kernel/thermal/frs_nl_id: No such file or directory
+01-12 21:16:33.237 E/TaskPersister(31649): File error accessing recents directory (directory doesn't exist?).
+01-12 21:16:33.691 E/SurfaceFlinger( 1175): MtkDuration override mode is disabled
+01-12 21:16:34.220 E/SurfaceFlinger( 1175): MtkDuration override mode is disabled
+01-12 21:16:34.764 E/SeslFastScroller(32583): Error occured during layoutTrack() because bottom[-55] is less than top[-55].
+01-12 21:16:34.766 E/SeslRecyclerView(32583): The Immersive padding value (0) was too large to draw GoToTop.
+01-12 21:16:34.767 E/SeslFastScroller(32583): Error occured during layoutTrack() because bottom[-55] is less than top[-55].
+01-12 21:16:34.924 E/Pageboost(31649): StopRecording Failed
+01-12 21:16:34.926 E/Pageboost(31649): captureFinished fail
+01-12 21:16:35.409 E/SamsungAccount( 7428): [OpenContentProvider] This is the access of the disallowed application
+01-12 21:16:35.412 E/TagLog  (18280): isSecure: Attempt to invoke virtual method 'java.lang.Class java.lang.Object.getClass()' on a null object reference
+01-12 21:16:35.415 E/TagLog  (18280): isSecure: Attempt to invoke virtual method 'java.lang.Class java.lang.Object.getClass()' on a null object reference
+01-12 21:16:35.513 E/pageboostd( 3212): alp start : app comlessonplannerbrowser
+01-12 21:16:35.515 E/pageboostd( 3212): comlessonplannerbrowser, amt 0 scnt 0 fcnt 0
+01-12 21:16:35.515 E/pageboostd( 3212): comlessonplannerbrowser, amt 0 scnt 0 fcnt 0
+01-12 21:16:35.515 E/pageboostd( 3212): alp end : app comlessonplannerbrowser data_amount 0
+01-12 21:16:35.583 E/pageboostd( 3212): Received HALT command code 2
+01-12 21:16:35.615 E/CompatUIController(32122): no activity bounds
+01-12 21:16:35.620 E/LayerState( 1175): Stripped attempt to set eTrustedOverlay in sanitize
+01-12 21:16:35.627 E/SurfaceFlinger( 1175): alpha changed 1.000 -> 0.000 - Surface(name=Task=181)/@0x9a239e6_transition-leash#12392
+01-12 21:16:35.652 E/SurfaceFlinger( 1175): alpha changed 0.000 -> 0.698 - Surface(name=Task=181)/@0x9a239e6_transition-leash#12392
+01-12 21:16:35.721 E/ashmem  ( 6094): Pinning is deprecated since Android Q. Please use trim or other methods.
+01-12 21:16:35.730 E/LessonPlanBrowser( 6094): Failed to seed lesson plan JSON assets
+01-12 21:16:35.730 E/LessonPlanBrowser( 6094): java.io.FileNotFoundException: lesson-plans
+01-12 21:16:35.730 E/LessonPlanBrowser( 6094): 	at android.content.res.AssetManager.nativeOpenAsset(Native Method)
+01-12 21:16:35.730 E/LessonPlanBrowser( 6094): 	at android.content.res.AssetManager.open(AssetManager.java:1075)
+01-12 21:16:35.730 E/LessonPlanBrowser( 6094): 	at android.content.res.AssetManager.open(AssetManager.java:1052)
+01-12 21:16:35.730 E/LessonPlanBrowser( 6094): 	at com.lessonplanner.browser.MainActivity.copyAssetDirectory(MainActivity.kt:107)
+01-12 21:16:35.730 E/LessonPlanBrowser( 6094): 	at com.lessonplanner.browser.MainActivity.ensureBundledLessonPlans(MainActivity.kt:79)
+01-12 21:16:35.730 E/LessonPlanBrowser( 6094): 	at com.lessonplanner.browser.MainActivity.onCreate(MainActivity.kt:17)
+01-12 21:16:35.730 E/LessonPlanBrowser( 6094): 	at android.app.Activity.performCreate(Activity.java:9519)
+01-12 21:16:35.730 E/LessonPlanBrowser( 6094): 	at android.app.Activity.performCreate(Activity.java:9488)
+01-12 21:16:35.730 E/LessonPlanBrowser( 6094): 	at android.app.Instrumentation.callActivityOnCreate(Instrumentation.java:1524)
+01-12 21:16:35.730 E/LessonPlanBrowser( 6094): 	at android.app.ActivityThread.performLaunchActivity(ActivityThread.java:4622)
+01-12 21:16:35.730 E/LessonPlanBrowser( 6094): 	at android.app.ActivityThread.handleLaunchActivity(ActivityThread.java:4871)
+01-12 21:16:35.730 E/LessonPlanBrowser( 6094): 	at android.app.servertransaction.LaunchActivityItem.execute(LaunchActivityItem.java:222)
+01-12 21:16:35.730 E/LessonPlanBrowser( 6094): 	at android.app.servertransaction.TransactionExecutor.executeNonLifecycleItem(TransactionExecutor.java:133)
+01-12 21:16:35.730 E/LessonPlanBrowser( 6094): 	at android.app.servertransaction.TransactionExecutor.executeTransactionItems(TransactionExecutor.java:103)
+01-12 21:16:35.730 E/LessonPlanBrowser( 6094): 	at android.app.servertransaction.TransactionExecutor.execute(TransactionExecutor.java:80)
+01-12 21:16:35.730 E/LessonPlanBrowser( 6094): 	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:3103)
+01-12 21:16:35.730 E/LessonPlanBrowser( 6094): 	at android.os.Handler.dispatchMessage(Handler.java:110)
+01-12 21:16:35.730 E/LessonPlanBrowser( 6094): 	at android.os.Looper.loopOnce(Looper.java:273)
+01-12 21:16:35.730 E/LessonPlanBrowser( 6094): 	at android.os.Looper.loop(Looper.java:363)
+01-12 21:16:35.730 E/LessonPlanBrowser( 6094): 	at android.app.ActivityThread.main(ActivityThread.java:9983)
+01-12 21:16:35.730 E/LessonPlanBrowser( 6094): 	at java.lang.reflect.Method.invoke(Native Method)
+01-12 21:16:35.730 E/LessonPlanBrowser( 6094): 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:632)
+01-12 21:16:35.730 E/LessonPlanBrowser( 6094): 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:975)
+01-12 21:16:35.764 E/planner.browser( 6094): [perfctl] 6094 6094 FPSGO ver:0
+01-12 21:16:35.764 E/planner.browser( 6094): [perfctl] 0 0 0 0
+01-12 21:16:35.783 E/pageboostd( 3212): Received HALT command code 2
+01-12 21:16:35.792 E/AndroidRuntime( 6094): FATAL EXCEPTION: main
+01-12 21:16:35.792 E/AndroidRuntime( 6094): Process: com.lessonplanner.browser, PID: 6094
+01-12 21:16:35.792 E/AndroidRuntime( 6094): java.lang.RuntimeException: java.lang.reflect.InvocationTargetException
+01-12 21:16:35.792 E/AndroidRuntime( 6094): 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:642)
+01-12 21:16:35.792 E/AndroidRuntime( 6094): 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:975)
+01-12 21:16:35.792 E/AndroidRuntime( 6094): Caused by: java.lang.reflect.InvocationTargetException
+01-12 21:16:35.792 E/AndroidRuntime( 6094): 	at java.lang.reflect.Method.invoke(Native Method)
+01-12 21:16:35.792 E/AndroidRuntime( 6094): 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:632)
+01-12 21:16:35.792 E/AndroidRuntime( 6094): 	... 1 more
+01-12 21:16:35.792 E/AndroidRuntime( 6094): Caused by: java.lang.ClassNotFoundException: com.plugin.fs.FsPlugin
+01-12 21:16:35.792 E/AndroidRuntime( 6094): 	at java.lang.Class.classForName(Native Method)
+01-12 21:16:35.792 E/AndroidRuntime( 6094): 	at java.lang.Class.forName(Class.java:597)
+01-12 21:16:35.792 E/AndroidRuntime( 6094): 	at java.lang.Class.forName(Class.java:502)
+01-12 21:16:35.792 E/AndroidRuntime( 6094): 	at com.lessonplanner.browser.WryActivity.getAppClass(WryActivity.kt:116)
+01-12 21:16:35.792 E/AndroidRuntime( 6094): 	at android.os.MessageQueue.nativePollOnce(Native Method)
+01-12 21:16:35.792 E/AndroidRuntime( 6094): 	at android.os.MessageQueue.nextLegacy(MessageQueue.java:945)
+01-12 21:16:35.792 E/AndroidRuntime( 6094): 	at android.os.MessageQueue.next(MessageQueue.java:1057)
+01-12 21:16:35.792 E/AndroidRuntime( 6094): 	at android.os.Looper.loopOnce(Looper.java:221)
+01-12 21:16:35.792 E/AndroidRuntime( 6094): 	at android.os.Looper.loop(Looper.java:363)
+01-12 21:16:35.792 E/AndroidRuntime( 6094): 	at android.app.ActivityThread.main(ActivityThread.java:9983)
+01-12 21:16:35.792 E/AndroidRuntime( 6094): 	... 3 more
+01-12 21:16:35.792 E/AndroidRuntime( 6094): Caused by: java.lang.ClassNotFoundException: Didn't find class "com.plugin.fs.FsPlugin" on path: DexPathList[[zip file "/data/app/~~BtJFEzRJntDnsCWLL3XyRA==/com.lessonplanner.browser-Wtr_HfKwvrLI6bxtWf6Xog==/base.apk"],nativeLibraryDirectories=[/data/app/~~BtJFEzRJntDnsCWLL3XyRA==/com.lessonplanner.browser-Wtr_HfKwvrLI6bxtWf6Xog==/lib/arm64, /data/app/~~BtJFEzRJntDnsCWLL3XyRA==/com.lessonplanner.browser-Wtr_HfKwvrLI6bxtWf6Xog==/base.apk!/lib/arm64-v8a, /system/lib64, /system_ext/lib64]]
+01-12 21:16:35.792 E/AndroidRuntime( 6094): 	at dalvik.system.BaseDexClassLoader.findClass(BaseDexClassLoader.java:259)
+01-12 21:16:35.792 E/AndroidRuntime( 6094): 	at java.lang.ClassLoader.loadClass(ClassLoader.java:637)
+01-12 21:16:35.792 E/AndroidRuntime( 6094): 	at java.lang.ClassLoader.loadClass(ClassLoader.java:573)
+01-12 21:16:35.792 E/AndroidRuntime( 6094): 	... 13 more
+01-12 21:16:35.794 F/libc    ( 6094): Fatal signal 6 (SIGABRT), code -1 (SI_QUEUE) in tid 6128 (planner.browser), pid 6094 (planner.browser)
+01-12 21:16:35.827 E/SurfaceFlinger( 1175): alpha changed 1.000 -> 0.000 - Surface(name=64fd240 StatusBar)/@0x224bcee - animation-leash of insets_animation#12404
+01-12 21:16:35.827 E/SurfaceFlinger( 1175): alpha changed 1.000 -> 0.000 - Surface(name=5348d98 TaskbarWindow)/@0x2ef9b40 - animation-leash of insets_animation#12405
+01-12 21:16:35.852 E/SurfaceFlinger( 1175): alpha changed 0.000 -> 1.000 - Surface(name=5348d98 TaskbarWindow)/@0x2ef9b40 - animation-leash of insets_animation#12405
+01-12 21:16:35.852 E/SurfaceFlinger( 1175): alpha changed 0.000 -> 1.000 - Surface(name=64fd240 StatusBar)/@0x224bcee - animation-leash of insets_animation#12404
+01-12 21:16:35.881 E/pageboostd( 3212): Received HALT command code 2
+01-12 21:16:35.936 E/CompatUIController(32122): no activity bounds
+01-12 21:16:35.940 E/pageboostd( 3212): Received HALT command code 2
+01-12 21:16:35.943 E/SurfaceFlinger( 1175): alpha changed 1.000 -> 0.000 - Surface(name=b82ba66 com.samsung.android.lool/com.samsung.android.sm.iafd.dialog.AppErrorDialogActivity)/@0xe6708f3 - animation-leash of window_animation#12416
+01-12 21:16:35.943 E/SurfaceFlinger( 1175): alpha changed 0.000 -> 0.000 - Surface(name=b82ba66 com.samsung.android.lool/com.samsung.android.sm.iafd.dialog.AppErrorDialogActivity)/@0xe6708f3 - animation-leash of window_animation#12416
+01-12 21:16:35.943 E/SurfaceFlinger( 1175): alpha changed 1.000 -> 0.000 - Task=182#12408
+01-12 21:16:35.952 E/SurfaceFlinger( 1175): alpha changed 0.000 -> 0.053 - Surface(name=b82ba66 com.samsung.android.lool/com.samsung.android.sm.iafd.dialog.AppErrorDialogActivity)/@0xe6708f3 - animation-leash of window_animation#12416
+01-12 21:16:35.952 E/SurfaceFlinger( 1175): alpha changed 1.000 -> 0.000 - Dim Layer for - Task=182#12419
+01-12 21:16:35.952 E/SurfaceFlinger( 1175): alpha changed 0.000 -> 0.000 - Dim Layer for - Task=182#12419
+01-12 21:16:35.960 E/SurfaceFlinger( 1175): alpha changed 0.000 -> 0.017 - Dim Layer for - Task=182#12419
+01-12 21:16:36.090 E/SurfaceComposerClient(32583): SurfaceComposerClient::Transaction::setAlpha: invalid alpha -0.000375, clamping
+01-12 21:16:36.099 E/SurfaceComposerClient(32583): SurfaceComposerClient::Transaction::setAlpha: invalid alpha -0.016382, clamping
+01-12 21:16:36.101 E/WifiStaIfaceAidlImpl(31649): getCachedScanData failed with service-specific exception: android.os.ServiceSpecificException:  (code 4)
+01-12 21:16:36.102 E/SurfaceFlinger( 1175): alpha changed 0.022 -> 0.000 - Surface(name=Task=181)/@0x9a239e6_transition-leash#12392
+01-12 21:16:36.107 E/SurfaceComposerClient(32583): SurfaceComposerClient::Transaction::setAlpha: invalid alpha -0.027242, clamping
+01-12 21:16:36.115 E/SurfaceComposerClient(32583): SurfaceComposerClient::Transaction::setAlpha: invalid alpha -0.037176, clamping
+01-12 21:16:36.124 E/SurfaceComposerClient(32583): SurfaceComposerClient::Transaction::setAlpha: invalid alpha -0.042779, clamping
+01-12 21:16:36.132 E/SurfaceComposerClient(32583): SurfaceComposerClient::Transaction::setAlpha: invalid alpha -0.047533, clamping
+01-12 21:16:36.140 E/SurfaceComposerClient(32583): SurfaceComposerClient::Transaction::setAlpha: invalid alpha -0.049067, clamping
+01-12 21:16:36.149 E/SurfaceComposerClient(32583): SurfaceComposerClient::Transaction::setAlpha: invalid alpha -0.050432, clamping
+01-12 21:16:36.157 E/SurfaceComposerClient(32583): SurfaceComposerClient::Transaction::setAlpha: invalid alpha -0.049226, clamping
+01-12 21:16:36.165 E/SurfaceComposerClient(32583): SurfaceComposerClient::Transaction::setAlpha: invalid alpha -0.046865, clamping
+01-12 21:16:36.173 E/SurfaceComposerClient(32583): SurfaceComposerClient::Transaction::setAlpha: invalid alpha -0.044767, clamping
+01-12 21:16:36.182 E/SurfaceComposerClient(32583): SurfaceComposerClient::Transaction::setAlpha: invalid alpha -0.040071, clamping
+01-12 21:16:36.190 E/SurfaceComposerClient(32583): SurfaceComposerClient::Transaction::setAlpha: invalid alpha -0.034491, clamping
+01-12 21:16:36.198 E/SurfaceComposerClient(32583): SurfaceComposerClient::Transaction::setAlpha: invalid alpha -0.029531, clamping
+01-12 21:16:36.207 E/SurfaceComposerClient(32583): SurfaceComposerClient::Transaction::setAlpha: invalid alpha -0.022970, clamping
+01-12 21:16:36.215 E/SurfaceComposerClient(32583): SurfaceComposerClient::Transaction::setAlpha: invalid alpha -0.014701, clamping
+01-12 21:16:36.224 E/SurfaceComposerClient(32583): SurfaceComposerClient::Transaction::setAlpha: invalid alpha -0.007351, clamping
+01-12 21:16:36.227 E/SurfaceFlinger( 1175): alpha changed 0.000 -> 1.000 - Task=182#12408
+01-12 21:16:36.228 E/IPCThreadState(31649): Binder transaction failure. id: 31499464, BR_*: 29189, error: -22 (Invalid argument)
+01-12 21:16:36.252 E/BpTransactionCompletedListener( 1175): Failed to transact (-32)
+01-12 21:16:36.562 E/SurfaceFlinger( 1175): MtkDuration override mode is disabled
+01-12 21:16:38.169 E/frs     ( 3238): Failed to open /sys/kernel/thermal/frs_nl_id: No such file or directory
+01-12 21:16:38.798 E/Pageboost(31649): ioinfo read failed
+01-12 21:16:39.087 E/TaskPersister(31649): File error accessing recents directory (directory doesn't exist?).
+01-12 21:16:39.108 E/WifiStaIfaceAidlImpl(31649): getCachedScanData failed with service-specific exception: android.os.ServiceSpecificException:  (code 4)
+01-12 21:16:40.586 E/Pageboost(31649): StopRecording Failed
+01-12 21:16:40.590 E/Pageboost(31649): captureFinished fail
+01-12 21:16:40.774 E/SQLiteLog(29369): (10) POSIX Error : 11 SQLite Error : 3850
+01-12 21:16:40.774 E/SQLiteLog(29369): (10) LOCK : Getting pending lock for (1) failed due to (11). The current owner is (29503).
+01-12 21:16:42.122 E/WifiStaIfaceAidlImpl(31649): getCachedScanData failed with service-specific exception: android.os.ServiceSpecificException:  (code 4)
+01-12 21:16:42.445 E/HeatmapThread( 1169): !@ CAM New BSOH: 100
+01-12 21:16:42.452 E/BatteryDump( 1131): !@new_battery_dump : 4213,170,750,850,83,252,252,272,0,268,293,272,0,Charging,NO_CHARGING,Normal,Good,USB,1,Normal,0,0,8580,0x20008000,0x10010000,0x0,0,0,0,v0004,0,0/0-0-0-0,0000,0000,00000000,0,0,0,0,0,0,8,4211,8310,990,0,
+01-12 21:16:43.171 E/frs     ( 3238): Failed to open /sys/kernel/thermal/frs_nl_id: No such file or directory
+01-12 21:16:45.158 E/WifiStaIfaceAidlImpl(31649): getCachedScanData failed with service-specific exception: android.os.ServiceSpecificException:  (code 4)
+01-12 21:16:46.087 E/FrameTracker(32122): force finish cuj, time out: J<SPLASHSCREEN_EXIT_ANIM>
+01-12 21:16:46.949 E/DWBg    ( 5538): LocalPkgManager MemoryTrimmable
+01-12 21:16:46.949 E/DWBn    ( 5538): UsageDataManager MemoryTrimmable
+01-12 21:16:48.171 E/frs     ( 3238): Failed to open /sys/kernel/thermal/frs_nl_id: No such file or directory
+01-12 21:16:48.189 E/WifiStaIfaceAidlImpl(31649): getCachedScanData failed with service-specific exception: android.os.ServiceSpecificException:  (code 4)
+01-12 21:16:50.781 E/SQLiteLog(29369): (10) POSIX Error : 11 SQLite Error : 3850
+01-12 21:16:50.781 E/SQLiteLog(29369): (10) LOCK : Getting pending lock for (1) failed due to (11). The current owner is (29503).
+01-12 21:16:50.783 E/SQLiteLog(29369): (10) POSIX Error : 11 SQLite Error : 3850
+01-12 21:16:50.783 E/SQLiteLog(29369): (10) LOCK : Getting pending lock for (1) failed due to (11). The current owner is (29503).
+01-12 21:16:50.785 E/SQLiteLog(29369): (10) POSIX Error : 11 SQLite Error : 3850
+01-12 21:16:50.785 E/SQLiteLog(29369): (10) LOCK : Getting pending lock for (1) failed due to (11). The current owner is (29503).
+01-12 21:16:50.818 E/SurfaceFlinger( 1175): MtkDuration override mode is disabled
+01-12 21:16:51.211 E/WifiStaIfaceAidlImpl(31649): getCachedScanData failed with service-specific exception: android.os.ServiceSpecificException:  (code 4)
+01-12 21:16:51.354 E/SurfaceFlinger( 1175): MtkDuration override mode is disabled
+01-12 21:16:52.589 E/HeatmapThread( 1169): !@ CAM New BSOH: 100
+01-12 21:16:52.597 E/BatteryDump( 1131): !@new_battery_dump : 4215,277,750,850,83,252,252,271,0,268,295,271,0,Charging,NO_CHARGING,Normal,Good,USB,1,Normal,0,0,8580,0x20008000,0x10010000,0x0,0,0,0,v0004,0,0/0-0-0-0,0000,0000,00000000,0,0,0,0,0,0,8,4211,8310,990,0,
+01-12 21:16:53.173 E/frs     ( 3238): Failed to open /sys/kernel/thermal/frs_nl_id: No such file or directory
+01-12 21:16:54.241 E/WifiStaIfaceAidlImpl(31649): getCachedScanData failed with service-specific exception: android.os.ServiceSpecificException:  (code 4)
+01-12 21:16:55.857 E/SurfaceFlinger( 1175): MtkDuration override mode is disabled
+01-12 21:16:56.145 E/SurfaceFlinger( 1175): MtkDuration override mode is disabled
+01-12 21:16:56.381 E/Watchdog(31649): !@Sync: 1873 heap(MB): 146 / 178 FD: 1347 [2026-01-12 21:16:56.381]
+01-12 21:16:57.286 E/WifiStaIfaceAidlImpl(31649): getCachedScanData failed with service-specific exception: android.os.ServiceSpecificException:  (code 4)
+01-12 21:16:58.174 E/frs     ( 3238): Failed to open /sys/kernel/thermal/frs_nl_id: No such file or directory
+01-12 21:17:00.042 E/SurfaceFlinger( 1175): MtkDuration override mode is disabled
+01-12 21:17:00.295 E/SurfaceFlinger( 1175): MtkDuration override mode is disabled
+01-12 21:17:00.317 E/WifiStaIfaceAidlImpl(31649): getCachedScanData failed with service-specific exception: android.os.ServiceSpecificException:  (code 4)
+01-12 21:17:00.795 E/SQLiteLog(29369): (10) POSIX Error : 11 SQLite Error : 3850
+01-12 21:17:00.795 E/SQLiteLog(29369): (10) LOCK : Getting pending lock for (1) failed due to (11). The current owner is (29503).
+01-12 21:17:00.797 E/SQLiteLog(29369): (10) POSIX Error : 11 SQLite Error : 3850
+01-12 21:17:00.797 E/SQLiteLog(29369): (10) LOCK : Getting pending lock for (1) failed due to (11). The current owner is (29503).
+01-12 21:17:02.722 E/HeatmapThread( 1169): !@ CAM New BSOH: 100
+01-12 21:17:02.729 E/BatteryDump( 1131): !@new_battery_dump : 4216,272,750,850,83,252,252,271,0,267,294,271,0,Charging,NO_CHARGING,Normal,Good,USB,1,Normal,0,0,8580,0x20008000,0x10010000,0x0,0,0,0,v0004,0,0/0-0-0-0,0000,0000,00000000,0,0,0,0,0,0,8,4211,8310,990,0,
+01-12 21:17:03.175 E/frs     ( 3238): Failed to open /sys/kernel/thermal/frs_nl_id: No such file or directory
+01-12 21:17:03.345 E/WifiStaIfaceAidlImpl(31649): getCachedScanData failed with service-specific exception: android.os.ServiceSpecificException:  (code 4)
+01-12 21:17:06.362 E/WifiStaIfaceAidlImpl(31649): getCachedScanData failed with service-specific exception: android.os.ServiceSpecificException:  (code 4)
+01-12 21:17:08.176 E/frs     ( 3238): Failed to open /sys/kernel/thermal/frs_nl_id: No such file or directory
+01-12 21:17:09.405 E/WifiStaIfaceAidlImpl(31649): getCachedScanData failed with service-specific exception: android.os.ServiceSpecificException:  (code 4)
+01-12 21:17:10.805 E/SQLiteLog(29369): (10) POSIX Error : 11 SQLite Error : 3850
+01-12 21:17:10.806 E/SQLiteLog(29369): (10) LOCK : Getting pending lock for (1) failed due to (11). The current owner is (29503).
+01-12 21:17:10.807 E/SQLiteLog(29369): (10) POSIX Error : 11 SQLite Error : 3850
+01-12 21:17:10.807 E/SQLiteLog(29369): (10) LOCK : Getting pending lock for (1) failed due to (11). The current owner is (29503).
+01-12 21:17:10.810 E/SQLiteLog(29369): (10) POSIX Error : 11 SQLite Error : 3850
+01-12 21:17:10.810 E/SQLiteLog(29369): (10) LOCK : Getting pending lock for (1) failed due to (11). The current owner is (29503).
+01-12 21:17:12.440 E/WifiStaIfaceAidlImpl(31649): getCachedScanData failed with service-specific exception: android.os.ServiceSpecificException:  (code 4)
+01-12 21:17:12.865 E/HeatmapThread( 1169): !@ CAM New BSOH: 100
+01-12 21:17:12.872 E/BatteryDump( 1131): !@new_battery_dump : 4217,300,750,850,83,252,252,271,0,267,289,271,0,Charging,NO_CHARGING,Normal,Good,USB,1,Normal,0,0,8580,0x20008000,0x10010000,0x0,0,0,0,v0004,0,0/0-0-0-0,0000,0000,00000000,0,0,0,0,0,0,8,4211,8310,990,0,
+01-12 21:17:13.179 E/frs     ( 3238): Failed to open /sys/kernel/thermal/frs_nl_id: No such file or directory
+01-12 21:17:14.955 E/WifiStaIfaceAidlImpl(31649): getCachedScanData failed with service-specific exception: android.os.ServiceSpecificException:  (code 4)
+01-12 21:17:15.474 E/WifiStaIfaceAidlImpl(31649): getCachedScanData failed with service-specific exception: android.os.ServiceSpecificException:  (code 4)
+01-12 21:17:18.180 E/frs     ( 3238): Failed to open /sys/kernel/thermal/frs_nl_id: No such file or directory
+01-12 21:17:18.512 E/WifiStaIfaceAidlImpl(31649): getCachedScanData failed with service-specific exception: android.os.ServiceSpecificException:  (code 4)
+01-12 21:17:20.821 E/SQLiteLog(29369): (10) POSIX Error : 11 SQLite Error : 3850
+01-12 21:17:20.821 E/SQLiteLog(29503): (10) POSIX Error : 11 SQLite Error : 3850
+01-12 21:17:20.821 E/SQLiteLog(29503): (10) LOCK : Getting lock (4) failed due to (11). The current owner is (29369).
+01-12 21:17:20.821 E/SQLiteLog(29369): (10) LOCK : Getting lock (2) failed due to (11). The current owner is (29503).
+01-12 21:17:20.823 E/SQLiteLog(29369): (10) POSIX Error : 11 SQLite Error : 3850
+01-12 21:17:20.823 E/SQLiteLog(29369): (10) LOCK : Getting pending lock for (1) failed due to (11). The current owner is (29503).
+01-12 21:17:21.553 E/WifiStaIfaceAidlImpl(31649): getCachedScanData failed with service-specific exception: android.os.ServiceSpecificException:  (code 4)
+01-12 21:17:23.021 E/HeatmapThread( 1169): !@ CAM New BSOH: 100
+01-12 21:17:23.030 E/BatteryDump( 1131): !@new_battery_dump : 4218,270,750,850,83,252,252,271,0,266,285,271,0,Charging,NO_CHARGING,Normal,Good,USB,1,Normal,0,0,8580,0x20008000,0x10010000,0x0,0,0,0,v0004,0,0/0-0-0-0,0000,0000,00000000,0,0,0,0,0,0,8,4211,8310,990,0,
+01-12 21:17:23.181 E/frs     ( 3238): Failed to open /sys/kernel/thermal/frs_nl_id: No such file or directory
+01-12 21:17:24.589 E/WifiStaIfaceAidlImpl(31649): getCachedScanData failed with service-specific exception: android.os.ServiceSpecificException:  (code 4)
+01-12 21:17:26.388 E/Watchdog(31649): !@Sync: 1874 heap(MB): 157 / 178 FD: 1348 [2026-01-12 21:17:26.388]
+01-12 21:17:27.604 E/WifiStaIfaceAidlImpl(31649): getCachedScanData failed with service-specific exception: android.os.ServiceSpecificException:  (code 4)
+01-12 21:17:28.181 E/frs     ( 3238): Failed to open /sys/kernel/thermal/frs_nl_id: No such file or directory
+01-12 21:17:30.620 E/WifiStaIfaceAidlImpl(31649): getCachedScanData failed with service-specific exception: android.os.ServiceSpecificException:  (code 4)
+01-12 21:17:30.831 E/SQLiteLog(29369): (10) POSIX Error : 11 SQLite Error : 3850
+01-12 21:17:30.831 E/SQLiteLog(29369): (10) LOCK : Getting pending lock for (1) failed due to (11). The current owner is (-1431655766).
+01-12 21:17:30.832 E/SQLiteLog(29369): (10) POSIX Error : 11 SQLite Error : 3850
+01-12 21:17:30.832 E/SQLiteLog(29369): (10) LOCK : Getting pending lock for (1) failed due to (11). The current owner is (29503).
+01-12 21:17:33.156 E/HeatmapThread( 1169): !@ CAM New BSOH: 100
+01-12 21:17:33.160 E/BatteryDump( 1131): !@new_battery_dump : 4217,277,750,850,83,252,252,271,0,267,283,271,0,Charging,NO_CHARGING,Normal,Good,USB,1,Normal,0,0,8580,0x20008000,0x10010000,0x0,0,0,0,v0004,0,0/0-0-0-0,0000,0000,00000000,0,0,0,0,0,0,8,4211,8310,990,0,
+01-12 21:17:33.182 E/frs     ( 3238): Failed to open /sys/kernel/thermal/frs_nl_id: No such file or directory
+01-12 21:17:33.639 E/WifiStaIfaceAidlImpl(31649): getCachedScanData failed with service-specific exception: android.os.ServiceSpecificException:  (code 4)
+01-12 21:17:36.654 E/WifiStaIfaceAidlImpl(31649): getCachedScanData failed with service-specific exception: android.os.ServiceSpecificException:  (code 4)
+01-12 21:17:36.722 E/e:iwhInfService( 6201): Not starting debugger since process cannot load the jdwp agent.
+01-12 21:17:38.183 E/frs     ( 3238): Failed to open /sys/kernel/thermal/frs_nl_id: No such file or directory
+01-12 21:17:39.692 E/WifiStaIfaceAidlImpl(31649): getCachedScanData failed with service-specific exception: android.os.ServiceSpecificException:  (code 4)
+01-12 21:17:40.840 E/SQLiteLog(29369): (10) POSIX Error : 11 SQLite Error : 3850
+01-12 21:17:40.841 E/SQLiteLog(29369): (10) LOCK : Getting pending lock for (1) failed due to (11). The current owner is (29503).
+01-12 21:17:40.842 E/SQLiteLog(29369): (10) POSIX Error : 11 SQLite Error : 3850
+01-12 21:17:40.842 E/SQLiteLog(29369): (10) LOCK : Getting pending lock for (1) failed due to (11). The current owner is (29503).
+01-12 21:17:42.728 E/WifiStaIfaceAidlImpl(31649): getCachedScanData failed with service-specific exception: android.os.ServiceSpecificException:  (code 4)
+01-12 21:17:43.185 E/frs     ( 3238): Failed to open /sys/kernel/thermal/frs_nl_id: No such file or directory
+01-12 21:17:43.301 E/HeatmapThread( 1169): !@ CAM New BSOH: 100
+01-12 21:17:43.307 E/BatteryDump( 1131): !@new_battery_dump : 4218,270,750,850,84,253,252,272,0,267,282,272,0,Charging,NO_CHARGING,Normal,Good,USB,1,Normal,0,0,8580,0x20008000,0x10010000,0x0,0,0,0,v0004,0,0/0-0-0-0,0000,0000,00000000,0,0,0,0,0,0,8,4212,8320,990,0,
+01-12 21:17:43.363 E/SurfaceFlinger( 1175): MtkDuration override mode is disabled
+01-12 21:17:43.596 E/chromium(12706): [ERROR:components/sync/engine/get_updates_processor.cc:270] PostClientToServerMessage() failed during GetUpdates with error Network error (ERR_INTERNET_DISCONNECTED)
+01-12 21:17:44.069 E/SurfaceFlinger( 1175): MtkDuration override mode is disabled
+01-12 21:17:45.758 E/WifiStaIfaceAidlImpl(31649): getCachedScanData failed with service-specific exception: android.os.ServiceSpecificException:  (code 4)
+01-12 21:17:47.521 E/Cello   ( 5550): [5654:NonCelloThread] authenticated_transport.cc:179:DumpToLog Request 0xb400007c39e41420: 0 transport: drive::ds::Status::UNAVAILABLE_WHILE_OFFLINE reader: drive::ds::Status::SUCCESS url: https://play.googleapis.com/log
+01-12 21:17:47.521 E/Cello   ( 5550): [5654:NonCelloThread] authenticated_transport.cc:179:DumpToLog req.hdr 0xb400007c39e41420: Content-Type=
+01-12 21:17:47.521 E/Cello   ( 5550): [5654:NonCelloThread] authenticated_transport.cc:179:DumpToLog Response body 0xb400007c39e41420: (no response body)
+01-12 21:17:47.521 E/Cello   ( 5550): [5656:MetricsTransportThread-CELLO] metrics_transport.cc:242:SendRequest Request failed: drive::ds::Status::UNAVAILABLE_WHILE_OFFLINE
+01-12 21:17:47.522 E/Cello   ( 5550): [5643:NonCelloThread] authenticated_transport.cc:179:DumpToLog Request 0xb400007c39e34760: 0 transport: drive::ds::Status::UNAVAILABLE_WHILE_OFFLINE reader: drive::ds::Status::SUCCESS url: https://play.googleapis.com/log
+01-12 21:17:47.522 E/Cello   ( 5550): [5643:NonCelloThread] authenticated_transport.cc:179:DumpToLog req.hdr 0xb400007c39e34760: Content-Type=
+01-12 21:17:47.522 E/Cello   ( 5550): [5643:NonCelloThread] authenticated_transport.cc:179:DumpToLog Response body 0xb400007c39e34760: (no response body)
+01-12 21:17:47.522 E/Cello   ( 5550): [5652:MetricsTransportThread-CELLO] metrics_transport.cc:242:SendRequest Request failed: drive::ds::Status::UNAVAILABLE_WHILE_OFFLINE
+01-12 21:17:47.575 E/Cello   ( 5550): [5712:NonCelloThread] authenticated_transport.cc:179:DumpToLog Request 0xb400007c39e3e180: 0 transport: drive::ds::Status::UNAVAILABLE_WHILE_OFFLINE reader: drive::ds::Status::SUCCESS url: https://play.googleapis.com/log
+01-12 21:17:47.575 E/Cello   ( 5550): [5712:NonCelloThread] authenticated_transport.cc:179:DumpToLog req.hdr 0xb400007c39e3e180: Content-Type=
+01-12 21:17:47.575 E/Cello   ( 5550): [5712:NonCelloThread] authenticated_transport.cc:179:DumpToLog Response body 0xb400007c39e3e180: (no response body)
+01-12 21:17:47.575 E/Cello   ( 5550): [5717:MetricsTransportThread-CELLO] metrics_transport.cc:242:SendRequest Request failed: drive::ds::Status::UNAVAILABLE_WHILE_OFFLINE
+01-12 21:17:48.186 E/frs     ( 3238): Failed to open /sys/kernel/thermal/frs_nl_id: No such file or directory
+01-12 21:17:48.793 E/WifiStaIfaceAidlImpl(31649): getCachedScanData failed with service-specific exception: android.os.ServiceSpecificException:  (code 4)
+01-12 21:17:50.850 E/SQLiteLog(29369): (10) POSIX Error : 11 SQLite Error : 3850
+01-12 21:17:50.850 E/SQLiteLog(29369): (10) LOCK : Getting pending lock for (1) failed due to (11). The current owner is (29503).
+01-12 21:17:50.852 E/SQLiteLog(29369): (10) POSIX Error : 11 SQLite Error : 3850
+01-12 21:17:50.852 E/SQLiteLog(29369): (10) LOCK : Getting pending lock for (1) failed due to (11). The current owner is (29503).
+01-12 21:17:50.854 E/SQLiteLog(29369): (10) POSIX Error : 11 SQLite Error : 3850
+01-12 21:17:50.854 E/SQLiteLog(29369): (10) LOCK : Getting pending lock for (1) failed due to (11). The current owner is (29503).
+01-12 21:17:51.810 E/WifiStaIfaceAidlImpl(31649): getCachedScanData failed with service-specific exception: android.os.ServiceSpecificException:  (code 4)
+01-12 21:17:53.188 E/frs     ( 3238): Failed to open /sys/kernel/thermal/frs_nl_id: No such file or directory
+01-12 21:17:53.440 E/HeatmapThread( 1169): !@ CAM New BSOH: 100
+01-12 21:17:53.445 E/BatteryDump( 1131): !@new_battery_dump : 4218,302,750,850,84,253,252,272,0,266,281,272,0,Charging,NO_CHARGING,Normal,Good,USB,1,Normal,0,0,8580,0x20008000,0x10010000,0x0,0,0,0,v0004,0,0/0-0-0-0,0000,0000,00000000,0,0,0,0,0,0,8,4212,8320,990,0,
+01-12 21:17:54.846 E/WifiStaIfaceAidlImpl(31649): getCachedScanData failed with service-specific exception: android.os.ServiceSpecificException:  (code 4)

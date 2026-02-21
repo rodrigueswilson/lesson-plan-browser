@@ -1,0 +1,94 @@
+{
+  "timestamp": "2026-02-07T13:03:46.589449",
+  "stage": "03_before_render_slot5",
+  "data": {
+    "slot_number": 5,
+    "subject": "Math",
+    "render_type": "multi_slot",
+    "metadata_slot_number": 5,
+    "metadata_subject": "Math",
+    "hyperlink_count": 27,
+    "all_hyperlinks_have_slot": true,
+    "all_hyperlinks_have_subject": true,
+    "hyperlink_slot_distribution": {
+      "5": 27
+    },
+    "sample_hyperlinks": [
+      {
+        "text": "Capture Squares",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Compare",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Stage 3",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "How Close?",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Stage 5",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Stage 6",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "3.4.11 Handling Hot Sauce",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Compare",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Stage 2",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "How Close?",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Stage 4",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Stage 3",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Stage 5",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "3.4.12 Multiplying Teen Numbers",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Compare",
+        "source_slot": 5,
+        "source_subject": "Math"
+      }
+    ]
+  }
+}

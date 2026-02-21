@@ -1,0 +1,69 @@
+{
+  "timestamp": "2026-01-18T14:22:44.648203",
+  "stage": "03_before_render_slot5",
+  "data": {
+    "slot_number": 5,
+    "subject": "Math",
+    "render_type": "multi_slot",
+    "metadata_slot_number": 5,
+    "metadata_subject": "Math",
+    "hyperlink_count": 10,
+    "all_hyperlinks_have_slot": true,
+    "all_hyperlinks_have_subject": true,
+    "hyperlink_slot_distribution": {
+      "5": 10
+    },
+    "sample_hyperlinks": [
+      {
+        "text": "Five in a Row: Mult. & Division",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Five in a Row: Mult. & Division",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Capture Squares",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Five in a Row: Mult. & Division",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Capture Squares",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Five in a Row: Mult. & Division",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Capture Squares",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "3.4 Section B: Additional Practice Problems",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "3.4.5 It’s Chili in Here!",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Item UIN - VH054394",
+        "source_slot": 5,
+        "source_subject": "Math"
+      }
+    ]
+  }
+}

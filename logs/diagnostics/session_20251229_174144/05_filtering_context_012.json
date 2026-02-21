@@ -1,0 +1,13 @@
+{
+  "timestamp": "2025-12-29T17:41:52.053217",
+  "stage": "05_filtering_context",
+  "data": {
+    "current_slot_number": null,
+    "current_slot_number_is_none": true,
+    "current_subject": "ELA",
+    "current_subject_is_none": false,
+    "pending_hyperlinks_count": 6,
+    "cell": "wednesday_anticipatory_set",
+    "filtering_active": false
+  }
+}

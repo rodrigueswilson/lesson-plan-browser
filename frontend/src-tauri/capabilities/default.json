@@ -1,0 +1,36 @@
+{
+    "$schema": "../gen/schemas/capabilities.json",
+    "identifier": "main-capability",
+    "description": "Default capability for the main window",
+    "windows": [
+        "main"
+    ],
+    "permissions": [
+        "core:default",
+        "shell:allow-open",
+        "http:default",
+        "dialog:default",
+        {
+            "identifier": "fs:allow-read",
+            "scope": [
+                "$APP/**/*",
+                "$APPDATA/**/*",
+                "$CACHE/**/*",
+                "$RESOURCE/**/*",
+                "$TEMP/**/*",
+                "$DOWNLOAD/**/*"
+            ]
+        },
+        {
+            "identifier": "fs:allow-write",
+            "scope": [
+                "$APP/**/*",
+                "$APPDATA/**/*",
+                "$CACHE/**/*",
+                "$RESOURCE/**/*",
+                "$TEMP/**/*",
+                "$DOWNLOAD/**/*"
+            ]
+        }
+    ]
+}

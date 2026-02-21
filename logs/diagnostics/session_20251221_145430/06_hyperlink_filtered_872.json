@@ -1,0 +1,10 @@
+{
+  "timestamp": "2025-12-21T14:54:30.498980",
+  "stage": "06_hyperlink_filtered",
+  "data": {
+    "text": "Unit 3 - Culminating Task 1",
+    "link_slot": 1,
+    "current_slot": 4,
+    "reason": "slot_mismatch"
+  }
+}

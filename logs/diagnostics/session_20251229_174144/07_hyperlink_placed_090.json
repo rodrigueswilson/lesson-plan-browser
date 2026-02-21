@@ -1,0 +1,11 @@
+{
+  "timestamp": "2025-12-29T17:41:59.391369",
+  "stage": "07_hyperlink_placed",
+  "data": {
+    "text": "https://catalog.mcgraw-hill.com/repository/private",
+    "slot": null,
+    "subject": "Science",
+    "cell": "tuesday_assessment",
+    "confidence": 1.0
+  }
+}

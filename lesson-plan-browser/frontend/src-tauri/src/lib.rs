@@ -3,6 +3,13 @@
 
 mod db_commands;
 
+use tauri_plugin_shell::ShellExt;
+
+#[tauri::command]
+fn open_file(app: tauri::AppHandle, path: String) -> Result<(), String> {
+    app.shell().open(path, None).map_err(|e| e.to_string())
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     // Add panic hook to capture actual error message
@@ -41,7 +48,10 @@ pub fn run() {
     builder
         .plugin(tauri_plugin_http::init())
         .plugin(tauri_plugin_shell::init())
+        .plugin(tauri_plugin_fs::init())
+        .plugin(tauri_plugin_dialog::init())
         .invoke_handler(tauri::generate_handler![
+            open_file,
             db_commands::sql_query,
             db_commands::sql_execute,
             db_commands::get_app_data_dir,

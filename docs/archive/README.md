@@ -2,6 +2,8 @@
 
 This directory contains archived files from the codebase that are no longer actively used but are kept for reference, historical purposes, or potential future use.
 
+**Archive criteria** (when to move a doc here): See [../DOCUMENTATION_POLICY.md](../DOCUMENTATION_POLICY.md#archive). In short: superseded, obsolete, completed one-off (e.g. session logs), or explicitly deprecated. Add a deprecation notice at the top of the moved file and update [ROOT_ARCHIVE_INDEX.md](ROOT_ARCHIVE_INDEX.md) (or the relevant index).
+
 ## Archive Structure
 
 ```

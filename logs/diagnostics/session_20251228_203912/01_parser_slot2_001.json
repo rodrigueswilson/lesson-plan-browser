@@ -1,0 +1,52 @@
+{
+  "timestamp": "2025-12-28T20:39:12.934345",
+  "stage": "01_parser_slot2",
+  "data": {
+    "slot_number": 2,
+    "subject": "ELA/SS",
+    "source_file": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W51\\Ms. Savoca-12_15_25-12_19_25 Lesson plans.docx",
+    "hyperlink_count": 5,
+    "hyperlinks": [
+      {
+        "text": "02 - Second Grade Unit Description and Summary of Key Learning",
+        "url": "https://docs.google.com/document/d/1H_hFmN04OarxjXNlCsHxSgkzyD1nfzMjDFWQfx5zc30/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "02 - Second Grade Unit Description and Summary of Key Learning",
+        "url": "https://docs.google.com/document/d/1H_hFmN04OarxjXNlCsHxSgkzyD1nfzMjDFWQfx5zc30/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "02 - Second Grade Unit Description and Summary of Key Learning",
+        "url": "https://docs.google.com/document/d/1H_hFmN04OarxjXNlCsHxSgkzyD1nfzMjDFWQfx5zc30/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "02 - Second Grade Unit Description and Summary of Key Learning",
+        "url": "https://docs.google.com/document/d/1H_hFmN04OarxjXNlCsHxSgkzyD1nfzMjDFWQfx5zc30/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "02 - Second Grade Unit Description and Summary of Key Learning",
+        "url": "https://docs.google.com/document/d/1H_hFmN04OarxjXNlCsHxSgkzyD1nfzMjDFWQfx5zc30/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      }
+    ]
+  }
+}

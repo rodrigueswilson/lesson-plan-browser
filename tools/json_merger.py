@@ -8,6 +8,7 @@ with all class slots properly organized by day.
 
 from typing import List, Dict, Any
 from collections import defaultdict
+from backend.services.sorting_utils import sort_slots
 
 
 def merge_lesson_jsons(lessons: List[Dict[str, Any]]) -> Dict[str, Any]:
@@ -118,6 +119,16 @@ def merge_lesson_jsons(lessons: List[Dict[str, Any]]) -> Dict[str, Any]:
         merged['_hyperlinks'] = all_hyperlinks
     else:
         print(f"[WARN] JSON_MERGER: No hyperlinks found in lessons!")
+        # DIAGNOSTIC: Log details about each lesson to help debug
+        for i, lesson in enumerate(lessons):
+            lesson_json = lesson.get('lesson_json', {})
+            has_hyperlinks_key = '_hyperlinks' in lesson_json
+            hyperlinks_count = len(lesson_json.get('_hyperlinks', []))
+            print(
+                f"[DEBUG] JSON_MERGER: Lesson {i+1}: slot={lesson.get('slot_number')}, "
+                f"subject={lesson.get('subject')}, has_hyperlinks_key={has_hyperlinks_key}, "
+                f"hyperlinks_count={hyperlinks_count}"
+            )
     if all_images:
         merged['_images'] = all_images
     if media_schema_version:
@@ -133,36 +144,76 @@ def merge_lesson_jsons(lessons: List[Dict[str, Any]]) -> Dict[str, Any]:
             'subject': lesson['subject']
         }
         
-        # Add metadata from lesson_json to slot_info for proper matching
-        if 'metadata' in lesson_json:
-            metadata = lesson_json['metadata']
-            
-            # Add teacher name
-            if 'teacher_name' in metadata:
-                slot_info['teacher_name'] = metadata['teacher_name']
-            
-            # Add grade, homeroom, and time for accurate slot matching
-            if 'grade' in metadata:
-                slot_info['grade'] = metadata['grade']
-            if 'homeroom' in metadata:
-                slot_info['homeroom'] = metadata['homeroom']
-            if 'start_time' in metadata:
-                slot_info['start_time'] = metadata['start_time']
-            if 'end_time' in metadata:
-                slot_info['end_time'] = metadata['end_time']
+        # Get primary teacher fields from original slot data (preferred) or metadata (fallback)
+        slot_data = lesson.get('slot_data', {})
+        metadata = lesson_json.get('metadata', {})
+        
+        # Priority: Use original slot data for primary teacher fields, fallback to metadata
+        # This ensures each slot gets its own primary teacher, not the combined teacher name
+        if slot_data:
+            # Extract from slot_data (original slot from database)
+            if isinstance(slot_data, dict):
+                slot_info['primary_teacher_name'] = slot_data.get('primary_teacher_name')
+                slot_info['primary_teacher_first_name'] = slot_data.get('primary_teacher_first_name')
+                slot_info['primary_teacher_last_name'] = slot_data.get('primary_teacher_last_name')
+            else:
+                # Handle database object
+                slot_info['primary_teacher_name'] = getattr(slot_data, 'primary_teacher_name', None)
+                slot_info['primary_teacher_first_name'] = getattr(slot_data, 'primary_teacher_first_name', None)
+                slot_info['primary_teacher_last_name'] = getattr(slot_data, 'primary_teacher_last_name', None)
+        
+        # Fallback to metadata if slot_data doesn't have primary teacher fields
+        if not slot_info.get('primary_teacher_name'):
+            if 'primary_teacher_name' in metadata:
+                slot_info['primary_teacher_name'] = metadata['primary_teacher_name']
+            if 'primary_teacher_first_name' in metadata:
+                slot_info['primary_teacher_first_name'] = metadata['primary_teacher_first_name']
+            if 'primary_teacher_last_name' in metadata:
+                slot_info['primary_teacher_last_name'] = metadata['primary_teacher_last_name']
+        
+        # Don't copy teacher_name from metadata - it's the combined name and should not override slot-specific teachers
+        
+        # Add grade, homeroom, and time for accurate slot matching
+        # CRITICAL: Use metadata values which should be preserved from original slot data
+        if 'grade' in metadata:
+            slot_info['grade'] = metadata['grade']
+            print(f"[DEBUG] JSON_MERGER: Slot {slot_number} grade from metadata: {metadata['grade']}")
+        if 'homeroom' in metadata:
+            slot_info['homeroom'] = metadata['homeroom']
+            print(f"[DEBUG] JSON_MERGER: Slot {slot_number} homeroom from metadata: {metadata['homeroom']}")
+        if 'start_time' in metadata:
+            slot_info['start_time'] = metadata['start_time']
+        if 'end_time' in metadata:
+            slot_info['end_time'] = metadata['end_time']
         
         # Add each day's content to the merged structure
         if 'days' in lesson_json:
             for day_name, day_content in lesson_json['days'].items():
                 day_lower = day_name.lower()
                 if day_lower in merged['days']:
+                    if not isinstance(day_content, dict):
+                        print(f"[WARN] JSON_MERGER: Day content for {day_lower} in slot {slot_number} is not a dictionary: {type(day_content)}. Skipping.")
+                        continue
                     # Combine slot info with day content
-                    slot_data = {**slot_info, **day_content}
+                    # CRITICAL: Preserve day-specific times if available in day_times metadata
+                    day_slot_info = slot_info.copy()
+                    day_times = metadata.get("day_times")
+                    if isinstance(day_times, dict) and day_lower in day_times:
+                        day_specific = day_times[day_lower]
+                        if day_specific.get("start_time"):
+                            day_slot_info["start_time"] = day_specific["start_time"]
+                        if day_specific.get("end_time"):
+                            day_slot_info["end_time"] = day_specific["end_time"]
+
+                    # CRITICAL: day_slot_info must come AFTER day_content to ensure slot-specific
+                    # metadata (grade, homeroom, time) is preserved and not overwritten by day_content
+                    slot_data = {**day_content, **day_slot_info}
                     merged['days'][day_lower]['slots'].append(slot_data)
     
-    # Sort slots by slot_number within each day
+    # Sort slots using the chronological sorting utility (start_time first)
     for day in merged['days']:
-        merged['days'][day]['slots'].sort(key=lambda x: x.get('slot_number', 0))
+        if 'slots' in merged['days'][day]:
+            merged['days'][day]['slots'] = sort_slots(merged['days'][day]['slots'])
     
     # If only one slot, flatten the structure (remove slots array)
     # This prevents "Slot 1: Subject" from appearing in every cell

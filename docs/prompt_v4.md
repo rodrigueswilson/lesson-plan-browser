@@ -78,6 +78,7 @@
 **Selection limits:** Maximum 2-3 strategies per lesson to avoid cognitive overload for `[GRADE_LEVEL_VARIABLE]` learners
 **Transfer requirement:** At least 1 strategy must explicitly support Portuguese-English transfer at a developmentally appropriate level
 **Research validation:** Every selection must cite JSON evidence and cross-references
+**Immutable Tokens:** The primary teacher lesson plan may contain placeholders like `[[LINK_1]]`, `[[LINK_2]]`. These represent hyperlinks that were present in the source document. You MUST preserve these tokens exactly in your generated output. Do NOT translate the token text. Place them in the most appropriate sentence within your bilingual lesson plan to ensure students/teachers can still access the relevant resources.
 
 ## **PHASE 3: Co-Teaching Model Selection (WIDA-Driven)**
 
@@ -265,6 +266,9 @@ Ensure the selected strategies can be effectively implemented within the chosen 
 * Use grade-appropriate language for `[GRADE_LEVEL_VARIABLE]`
 * Maximum 12 words for board posting
 * Focus on the same measurable outcome as original
+* **Explicitly name every language domain students will practice** using child-friendly verbs (e.g., “listen to…”, “read…”, “speak…”, “write…”). If multiple domains are targeted, include each one inside the same sentence so students immediately know which skills they will practice.
+* **Append a domain tag** at the end of the sentence in the format `(...domain list...).` (note the final period after the closing parenthesis), e.g., `"I will read with my partner and write a response (reading, writing)."`. Valid domain labels: `listening`, `reading`, `speaking`, `writing`. List only the domains actually practiced; separate multiple domains with commas.
+* **Self-check before moving on:** Confirm that each student goal includes at least one of the verbs `listen`, `read`, `speak`, or `write` (or their -ing forms) **and** ends with the parentheses domain tag described above. If a day’s goal is missing either requirement, rewrite it before producing JSON.
 * **Templates by Key Language Use:**
   * **Narrate:** "I will tell about [content] using [sequence words] and a [visual]"
   * **Inform:** "I will describe [content] using [word bank] and a [chart/diagram]"
@@ -282,20 +286,32 @@ Ensure the selected strategies can be effectively implemented within the chosen 
 * **Generate ELD-LA standard:** ELD-LA.[grade-cluster].[function].[domain]
 * **Target proficiency levels:** Use typical ranges for `[GRADE_LEVEL_VARIABLE]`
 * **Reference proficiency adaptations:** Apply specific scaffolds from wida_strategy_enhancements.json
+* **Non-negotiable ELD code pattern:** Every WIDA objective must follow `ELD-[Standard].[GradeCluster].[Function].[Domains]` where `Domains` lists one or more of `Listening`, `Reading`, `Speaking`, `Writing` separated by `/`.  
+  * ✅ `ELD-SS.6-8.Explain.Listening/Speaking`  
+  * ✅ `ELD-LA.2-3.Inform.Reading/Writing`  
+  * ❌ `ELD-LA.2-3.Explain/Writing` (missing grade-cluster/function split before the domain segment)
+* **Function-to-domain separator rule:** Always place a period between the Function segment and the first domain (e.g., `.Explain.Listening`). **Never** insert a slash between the Function and the first domain (formats such as `ELD-LA.2-3.Explain/Writing` or `ELD-MA.2-3.Explain/Speak.Speaking/Writing` are invalid). Use `/` **only** to separate multiple domains after the Function segment.
+* **Self-check before output:** Scan every `wida_objective` string to ensure it ends with the domain suffix (e.g., `.Listening/Reading`). Rewrite any objective that fails the pattern prior to returning JSON.
 
 ### **Alignment Check**
 All three versions must target the identical learning outcome with different language complexity and support levels
 
 ## **Vocabulary and Cognate Pair Generation Protocol**
 
-**Create a structured list of exactly 6 English-Portuguese word pairs for each daily lesson plan.**
+**REQUIRED: Create a structured list of exactly 6 English-Portuguese word pairs for EACH daily lesson plan. This field is mandatory for ALL lessons - vocabulary_cognates must be present in the JSON output for every day (Monday, Tuesday, Wednesday, Thursday, Friday).**
 
-### **Step 1: Extract Lesson Vocabulary**
+**CRITICAL REMINDER: vocabulary_cognates is required for ALL days without exception. Do not omit this field for any day.**
+
+### **Step 1: Extract Lesson Vocabulary (REQUIRED FOR ALL LESSONS)**
+* **MANDATORY:** You MUST identify exactly 6 English-Portuguese word pairs for every lesson, every day (Monday, Tuesday, Wednesday, Thursday, Friday)
+* **CRITICAL:** This field is required for ALL days without exception - never skip vocabulary_cognates for any day
 * Identify 6-8 key vocabulary terms from the lesson objectives and content
+* If lesson objectives don't provide enough vocabulary, identify essential academic vocabulary (Tier 2/3) that supports the lesson's core concepts
 * Prioritize terms that are:
   - Essential for understanding the lesson's core concepts
   - Academic or content-specific (Tier 2/3 vocabulary)
   - Highly relevant to the day's learning objectives
+* **Never skip vocabulary_cognates** - it is a required field in the JSON schema and must be present for all lessons
 
 ### **Step 2: Identify Portuguese Equivalents**
 * For each English term, identify the Portuguese equivalent
@@ -336,7 +352,24 @@ All three versions must target the identical learning outcome with different lan
 
 ## **Sentence Frame Generation Protocol**
 
-**Create a structured list of exactly 8 sentence frames/stems/questions for each daily lesson plan, distributed by WIDA proficiency levels.**
+**REQUIRED: Create a structured list of exactly 8 sentence frames/stems/questions for EACH daily lesson plan, distributed by WIDA proficiency levels. This field is mandatory for ALL lessons - sentence_frames must be present in the JSON output for every day (Monday through Friday).**
+
+### **CRITICAL: Full English Version Requirement**
+* **DO NOT TRUNCATE:** Always provide the FULL English sentence frame, including the trailing blanks and clauses.
+* **INCORRECT (Truncated):** "The person preserves culture"
+* **CORRECT (Full):** "The person preserves culture by ___ because ___."
+* **RULE:** A sentence frame must always include a blank (`___`) for the student to complete, and must represent a complete thought or structure.
+* **STRICT PUNCTUATION:** Consistency is mandatory for a professional look across all platforms:
+    - **`frame_type: "frame"` or `"stem"`:** MUST end with a period (`.`). 
+    - **`frame_type: "open_question"`:** MUST end with a question mark (`?`).
+    - **Trailing blanks:** If the frame ends with a blank (`___`), follow it with the punctuation (e.g., `"This is a ___."` or `"How does ___?"`).
+
+### **CRITICAL: Sorting Requirement**
+* **SORT BY LEVEL:** The `sentence_frames` array must be sorted by proficiency level in the following order:
+  1. `levels_1_2` (3 items)
+  2. `levels_3_4` (3 items)
+  3. `levels_5_6` (2 items)
+* This ensures consistent display across all platforms.
 
 ### **Step 1: Identify Target Language Functions**
 * Extract target language functions from lesson objectives (explain, compare, describe, argue, sequence, justify, etc.)
@@ -362,25 +395,25 @@ All three versions must target the identical learning outcome with different lan
 * **Levels 1-2 (3 frames):** Create 3 highly supported frames with simple structures, word/phrase level, visual supports implied
   - Short sentences for more practice opportunities
   - **All 3 frames should incorporate vocabulary** from vocabulary_cognates in a simple, direct way (or at minimum, 2 out of 3)
-  - Examples: "This is ___", "I see ___", "It has ___", "First ___", "Then ___"
-  - Examples with vocabulary: "This is a **system**" / "Isto é um **sistema**", "I see the **economy**" / "Eu vejo a **economia**"
-  - Portuguese examples: "Isto é ___", "Eu vejo ___", "Tem ___", "Primeiro ___", "Depois ___"
+  - Examples: "This is a ___.", "I see the ___.", "It has a ___.", "First ___.", "Then ___."
+  - Examples with vocabulary: "This is a **system**." / "Isto é um **sistema**.", "I see the **economy**." / "Eu vejo a **economia**."
+  - Portuguese examples: "Isto é um ___.", "Eu vejo o ___.", "Tem um ___.", "Primeiro ___.", "Depois ___."
   - All must have `frame_type: "frame"`
-
+ 
 * **Levels 3-4 (3 frames):** Create 3 function-specific frames with sentence-level complexity, structured support
   - **All 3 frames should incorporate vocabulary** from vocabulary_cognates in contextually appropriate ways (or at minimum, 2 out of 3)
-  - Examples: "First ___, then ___", "This shows ___ because ___", "I think ___ because ___"
-  - Examples with vocabulary: "The **system** shows ___ because ___" / "O **sistema** mostra ___ porque ___", "The **economy** demonstrates ___ when ___" / "A **economia** demonstra ___ quando ___"
-  - Portuguese examples: "Primeiro ___, depois ___", "Isso mostra ___ porque ___", "Eu acho ___ porque ___"
+  - Examples: "First ___, then ___.", "This shows ___ because ___.", "I think ___ because ___."
+  - Examples with vocabulary: "The **system** shows ___ because ___." / "O **sistema** mostra ___ porque ___.", "The **economy** demonstrates ___ when ___." / "A **economia** demonstra ___ quando ___."
+  - Portuguese examples: "Primeiro ___, depois ___.", "Isso mostra ___ porque ___.", "Eu acho ___ porque ___."
   - All must have `frame_type: "frame"`
-
+ 
 * **Levels 5-6 (2 items):** Create 1 stem sentence (discourse-level with minimal scaffolding) and 1 open question (demands higher language and thinking skills)
   - **Both items should incorporate vocabulary** from vocabulary_cognates in sophisticated ways
-  - Stem examples: "Evidence suggests that ___", "This demonstrates ___", "Furthermore, ___"
-  - Stem examples with vocabulary: "The **system** demonstrates that ___" / "O **sistema** demonstra que ___", "Evidence from the **economy** suggests ___" / "Evidências da **economia** sugerem ___"
-  - Stem Portuguese examples: "As evidências sugerem que ___", "Isso demonstra ___", "Além disso ___"
+  - Stem examples: "Evidence suggests that ___.", "This demonstrates ___.", "Furthermore, ___."
+  - Stem examples with vocabulary: "The **system** demonstrates that ___.", "Evidence from the **economy** suggests ___."
+  - Stem Portuguese examples: "As evidências sugerem que ___.", "Isso demonstra ___.", "Além disso, ___."
   - Open question examples: "How does ___ relate to ___?", "What evidence supports ___?", "In what ways does ___?"
-  - Open question examples with vocabulary: "How does the **system** relate to ___?" / "Como o **sistema** se relaciona com ___?", "What evidence supports the **economy**?" / "Que evidências apoiam a **economia**?"
+  - Open question examples with vocabulary: "How does the **system** relate to ___?", "What evidence supports the **economy**?"
   - Open question Portuguese examples: "Como ___ se relaciona com ___?", "Que evidências apoiam ___?", "De que maneiras ___?"
   - One item must have `frame_type: "stem"`, one must have `frame_type: "open_question"`
 
@@ -435,8 +468,19 @@ All three versions must target the identical learning outcome with different lan
 4. Use double quotes for all keys and string values
 5. Do not include comments in JSON
 6. Validate structure matches schema exactly
+7. **CRITICAL: PROPER ESCAPING OF INTERNAL QUOTES**
+   - All double quotes INSIDE a string value MUST be escaped with a backslash.
+   - **WRONG (Invalid JSON):** `"wida_mapping": "Target WIDA "levels": 1-6"`
+   - **CORRECT (Valid JSON):** `"wida_mapping": "Target WIDA \"levels\": 1-6"`
+   - **RULE:** If a string contains a quote that isn't the outer enclosure, it MUST be `\"`.
+   - Failure to escape internal quotes will result in a fatal JSON parsing error.
 
 **CRITICAL REQUIREMENT: You MUST generate complete data for ALL FIVE DAYS (Monday through Friday). Each day must have the complete structure shown below for Monday. Do not use placeholders, ellipsis (...), or "TBD" for any day. Every day must have full content for all fields.**
+
+**MANDATORY FIELDS FOR EVERY DAY:**
+* `vocabulary_cognates`: Exactly 6 English-Portuguese word pairs (REQUIRED - never omit this field)
+* `sentence_frames`: Exactly 8 sentence frames/stems/questions (REQUIRED - never omit this field)
+* All other required fields as specified in the schema
 
 **JSON Structure Template:**
 ```json
@@ -500,50 +544,50 @@ All three versions must target the identical learning outcome with different lan
       "sentence_frames": [
         {
           "proficiency_level": "levels_1_2",
-          "english": "This is ___",
-          "portuguese": "Isto é ___",
+          "english": "This is a ___.",
+          "portuguese": "Isto é um ___.",
           "language_function": "identify",
           "frame_type": "frame"
         },
         {
           "proficiency_level": "levels_1_2",
-          "english": "I see ___",
-          "portuguese": "Eu vejo ___",
+          "english": "I see the ___.",
+          "portuguese": "Eu vejo o ___.",
           "language_function": "describe",
           "frame_type": "frame"
         },
         {
           "proficiency_level": "levels_1_2",
-          "english": "It has ___",
-          "portuguese": "Tem ___",
+          "english": "It has a ___.",
+          "portuguese": "Tem um ___.",
           "language_function": "describe",
           "frame_type": "frame"
         },
         {
           "proficiency_level": "levels_3_4",
-          "english": "First ___, then ___",
-          "portuguese": "Primeiro ___, depois ___",
+          "english": "First ___, then ___.",
+          "portuguese": "Primeiro ___, depois ___.",
           "language_function": "sequence",
           "frame_type": "frame"
         },
         {
           "proficiency_level": "levels_3_4",
-          "english": "This shows ___ because ___",
-          "portuguese": "Isso mostra ___ porque ___",
+          "english": "This shows ___ because ___.",
+          "portuguese": "Isso mostra ___ porque ___.",
           "language_function": "explain",
           "frame_type": "frame"
         },
         {
           "proficiency_level": "levels_3_4",
-          "english": "I think ___ because ___",
-          "portuguese": "Eu acho ___ porque ___",
+          "english": "I think ___ because ___.",
+          "portuguese": "Eu acho ___ porque ___.",
           "language_function": "justify",
           "frame_type": "frame"
         },
         {
           "proficiency_level": "levels_5_6",
-          "english": "Evidence suggests that ___",
-          "portuguese": "As evidências sugerem que ___",
+          "english": "Evidence suggests that ___.",
+          "portuguese": "As evidências sugerem que ___.",
           "language_function": "argue",
           "frame_type": "stem"
         },
@@ -661,6 +705,8 @@ All three versions must target the identical learning outcome with different lan
 **Validation Rules:**
 - **ALL FIVE DAYS (Monday-Friday) must have complete data - no placeholders or "TBD"**
 - All required fields must be present (see schema)
+- **MANDATORY:** `vocabulary_cognates` must be present for EVERY day with exactly 6 items (never omit this field)
+- **MANDATORY:** `sentence_frames` must be present for EVERY day with exactly 8 items (never omit this field)
 - String lengths must meet minimums (e.g., student_goal: 5-80 chars)
 - Enums must match exactly (e.g., co_teaching_model.model_name)
 - Arrays must meet size constraints (e.g., ell_support: 3-5 items, vocabulary_cognates: exactly 6 items, sentence_frames: exactly 8 items)
@@ -668,12 +714,13 @@ All three versions must target the identical learning outcome with different lan
 
 **Error Handling:**
 If validation fails, you will receive specific error messages. Common errors to avoid:
-1. **Missing Required Fields:** Ensure all required properties present
+1. **Missing Required Fields:** Ensure all required properties present, especially `vocabulary_cognates` and `sentence_frames` which are MANDATORY for every day
 2. **Wrong Data Types:** Use strings for text, integers for numbers, arrays for lists
 3. **Invalid Enum Values:** Co-teaching model names must match exactly
-4. **Array Size Violations:** ell_support must have 3-5 items; vocabulary_cognates must have exactly 6 items; sentence_frames must have exactly 8 items (3 for levels_1_2, 3 for levels_3_4, 2 for levels_5_6)
+4. **Array Size Violations:** ell_support must have 3-5 items; vocabulary_cognates must have exactly 6 items (REQUIRED for every day - never omit); sentence_frames must have exactly 8 items (3 for levels_1_2, 3 for levels_3_4, 2 for levels_5_6) (REQUIRED for every day - never omit)
 5. **String Length Violations:** student_goal must be ≤80 characters
 6. **Pattern Violations:** wida_objective must include ELD standard format
+7. **Missing vocabulary_cognates:** If you receive an error about missing vocabulary_cognates, you MUST add exactly 6 English-Portuguese word pairs. Extract from lesson objectives or identify essential academic vocabulary that supports the lesson's core concepts. This field cannot be omitted.
 
 ### **Mode 2: Markdown Table Output (LEGACY - When JSON Disabled)**
 
@@ -798,11 +845,11 @@ Formatting Rules:
 * [ ] **If JSON mode:** Schema file loaded from schemas/lesson_output_schema.json
 * [ ] All selected strategies are developmentally appropriate for `[GRADE_LEVEL_VARIABLE]`  
 * [ ] ELL progression considerations integrated for `[GRADE_LEVEL_VARIABLE]` typical proficiency ranges  
-* [ ] Unit vocabulary identified from lesson objectives at the appropriate reading level
-* [ ] Unit vocabulary extracted and structured into exactly 6 English-Portuguese pairs per day
+* [ ] **REQUIRED:** Unit vocabulary identified from lesson objectives at the appropriate reading level (MANDATORY for ALL lessons)
+* [ ] **REQUIRED:** Unit vocabulary extracted and structured into exactly 6 English-Portuguese pairs per day (vocabulary_cognates must be present for every day - never omit)
 * [ ] Vocabulary pairs are highly relevant to daily lesson objectives
 * [ ] English words formatted as bold, Portuguese words formatted as italic in output
-* [ ] Sentence frames generated and distributed correctly across proficiency levels (3 for Levels 1-2, 3 for Levels 3-4, 1 stem + 1 open question for Levels 5-6)
+* [ ] **REQUIRED:** Sentence frames generated and distributed correctly across proficiency levels (3 for Levels 1-2, 3 for Levels 3-4, 1 stem + 1 open question for Levels 5-6) (sentence_frames must be present for every day - never omit)
 * [ ] **Vocabulary integration:** At least 4-5 sentence frames (ideally all 8) incorporate vocabulary from vocabulary_cognates list
 * [ ] **Vocabulary integration validation:** Vocabulary usage in frames is natural and contextually appropriate
 * [ ] **Portuguese vocabulary alignment:** When English frames use vocabulary words, Portuguese frames use corresponding Portuguese vocabulary words
@@ -840,7 +887,7 @@ Formatting Rules:
 2. **JSON/WIDA files unavailable:** Ask for file/path confirmation  
 3. **Unclear content:** Request clarification rather than assume  
 4. **Strategy-lesson mismatch:** Explain why no suitable push-in support applies with specific reasoning  
-5. **Missing vocabulary:** Extract only from provided lesson objectives, request clarification if insufficient  
+5. **Missing vocabulary:** Vocabulary_cognates is REQUIRED for ALL lessons. Extract exactly 6 English-Portuguese word pairs from lesson objectives and content. If lesson objectives are insufficient, identify essential academic vocabulary (Tier 2/3) that supports the lesson's core concepts. Never omit vocabulary_cognates - it is a mandatory field for every day.  
 6. **Developmental mismatch:** Flag any strategy that may be too advanced or too simple for `[GRADE_LEVEL_VARIABLE]`  
 7. **WIDA template errors:** Verify Key Language Use selection and ELD-LA standard generation
 8. **Strategy pack index or category file missing:** Request path confirmation or adjust category selection based on available data

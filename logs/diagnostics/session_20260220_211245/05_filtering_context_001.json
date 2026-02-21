@@ -1,0 +1,13 @@
+{
+  "timestamp": "2026-02-20T21:12:45.006648",
+  "stage": "05_filtering_context",
+  "data": {
+    "current_slot_number": null,
+    "current_slot_number_is_none": true,
+    "current_subject": "Test",
+    "current_subject_is_none": false,
+    "pending_hyperlinks_count": 16,
+    "cell": "monday_unit_lesson",
+    "filtering_active": false
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "timestamp": "2025-11-29T20:53:42.263119",
+  "stage": "02_lesson_json_slot2",
+  "data": {
+    "slot_number": 2,
+    "subject": "ELA/SS",
+    "metadata_slot_number": null,
+    "metadata_subject": "ELA/SS",
+    "hyperlink_count": 5,
+    "hyperlinks_with_slot_metadata": 0,
+    "hyperlinks_with_subject_metadata": 0,
+    "sample_hyperlinks": [
+      {
+        "text": "Unit 3",
+        "has_source_slot": false,
+        "source_slot": null,
+        "has_source_subject": false,
+        "source_subject": null
+      },
+      {
+        "text": "Unit 3",
+        "has_source_slot": false,
+        "source_slot": null,
+        "has_source_subject": false,
+        "source_subject": null
+      },
+      {
+        "text": "Unit 3",
+        "has_source_slot": false,
+        "source_slot": null,
+        "has_source_subject": false,
+        "source_subject": null
+      },
+      {
+        "text": "Unit 3",
+        "has_source_slot": false,
+        "source_slot": null,
+        "has_source_subject": false,
+        "source_subject": null
+      },
+      {
+        "text": "Unit 3",
+        "has_source_slot": false,
+        "source_slot": null,
+        "has_source_subject": false,
+        "source_subject": null
+      }
+    ]
+  }
+}

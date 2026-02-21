@@ -1,0 +1,94 @@
+{
+  "timestamp": "2025-12-27T14:32:44.659498",
+  "stage": "03_before_render_slot5",
+  "data": {
+    "slot_number": 5,
+    "subject": "Math",
+    "render_type": "multi_slot",
+    "metadata_slot_number": 5,
+    "metadata_subject": "Math",
+    "hyperlink_count": 19,
+    "all_hyperlinks_have_slot": true,
+    "all_hyperlinks_have_subject": true,
+    "hyperlink_slot_distribution": {
+      "5": 19
+    },
+    "sample_hyperlinks": [
+      {
+        "text": "2.4.1 Teacher Guide",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "2.4.3 Teacher Guide",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "2.4.4 Teacher Guide",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "2.4.5 Teacher Guide",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Unit 4: Addition and Subtraction on the Number Lin",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Unit 4: Addition and Subtraction on the Number Lin",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Unit 4: Addition and Subtraction on the Number Lin",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Unit 4: Addition and Subtraction on the Number Lin",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Unit 4: Addition and Subtraction on the Number Lin",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "2.4.1 Cool Down",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "2.4.2 Cool Down",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "2.4.3 Cool Down",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "2.4.4 Cool Down",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "2.5.5 Cool Down",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Grade 02 Unit 4 Section A Checkpoint (English)",
+        "source_slot": 5,
+        "source_subject": "Math"
+      }
+    ]
+  }
+}

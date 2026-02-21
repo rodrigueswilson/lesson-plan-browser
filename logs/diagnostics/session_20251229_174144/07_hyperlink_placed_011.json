@@ -1,0 +1,11 @@
+{
+  "timestamp": "2025-12-29T17:41:52.073240",
+  "stage": "07_hyperlink_placed",
+  "data": {
+    "text": "gallery walk",
+    "slot": null,
+    "subject": "ELA",
+    "cell": "friday_instruction",
+    "confidence": 1.0
+  }
+}

@@ -1,0 +1,172 @@
+{
+  "timestamp": "2025-12-07T14:43:47.528785",
+  "stage": "01_parser_slot5",
+  "data": {
+    "slot_number": 5,
+    "subject": "Math",
+    "source_file": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W50\\12_8-12_12 Davies Lesson Plans.docx",
+    "hyperlink_count": 66,
+    "hyperlinks": [
+      {
+        "text": "3.3.8 Teacher Guide",
+        "url": "https://drive.google.com/file/d/1ogIQMLXxxHLyQ8odKRxaIsT6XZk7By6o/view?usp=drive_link",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "3.3.9 Teacher Guide",
+        "url": "https://drive.google.com/file/d/1S5HZ8hzOQ5nl-VhfHpM97jyj2gWB9Qav/view?usp=drive_link",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "3.3.10 Teacher Guide",
+        "url": "https://drive.google.com/file/d/16pPRL_mDPWv08RG0ZPa-ehiLOr6qZ-ZA/view?usp=drive_link",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "3.3.11 Teacher Guide",
+        "url": "https://drive.google.com/file/d/16xvXdwq5Isd5wv0y_-dHBbtLza9zbuPn/view?usp=drive_link",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "SUBTRACT ",
+        "url": "https://newarkps.ilclassroom.com/lesson_plans/371402-lesson-12-subtract-strategically?path=Wiki.1117",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "STRATEGICALLY",
+        "url": "https://newarkps.ilclassroom.com/lesson_plans/371402-lesson-12-subtract-strategically?path=Wiki.1117",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "3.3.12 Teacher Guide",
+        "url": "https://drive.google.com/file/d/1YUP37r-z-eU2wzSH8RnPudf93ghxlaQ8/view?usp=drive_link",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Five in a Row: Mult. & Division ",
+        "url": "https://docs.google.com/presentation/d/19elX6inyALKO_YPNoiEsbzk1WoRnlO3vSGCiERWRKus/edit?slide=id.g3",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Stage 2",
+        "url": "https://newarkps.ilclassroom.com/wikis/10194173-five-in-a-row-multiplication-3-5?path=Wiki.10465245",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "How Close?",
+        "url": "https://docs.google.com/presentation/d/1wkmDhDjK8fV54qV7YUVmJkM07rax3Bjc-dSTui3s_9A/edit?usp=drive_l",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Stage 4",
+        "url": "https://newarkps.ilclassroom.com/wikis/10023920-how-close-1-5?path=Wiki.10465245",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Number Puzzles",
+        "url": "https://docs.google.com/presentation/d/1Tioh9f75bgn1R8R2E4-I5QkT-bdmJCV_hjWzuNndDDY/edit?usp=drive_l",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Stage 5",
+        "url": "https://newarkps.ilclassroom.com/wikis/10007596-number-puzzles-addition-and-subtraction-1-4?path=Wik",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "3.3 Section B: Practice Problems",
+        "url": "https://drive.google.com/file/d/1lZbyss9C_z8nGgjDGHwUd5_p0Fg8o3U2/view?usp=drive_link",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Number Puzzles",
+        "url": "https://docs.google.com/presentation/d/1Tioh9f75bgn1R8R2E4-I5QkT-bdmJCV_hjWzuNndDDY/edit?usp=drive_l",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Stage 6",
+        "url": "https://newarkps.ilclassroom.com/wikis/10007596-number-puzzles-addition-and-subtraction-1-4?path=Wik",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Five in a Row: Mult. & Division ",
+        "url": "https://docs.google.com/presentation/d/19elX6inyALKO_YPNoiEsbzk1WoRnlO3vSGCiERWRKus/edit?slide=id.g3",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Stage 3",
+        "url": "https://newarkps.ilclassroom.com/wikis/10194173-five-in-a-row-multiplication-3-5?path=Wiki.10465245",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Number Puzzles",
+        "url": "https://docs.google.com/presentation/d/1Tioh9f75bgn1R8R2E4-I5QkT-bdmJCV_hjWzuNndDDY/edit?usp=drive_l",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Stage 2",
+        "url": "https://newarkps.ilclassroom.com/wikis/10194173-five-in-a-row-multiplication-3-5?path=Wiki.10465245",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      }
+    ]
+  }
+}

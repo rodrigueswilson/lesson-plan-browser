@@ -169,6 +169,7 @@ class DatabaseInterface(ABC):
         output_file: Optional[str] = None,
         error_message: Optional[str] = None,
         lesson_json: Optional[Dict[str, Any]] = None,
+        total_slots: Optional[int] = None,
     ) -> bool:
         """Update plan state."""
         pass

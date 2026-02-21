@@ -1,0 +1,82 @@
+Diagnostic for User 04fe8898-cb89-4a73-affb-64a97a98f820
+
+MONDAY:
+  Checking Slot #1 Subject 'ELA'
+    -> No exact match. Candidates for Slot #1: [('a.m. routine', '08:15', '08:30')]
+    -> Fallback match found: ('08:15', '08:30')
+  Checking Slot #2 Subject 'ELA/SS'
+    -> No exact match. Candidates for Slot #2: [('ela', '08:30', '09:15')]
+    -> Fallback match found: ('08:30', '09:15')
+  Checking Slot #4 Subject 'Math'
+    -> No exact match. Candidates for Slot #4: [('ela/ss', '10:06', '10:51')]
+    -> Fallback match found: ('10:06', '10:51')
+  Checking Slot #5 Subject 'Math'
+    -> No exact match. Candidates for Slot #5: [('lunch', '10:54', '11:39')]
+    -> Fallback match found: ('10:54', '11:39')
+  Checking Slot #6 Subject 'Science'
+    -> Exact match found: ('11:42', '12:27')
+
+TUESDAY:
+  Checking Slot #1 Subject 'ELA'
+    -> No exact match. Candidates for Slot #1: [('a.m. routine', '08:15', '08:30')]
+    -> Fallback match found: ('08:15', '08:30')
+  Checking Slot #2 Subject 'ELA/SS'
+    -> No exact match. Candidates for Slot #2: [('ela', '08:30', '09:15')]
+    -> Fallback match found: ('08:30', '09:15')
+  Checking Slot #4 Subject 'Math'
+    -> No exact match. Candidates for Slot #4: [('ela/ss', '10:06', '10:51')]
+    -> Fallback match found: ('10:06', '10:51')
+  Checking Slot #5 Subject 'Math'
+    -> No exact match. Candidates for Slot #5: [('lunch', '10:54', '11:39')]
+    -> Fallback match found: ('10:54', '11:39')
+  Checking Slot #6 Subject 'Science'
+    -> Exact match found: ('11:42', '12:27')
+
+WEDNESDAY:
+  Checking Slot #1 Subject 'ELA'
+    -> No exact match. Candidates for Slot #1: [('a.m. routine', '08:15', '08:30')]
+    -> Fallback match found: ('08:15', '08:30')
+  Checking Slot #2 Subject 'ELA/SS'
+    -> No exact match. Candidates for Slot #2: [('ela', '08:30', '09:15')]
+    -> Fallback match found: ('08:30', '09:15')
+  Checking Slot #4 Subject 'Math'
+    -> No exact match. Candidates for Slot #4: [('plc meeting', '10:06', '10:51')]
+    -> Fallback match found: ('10:06', '10:51')
+  Checking Slot #5 Subject 'Math'
+    -> No exact match. Candidates for Slot #5: [('lunch', '10:54', '11:39')]
+    -> Fallback match found: ('10:54', '11:39')
+  Checking Slot #6 Subject 'Science'
+    -> No exact match. Candidates for Slot #6: [('ela/ss', '11:42', '12:27')]
+    -> Fallback match found: ('11:42', '12:27')
+
+THURSDAY:
+  Checking Slot #1 Subject 'ELA'
+    -> No exact match. Candidates for Slot #1: [('a.m. routine', '08:15', '08:30')]
+    -> Fallback match found: ('08:15', '08:30')
+  Checking Slot #2 Subject 'ELA/SS'
+    -> No exact match. Candidates for Slot #2: [('ela', '08:30', '09:15')]
+    -> Fallback match found: ('08:30', '09:15')
+  Checking Slot #4 Subject 'Math'
+    -> No exact match. Candidates for Slot #4: [('ela/ss', '10:06', '10:51')]
+    -> Fallback match found: ('10:06', '10:51')
+  Checking Slot #5 Subject 'Math'
+    -> No exact match. Candidates for Slot #5: [('lunch', '10:54', '11:39')]
+    -> Fallback match found: ('10:54', '11:39')
+  Checking Slot #6 Subject 'Science'
+    -> Exact match found: ('11:42', '12:27')
+
+FRIDAY:
+  Checking Slot #1 Subject 'ELA'
+    -> No exact match. Candidates for Slot #1: [('a.m. routine', '08:15', '08:30')]
+    -> Fallback match found: ('08:15', '08:30')
+  Checking Slot #2 Subject 'ELA/SS'
+    -> No exact match. Candidates for Slot #2: [('ela', '08:30', '09:15')]
+    -> Fallback match found: ('08:30', '09:15')
+  Checking Slot #4 Subject 'Math'
+    -> No exact match. Candidates for Slot #4: [('ela/ss', '10:06', '10:51')]
+    -> Fallback match found: ('10:06', '10:51')
+  Checking Slot #5 Subject 'Math'
+    -> No exact match. Candidates for Slot #5: [('lunch', '10:54', '11:39')]
+    -> Fallback match found: ('10:54', '11:39')
+  Checking Slot #6 Subject 'Science'
+    -> Exact match found: ('11:42', '12:27')

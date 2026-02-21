@@ -1,0 +1,94 @@
+{
+  "timestamp": "2026-01-24T13:34:34.748604",
+  "stage": "03_before_render_slot5",
+  "data": {
+    "slot_number": 5,
+    "subject": "Math",
+    "render_type": "multi_slot",
+    "metadata_slot_number": 5,
+    "metadata_subject": "Math",
+    "hyperlink_count": 41,
+    "all_hyperlinks_have_slot": true,
+    "all_hyperlinks_have_subject": true,
+    "hyperlink_slot_distribution": {
+      "5": 41
+    },
+    "sample_hyperlinks": [
+      {
+        "text": "Five in a Row: Mult. & Division",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Capture Squares",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Capture Squares",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Stage 4",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "3.4.6 Division and Multiplication Equations",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Capture Squares",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Stage 4",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "3.4.7 Relating Quotients to Familiar Product",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Capture Squares",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Stage 4",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "3.4.8 Patterns in Multiplication",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Capture Squares",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Stage 4",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "3.4.9 Composing rectangles",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Item UIN - M05158",
+        "source_slot": 5,
+        "source_subject": "Math"
+      }
+    ]
+  }
+}

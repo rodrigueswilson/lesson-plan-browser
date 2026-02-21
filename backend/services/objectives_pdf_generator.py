@@ -9,9 +9,18 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
+from backend.config import settings
 from backend.file_manager import get_file_manager
 from backend.services.objectives_utils import normalize_objective_payload
+from backend.services.sorting_utils import sort_slots
 from backend.telemetry import logger
+from backend.utils.metadata_utils import (
+    build_document_header,
+    get_day_date,
+    get_homeroom,
+    get_subject,
+    get_teacher_name,
+)
 
 
 def extract_subject_from_unit_lesson(unit_lesson: str) -> str:
@@ -185,7 +194,7 @@ class ObjectivesPDFGenerator:
         self, lesson_json: Dict[str, Any], user_name: Optional[str]
     ) -> str:
         metadata = lesson_json.get("metadata", {})
-        teacher = user_name or metadata.get("teacher_name") or "Teacher"
+        teacher = get_teacher_name(metadata, user_name=user_name) or "Teacher"
         week_label = metadata.get("week_of") or datetime.now().strftime("%m-%d")
         teacher_slug = self._sanitize_for_filename(teacher, "Teacher")
         week_slug = self._sanitize_for_filename(week_label.replace("/", "-"), "Week")
@@ -404,7 +413,8 @@ class ObjectivesPDFGenerator:
         grade = metadata.get("grade", "Unknown")
         subject = metadata.get("subject", "Unknown")
         homeroom = metadata.get("homeroom", "Unknown")
-        teacher_name = metadata.get("teacher_name", "Unknown")
+        room = metadata.get("room", "")
+        teacher_name = get_teacher_name(metadata)
 
         days = lesson_json["days"]
         day_names = ["monday", "tuesday", "wednesday", "thursday", "friday"]
@@ -418,15 +428,26 @@ class ObjectivesPDFGenerator:
             # Check if this is a multi-slot structure
             if "slots" in day_data and isinstance(day_data["slots"], list):
                 # Multi-slot: iterate through slots
-                for slot in day_data["slots"]:
+                # Sort slots by start_time (chronological) with slot_number as fallback
+                sorted_slots = sort_slots(day_data["slots"])
+                logger.debug(
+                    f"Extracting objectives for {day_name}: {len(sorted_slots)} slots found (slot_numbers: {[s.get('slot_number', 0) for s in sorted_slots]})"
+                )
+                for slot in sorted_slots:
+                    slot_num = slot.get("slot_number", 0)
+                    logger.debug(
+                        f"Processing slot {slot_num} ({day_name}) for objectives extraction"
+                    )
                     self._extract_from_slot(
                         slot,
                         day_name,
                         week_of,
                         grade,
                         homeroom,
+                        room,
                         teacher_name,
                         objectives,
+                        metadata,
                     )
             else:
                 # Single-slot: extract directly from day
@@ -436,7 +457,8 @@ class ObjectivesPDFGenerator:
                     week_of,
                     grade,
                     homeroom,
-                    teacher_name,
+                    room,
+                    metadata,
                     subject,
                     objectives,
                 )
@@ -450,33 +472,49 @@ class ObjectivesPDFGenerator:
         week_of: str,
         grade: str,
         homeroom: str,
+        room: str,
         teacher_name: str,
         objectives: List[Dict[str, Any]],
+        metadata: Dict[str, Any],
     ):
         """Extract objectives from a slot (multi-slot structure).
 
         Prioritizes slot-specific metadata over merged metadata.
         """
         unit_lesson = slot.get("unit_lesson", "")
-        slot_subject = slot.get("subject", "Unknown")
-        slot_teacher = slot.get("teacher_name", teacher_name)
+        slot_teacher = get_teacher_name(metadata, slot=slot)
 
         # Extract slot-specific metadata (prioritize over merged metadata)
         slot_grade = slot.get("grade", grade)
-        slot_homeroom = slot.get("homeroom", homeroom)
+        # Use standardized helper to prevent homeroom leakage
+        slot_homeroom = get_homeroom(metadata, slot=slot)
+        slot_room = slot.get("room", room)
         slot_time = slot.get("time", "")
 
-        # Skip if no objective
+        # Get subject using standardized helper (metadata only, no text detection)
+        detected_subject = get_subject(metadata, slot=slot)
+
+        # Check if slot has objectives - if not, still include it with empty objectives
+        # This ensures slots that appear in DOCX also appear in objectives output
+        slot_num = slot.get("slot_number", 0)
         objective_data = normalize_objective_payload(
             slot.get("objective", {}),
             {
                 "day": day_name,
-                "slot_number": slot.get("slot_number"),
-                "subject": slot_subject,
+                "slot_number": slot_num,
+                "subject": detected_subject,
             },
         )
+        # If no objective data, create empty structure to include the slot
         if not objective_data:
-            return
+            logger.debug(
+                f"Slot {slot_num} ({day_name}) has no objective data - including with empty objectives"
+            )
+            objective_data = {
+                "content_objective": "",
+                "student_goal": "",
+                "wida_objective": "",
+            }
 
         # Skip "No School" entries
         if unit_lesson and unit_lesson.strip().lower() == "no school":
@@ -494,32 +532,14 @@ class ObjectivesPDFGenerator:
         ):
             return
 
-        # *** THE FIX: Prioritize slot subject over detection ***
-        # Only use detection if slot subject is Unknown/missing but we have content
-        detected_subject = "Unknown"
-
-        if slot_subject and slot_subject != "Unknown":
-            detected_subject = slot_subject
-        elif unit_lesson and unit_lesson.strip():
-            # Only try to detect if we don't have a valid slot subject
-            detected_subject = extract_subject_from_unit_lesson(unit_lesson)
-
-            # If detection failed but we have content, fallback to "Unknown"
-            # (or could fallback to metadata subject if we wanted, but slot_subject was already checked)
-            if detected_subject == "Unknown":
-                detected_subject = "Unknown"
-        else:
-            detected_subject = "Unknown"
-
         objectives.append(
             {
                 "week_of": week_of,
                 "day": day_name.capitalize(),
                 "subject": detected_subject,  # Use detected subject
                 "grade": slot_grade if slot_grade and slot_grade != "N/A" else grade,
-                "homeroom": slot_homeroom
-                if slot_homeroom and slot_homeroom != "N/A"
-                else homeroom,
+                "homeroom": slot_homeroom,  # Already uses get_homeroom helper with proper fallback
+                "room": slot_room if slot_room and slot_room != "N/A" else room,
                 "time": slot_time if slot_time and slot_time != "N/A" else "",
                 "teacher_name": slot_teacher,
                 "slot_number": slot.get("slot_number", 0),
@@ -537,7 +557,8 @@ class ObjectivesPDFGenerator:
         week_of: str,
         grade: str,
         homeroom: str,
-        teacher_name: str,
+        room: str,
+        metadata: Dict[str, Any],
         subject: str,
         objectives: List[Dict[str, Any]],
     ):
@@ -571,18 +592,8 @@ class ObjectivesPDFGenerator:
         ):
             return
 
-        # *** THE FIX: Prioritize metadata subject over detection ***
-        detected_subject = "Unknown"
-
-        if subject and subject != "Unknown":
-            detected_subject = subject
-        elif unit_lesson and unit_lesson.strip():
-            detected_subject = extract_subject_from_unit_lesson(unit_lesson)
-
-            if detected_subject == "Unknown":
-                detected_subject = "Unknown"
-        else:
-            detected_subject = "Unknown"
+        # Get subject using standardized helper (metadata only, no text detection)
+        detected_subject = get_subject(metadata)
 
         objectives.append(
             {
@@ -590,8 +601,9 @@ class ObjectivesPDFGenerator:
                 "day": day_name.capitalize(),
                 "subject": detected_subject,  # Use detected subject instead of metadata
                 "grade": grade,
-                "homeroom": homeroom,
-                "teacher_name": teacher_name,
+                "homeroom": get_homeroom(metadata),  # Use standardized helper
+                "room": room if room and room != "N/A" else "",
+                "teacher_name": get_teacher_name(metadata),
                 "unit_lesson": unit_lesson,
                 "content_objective": objective_data.get("content_objective", ""),
                 "student_goal": objective_data.get("student_goal", ""),
@@ -600,36 +612,16 @@ class ObjectivesPDFGenerator:
         )
 
     def _get_day_date(self, week_of: str, day_name: str) -> str:
-        """Get the date for a specific day of the week."""
-        import re
-        from datetime import timedelta
-
-        # Parse week_of date range (e.g., "11/17-11/21" or "11-17-11-21")
-        # Try slash format first
-        match = re.search(r"(\d{1,2})/(\d{1,2})-", week_of)
-        if not match:
-            # Try dash format
-            match = re.search(r"(\d{1,2})-(\d{1,2})-", week_of)
-
-        if not match:
-            return week_of
-
-        month, day = match.groups()
-        current_year = datetime.now().year
-
-        try:
-            monday_date = datetime(current_year, int(month), int(day))
-            # If date is in the future, assume previous year
-            if monday_date > datetime.now():
-                monday_date = datetime(current_year - 1, int(month), int(day))
-
-            day_index = ["monday", "tuesday", "wednesday", "thursday", "friday"].index(
-                day_name.lower()
+        """Get the date for a specific day of the week using standardized utility."""
+        # Get school year from config if available
+        config_school_year = None
+        if settings.SCHOOL_YEAR_START_YEAR and settings.SCHOOL_YEAR_END_YEAR:
+            config_school_year = (
+                settings.SCHOOL_YEAR_START_YEAR,
+                settings.SCHOOL_YEAR_END_YEAR,
             )
-            target_date = monday_date + timedelta(days=day_index)
-            return target_date.strftime("%m/%d/%Y")
-        except ValueError:
-            return week_of
+
+        return get_day_date(week_of, day_name, config_school_year=config_school_year)
 
     def generate_html(
         self,
@@ -642,6 +634,9 @@ class ObjectivesPDFGenerator:
         objectives = self.extract_objectives(lesson_json)
         if not objectives:
             raise ValueError("No objectives found in lesson plan")
+
+        # Get metadata for header building
+        metadata = lesson_json.get("metadata", {})
 
         pages = []
         for obj in objectives:
@@ -661,16 +656,26 @@ class ObjectivesPDFGenerator:
                 wida_text, 10.0, 1.76, min_font_size=10, max_font_size=20
             )
 
-            header_parts = [day_date]
-            if obj.get("time"):
-                header_parts.append(obj["time"])
-            header_parts.append(obj["subject"])
-            if obj.get("grade") and obj["grade"] != "Unknown":
-                header_parts.append(f"Grade {obj['grade']}")
-            if obj.get("homeroom") and obj["homeroom"] != "Unknown":
-                header_parts.append(obj["homeroom"])
+            # Build standardized header using metadata_utils helper
+            # Reconstruct slot dict for header builder (if slot-specific)
+            slot_dict = None
+            if obj.get("slot_number"):
+                slot_dict = {
+                    "subject": obj.get("subject"),
+                    "grade": obj.get("grade"),
+                    "homeroom": obj.get("homeroom"),
+                    "room": obj.get("room"),
+                    "time": obj.get("time"),
+                }
 
-            header_text = " | ".join(header_parts)
+            header_text = build_document_header(
+                metadata=metadata,
+                slot=slot_dict,
+                day_date=day_date,
+                day_name=obj.get("day"),
+                include_time=True,  # Objectives PDF includes time if present
+                include_day_name=True,  # Include day name for consistency
+            )
 
             pages.append(f"""
             <div class="objectives-page">

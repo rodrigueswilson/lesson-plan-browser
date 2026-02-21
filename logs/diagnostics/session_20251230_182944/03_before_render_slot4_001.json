@@ -1,0 +1,16 @@
+{
+  "timestamp": "2025-12-30T18:41:28.807443",
+  "stage": "03_before_render_slot4",
+  "data": {
+    "slot_number": 4,
+    "subject": "Math",
+    "render_type": "multi_slot",
+    "metadata_slot_number": 4,
+    "metadata_subject": "Math",
+    "hyperlink_count": 0,
+    "all_hyperlinks_have_slot": true,
+    "all_hyperlinks_have_subject": true,
+    "hyperlink_slot_distribution": {},
+    "sample_hyperlinks": []
+  }
+}

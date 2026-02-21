@@ -1,0 +1,10 @@
+{
+  "timestamp": "2025-12-21T14:54:30.551685",
+  "stage": "06_hyperlink_filtered",
+  "data": {
+    "text": " Biography Slide Template",
+    "link_slot": 1,
+    "current_slot": 2,
+    "reason": "slot_mismatch"
+  }
+}

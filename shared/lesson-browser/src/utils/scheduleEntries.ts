@@ -1,7 +1,91 @@
 import { ScheduleEntry } from '@lesson-api';
 
+const MEETING_SUBJECTS = [
+  'PLC',
+  'PLC MEETING',
+  'PROFESSIONAL LEARNING COMMUNITY',
+  'GLM',
+  'GRADE LEVEL MEETING',
+  'GRADE LEVEL MEETINGS',
+];
+
+/** Green non-class periods; never treat these as meetings (they must stay green). */
+const GREEN_NON_CLASS = [
+  'PREP',
+  'PREP TIME',
+  'LUNCH',
+  'A.M. ROUTINE',
+  'A. M. ROUTINE',
+  'AM ROUTINE',
+  'MORNING ROUTINE',
+  'DISMISSAL',
+];
+
+function normalizeSubjectForMatch(subject?: string | null): string {
+  return (subject ?? '')
+    .replace(/\uFEFF/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toUpperCase();
+}
+
+export function isMeetingPeriod(subject?: string | null): boolean {
+  if (!subject) return false;
+  const n = normalizeSubjectForMatch(subject);
+  if (GREEN_NON_CLASS.includes(n)) return false;
+  return MEETING_SUBJECTS.includes(n) ||
+    n === 'PLC' ||
+    n === 'GLM' ||
+    (n.includes('PLC') && n.includes('MEETING')) ||
+    (n.includes('GRADE') && n.includes('LEVEL') && n.includes('MEETING')) ||
+    n.includes('PROFESSIONAL LEARNING') ||
+    n.startsWith('GLM') ||
+    n.startsWith('PLC');
+}
+
+const AM_ROUTINE_PATTERN = /^A\.?\s*M\.?\s*ROUTINE$/;
+
+/**
+ * True if this subject is a non-class period (no lesson plan): Lunch, Dismissal, PREP,
+ * A.M. Routine, or any meeting (PLC, GLM, etc.). Single source of truth for "do not open lesson".
+ */
+export function isNonClassPeriod(subject?: string | null): boolean {
+  if (!subject) return false;
+  const n = normalizeSubjectForMatch(subject);
+  if (GREEN_NON_CLASS.includes(n)) return true;
+  if (AM_ROUTINE_PATTERN.test(n)) return true;
+  return isMeetingPeriod(subject);
+}
+
+/**
+ * Format schedule entry display to match the schedule cell: "Subject (grade) homeroom".
+ * For meetings (PLC, GLM) and lessons, include grade and homeroom when present.
+ * For other non-class periods (PREP, Lunch, etc.), show only subject.
+ */
+export function formatEntryDisplay(
+  subject: string | null | undefined,
+  grade: string | null | undefined,
+  homeroom: string | null | undefined,
+  showGradeAndHomeroom: boolean
+): string {
+  if (!subject) return '';
+  if (!showGradeAndHomeroom) return subject.trim();
+  const parts = [subject.trim()];
+  if (grade?.trim()) parts.push(`(${grade.trim()})`);
+  if (homeroom?.trim()) parts.push(homeroom.trim());
+  return parts.join(' ');
+}
+
 export const normalizeSubject = (subject?: string | null): string =>
-  (subject ?? '').replace(/\s+/g, ' ').trim().toUpperCase();
+  (() => {
+    const normalized = (subject ?? '').replace(/\s+/g, ' ').trim().toUpperCase();
+
+    // Normalize common abbreviations/typos to improve matching stability
+    // (e.g., schedule entry subject "Mat" should match plan slot "Math").
+    if (normalized === 'MAT' || normalized === 'MATHS') return 'MATH';
+
+    return normalized;
+  })();
 
 const trimSubject = (subject?: string | null): string =>
   (subject ?? '').replace(/\s+/g, ' ').trim();

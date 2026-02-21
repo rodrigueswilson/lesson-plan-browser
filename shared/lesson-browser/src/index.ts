@@ -11,9 +11,12 @@ export type { AppState } from './store/useStore';
 export { findPlanSlotForEntry, buildSlotDataMap } from './utils/planMatching';
 export {
   dedupeScheduleEntries,
+  formatEntryDisplay,
+  isMeetingPeriod,
+  isNonClassPeriod,
   normalizeSubject,
   areScheduleEntriesEquivalent,
 } from './utils/scheduleEntries';
-export { getSubjectColors } from './utils/scheduleColors';
+export { getSubjectColors, meetingPeriodColors, meetingPeriodInlineStyle } from './utils/scheduleColors';
 export * from './utils/formatters';
 

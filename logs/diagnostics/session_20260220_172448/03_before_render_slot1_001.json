@@ -1,0 +1,16 @@
+{
+  "timestamp": "2026-02-20T17:36:19.143653",
+  "stage": "03_before_render_slot1",
+  "data": {
+    "slot_number": 1,
+    "subject": "ELA/SS",
+    "render_type": "multi_slot",
+    "metadata_slot_number": 1,
+    "metadata_subject": "ELA/SS",
+    "hyperlink_count": 0,
+    "all_hyperlinks_have_slot": true,
+    "all_hyperlinks_have_subject": true,
+    "hyperlink_slot_distribution": {},
+    "sample_hyperlinks": []
+  }
+}

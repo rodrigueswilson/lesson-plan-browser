@@ -16,6 +16,64 @@ pub struct ExecResult {
     pub last_insert_id: i64,
 }
 
+/// Attempt to find and copy a bundled database from known asset locations.
+/// Returns true if a bundled database was successfully copied.
+#[cfg(target_os = "android")]
+fn try_copy_bundled_database(target_path: &PathBuf) -> bool {
+    // On Android, the build script places the bundled database in these potential locations:
+    // 1. The APK's assets directory (accessible via app's internal storage after extraction)
+    // 2. A known location where we might stage the database
+    
+    let bundled_paths = vec![
+        // Path where Tauri might extract bundled assets
+        PathBuf::from("/data/data/com.lessonplanner.browser/files/databases/lesson_planner_bundled.db"),
+        // External storage path (requires MANAGE_EXTERNAL_STORAGE permission)
+        PathBuf::from("/sdcard/Android/data/com.lessonplanner.browser/files/databases/lesson_planner.db"),
+        // Alternative internal path
+        PathBuf::from("/data/data/com.lessonplanner.browser/cache/databases/lesson_planner.db"),
+    ];
+    
+    for bundled_path in bundled_paths {
+        if bundled_path.exists() {
+            eprintln!("[DB] Found bundled database at: {}", bundled_path.display());
+            
+            // Check if bundled DB has actual data (file size > 0)
+            if let Ok(metadata) = fs::metadata(&bundled_path) {
+                if metadata.len() > 0 {
+                    // Attempt to copy the bundled database
+                    match fs::copy(&bundled_path, target_path) {
+                        Ok(bytes) => {
+                            eprintln!("[DB] Copied bundled database ({} bytes) to: {}", bytes, target_path.display());
+                            return true;
+                        }
+                        Err(e) => {
+                            eprintln!("[DB] Failed to copy bundled database: {}", e);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    eprintln!("[DB] No bundled database found. Database will be empty.");
+    eprintln!("[DB] To populate data, use: .\\update-tablet.ps1 or .\\copy-db-to-tablet.ps1");
+    false
+}
+
+#[cfg(not(target_os = "android"))]
+fn try_copy_bundled_database(_target_path: &PathBuf) -> bool {
+    // On desktop, we don't attempt to copy bundled databases
+    false
+}
+
+/// Check if the database has any user data (i.e., is not empty)
+fn database_has_data(conn: &Connection) -> bool {
+    match conn.query_row("SELECT COUNT(*) FROM users", [], |row| row.get::<_, i64>(0)) {
+        Ok(count) => count > 0,
+        Err(_) => false,
+    }
+}
+
 pub fn init_database(db_path: PathBuf) -> Result<(), String> {
     // Ensure parent directory exists (especially for Android)
     if let Some(parent) = db_path.parent() {
@@ -23,13 +81,30 @@ pub fn init_database(db_path: PathBuf) -> Result<(), String> {
             .map_err(|e| format!("Failed to create database directory: {}", e))?;
     }
     
+    // Check if database file exists and has content
+    let db_exists = db_path.exists() && fs::metadata(&db_path).map(|m| m.len() > 0).unwrap_or(false);
+    
+    // If database doesn't exist or is empty, try to copy from bundled assets
+    if !db_exists {
+        eprintln!("[DB] Database not found or empty at: {}", db_path.display());
+        try_copy_bundled_database(&db_path);
+    }
+    
     let mut db_guard = DB.lock().map_err(|e| format!("Lock error: {}", e))?;
     
     let conn = Connection::open(&db_path)
         .map_err(|e| format!("Failed to open database: {}", e))?;
     
-    // Run migrations
+    // Run migrations (creates tables if they don't exist)
     run_migrations(&conn)?;
+    
+    // Check if database has actual data
+    if !database_has_data(&conn) {
+        eprintln!("[DB] WARNING: Database is empty (no users found).");
+        eprintln!("[DB] Push data using: .\\update-tablet.ps1 or .\\copy-db-to-tablet.ps1");
+    } else {
+        eprintln!("[DB] Database initialized with existing data.");
+    }
     
     *db_guard = Some(conn);
     Ok(())
@@ -142,6 +217,7 @@ fn json_to_sqlite_params(params: Vec<serde_json::Value>) -> Vec<Box<dyn ToSql>> 
     }).collect()
 }
 
+#[allow(dead_code)]
 #[tauri::command]
 pub async fn sql_query(
     sql: String,
@@ -168,6 +244,7 @@ pub async fn sql_query(
     Ok(results)
 }
 
+#[allow(dead_code)]
 #[tauri::command]
 pub async fn sql_execute(
     sql: String,
@@ -190,6 +267,7 @@ pub async fn sql_execute(
     })
 }
 
+#[allow(dead_code)]
 #[tauri::command]
 pub async fn get_app_data_dir() -> Result<String, String> {
     tauri::async_runtime::spawn_blocking(|| -> Result<String, String> {
@@ -201,6 +279,8 @@ pub async fn get_app_data_dir() -> Result<String, String> {
     .map_err(|e| e.to_string())?
 }
 
+#[allow(dead_code)]
+#[deprecated(note = "Use database lesson_json column instead. This command will be removed in a future version.")]
 #[tauri::command]
 pub async fn read_json_file(path: String) -> Result<String, String> {
     tauri::async_runtime::spawn_blocking(move || -> Result<String, String> {
@@ -211,6 +291,8 @@ pub async fn read_json_file(path: String) -> Result<String, String> {
     .map_err(|e| e.to_string())?
 }
 
+#[allow(dead_code)]
+#[deprecated(note = "Use database lesson_json column instead. This command will be removed in a future version.")]
 #[tauri::command]
 pub async fn write_json_file(path: String, content: String) -> Result<(), String> {
     tauri::async_runtime::spawn_blocking(move || -> Result<(), String> {
@@ -225,6 +307,8 @@ pub async fn write_json_file(path: String, content: String) -> Result<(), String
     .map_err(|e| e.to_string())?
 }
 
+#[allow(dead_code)]
+#[deprecated(note = "Use database query instead. This command will be removed in a future version.")]
 #[tauri::command]
 pub async fn list_json_files(base_path: String) -> Result<Vec<String>, String> {
     tauri::async_runtime::spawn_blocking(move || -> Result<Vec<String>, String> {

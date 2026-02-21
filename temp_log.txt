@@ -1,0 +1,200 @@
+﻿DEBUG: text[:50] = 'Properties of Matter\nLesson 4 Day 4\n\nDifferentiate'
+DEBUG: _fill_cell(row=5, col=1, day=monday, section=misconceptions)
+DEBUG: text[:50] = 'Students may confuse what properties are.'
+DEBUG: _fill_cell(row=6, col=1, day=monday, section=assessment)
+DEBUG: text[:50] = 'Students will complete p. 46 in their Be a Scienti'
+DEBUG: _fill_cell(row=7, col=1, day=monday, section=homework)
+DEBUG: text[:50] = None
+DEBUG: _fill_cell(row=1, col=2, day=tuesday, section=unit_lesson)
+DEBUG: text[:50] = 'Unit 2 Changes to Matter\nDay 2'
+DEBUG: _fill_cell(row=2, col=2, day=tuesday, section=objective)
+DEBUG: text[:50] = 'I am learning that matter can be arranged in diffe'
+DEBUG: _fill_cell(row=3, col=2, day=tuesday, section=anticipatory_set)
+DEBUG: text[:50] = 'Refer to 2nd grade science curriculum\n[ 2nd Grade '
+DEBUG: _fill_cell(row=4, col=2, day=tuesday, section=instruction)
+DEBUG: text[:50] = 'Unit 2 Changes to Matter\nDay 2\n\nDifferentiated Ins'
+DEBUG: _fill_cell(row=5, col=2, day=tuesday, section=misconceptions)
+DEBUG: text[:50] = 'Students may struggle with how matter changes.'
+DEBUG: _fill_cell(row=6, col=2, day=tuesday, section=assessment)
+DEBUG: text[:50] = 'Students will complete pg. 59 in their Be a Scient'
+DEBUG: _fill_cell(row=7, col=2, day=tuesday, section=homework)
+DEBUG: text[:50] = None
+DEBUG: _fill_cell(row=1, col=3, day=wednesday, section=unit_lesson)
+DEBUG: text[:50] = 'Unit 2 Changes to Matter\nDay 3'
+DEBUG: _fill_cell(row=2, col=3, day=wednesday, section=objective)
+DEBUG: text[:50] = 'I am learning that changing the shape of an object'
+DEBUG: _fill_cell(row=3, col=3, day=wednesday, section=anticipatory_set)
+DEBUG: text[:50] = 'Refer to 2nd grade science curriculum\n[ 2nd Grade '
+DEBUG: _fill_cell(row=4, col=3, day=wednesday, section=instruction)
+DEBUG: text[:50] = 'Unit 2 Changes to Matter\nDay 3\n\nDifferentiated Ins'
+DEBUG: _fill_cell(row=5, col=3, day=wednesday, section=misconceptions)
+DEBUG: text[:50] = 'Students may struggle with mass.'
+DEBUG: _fill_cell(row=6, col=3, day=wednesday, section=assessment)
+DEBUG: text[:50] = 'Students will complete pg. 60 in their Be a Scient'
+DEBUG: _fill_cell(row=7, col=3, day=wednesday, section=homework)
+DEBUG: text[:50] = None
+DEBUG: _fill_cell(row=1, col=4, day=thursday, section=unit_lesson)
+DEBUG: text[:50] = 'Unit 2 Changes to Matter\nDay 4'
+DEBUG: _fill_cell(row=2, col=4, day=thursday, section=objective)
+DEBUG: text[:50] = 'I am learning that matter can be changed physicall'
+DEBUG: _fill_cell(row=3, col=4, day=thursday, section=anticipatory_set)
+DEBUG: text[:50] = 'Refer to 2nd grade science curriculum\n[ 2nd Grade '
+DEBUG: _fill_cell(row=4, col=4, day=thursday, section=instruction)
+DEBUG: text[:50] = 'Unit 2 Changes to Matter\nDay 4\n\nDifferentiated Ins'
+DEBUG: _fill_cell(row=5, col=4, day=thursday, section=misconceptions)
+DEBUG: text[:50] = 'Students may struggle with the concept that matter'
+DEBUG: _fill_cell(row=6, col=4, day=thursday, section=assessment)
+DEBUG: text[:50] = 'Students will complete pg. 61 in their Be a Scient'
+DEBUG: _fill_cell(row=7, col=4, day=thursday, section=homework)
+DEBUG: text[:50] = None
+DEBUG: _fill_cell(row=1, col=5, day=friday, section=unit_lesson)
+DEBUG: text[:50] = 'HEALTHUnit A\nChapter 1\nLesson 8'
+DEBUG: _fill_cell(row=2, col=5, day=friday, section=objective)
+DEBUG: text[:50] = 'Students will learn the steps for resolving confli'
+DEBUG: _fill_cell(row=3, col=5, day=friday, section=anticipatory_set)
+DEBUG: text[:50] = 'Unit A\nChapter 1\nLesson 7'
+DEBUG: _fill_cell(row=4, col=5, day=friday, section=instruction)
+DEBUG: text[:50] = 'HEALTHUnit A\nChapter 1\nLesson 8\n\nDifferentiated In'
+DEBUG: _fill_cell(row=5, col=5, day=friday, section=misconceptions)
+DEBUG: text[:50] = 'Vocabulary'
+DEBUG: _fill_cell(row=6, col=5, day=friday, section=assessment)
+DEBUG: text[:50] = 'ΓÇ£Resolve ConflictsΓÇ¥\nworksheet'
+DEBUG: _fill_cell(row=7, col=5, day=friday, section=homework)
+DEBUG: text[:50] = 'NA'
+DEBUG: Checking for slots to skip LLM transformation (already in DB and unchanged source)...
+[DEBUG] REUSING TRANSFORMED PLAN for slot 1 (ELA) - Source file unchanged.
+[DEBUG] REUSING TRANSFORMED PLAN for slot 2 (ELA/SS) - Source file unchanged.
+[DEBUG] REUSING TRANSFORMED PLAN for slot 4 (Math) - Source file unchanged.
+[DEBUG] REUSING TRANSFORMED PLAN for slot 5 (Math) - Source file unchanged.
+[DEBUG] REUSING TRANSFORMED PLAN for slot 6 (Science) - Source file unchanged.
+DEBUG: Starting Phase 2: Parallel LLM transformation for 5 slots
+DEBUG: Progress tracker updated: task_id=plan_20251229135832, stage=processing, progress=20%, message=Transforming 0 slots with AI in parallel...
+[DEBUG] _transform_slot_with_llm: Reusing existing lesson_json for slot 1
+[DEBUG] _transform_slot_with_llm: Reusing existing lesson_json for slot 2
+[DEBUG] _transform_slot_with_llm: Reusing existing lesson_json for slot 4
+[DEBUG] _transform_slot_with_llm: Reusing existing lesson_json for slot 5
+[DEBUG] _transform_slot_with_llm: Reusing existing lesson_json for slot 6
+[DEBUG] Collecting parallel result: Slot 1, Subject ELA, Hyperlinks in lesson_json: 13
+[DEBUG] Collecting parallel result: Slot 2, Subject ELA/SS, Hyperlinks in lesson_json: 5
+[DEBUG] Collecting parallel result: Slot 4, Subject Math, Hyperlinks in lesson_json: 10
+[DEBUG] Collecting parallel result: Slot 5, Subject Math, Hyperlinks in lesson_json: 48
+[DEBUG] Collecting parallel result: Slot 6, Subject Science, Hyperlinks in lesson_json: 4
+DEBUG: Reconstructing existing slots for merge...
+DEBUG: Combined to 5 total slots for rendering
+
+DEBUG: Finished processing all slots, 5 total for rendering
+DEBUG: About to render 5 lessons
+DEBUG: Updating progress tracker for rendering
+DEBUG: Progress tracker updated: task_id=plan_20251229135832, stage=rendering, progress=90%, message=Rendering 5 lessons to DOCX...
+DEBUG: Progress tracker updated for rendering
+DEBUG: Calling _combine_lessons (wrapped in asyncio.to_thread)
+[DEBUG] JSON_MERGER: Adding 80 hyperlinks to merged JSON
+DEBUG: _fill_cell(row=1, col=1, day=monday, section=unit_lesson)
+DEBUG: text[:50] = 'Unit 3: Lenni Lenape - Lesson 10: Delaware Lenape '
+DEBUG: _fill_cell(row=1, col=1, day=monday, section=unit_lesson)
+DEBUG: text[:50] = 'Unit 3 Lesson 4 - SIPPS: Extension Review 20'
+DEBUG: _fill_cell(row=2, col=1, day=monday, section=objective)
+DEBUG: text[:50] = '**Content:** Students will learn that previewing a'
+DEBUG: _fill_cell(row=3, col=1, day=monday, section=anticipatory_set)
+DEBUG: text[:50] = 'Refer to the second grade ELA curriculum learning '
+INFO:     127.0.0.1:52549 - "OPTIONS /api/progress/plan_20251229135832/poll HTTP/1.1" 200 OK
+DEBUG: Polling progress for task_id: plan_20251229135832
+DEBUG: Available task IDs: ['plan_20251227124849', 'plan_20251227130559', 'plan_20251227130904', 'plan_20251228203504', 'plan_20251228203535']
+DEBUG: Task plan_20251229135832 status: rendering, progress: 90%
+INFO:     127.0.0.1:52549 - "GET /api/progress/plan_20251229135832/poll HTTP/1.1" 200 OK
+{"extra": {"output_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 
+W51\\_temp_slot2_ELA_SS.docx", "error": "cannot access local variable 're' where it is not associated 
+with a value", "error_type": "UnboundLocalError"}, "event": "docx_render_error", "logger": 
+"backend.rate_limiter", "level": "error", "timestamp": "2025-12-30T04:17:28.349234Z", "exception": 
+"Traceback (most recent call last):\n  File \"D:\\LP\\tools\\docx_renderer.py\", line 375, in render\n   
+ _fill_all_days()\n  File \"D:\\LP\\tools\\docx_renderer.py\", line 362, in _fill_all_days\n    
+self._fill_single_slot_day(\n  File \"D:\\LP\\tools\\docx_renderer.py\", line 948, in 
+_fill_single_slot_day\n    self._fill_cell(\n  File \"D:\\LP\\tools\\docx_renderer.py\", line 1534, in 
+_fill_cell\n    search_pattern_raw = re.escape(link_text)\n                         
+^^\nUnboundLocalError: cannot access local variable 're' where it is not associated with a value"}
+{"extra": {"slot_number": 2, "subject": "ELA/SS", "temp_path": 
+"F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W51\\_temp_slot2_ELA_SS.docx"}, "event": 
+"batch_render_slot_failed", "logger": "backend.rate_limiter", "level": "error", "timestamp": 
+"2025-12-30T04:17:28.349234Z"}
+{"extra": {"output_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 
+W51\\_temp_slot4_Math.docx", "error": "cannot access local variable 're' where it is not associated with 
+a value", "error_type": "UnboundLocalError"}, "event": "docx_render_error", "logger": 
+"backend.rate_limiter", "level": "error", "timestamp": "2025-12-30T04:17:28.366021Z", "exception": 
+"Traceback (most recent call last):\n  File \"D:\\LP\\tools\\docx_renderer.py\", line 375, in render\n   
+ _fill_all_days()\n  File \"D:\\LP\\tools\\docx_renderer.py\", line 362, in _fill_all_days\n    
+self._fill_single_slot_day(\n  File \"D:\\LP\\tools\\docx_renderer.py\", line 916, in 
+_fill_single_slot_day\n    self._fill_cell(\n  File \"D:\\LP\\tools\\docx_renderer.py\", line 1534, in 
+_fill_cell\n    search_pattern_raw = re.escape(link_text)\n                         
+^^\nUnboundLocalError: cannot access local variable 're' where it is not associated with a value"}
+{"extra": {"slot_number": 4, "subject": "Math", "temp_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson 
+Plan\\25 W51\\_temp_slot4_Math.docx"}, "event": "batch_render_slot_failed", "logger": 
+"backend.rate_limiter", "level": "error", "timestamp": "2025-12-30T04:17:28.367021Z"}
+{"extra": {"output_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 
+W51\\_temp_slot5_Math.docx", "error": "cannot access local variable 're' where it is not associated with 
+a value", "error_type": "UnboundLocalError"}, "event": "docx_render_error", "logger": 
+"backend.rate_limiter", "level": "error", "timestamp": "2025-12-30T04:17:28.383093Z", "exception": 
+"Traceback (most recent call last):\n  File \"D:\\LP\\tools\\docx_renderer.py\", line 375, in render\n   
+ _fill_all_days()\n  File \"D:\\LP\\tools\\docx_renderer.py\", line 362, in _fill_all_days\n    
+self._fill_single_slot_day(\n  File \"D:\\LP\\tools\\docx_renderer.py\", line 916, in 
+_fill_single_slot_day\n    self._fill_cell(\n  File \"D:\\LP\\tools\\docx_renderer.py\", line 1534, in 
+_fill_cell\n    search_pattern_raw = re.escape(link_text)\n                         
+^^\nUnboundLocalError: cannot access local variable 're' where it is not associated with a value"}
+{"extra": {"slot_number": 5, "subject": "Math", "temp_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson 
+Plan\\25 W51\\_temp_slot5_Math.docx"}, "event": "batch_render_slot_failed", "logger": 
+"backend.rate_limiter", "level": "error", "timestamp": "2025-12-30T04:17:28.384097Z"}
+{"extra": {"output_path": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 
+W51\\_temp_slot6_Science.docx", "error": "cannot access local variable 're' where it is not associated 
+with a value", "error_type": "UnboundLocalError"}, "event": "docx_render_error", "logger": 
+"backend.rate_limiter", "level": "error", "timestamp": "2025-12-30T04:17:28.404276Z", "exception": 
+"Traceback (most recent call last):\n  File \"D:\\LP\\tools\\docx_renderer.py\", line 375, in render\n   
+ _fill_all_days()\n  File \"D:\\LP\\tools\\docx_renderer.py\", line 362, in _fill_all_days\n    
+self._fill_single_slot_day(\n  File \"D:\\LP\\tools\\docx_renderer.py\", line 948, in 
+_fill_single_slot_day\n    self._fill_cell(\n  File \"D:\\LP\\tools\\docx_renderer.py\", line 1534, in 
+_fill_cell\n    search_pattern_raw = re.escape(link_text)\n                         
+^^\nUnboundLocalError: cannot access local variable 're' where it is not associated with a value"}
+{"extra": {"slot_number": 6, "subject": "Science", "temp_path": 
+"F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W51\\_temp_slot6_Science.docx"}, "event": 
+"batch_render_slot_failed", "logger": "backend.rate_limiter", "level": "error", "timestamp": 
+"2025-12-30T04:17:28.404276Z"}
+{"extra": {"lesson_count": 5}, "event": "batch_merge_no_files", "logger": "backend.rate_limiter", 
+"level": "error", "timestamp": "2025-12-30T04:17:28.404276Z"}
+Traceback (most recent call last):
+  File "D:\LP\tools\batch_processor.py", line 1014, in process_user_week
+    output_file = await asyncio.to_thread(
+                  ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rodri\AppData\Local\Programs\Python\Python311\Lib\asyncio\threads.py", line 25, in 
+to_thread
+    return await loop.run_in_executor(None, func_call)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rodri\AppData\Local\Programs\Python\Python311\Lib\concurrent\futures\thread.py", line 
+58, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\LP\tools\batch_processor.py", line 4077, in _combine_lessons
+    return self._combine_lessons_impl(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\LP\tools\batch_processor.py", line 4875, in _combine_lessons_impl
+    raise ValueError(error_msg)
+ValueError: No files to merge: All 5 slot(s) failed to render. Check logs for rendering errors.
+{"extra": {"errors": ["Failed to combine lessons: No files to merge: All 5 slot(s) failed to render. 
+Check logs for rendering errors."], "success": false, "output_file": "", "processed_slots": 5}, "event": 
+"batch_process_failed", "logger": "backend.rate_limiter", "level": "error", "timestamp": 
+"2025-12-30T04:17:28.425848Z"}
+DEBUG: _fill_cell(row=1, col=1, day=monday, section=unit_lesson)
+DEBUG: text[:50] = 'Unit 4 Lesson 1: Whole numbers on the Number Line'
+DEBUG: _fill_cell(row=1, col=1, day=monday, section=unit_lesson)
+DEBUG: text[:50] = '[LESSON 13: MULTIPLES OF 100](https://newarkps.ilc'
+DEBUG: _fill_cell(row=1, col=1, day=monday, section=unit_lesson)
+DEBUG: text[:50] = 'Properties of Matter\nLesson 4 Day 4'
+DEBUG: _fill_cell(row=2, col=1, day=monday, section=objective)
+DEBUG: text[:50] = '**Content:** Students will describe properties of '
+DEBUG: _fill_cell(row=3, col=1, day=monday, section=anticipatory_set)
+DEBUG: text[:50] = 'Refer to 2nd grade science curriculum starting wit'
+ERROR: Exception in _combine_lessons: Failed to combine lessons: No files to merge: All 5 slot(s) failed to render. Check logs for rendering errors.
+DEBUG: Progress tracker updated: task_id=plan_20251229135832, stage=error, progress=90%, message=Failed to render: No files to merge: All 5 slot(s)
+DEBUG: Progress tracker updated: task_id=plan_20251229135832, stage=failed, progress=0%, message=Processing failed: ['Failed to combine lessons: No
+INFO:     127.0.0.1:59564 - "OPTIONS /api/progress/plan_20251229135832/poll HTTP/1.1" 200 OK
+DEBUG: Polling progress for task_id: plan_20251229135832
+DEBUG: Available task IDs: ['plan_20251227124849', 'plan_20251227130559', 'plan_20251227130904', 'plan_20251228203504', 'plan_20251228203535']
+DEBUG: Task plan_20251229135832 status: failed, progress: 0%
+INFO:     127.0.0.1:59564 - "GET /api/progress/plan_20251229135832/poll HTTP/1.1" 200 OK

@@ -1,0 +1,85 @@
+{
+  "timestamp": "2025-12-13T09:20:36.941550",
+  "stage": "02_lesson_json_slot2",
+  "data": {
+    "slot_number": 2,
+    "subject": "Social Studies",
+    "metadata_slot_number": null,
+    "metadata_subject": "Social Studies",
+    "hyperlink_count": 11,
+    "hyperlinks_with_slot_metadata": 0,
+    "hyperlinks_with_subject_metadata": 0,
+    "sample_hyperlinks": [
+      {
+        "text": "The Mummification Project Reading",
+        "has_source_slot": false,
+        "source_slot": null,
+        "has_source_subject": false,
+        "source_subject": null
+      },
+      {
+        "text": "The Mummy Project Assignment Sheet",
+        "has_source_slot": false,
+        "source_slot": null,
+        "has_source_subject": false,
+        "source_subject": null
+      },
+      {
+        "text": "The Mummification Project Reading",
+        "has_source_slot": false,
+        "source_slot": null,
+        "has_source_subject": false,
+        "source_subject": null
+      },
+      {
+        "text": "The Mummy Project Assignment Sheet",
+        "has_source_slot": false,
+        "source_slot": null,
+        "has_source_subject": false,
+        "source_subject": null
+      },
+      {
+        "text": "The Mummification Project Reading",
+        "has_source_slot": false,
+        "source_slot": null,
+        "has_source_subject": false,
+        "source_subject": null
+      },
+      {
+        "text": "The Mummy Project Assignment Sheet",
+        "has_source_slot": false,
+        "source_slot": null,
+        "has_source_subject": false,
+        "source_subject": null
+      },
+      {
+        "text": "The Mummification Project Reading",
+        "has_source_slot": false,
+        "source_slot": null,
+        "has_source_subject": false,
+        "source_subject": null
+      },
+      {
+        "text": "The Mummy Project Assignment Sheet",
+        "has_source_slot": false,
+        "source_slot": null,
+        "has_source_subject": false,
+        "source_subject": null
+      },
+      {
+        "text": "Rubric",
+        "has_source_slot": false,
+        "source_slot": null,
+        "has_source_subject": false,
+        "source_subject": null
+      },
+      {
+        "text": "The Mummification Project Reading",
+        "has_source_slot": false,
+        "source_slot": null,
+        "has_source_subject": false,
+        "source_subject": null
+      }
+    ]
+  }
+}

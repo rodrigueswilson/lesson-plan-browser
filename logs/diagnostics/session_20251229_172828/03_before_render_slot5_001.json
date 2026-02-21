@@ -1,0 +1,94 @@
+{
+  "timestamp": "2025-12-29T17:28:29.460107",
+  "stage": "03_before_render_slot5",
+  "data": {
+    "slot_number": 5,
+    "subject": "Math",
+    "render_type": "multi_slot",
+    "metadata_slot_number": 5,
+    "metadata_subject": "Math",
+    "hyperlink_count": 48,
+    "all_hyperlinks_have_slot": true,
+    "all_hyperlinks_have_subject": true,
+    "hyperlink_slot_distribution": {
+      "5": 48
+    },
+    "sample_hyperlinks": [
+      {
+        "text": "LESSON 13: MULTIPLES OF 100",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "3.3.13 Teacher Guide",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "LESSON 14: NEAREST MULTIPLES OF 10 AND 100",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "3.3.14 Teacher Guide",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "LESSON 15: ROUND TO THE NEAREST TEN AND HUNDRED  ",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "3.3.15 Teacher Guide",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "LESSON 16: ROUND AND ROUND AGAIN",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "3.3.16 Teacher Guide",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "LESSON 17: DOES IT MAKE SENSE?",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "3.3.17 Teacher Guide",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Target Numbers ",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Stage 7",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "How Close?",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Stage 4",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Target Numbers ",
+        "source_slot": 5,
+        "source_subject": "Math"
+      }
+    ]
+  }
+}

@@ -1,0 +1,1078 @@
+[
+  {
+    "slot_number": 1,
+    "subject": "ELA",
+    "teacher_name": "Kelsey Lang / Wilson Rodrigues",
+    "grade": "3",
+    "homeroom": "T5",
+    "unit_lesson": "Unit 3: Lenni Lenape\nLesson 10: Delaware Lenape Chapter 9",
+    "objective": {
+      "content_objective": "I am learning about how descendants of the Lenape people preserve their culture today.\nI am learning the effects of European colonization on the Lenape community.",
+      "student_goal": "I will read and write about Lenape culture (reading, writing).",
+      "wida_objective": "Students will use language to Explain how Lenni Lenape descendants preserve culture (ELD-LA.2-3.Explain.Reading/Writing) by using bilingual preview\u2013review and sentence frames using visual supports appropriate for WIDA levels 1-4, producing a written biography slide that demonstrates use of evidence and organized sequence."
+    },
+    "anticipatory_set": {
+      "original_content": "In your own words define the word indigenous. Next create a complete sentence (capital letter, subject, predicate and punctuation) that uses the word indigenous. Teachers can use chart paper and post it notes, padlet or another format to record and display student responses.",
+      "bilingual_bridge": "1) Display the vocabulary list (English word + Portuguese equivalent) and ask students to whisper the Portuguese word to a peer before sharing in English. 2) Model one example sentence in English, then repeat in Portuguese, pointing to the text and the 'Biography Slide Template' to link L1 and L2 meaning."
+    },
+    "vocabulary_cognates": [
+      {
+        "english": "indigenous",
+        "portuguese": "ind\u00edgena",
+        "is_cognate": true,
+        "relevance_note": "Key term for identifying people and groups discussed in the chapter"
+      },
+      {
+        "english": "culture",
+        "portuguese": "cultura",
+        "is_cognate": true,
+        "relevance_note": "Central concept: how traditions and ways of life are preserved"
+      },
+      {
+        "english": "preserve",
+        "portuguese": "preservar",
+        "is_cognate": true,
+        "relevance_note": "Verb describing actions to keep traditions alive"
+      },
+      {
+        "english": "tradition",
+        "portuguese": "tradi\u00e7\u00e3o",
+        "is_cognate": true,
+        "relevance_note": "Specific practices students will identify in the text"
+      },
+      {
+        "english": "community",
+        "portuguese": "comunidade",
+        "is_cognate": true,
+        "relevance_note": "Who carries out preservation work in the chapters"
+      },
+      {
+        "english": "evidence",
+        "portuguese": "evid\u00eancia",
+        "is_cognate": true,
+        "relevance_note": "Word students must use when citing the text or video"
+      }
+    ],
+    "sentence_frames": [
+      {
+        "proficiency_level": "levels_1_2",
+        "english": "This person is ___.",
+        "portuguese": "Esta pessoa \u00e9 ___.",
+        "language_function": "identify",
+        "frame_type": "frame"
+      },
+      {
+        "proficiency_level": "levels_1_2",
+        "english": "They help keep the ___ alive.",
+        "portuguese": "Eles ajudam a manter a ___ viva.",
+        "language_function": "describe",
+        "frame_type": "frame"
+      },
+      {
+        "proficiency_level": "levels_1_2",
+        "english": "I see ___ in the text.",
+        "portuguese": "Eu vejo ___ no texto.",
+        "language_function": "describe",
+        "frame_type": "frame"
+      },
+      {
+        "proficiency_level": "levels_3_4",
+        "english": "First, they ___. Then, they ___.",
+        "portuguese": "Primeiro, eles ___. Depois, eles ___.",
+        "language_function": "sequence",
+        "frame_type": "frame"
+      },
+      {
+        "proficiency_level": "levels_3_4",
+        "english": "The person preserves culture by ___ because ___.",
+        "portuguese": "A pessoa preserva a cultura por ___ porque ___.",
+        "language_function": "explain",
+        "frame_type": "frame"
+      },
+      {
+        "proficiency_level": "levels_3_4",
+        "english": "One example from the text is ___ which shows ___.",
+        "portuguese": "Um exemplo do texto \u00e9 ___ que mostra ___.",
+        "language_function": "support",
+        "frame_type": "frame"
+      },
+      {
+        "proficiency_level": "levels_5_6",
+        "english": "Evidence from the chapter suggests that ___ about cultural preservation.",
+        "portuguese": "Evid\u00eancias do cap\u00edtulo sugerem que ___ sobre a preserva\u00e7\u00e3o cultural.",
+        "language_function": "argue",
+        "frame_type": "stem"
+      },
+      {
+        "proficiency_level": "levels_5_6",
+        "english": "How does this person help the Lenni Lenape keep their traditions?",
+        "portuguese": "Como essa pessoa ajuda os Lenni Lenape a manter suas tradi\u00e7\u00f5es?",
+        "language_function": "analyze",
+        "frame_type": "open_question"
+      }
+    ],
+    "tailored_instruction": {
+      "original_content": "Key vocabulary terms and definitions can be provided to students ahead of time in order to better comprehend the text as they read independently. Discussing, clarifying, and breaking down the language of the learning targets to ensure comprehension. Present questions for students to see on the board as they are discussed with the class. Chunking the text into smaller sections for deeper analysis. Ask students to periodically self-assess their own learning to give an idea of how much they accomplished over the course of the lesson.",
+      "co_teaching_model": {
+        "model_name": "Station Teaching",
+        "rationale": "Levels 3-4 dominant is the typical distribution for grade 3; Station Teaching supports differentiated language scaffolds and allows focused bilingual support for small groups needing L1 preview or additional modeling.",
+        "wida_context": "Typical grade 3 mix with many students in WIDA Levels 2-4 and a few stronger speakers; goal is distributed support across stations.",
+        "phase_plan": [
+          {
+            "phase_name": "Warmup",
+            "minutes": 5,
+            "bilingual_teacher_role": "Introduce vocabulary and model one bilingual example using the 6 cognate pairs aloud in Portuguese then English.",
+            "primary_teacher_role": "Quick whole-class recap of previous learning and instructions for station rotations."
+          },
+          {
+            "phase_name": "Input",
+            "minutes": 10,
+            "bilingual_teacher_role": "Work with Station A (newcomers/emerging readers) to preview chapter vocabulary in Portuguese and practice simple sentence frames.",
+            "primary_teacher_role": "Teach Station B with guided reading prompts and comprehension questions in English."
+          },
+          {
+            "phase_name": "Practice",
+            "minutes": 20,
+            "bilingual_teacher_role": "Facilitate Station C (writing support) where students draft biography slide sentences using sentence frames; offer Portuguese scaffolds and word choices.",
+            "primary_teacher_role": "Circulate between stations B and C to support evidence collection and organization in English."
+          },
+          {
+            "phase_name": "Closure",
+            "minutes": 10,
+            "bilingual_teacher_role": "Co-lead share-out; ask 2 students to present a sentence in English and one in Portuguese.",
+            "primary_teacher_role": "Lead reflection prompt and collect quick self-assessments."
+          }
+        ],
+        "implementation_notes": [
+          "Use three stations: (A) Bilingual vocabulary & pronunciation (bilingual teacher), (B) Guided reading & evidence collection (primary teacher), (C) Writing/slide drafting (both teachers take turns supporting).",
+          "Prepare visual timers and a rotation chart. Use the provided Biography Slide Template and the Culture Preservation Graphic Organizer in each station.",
+          "Coordinate brief transition signals and a 1-minute partner check at rotations."
+        ],
+        "warnings": []
+      },
+      "ell_support": [
+        {
+          "strategy_id": "cognate_awareness",
+          "strategy_name": "Cognate Awareness",
+          "implementation": "Teacher highlights the 6 cognate pairs at Station A. Students match English\u2013Portuguese forms orally and point to the word in the text; use cognate pairs as a mini word bank for the Biography Slide Template (refer to them as 'the vocabulary list below').",
+          "proficiency_levels": "Levels 1-4"
+        },
+        {
+          "strategy_id": "preview_review",
+          "strategy_name": "Preview\u2013Review",
+          "implementation": "Before reading, bilingual teacher previews key sentences in Portuguese and models one example of finding evidence; after reading, students review evidence in small groups, rehearsing frames in English then Portuguese.",
+          "proficiency_levels": "Levels 1-3"
+        },
+        {
+          "strategy_id": "sentence_frame_practice",
+          "strategy_name": "Sentence Frame Practice",
+          "implementation": "Provide leveled sentence frame strips at Station C: Levels 1-2 frames with fill-in-the-blank, Levels 3-4 with sentence starters, Levels 5-6 with stems for evidence-based sentences.",
+          "proficiency_levels": "Levels 1-6"
+        }
+      ],
+      "special_needs_support": [
+        "Provide printed enlarged text snippets and one-on-one oral prompting as needed.",
+        "Allow additional time and sentence starters on the Biography Slide Template."
+      ],
+      "materials": [
+        "Biography Slide Template",
+        "Culture Preservation Graphic Organizer",
+        "Chart paper, sticky notes, markers",
+        "Sentence frame strips (prepared), index cards",
+        "Spotlight On Native Americans: Delaware Lenape",
+        "note catcher "
+      ]
+    },
+    "misconceptions": {
+      "original_content": "Students may not have a deep contextual understanding.",
+      "linguistic_note": {
+        "pattern_id": "subject_pronoun_omission",
+        "note": "Portuguese allows subject pronoun omission more often than English; students may drop subjects in English (e.g., 'Is important' vs. 'It is important').",
+        "prevention_tip": "Model complete English sentences using frames that include the subject and have students practice aloud the full sentence before writing; provide sentence frames that include the subject."
+      }
+    },
+    "assessment": {
+      "primary_assessment": "Daily Instructional Task: Biography\n\nStudents will choose one Lenape descendant of the indigenous people of North America from the lesson (Curtis Zunigha, Desmond Medera, or Beedohskah Stonefish) and complete a biography slide.\n\nStudents will re-read the text or re-watch the video about that individual.\nUse the Biography Slide Template to complete the following:\nProvide basic information about the person.\nDescribe how they are working to keep Lenape culture alive today.\nUse specific details and evidence from the text or video.",
+      "bilingual_overlay": {
+        "instrument": "Biography slide written product (written response using Biography Slide Template)",
+        "wida_mapping": "Key Language Use: Narrate/Inform. ELD-LA.2-3.Narrate/Inform.Reading/Writing targeting Levels 1-6 with tiered supports.",
+        "supports_by_level": {
+          "levels_1_2": "Provide a 3-word phrase bank (from the 6 cognate pairs) and picture prompts; allow oral rehearsal in Portuguese then scribe or type English sentence with teacher support.",
+          "levels_3_4": "Provide sentence frames and a bilingual word bank; allow students to draft in English with one Portuguese note line for clarification; encourage one short evidence sentence.",
+          "levels_5_6": "Expect multi-sentence paragraph using evidence; provide the organizer only; encourage use of linking words and evidence citation."
+        },
+        "scoring_lens": "Focus on evidence use (identifies at least one piece of evidence), organization (clear topic sentence and support), and language features scaled by level (Levels1-2: phrase use and correct subject; Levels3-4: complete sentences and transition words; Levels5-6: multiple sentences with explicit evidence).",
+        "constraints_honored": "No new materials introduced; use only the Biography Slide Template and classroom resources referenced."
+      }
+    },
+    "homework": {
+      "original_content": "Reading Log",
+      "family_connection": "Ask a family member (in Portuguese or English) to tell you one tradition from their family. Write or draw the tradition and one sentence in Portuguese and one in English describing why it is important."
+    },
+    "start_time": "08:15",
+    "end_time": "08:30"
+  },
+  {
+    "slot_number": 2,
+    "subject": "ELA/SS",
+    "teacher_name": "Donna Savoca / Wilson Rodrigues",
+    "grade": "2",
+    "homeroom": "209",
+    "start_time": "08:30",
+    "end_time": "09:15",
+    "unit_lesson": "Unit 3 Lesson 4\nSIPPS: Extension Review \n20",
+    "objective": {
+      "content_objective": "I am learning that previewing a text helps me to activate relevant prior knowledge.\nI am learning about how a character changes throughout a story.",
+      "student_goal": "I will preview and read to describe a character (listening, reading, writing).",
+      "wida_objective": "Students will use language to Narrate how a character changes in a story (ELD-LA.2-3.Narrate.Listening/Reading/Writing) by using preview strategies and sentence frames with bilingual supports appropriate for WIDA levels 1-4, producing a short written and oral description that demonstrates understanding of character change."
+    },
+    "anticipatory_set": {
+      "original_content": "Refer to the second grade ELA curriculum learning guide\n\n02 - Second Grade Unit Description and Summary of Key Learning",
+      "bilingual_bridge": "1) Activate Portuguese prior knowledge: Ask students in Portuguese to name a character from a book they know and one thing that changed about the character. 2) Show a bilingual picture prompt and label in Portuguese then English to connect vocabulary to the story preview."
+    },
+    "vocabulary_cognates": [
+      {
+        "english": "preview",
+        "portuguese": "pr\u00e9-visualizar",
+        "is_cognate": true,
+        "relevance_note": "Key strategy word for activating prior knowledge before reading"
+      },
+      {
+        "english": "character",
+        "portuguese": "personagem",
+        "is_cognate": false,
+        "relevance_note": "Central to identifying changes across a story"
+      },
+      {
+        "english": "change",
+        "portuguese": "mudan\u00e7a",
+        "is_cognate": false,
+        "relevance_note": "Used to describe how the character evolves"
+      },
+      {
+        "english": "story",
+        "portuguese": "hist\u00f3ria",
+        "is_cognate": false,
+        "relevance_note": "The text type students will preview and read"
+      },
+      {
+        "english": "describe",
+        "portuguese": "descrever",
+        "is_cognate": true,
+        "relevance_note": "Academic verb used in writing and speaking about characters"
+      },
+      {
+        "english": "independent",
+        "portuguese": "independente",
+        "is_cognate": true,
+        "relevance_note": "Relates to the misconception and assessment about working alone"
+      }
+    ],
+    "sentence_frames": [
+      {
+        "proficiency_level": "levels_1_2",
+        "english": "This is the character ___.",
+        "portuguese": "Este \u00e9 o personagem ___.",
+        "language_function": "identify",
+        "frame_type": "frame"
+      },
+      {
+        "proficiency_level": "levels_1_2",
+        "english": "I see the story has ___.",
+        "portuguese": "Eu vejo que a hist\u00f3ria tem ___.",
+        "language_function": "describe",
+        "frame_type": "frame"
+      },
+      {
+        "proficiency_level": "levels_1_2",
+        "english": "The character changed by ___.",
+        "portuguese": "O personagem mudou por ___.",
+        "language_function": "sequence",
+        "frame_type": "frame"
+      },
+      {
+        "proficiency_level": "levels_3_4",
+        "english": "First the character ___, then the character ___.",
+        "portuguese": "Primeiro o personagem ___, depois o personagem ___.",
+        "language_function": "sequence",
+        "frame_type": "frame"
+      },
+      {
+        "proficiency_level": "levels_3_4",
+        "english": "I describe the change because ___.",
+        "portuguese": "Eu descrevo a mudan\u00e7a porque ___.",
+        "language_function": "explain",
+        "frame_type": "frame"
+      },
+      {
+        "proficiency_level": "levels_3_4",
+        "english": "The story shows change when ___.",
+        "portuguese": "A hist\u00f3ria mostra mudan\u00e7a quando ___.",
+        "language_function": "explain",
+        "frame_type": "frame"
+      },
+      {
+        "proficiency_level": "levels_5_6",
+        "english": "Evidence from the story suggests that the character changed because ___.",
+        "portuguese": "Evid\u00eancias da hist\u00f3ria sugerem que o personagem mudou porque ___.",
+        "language_function": "argue",
+        "frame_type": "stem"
+      },
+      {
+        "proficiency_level": "levels_5_6",
+        "english": "How does the character's change affect the story?",
+        "portuguese": "Como a mudan\u00e7a do personagem afeta a hist\u00f3ria?",
+        "language_function": "analyze",
+        "frame_type": "open_question"
+      }
+    ],
+    "tailored_instruction": {
+      "original_content": "Stories read aloud to a small group.\n\nSmall group instruction \nWith ESL and Bilingual Teachers\n\nSupporting resources provided\n\nSentence stems",
+      "co_teaching_model": {
+        "model_name": "Station Teaching",
+        "rationale": "Levels 3-4 dominant inference for grade 2; Station Teaching allows targeted language practice for small groups while preserving whole-class access to the primary teacher.",
+        "wida_context": "Typical second-grade distribution with a majority at Levels 2-4 and a few emergent Level 1 students; mixed abilities benefit from differentiated stations.",
+        "phase_plan": [
+          {
+            "phase_name": "Warmup",
+            "minutes": 5,
+            "bilingual_teacher_role": "Lead a quick bilingual preview activity in Portuguese/English using the 6 vocabulary cards and a picture prompt.",
+            "primary_teacher_role": "Introduce the story hook and model preview aloud (English).",
+            "details": "Show the book cover, title and pictures; ask one Portuguese and one English question to activate prior knowledge."
+          },
+          {
+            "phase_name": "Input",
+            "minutes": 10,
+            "bilingual_teacher_role": "Model sentence frames and provide labeled visuals in Portuguese and English for station group.",
+            "primary_teacher_role": "Read the first pages aloud to whole group and model thinking about character change.",
+            "details": "Pause for think-alouds; display bilingual vocabulary chart."
+          },
+          {
+            "phase_name": "Practice (stations)",
+            "minutes": 20,
+            "bilingual_teacher_role": "Run a station with 4-6 students practicing frames orally and writing short responses with Portuguese scaffolds as needed.",
+            "primary_teacher_role": "Run a second station focusing on comprehension and independent reading practice; circulate to confer.",
+            "details": "Third station: partner retell using picture sequence cards; rotate every 6-7 minutes."
+          },
+          {
+            "phase_name": "Closure",
+            "minutes": 10,
+            "bilingual_teacher_role": "Facilitate brief share-out using sentence frames; collect one written sentence from each student.",
+            "primary_teacher_role": "Summarize key idea about character change and reinforce independent reading goal.",
+            "details": "Quick exit check: one-sentence goal about reading for the day."
+          }
+        ],
+        "implementation_notes": [
+          "Prepare 6 vocabulary cards (English/Portuguese) and picture sequence strips before lesson.",
+          "Use a visual timer for station rotations and a simple rotation chart so students know roles.",
+          "Bilingual teacher leads one station; primary teacher leads another; third station is partner work supervised by paraprofessional or rotating TA if available."
+        ],
+        "warnings": [
+          "If planning time is limited, reduce station rotations to two stations and extend rotation time to maintain fidelity."
+        ]
+      },
+      "ell_support": [
+        {
+          "strategy_id": "cognate_awareness",
+          "strategy_name": "Cognate Awareness",
+          "implementation": "Show the 6 vocabulary cognate pairs as a bilingual word wall. In the bilingual station, students match pictures to English words, then say the Portuguese word. Use the pairs for quick matching games and for building the word bank for writing.",
+          "proficiency_levels": "Levels 1-4"
+        },
+        {
+          "strategy_id": "preview_review",
+          "strategy_name": "Preview\u2013Review Routine",
+          "implementation": "Before reading, preview title, cover, and vocabulary in Portuguese then English; after reading, review the frames and have students retell in their strongest language then attempt an English sentence.",
+          "proficiency_levels": "Levels 1-4"
+        },
+        {
+          "strategy_id": "sentence_frames_strategy",
+          "strategy_name": "Structured Sentence Frames",
+          "implementation": "Provide printed frame strips (English) with Portuguese translations available at the bilingual station. Students practice frames orally, then write one sentence using a frame and one vocabulary word.",
+          "proficiency_levels": "Levels 2-4"
+        }
+      ],
+      "special_needs_support": [
+        "Provide one-on-one guided reading assistance during station time for students with IEPs.",
+        "Allow oral response instead of written response when fine motor or writing is a barrier."
+      ],
+      "materials": [
+        "Book for read-aloud (referenced by primary teacher)",
+        "6 vocabulary picture-word cards (English/Portuguese)",
+        "Sentence frame strips (English with Portuguese translation sheet)",
+        "Picture sequence strips",
+        "Visual timer, index cards, pencils"
+      ]
+    },
+    "misconceptions": {
+      "original_content": "Students may think they can only read at their desk or in the library. \nStudents may not understand what the word independent means. \nStudents may not be able to work independently.",
+      "linguistic_note": {
+        "pattern_id": "subject_pronoun_omission",
+        "note": "Portuguese allows subject pronoun omission which can lead students to produce sentences like 'Is reading' instead of 'He/She is reading' in English.",
+        "prevention_tip": "Model full subject-verb sentences and provide sentence frames that include the subject (e.g., 'He is ___', 'I will ___') and practice them in choral and paired speaking activities."
+      }
+    },
+    "assessment": {
+      "primary_assessment": "Students will be assessed based on the reading goal they set for themselves. This goal will allow the teacher to determine the students' understanding of what a goal means and their ability to write in a complete sentence.",
+      "bilingual_overlay": {
+        "instrument": "Student reading-goal statement and one-sentence written response + brief oral retell (exit check).",
+        "wida_mapping": "Key Language Use: Narrate/Explain; ELD domains: Listening/Reading/Writing; Target levels: 1-4.",
+        "supports_by_level": {
+          "levels_1_2": "Provide a word bank (6 vocabulary pairs) and an illustrated frame strip; allow student to point and produce a short phrase or record an oral sentence in Portuguese then attempt one English phrase.",
+          "levels_3_4": "Provide sentence frames and a word bank; expect a full sentence in English using one frame and one vocabulary word; allow brief Portuguese pre-talk if needed.",
+          "levels_5_6": "Expect a complete English sentence with evidence of change; provide no translation but offer the bilingual vocabulary chart for reference."
+        },
+        "scoring_lens": "Score for demonstration of character change concept (content) and for use of a subject + verb in a sentence (language). At Levels 1-2 expect word/phrase with correct referent; Levels 3-4 expect a complete sentence with basic grammar; Levels 5-6 expect sentence with supporting detail.",
+        "constraints_honored": "No new materials beyond the vocabulary cards and frame strips referenced in the lesson; task remains the same (student goal + one sentence)."
+      }
+    },
+    "homework": {
+      "original_content": "Read for 20 minutes and log\n\nSpelling (ABC Order)",
+      "family_connection": "With a family member, read 10 minutes together. In Portuguese, tell the family member one thing the character did. Then write one English sentence about the character change and have an adult help read it aloud."
+    }
+  },
+  {
+    "slot_number": 4,
+    "subject": "Math",
+    "teacher_name": "Donna Savoca / Wilson Rodrigues",
+    "grade": "2",
+    "homeroom": "209",
+    "start_time": "10:06",
+    "end_time": "10:51",
+    "unit_lesson": "Unit 4 Lesson 1\nWhole numbers on the NUmber Line.",
+    "objective": {
+      "content_objective": "The purpose of this lesson is for students to understand the structure of the number line and learn how whole numbers can be represented on the number line with tick marks and points.",
+      "student_goal": "I will locate and explain numbers on a number line (reading, speaking).",
+      "wida_objective": "Students will use language to Explain number line positions and reasoning (ELD-MA.2-3.Explain.Speaking/Writing) by using preview\u2013review and sentence frames appropriate for WIDA levels 1-4, producing spoken explanations and labeled number line drawings that demonstrate understanding of position and spacing."
+    },
+    "anticipatory_set": {
+      "original_content": "Unit 4: Addition and Subtraction on the Number Line",
+      "bilingual_bridge": "1) Preview 3 key vocabulary words in Portuguese with gestures and realia (counting cubes). 2) Model one example in Portuguese, then repeat the same example in English, asking students to point to the number on a shared number line."
+    },
+    "vocabulary_cognates": [
+      {
+        "english": "number",
+        "portuguese": "n\u00famero",
+        "is_cognate": true,
+        "relevance_note": "Core term for locating values on the number line"
+      },
+      {
+        "english": "line",
+        "portuguese": "linha",
+        "is_cognate": true,
+        "relevance_note": "Refers to the number line itself used in representations"
+      },
+      {
+        "english": "point",
+        "portuguese": "ponto",
+        "is_cognate": true,
+        "relevance_note": "Used to mark a specific whole number location"
+      },
+      {
+        "english": "tick mark",
+        "portuguese": "marca",
+        "is_cognate": false,
+        "relevance_note": "Shows the small marks that indicate equal intervals"
+      },
+      {
+        "english": "whole number",
+        "portuguese": "n\u00famero inteiro",
+        "is_cognate": false,
+        "relevance_note": "Specifies the type of numbers students will place on the line"
+      },
+      {
+        "english": "position",
+        "portuguese": "posi\u00e7\u00e3o",
+        "is_cognate": true,
+        "relevance_note": "Describes where a number sits on the number line"
+      }
+    ],
+    "sentence_frames": [
+      {
+        "proficiency_level": "levels_1_2",
+        "english": "This is the number ___.",
+        "portuguese": "Este \u00e9 o n\u00famero ___.",
+        "language_function": "identify",
+        "frame_type": "frame"
+      },
+      {
+        "proficiency_level": "levels_1_2",
+        "english": "Point to the ___.",
+        "portuguese": "Aponte para o ___.",
+        "language_function": "identify",
+        "frame_type": "frame"
+      },
+      {
+        "proficiency_level": "levels_1_2",
+        "english": "The point is on the ___.",
+        "portuguese": "O ponto est\u00e1 na ___.",
+        "language_function": "describe",
+        "frame_type": "frame"
+      },
+      {
+        "proficiency_level": "levels_3_4",
+        "english": "First place a point at ___, then place a point at ___.",
+        "portuguese": "Primeiro coloque um ponto em ___, depois coloque um ponto em ___.",
+        "language_function": "sequence",
+        "frame_type": "frame"
+      },
+      {
+        "proficiency_level": "levels_3_4",
+        "english": "The tick mark at ___ shows the number ___.",
+        "portuguese": "A marca em ___ mostra o n\u00famero ___.",
+        "language_function": "explain",
+        "frame_type": "frame"
+      },
+      {
+        "proficiency_level": "levels_3_4",
+        "english": "I know this is a whole number because ___.",
+        "portuguese": "Eu sei que este \u00e9 um n\u00famero inteiro porque ___.",
+        "language_function": "justify",
+        "frame_type": "frame"
+      },
+      {
+        "proficiency_level": "levels_5_6",
+        "english": "Evidence on the number line shows that the position of the point means ___.",
+        "portuguese": "As evid\u00eancias na linha num\u00e9rica mostram que a posi\u00e7\u00e3o do ponto significa ___.",
+        "language_function": "explain",
+        "frame_type": "stem"
+      },
+      {
+        "proficiency_level": "levels_5_6",
+        "english": "How does the position of a point help you know the number?",
+        "portuguese": "Como a posi\u00e7\u00e3o de um ponto ajuda voc\u00ea a saber o n\u00famero?",
+        "language_function": "analyze",
+        "frame_type": "open_question"
+      }
+    ],
+    "tailored_instruction": {
+      "original_content": "Small group instruction,\nManipulatives (counting cubes), numberlines, Visuals",
+      "co_teaching_model": {
+        "model_name": "Station Teaching",
+        "rationale": "Levels 3-4 dominant typical for Grade 2: Station Teaching allows targeted practice with bilingual teacher supporting language at one station while primary teacher leads conceptual tasks at another.",
+        "wida_context": "Class contains a range of Levels 1-4 with most students at Levels 3-4; a few emerging bilinguals need routine L1 support.",
+        "phase_plan": [
+          {
+            "phase_name": "Warmup",
+            "minutes": 5,
+            "bilingual_teacher_role": "Introduce vocabulary in Portuguese and English; model one example with counting cubes.",
+            "primary_teacher_role": "Activate prior knowledge and manage whole-group attention.",
+            "details": "Use a large number line on the board; bilingual teacher models."
+          },
+          {
+            "phase_name": "Input",
+            "minutes": 10,
+            "bilingual_teacher_role": "Demonstrate placing points and explaining position using sentence frames in Portuguese and English.",
+            "primary_teacher_role": "Explain math concept aloud and set station tasks.",
+            "details": "Show labeled and unlabeled examples; check for understanding."
+          },
+          {
+            "phase_name": "Practice",
+            "minutes": 20,
+            "bilingual_teacher_role": "Run a language/skill station: guided practice with the 6 vocabulary cards and small number lines in Portuguese/English.",
+            "primary_teacher_role": "Run the concept station: scaffolded problems with counting cubes and number line spacing.",
+            "details": "Students rotate through 3 stations: bilingual language station, manipulatives station, independent practice."
+          },
+          {
+            "phase_name": "Closure",
+            "minutes": 10,
+            "bilingual_teacher_role": "Prompt 2 students to explain their thinking using frames; highlight Portuguese-English connections.",
+            "primary_teacher_role": "Collect quick formative check (exit question) and summarize key ideas.",
+            "details": "Use a 1-minute share and the cool down exit ticket."
+          }
+        ],
+        "implementation_notes": [
+          "Prepare 6 vocabulary cards (English front / Portuguese back) and small number lines for the language station.",
+          "Use a visual timer for 8-minute rotations and a rotation chart.",
+          "Coordinate hand signals for switching language modes (Portuguese preview \u2192 English practice)."
+        ],
+        "warnings": []
+      },
+      "ell_support": [
+        {
+          "strategy_id": "cognate_awareness",
+          "strategy_name": "Cognate Awareness",
+          "implementation": "Use the 6-word list to show similarities between English and Portuguese (n\u00famero/n\u00famero, linha/linha). Play a matching card game at the bilingual station using English words on one set and Portuguese on another; students say short phrases using frames.",
+          "proficiency_levels": "Levels 1-4"
+        },
+        {
+          "strategy_id": "sentence_frames",
+          "strategy_name": "Sentence Frames & Choral Response",
+          "implementation": "Display frames for each station. Model frames in Portuguese, then have students repeat in English (choral). Use frames for the exit share: 'The point is on ___ because ___.'",
+          "proficiency_levels": "Levels 1-4"
+        },
+        {
+          "strategy_id": "preview_review",
+          "strategy_name": "L1 Preview\u2013Review",
+          "implementation": "Before independent practice, bilingual teacher previews tasks in Portuguese (3 minutes) and reviews key steps after practice in Portuguese to consolidate transfer.",
+          "proficiency_levels": "Levels 1-2 (preview), Levels 3-4 (review)"
+        }
+      ],
+      "special_needs_support": [
+        "Provide enlarged number lines and high-contrast markers for visual support.",
+        "Allow use of counting cubes and extended time for placing points."
+      ],
+      "materials": [
+        "Class number line (board-sized)",
+        "Individual small number lines (paper or laminated)",
+        "Counting cubes",
+        "6 vocabulary cards (English/Portuguese)",
+        "Index cards and markers",
+        "Visual timer"
+      ]
+    },
+    "misconceptions": {
+      "original_content": "Students may struggle with understanding why groups are getting different answers.\nRemind students how we use classroom math tools.",
+      "linguistic_note": {
+        "pattern_id": "subject_pronoun_omission",
+        "note": "Portuguese often drops subject pronouns; students may omit subjects when explaining in English (e.g., 'Is at 4' instead of 'It is at 4').",
+        "prevention_tip": "Model full subject-verb sentences and provide sentence-frame starters that include the subject (e.g., 'The point is at ___ because ___')."
+      }
+    },
+    "assessment": {
+      "primary_assessment": "2.3.1 Cool Down",
+      "bilingual_overlay": {
+        "instrument": "Written cool down exit ticket: place a point on a short number line and write one sentence explaining why.",
+        "wida_mapping": "Inform/Explain; ELD-MA.2-3.Explain.Speaking/Writing; targets Levels 1-4.",
+        "supports_by_level": {
+          "levels_1_2": "Provide a visual word bank with English + Portuguese vocabulary and allow students to point to their answer or circle the correct tick mark; permit one-word or phrase responses in English or Portuguese.",
+          "levels_3_4": "Offer sentence frames and allow students to write a short sentence using a frame; bilingual teacher may scribe responses if needed.",
+          "levels_5_6": "Ask for a 1\u20132 sentence written explanation without frames; encourage use of math vocabulary in English."
+        },
+        "scoring_lens": "Score for correct placement (content) and for use of a subject + verb when explaining (language): Levels 1-2 scored leniently for phrase use; Levels 3-4 look for one complete sentence; Levels 5-6 look for clear reasoning.",
+        "constraints_honored": "No new materials introduced; uses classroom number lines and existing exit ticket format."
+      }
+    },
+    "homework": {
+      "original_content": "",
+      "family_connection": "With a family member, draw a line on paper and place three points. In Portuguese and English, ask and answer: 'Que n\u00famero \u00e9 esse? / What number is this?'"
+    }
+  },
+  {
+    "slot_number": 5,
+    "subject": "Math",
+    "teacher_name": "Caitlin Davies / Wilson Rodrigues",
+    "grade": "3",
+    "homeroom": "T2",
+    "unit_lesson": "LESSON 13: MULTIPLES OF 100  3.3.13 Teacher Guide  \n\n(Section C: \nROUNDING)",
+    "objective": {
+      "content_objective": "SWBAT comprehend (in written and spoken language) that the phrase \u201cnearest multiple of 100\u201d refers to the multiple of 100 that is closest to a number.",
+      "student_goal": "I will round numbers to the nearest 100 (reading, speaking).",
+      "wida_objective": "Students will use language to Explain how to find the nearest multiple of 100 for two- and three-digit numbers (ELD-LA.2-3.Explain.Reading/Speaking) by using preview_review and sentence frames appropriate for WIDA levels 1-4, producing short oral explanations and written labels that demonstrate reasoning."
+    },
+    "anticipatory_set": {
+      "original_content": "Warm-up: Estimation Exploration: Marching Band (10 minutes)",
+      "bilingual_bridge": "1) Show a short picture of a marching band and ask students in Portuguese 'Qual n\u00famero est\u00e1 mais pr\u00f3ximo de cem?' then elicit responses in Portuguese before modelling English sentence frames. 2) Use familiar cultural examples (e.g., '100 reais' or '100 anos') to anchor the idea of 'cem' and 'hundred' before connecting to the English term."
+    },
+    "vocabulary_cognates": [
+      {
+        "english": "number",
+        "portuguese": "n\u00famero",
+        "is_cognate": true,
+        "relevance_note": "Core concept for locating values on number lines"
+      },
+      {
+        "english": "multiple",
+        "portuguese": "m\u00faltiplo",
+        "is_cognate": true,
+        "relevance_note": "Essential term for 'multiple of 100' concept"
+      },
+      {
+        "english": "hundred",
+        "portuguese": "cem",
+        "is_cognate": false,
+        "relevance_note": "Target base unit for rounding to nearest 100"
+      },
+      {
+        "english": "nearest",
+        "portuguese": "mais pr\u00f3ximo",
+        "is_cognate": false,
+        "relevance_note": "Describes closeness used in rounding decisions"
+      },
+      {
+        "english": "round",
+        "portuguese": "arredondar",
+        "is_cognate": false,
+        "relevance_note": "Verb students will use to explain procedure"
+      },
+      {
+        "english": "estimate",
+        "portuguese": "estimar",
+        "is_cognate": true,
+        "relevance_note": "Connects rounding to checking reasonable answers"
+      }
+    ],
+    "sentence_frames": [
+      {
+        "proficiency_level": "levels_1_2",
+        "english": "This number is closest to ___ (hundred).",
+        "portuguese": "Este n\u00famero est\u00e1 mais pr\u00f3ximo de ___ (cem).",
+        "language_function": "identify",
+        "frame_type": "frame"
+      },
+      {
+        "proficiency_level": "levels_1_2",
+        "english": "I see ___ on the number line.",
+        "portuguese": "Eu vejo ___ na linha num\u00e9rica.",
+        "language_function": "describe",
+        "frame_type": "frame"
+      },
+      {
+        "proficiency_level": "levels_1_2",
+        "english": "It rounds to ___.",
+        "portuguese": "Ele arredonda para ___.",
+        "language_function": "describe",
+        "frame_type": "frame"
+      },
+      {
+        "proficiency_level": "levels_3_4",
+        "english": "First find the two multiples of 100; then choose the nearest.",
+        "portuguese": "Primeiro encontre os dois m\u00faltiplos de 100; depois escolha o mais pr\u00f3ximo.",
+        "language_function": "sequence",
+        "frame_type": "frame"
+      },
+      {
+        "proficiency_level": "levels_3_4",
+        "english": "This is closer to ___ because the distance is ___.",
+        "portuguese": "Isto est\u00e1 mais pr\u00f3ximo de ___ porque a dist\u00e2ncia \u00e9 ___.",
+        "language_function": "explain",
+        "frame_type": "frame"
+      },
+      {
+        "proficiency_level": "levels_3_4",
+        "english": "I estimate ___ to check if rounding makes sense.",
+        "portuguese": "Eu estimo ___ para verificar se o arredondamento faz sentido.",
+        "language_function": "justify",
+        "frame_type": "frame"
+      },
+      {
+        "proficiency_level": "levels_5_6",
+        "english": "Evidence shows the number rounds to ___ because it is within ___ of that multiple.",
+        "portuguese": "As evid\u00eancias mostram que o n\u00famero arredonda para ___ porque est\u00e1 a ___ desse m\u00faltiplo.",
+        "language_function": "argue",
+        "frame_type": "stem"
+      },
+      {
+        "proficiency_level": "levels_5_6",
+        "english": "How does this number relate to the two nearest hundreds?",
+        "portuguese": "Como este n\u00famero se relaciona com os dois centenas mais pr\u00f3ximos?",
+        "language_function": "analyze",
+        "frame_type": "open_question"
+      }
+    ],
+    "tailored_instruction": {
+      "original_content": "Activity 1: About 100? Close to 100? (10 minutes). Activity 2: Close to Multiples of 100 (25 minutes). Students locate two- and three-digit numbers on number lines and decide nearest multiple of 100.",
+      "co_teaching_model": {
+        "model_name": "Station Teaching",
+        "rationale": "Levels 3-4 dominant typical for Grade 3; Station Teaching allows targeted scaffolds for small groups (intensive support for emerging bilinguals and challenge tasks for advanced students).",
+        "wida_context": "Typical Grade 3 class with majority at WIDA levels 2-4, a few at Level 1 and some at Level 5.",
+        "phase_plan": [
+          {
+            "phase_name": "Warmup",
+            "minutes": 5,
+            "bilingual_teacher_role": "Lead a quick Portuguese-English mini-lesson introducing the 6 cognate pairs and model sentence frame in Portuguese then English.",
+            "primary_teacher_role": "Facilitate whole-class marching-band estimation activity and direct visual attention to number lines."
+          },
+          {
+            "phase_name": "Input",
+            "minutes": 10,
+            "bilingual_teacher_role": "Demonstrate locating numbers on a number line using bilingual commentary and gesture; pre-teach vocabulary in Portuguese then link to English frames.",
+            "primary_teacher_role": "Model rounding procedure in English with think-aloud and anchor chart."
+          },
+          {
+            "phase_name": "Practice",
+            "minutes": 25,
+            "bilingual_teacher_role": "Co-lead one station focusing on scaffolded practice (visual number lines, manipulatives, and sentence frame cards in Portuguese+English).",
+            "primary_teacher_role": "Rotate between stations to teach the strategy, prompt reasoning, and present extension tasks."
+          },
+          {
+            "phase_name": "Closure",
+            "minutes": 5,
+            "bilingual_teacher_role": "Elicit quick exit explanations in pairs, prompting Portuguese then an English sentence using student_goal frames.",
+            "primary_teacher_role": "Collect cool-down responses and highlight examples of correct rounding reasoning."
+          }
+        ],
+        "implementation_notes": [
+          "Use three stations: (A) Guided bilingual station with teacher and number-line cards, (B) Independent practice with number line strips and estimation checks, (C) Challenge station with mixed numbers to analyze when rounding to tens and hundreds produce same result.",
+          "Prepare rotation chart and visual timer; place the 6 cognate pairs on station A as a quick reference chart.",
+          "Keep manipulative sets small (paper number-line strips, counters) to simplify transitions."
+        ],
+        "warnings": [
+          "Ensure station rotations are brief and clearly signaled; if planning time is limited, reduce station A to 10 minutes."
+        ]
+      },
+      "ell_support": [
+        {
+          "strategy_id": "cognate_awareness",
+          "strategy_name": "Cognate Awareness",
+          "implementation": "Teacher presents 'the 6 cognate pairs' at the bilingual station, students match cards (English\u2013Portuguese) and use them to label number-line anchors; teacher models how cognates like 'number/n\u00famero' and 'multiple/m\u00faltiplo' help infer meaning in English. Use during station rotations for 8\u201310 minutes.",
+          "proficiency_levels": "Levels 1-4"
+        },
+        {
+          "strategy_id": "preview_review",
+          "strategy_name": "Preview-Review (L1\u2194L2)",
+          "implementation": "Before practice, bilingual teacher previews task instructions in Portuguese and demonstrates 1 worked example; after practice, students review their reasoning orally in Portuguese then produce a short English sentence using provided frame.",
+          "proficiency_levels": "Levels 1-3"
+        },
+        {
+          "strategy_id": "sentence_frame_practice",
+          "strategy_name": "Sentence Frame Practice",
+          "implementation": "Provide strips with the 8 sentence frames; bilingual teacher rehearses frames in choral and paired practice (Portuguese then English) and prompts students to use frames when explaining rounding decisions.",
+          "proficiency_levels": "Levels 2-5"
+        }
+      ],
+      "special_needs_support": [
+        "Provide a number-line with highlighted hundred anchors (visual high-contrast) and allow use of a 100-chart for tracking.",
+        "Allow oral responses to count for part of written justification for students with writing deficits."
+      ],
+      "materials": [
+        "paper number-line strips (0\u2013500)",
+        "index cards with the 6 cognate pairs",
+        "manipulatives/counters",
+        "visual timer",
+        "anchor chart: 'How to find nearest 100'",
+        "Illustrative Mathematics Suggested Centers",
+        "Target Numbers , Stage 7",
+        "How Close?, Stage 4"
+      ]
+    },
+    "misconceptions": {
+      "original_content": "Students may struggle and confuse rounding to the nearest 100 versus nearest 10.",
+      "linguistic_note": {
+        "pattern_id": "subject_pronoun_omission",
+        "note": "Portuguese often omits subject pronouns, so students may produce fragments like 'Is closest to 100' instead of full English sentences.",
+        "prevention_tip": "Model full subject + verb sentences in English and provide sentence frames that require subject pronoun (e.g., 'It rounds to ___')."
+      }
+    },
+    "assessment": {
+      "primary_assessment": "3.3.13 Cool-down",
+      "bilingual_overlay": {
+        "instrument": "Short written exit ticket: 3 problems asking students to round given numbers to nearest 100 and write one short sentence explaining choice (verbally allowed in L1 first).",
+        "wida_mapping": "Key Language Use: Explain. ELD Domains: Reading/Writing and Speaking for oral justification. Target WIDA levels 1-4.",
+        "supports_by_level": {
+          "levels_1_2": "Provide word bank with the 6 cognate pairs and a number line with hundred anchors; allow oral response in Portuguese with teacher scribe into English.",
+          "levels_3_4": "Provide sentence frames (Levels 3-4 frames) and a mini number-line strip; prompt one-sentence explanation in English.",
+          "levels_5_6": "Ask for a two-sentence written explanation using evidence of distances to each hundred; encourage use of the stem frame for justification."
+        },
+        "scoring_lens": "Score focuses on correct nearest-hundred choice (content) and a language lens: Level 1-2: uses key vocabulary or phrase; Level 3-4: produces a full sentence using a frame; Level 5: provides explanation referencing distance.",
+        "constraints_honored": "No new materials introduced beyond number-line strips and word bank cards referenced in the lesson."
+      }
+    },
+    "homework": {
+      "original_content": "3.3 Section C: Practice Problems: Problem 1",
+      "family_connection": "Family activity: Ask a caregiver to choose a familiar price (e.g., cost of a snack) and ask the child in Portuguese to say which hundred it is closest to, then practice saying both Portuguese and English phrases (e.g., 'mais pr\u00f3ximo de cem / nearest hundred')."
+    },
+    "start_time": "10:54",
+    "end_time": "11:39"
+  },
+  {
+    "slot_number": 6,
+    "subject": "Science",
+    "teacher_name": "Donna Savoca / Wilson Rodrigues",
+    "grade": "2",
+    "homeroom": "209",
+    "start_time": "11:42",
+    "end_time": "12:27",
+    "unit_lesson": "Properties of Matter\nLesson 4 Day 4",
+    "objective": {
+      "content_objective": "I am learning about the properties of different materials",
+      "student_goal": "I will describe materials and their properties (reading, speaking).",
+      "wida_objective": "Students will use language to Explain properties of materials (ELD-LA.2-3.Explain.Reading/Speaking) by using sentence frames and cognate awareness using bilingual preview-supports appropriate for WIDA levels 1-4, producing short oral and written descriptions that demonstrate content vocabulary use."
+    },
+    "anticipatory_set": {
+      "original_content": "Refer to 2nd grade science curriculum starting with page 126 \n 2nd Grade Science",
+      "bilingual_bridge": "1) Preview 2-3 key vocabulary in Portuguese using the cognate pairs to connect prior knowledge. 2) Ask students in Portuguese to name an object at home and say one property (color/shape) before sharing in English."
+    },
+    "vocabulary_cognates": [
+      {
+        "english": "matter",
+        "portuguese": "mat\u00e9ria",
+        "is_cognate": true,
+        "relevance_note": "Core term for discussing what everything is made of."
+      },
+      {
+        "english": "material",
+        "portuguese": "material",
+        "is_cognate": true,
+        "relevance_note": "Names the substances students observe and test."
+      },
+      {
+        "english": "property",
+        "portuguese": "propriedade",
+        "is_cognate": true,
+        "relevance_note": "Key academic term for distinguishing characteristics."
+      },
+      {
+        "english": "mass",
+        "portuguese": "massa",
+        "is_cognate": true,
+        "relevance_note": "Used in comparing how heavy objects feel."
+      },
+      {
+        "english": "shape",
+        "portuguese": "forma",
+        "is_cognate": false,
+        "relevance_note": "Describes appearance; useful for sorting activities."
+      },
+      {
+        "english": "change",
+        "portuguese": "mudan\u00e7a",
+        "is_cognate": false,
+        "relevance_note": "Introduces idea that properties can sometimes change."
+      }
+    ],
+    "sentence_frames": [
+      {
+        "proficiency_level": "levels_1_2",
+        "english": "This is a ___ (material).",
+        "portuguese": "Isto \u00e9 um ___ (material).",
+        "language_function": "identify",
+        "frame_type": "frame"
+      },
+      {
+        "proficiency_level": "levels_1_2",
+        "english": "The color is ___ and the shape is ___.",
+        "portuguese": "A cor \u00e9 ___ e a forma \u00e9 ___.",
+        "language_function": "describe",
+        "frame_type": "frame"
+      },
+      {
+        "proficiency_level": "levels_1_2",
+        "english": "It feels ___ because of its mass.",
+        "portuguese": "Ele parece ___ por causa da sua massa.",
+        "language_function": "describe",
+        "frame_type": "frame"
+      },
+      {
+        "proficiency_level": "levels_3_4",
+        "english": "First I observe the material, then I describe its property ___ because ___.",
+        "portuguese": "Primeiro eu observo o material, depois descrevo a propriedade ___ porque ___.",
+        "language_function": "sequence",
+        "frame_type": "frame"
+      },
+      {
+        "proficiency_level": "levels_3_4",
+        "english": "This material has the property ___ which shows ___.",
+        "portuguese": "Este material tem a propriedade ___ que mostra ___.",
+        "language_function": "explain",
+        "frame_type": "frame"
+      },
+      {
+        "proficiency_level": "levels_3_4",
+        "english": "I think the mass is ___ because I felt ___ with the balance.",
+        "portuguese": "Eu penso que a massa \u00e9 ___ porque eu senti ___ com a balan\u00e7a.",
+        "language_function": "justify",
+        "frame_type": "frame"
+      },
+      {
+        "proficiency_level": "levels_5_6",
+        "english": "Evidence from the observations suggests that the material's property ___ explains why ___.",
+        "portuguese": "Evid\u00eancias das observa\u00e7\u00f5es sugerem que a propriedade do material ___ explica por que ___.",
+        "language_function": "argue",
+        "frame_type": "stem"
+      },
+      {
+        "proficiency_level": "levels_5_6",
+        "english": "How does the material's mass relate to its property of ___?",
+        "portuguese": "Como a massa do material se relaciona com a sua propriedade de ___?",
+        "language_function": "analyze",
+        "frame_type": "open_question"
+      }
+    ],
+    "tailored_instruction": {
+      "original_content": "Differentiated Instruction\nSmall Groups\nVisuals\nManipulatives",
+      "co_teaching_model": {
+        "model_name": "Station Teaching",
+        "rationale": "Levels 3-4 dominant expectation for 2nd grade allows stations to target language and content in smaller groups while keeping whole-class cohesion.",
+        "wida_context": "Typical 2nd grade class with most students at WIDA Levels 2-4 and a few Level 1 emergent speakers.",
+        "phase_plan": [
+          {
+            "phase_name": "Warmup",
+            "minutes": 5,
+            "bilingual_teacher_role": "Introduce the 6 vocabulary cognates in Portuguese and English; model quick sentence frame in English.",
+            "primary_teacher_role": "Activate prior knowledge with quick whole-class question and visual."
+          },
+          {
+            "phase_name": "Input",
+            "minutes": 10,
+            "bilingual_teacher_role": "Demonstrate one station task in Portuguese/English pair and scaffold vocabulary.",
+            "primary_teacher_role": "Model observation and recording in the Be a Scientist Notebook."
+          },
+          {
+            "phase_name": "Practice",
+            "minutes": 20,
+            "bilingual_teacher_role": "Rotate among stations, provide L1 previews, and prompt sentence frames for Levels 1-2 and 3-4.",
+            "primary_teacher_role": "Circulate to support scientific reasoning and encourage precision in observations."
+          },
+          {
+            "phase_name": "Closure",
+            "minutes": 10,
+            "bilingual_teacher_role": "Elicit 2 student reports using target frames; support pronunciation and vocabulary in Portuguese when needed.",
+            "primary_teacher_role": "Collect notebook evidence and summarize key properties observed."
+          }
+        ],
+        "implementation_notes": [
+          "Set up 3 stations: observation table, balance/scale station, and sorting by property station.",
+          "Use a visible timer and rotation chart so transitions are predictable.",
+          "Bilingual teacher prepares a small L1 word bank card at station entrances and uses target sentence frames."
+        ],
+        "warnings": []
+      },
+      "ell_support": [
+        {
+          "strategy_id": "cognate_awareness",
+          "strategy_name": "Cognate Awareness",
+          "implementation": "Introduce the 6 cognate pairs briefly in Portuguese, point out similarities with English spellings/pronunciations, and use matching cards at stations (students match picture to word). Refer to 'the vocabulary list below' for activities.",
+          "proficiency_levels": "Levels 1-4"
+        },
+        {
+          "strategy_id": "sentence_frames",
+          "strategy_name": "Sentence Frames",
+          "implementation": "Provide laminated frame strips for each station with frames targeted to Levels 1-2 and 3-4; model aloud and have bilingual teacher rehearse answers in Portuguese then support production in English.",
+          "proficiency_levels": "Levels 1-4"
+        },
+        {
+          "strategy_id": "preview_review",
+          "strategy_name": "Preview-Review",
+          "implementation": "Before station work, preview key vocabulary and frames in Portuguese; after rotations, review main ideas in English and Portuguese to strengthen transfer.",
+          "proficiency_levels": "Levels 1-3"
+        }
+      ],
+      "special_needs_support": [
+        "Provide enlarged vocabulary cards and frame strips for students with visual or processing needs.",
+        "Allow tactile exploration and extended time for recording observations."
+      ],
+      "materials": [
+        "Be a Scientist Notebook (p.46 referenced)",
+        "Small balance scale and identical small objects",
+        "Station rotation chart and visual timer",
+        "Laminated sentence frame strips and vocabulary cards"
+      ]
+    },
+    "misconceptions": {
+      "original_content": "Students may confuse what properties are.",
+      "linguistic_note": {
+        "pattern_id": "subject_pronoun_omission",
+        "note": "Portuguese often drops subject pronouns which can lead students to produce short English phrases without clear subjects (e.g., 'Is heavy' instead of 'It is heavy').",
+        "prevention_tip": "Model full English sentences using frames that include the subject and have students repeat chorally; show Portuguese parallel then contrast with English."
+      }
+    },
+    "assessment": {
+      "primary_assessment": "Students will complete p. 46 in their Be a Scientist Notebook",
+      "bilingual_overlay": {
+        "instrument": "Written notebook response (short answers; observation recording)",
+        "wida_mapping": "Explain + ELD-LA.2-3.Explain.Reading/Writing targeted at Levels 1-4",
+        "supports_by_level": {
+          "levels_1_2": "Provide word-bank with English + Portuguese cognates, allow drawing and one-word or short-phrase responses, allow bilingual teacher to scribe answers if needed.",
+          "levels_3_4": "Provide sentence frames on the page; encourage 1-2 full sentences in English with key vocabulary; permit brief Portuguese notes for planning.",
+          "levels_5_6": "Expect 2-3 sentence explanation using content vocabulary and evidence from observation; minimal L1 support."
+        },
+        "scoring_lens": "Score primarily on use of content vocabulary and ability to link observation to a property (0-2 language rubric: 0 non-response, 1 word/phrase with matching concept, 2 sentence-level explanation with vocabulary).",
+        "constraints_honored": "No new materials introduced; supports use only existing notebook and station materials."
+      }
+    },
+    "homework": {
+      "original_content": "",
+      "family_connection": "At home, ask a family member (in Portuguese or English) to help find one object and tell its property (color or shape). Write or draw the object and label it in both Portuguese and English."
+    }
+  }
+]

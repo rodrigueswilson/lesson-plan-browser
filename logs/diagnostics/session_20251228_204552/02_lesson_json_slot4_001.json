@@ -1,0 +1,85 @@
+{
+  "timestamp": "2025-12-28T20:45:55.514195",
+  "stage": "02_lesson_json_slot4",
+  "data": {
+    "slot_number": 4,
+    "subject": "Math",
+    "metadata_slot_number": null,
+    "metadata_subject": "Math",
+    "hyperlink_count": 10,
+    "hyperlinks_with_slot_metadata": 10,
+    "hyperlinks_with_subject_metadata": 10,
+    "sample_hyperlinks": [
+      {
+        "text": "Unit 4: Addition and Subtraction on the Number Lin",
+        "has_source_slot": true,
+        "source_slot": 4,
+        "has_source_subject": true,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Unit 4: Addition and Subtraction on the Number Lin",
+        "has_source_slot": true,
+        "source_slot": 4,
+        "has_source_subject": true,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Unit 3: Measuring Length",
+        "has_source_slot": true,
+        "source_slot": 4,
+        "has_source_subject": true,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Unit 3: Measuring Length",
+        "has_source_slot": true,
+        "source_slot": 4,
+        "has_source_subject": true,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Unit 3: Measuring Length",
+        "has_source_slot": true,
+        "source_slot": 4,
+        "has_source_subject": true,
+        "source_subject": "Math"
+      },
+      {
+        "text": "2.3.1 Cool Down",
+        "has_source_slot": true,
+        "source_slot": 4,
+        "has_source_subject": true,
+        "source_subject": "Math"
+      },
+      {
+        "text": "cool down activity",
+        "has_source_slot": true,
+        "source_slot": 4,
+        "has_source_subject": true,
+        "source_subject": "Math"
+      },
+      {
+        "text": "2.3.2 Cool Down",
+        "has_source_slot": true,
+        "source_slot": 4,
+        "has_source_subject": true,
+        "source_subject": "Math"
+      },
+      {
+        "text": "2.3.3 Cool Down",
+        "has_source_slot": true,
+        "source_slot": 4,
+        "has_source_subject": true,
+        "source_subject": "Math"
+      },
+      {
+        "text": "2.3.4 Cool Down",
+        "has_source_slot": true,
+        "source_slot": 4,
+        "has_source_subject": true,
+        "source_subject": "Math"
+      }
+    ]
+  }
+}

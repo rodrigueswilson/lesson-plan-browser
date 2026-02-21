@@ -1,0 +1,11 @@
+{
+  "timestamp": "2025-12-29T17:39:52.160030",
+  "stage": "07_hyperlink_placed",
+  "data": {
+    "text": "Capture Squares ",
+    "slot": null,
+    "subject": "Math",
+    "cell": "thursday_instruction",
+    "confidence": 1.0
+  }
+}

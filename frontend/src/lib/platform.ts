@@ -14,7 +14,14 @@ export function getPlatform(): Platform {
   }
 
   // Check for Tauri (can be desktop or Android)
-  const isTauri = '__TAURI_INTERNALS__' in window || '__TAURI__' in window;
+  // Note: using `in window` is too loose because the property can exist but be `undefined`,
+  // which later causes runtime errors like "Cannot read properties of undefined (reading 'invoke')".
+  const w = window as any;
+  const hasTauriInvoke =
+    typeof w.__TAURI_INTERNALS__?.invoke === 'function' ||
+    typeof w.__TAURI__?.core?.invoke === 'function' ||
+    typeof w.__TAURI__?.invoke === 'function';
+  const isTauri = hasTauriInvoke;
   
   if (isTauri) {
     // Distinguish Android Tauri from Desktop Tauri

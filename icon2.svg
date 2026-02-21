@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <rect width="1024" height="1024" fill="#F8FAFC" />
+  
+  <g transform="translate(62, 212)"> <g transform="translate(0, 50)">
+       <path d="M450 0 H120 C53.726 0 0 53.726 0 120 V380 C0 446.274 53.726 500 120 500 H180 V600 L300 500 H450 C516.274 500 570 446.274 570 380 V120 C570 53.726 516.274 0 450 0 Z" fill="#059669"/>
+       <text x="285" y="250" font-family="Arial, Helvetica, sans-serif" font-weight="bold" font-size="160" fill="#FFFFFF" text-anchor="middle" dominant-baseline="middle">PT</text>
+    </g>
+
+    <g transform="translate(380, 50)">
+      <path d="M450 0 H120 C53.726 0 0 53.726 0 120 V380 C0 446.274 53.726 500 120 500 H270 L390 600 V500 H450 C516.274 500 570 446.274 570 380 V120 C570 53.726 516.274 0 450 0 Z" fill="#1E3A8A" stroke="#F8FAFC" stroke-width="30"/>
+      <text x="285" y="250" font-family="Arial, Helvetica, sans-serif" font-weight="bold" font-size="160" fill="#FFFFFF" text-anchor="middle" dominant-baseline="middle">EN</text>
+    </g>
+
+    <circle cx="475" cy="50" r="70" fill="#F97316" stroke="#F8FAFC" stroke-width="15"/>
+    
+  </g>
+</svg>

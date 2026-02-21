@@ -1,0 +1,116 @@
+{
+  "timestamp": "2025-12-28T20:54:49.695163",
+  "stage": "01_parser_slot1",
+  "data": {
+    "slot_number": 1,
+    "subject": "ELA",
+    "source_file": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W51\\12_15-12_19 Lang Lesson Plans.docx",
+    "hyperlink_count": 13,
+    "hyperlinks": [
+      {
+        "text": "Lenni Lenape",
+        "url": "https://docs.google.com/document/d/1_yHvguDhJIZmrIwY3ZcW-BIhfQH5VtH2xs1KtKlnNVY/edit?tab=t.9vfaqefj1",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Lenni Lenape",
+        "url": "https://docs.google.com/document/d/1_yHvguDhJIZmrIwY3ZcW-BIhfQH5VtH2xs1KtKlnNVY/edit?tab=t.9vfaqefj1",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Lenni Lenape",
+        "url": "https://docs.google.com/document/d/1_yHvguDhJIZmrIwY3ZcW-BIhfQH5VtH2xs1KtKlnNVY/edit?tab=t.9vfaqefj1",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Lenni Lenape",
+        "url": "https://docs.google.com/document/d/1_yHvguDhJIZmrIwY3ZcW-BIhfQH5VtH2xs1KtKlnNVY/edit?tab=t.9vfaqefj1",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Lenni Lenape",
+        "url": "https://docs.google.com/document/d/1_yHvguDhJIZmrIwY3ZcW-BIhfQH5VtH2xs1KtKlnNVY/edit?tab=t.9vfaqefj1",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Native-Land.ca",
+        "url": "https://native-land.ca",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Spotlight On Native Americans: Delaware Lenape",
+        "url": "https://docs.google.com/presentation/d/1SF1FWvS7_XGEF66Y-zwwcdCFpPJMXWTEZqPkiA-p78Y/edit?usp=drive_l",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "note catcher ",
+        "url": "https://docs.google.com/document/d/1OrLBdZHu8PTQa9rkrKdpcwNnPvtRW555QF0FiNffulc/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": " Biography Slide Template",
+        "url": "https://docs.google.com/presentation/d/1xBSBfJRc4O0i-pa-UHpZa6L-wRzcTqHHjhNKEVa_mmE/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": " Culture Preservation Graphic Organizer",
+        "url": "https://docs.google.com/document/d/1OrLBdZHu8PTQa9rkrKdpcwNnPvtRW555QF0FiNffulc/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Carousel activity",
+        "url": "https://drive.google.com/file/d/1RpsS1RdsdEfzayy-nJY8SAUIHmqCztXK/view?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Unit 3 - Culminating Task 1",
+        "url": "https://docs.google.com/document/d/1d9wxmTmMishled9o5JkHJJmI1RvoUTQhLNogWn0UY-Y/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Culminating Writing Task",
+        "url": "https://docs.google.com/document/d/1YWfscllds8gxVWFlfklIf3HbOUveY_lcFp8s7yAytI8/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      }
+    ]
+  }
+}

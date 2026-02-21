@@ -1,0 +1,16 @@
+{
+  "timestamp": "2025-11-30T19:13:21.099672",
+  "stage": "03_before_render_slot3",
+  "data": {
+    "slot_number": 3,
+    "subject": "Science",
+    "render_type": "multi_slot",
+    "metadata_slot_number": 3,
+    "metadata_subject": "Science",
+    "hyperlink_count": 0,
+    "all_hyperlinks_have_slot": true,
+    "all_hyperlinks_have_subject": true,
+    "hyperlink_slot_distribution": {},
+    "sample_hyperlinks": []
+  }
+}

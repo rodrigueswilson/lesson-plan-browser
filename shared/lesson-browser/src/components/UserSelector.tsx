@@ -11,7 +11,20 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@less
 import { Input } from '@lesson-ui/Input';
 import { Label } from '@lesson-ui/Label';
 
-export const UserSelector: React.FC = () => {
+type UserSelectorProps = {
+  /**
+   * Auto-selection behavior.
+   * - 'single': if there is exactly one user, select it
+   * - 'first': if there is at least one user, select the first (useful for tablets assigned to one user)
+   * - 'off': never auto-select
+   *
+   * This is primarily intended for tablet builds where each tablet is assigned
+   * to one teacher/user.
+   */
+  autoSelect?: 'off' | 'single' | 'first';
+};
+
+export const UserSelector: React.FC<UserSelectorProps> = ({ autoSelect = 'off' }) => {
   const { currentUser, setCurrentUser, users, setUsers, slots, setSlots, plans, setPlans } = useStore();
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingUser, setIsLoadingUser] = useState(false);
@@ -27,6 +40,7 @@ export const UserSelector: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const selectUserTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isSelectingRef = useRef(false);
+  const autoSelectedRef = useRef(false);
 
   useEffect(() => {
     console.log('[UserSelector] Component mounted, loading users...');
@@ -162,6 +176,26 @@ export const UserSelector: React.FC = () => {
       }, 300); // 300ms debounce
     });
   };
+
+  useEffect(() => {
+    if (autoSelect === 'off') return;
+    if (autoSelectedRef.current) return;
+    if (currentUser) return;
+    if (autoSelect === 'single' && users.length !== 1) return;
+    if (autoSelect === 'first' && users.length < 1) return;
+
+    autoSelectedRef.current = true;
+    if (autoSelect === 'first' && users.length > 1) {
+      console.warn(
+        `[UserSelector] autoSelect=first: multiple users found (${users.length}). ` +
+        `Auto-selecting first user: ${users[0].id}. Tablet DB should normally contain exactly one user.`
+      );
+    } else {
+      console.log('[UserSelector] autoSelect enabled; selecting user:', users[0].id);
+    }
+    // Fire and forget; selectUser handles its own loading states.
+    void selectUser(users[0].id);
+  }, [autoSelect, currentUser, users]);  
 
   const handleUpdateBasePath = async () => {
     if (!currentUser) return;

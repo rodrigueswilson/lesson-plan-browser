@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import { BookOpen } from 'lucide-react';
 import { DesktopNav } from '../desktop/DesktopNav';
 
-type NavItem = 'home' | 'plans' | 'schedule' | 'browser' | 'lesson-mode' | 'history' | 'analytics' | 'settings';
+type NavItem = 'home' | 'plans' | 'schedule' | 'browser' | 'lesson-mode' | 'history' | 'analytics' | 'settings' | 'database' | 'tablet';
 
 interface DesktopLayoutProps {
   children: ReactNode;
@@ -11,21 +11,21 @@ interface DesktopLayoutProps {
   availableNavItems?: NavItem[]; // Optional filter for available navigation items
 }
 
-export function DesktopLayout({ 
-  children, 
+export function DesktopLayout({
+  children,
   activeNavItem = 'home',
   onNavigate,
   availableNavItems
 }: DesktopLayoutProps) {
   // Browser mode uses full screen with compact navigation
   const isBrowserMode = activeNavItem === 'browser' || activeNavItem === 'lesson-mode';
-  
+
   return (
     <div className={`${isBrowserMode ? 'h-screen' : 'min-h-screen'} bg-background flex overflow-hidden`}>
       {/* Sidebar Navigation - Compact when Browser is active */}
       {onNavigate && (
-        <DesktopNav 
-          activeItem={activeNavItem} 
+        <DesktopNav
+          activeItem={activeNavItem}
           onNavigate={onNavigate}
           compact={isBrowserMode}
           availableNavItems={availableNavItems}

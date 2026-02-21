@@ -33,6 +33,11 @@
           "description": "Homeroom or class identifier",
           "examples": ["302", "Room 15", "Class A"]
         },
+        "room": {
+          "type": "string",
+          "description": "Room number or physical location where instruction takes place",
+          "examples": ["215", "302", "Science Lab A", "Building B, Room 15"]
+        },
         "teacher_name": {
           "type": "string",
           "description": "Primary teacher name"
@@ -54,8 +59,35 @@
   },
   "definitions": {
     "day_plan": {
+      "description": "Day plan structure. For AI generation, only single-slot is allowed. Multi-slot is for merged data only.",
+      "oneOf": [
+        {
+          "$ref": "#/definitions/day_plan_multi_slot"
+        },
+        {
+          "$ref": "#/definitions/day_plan_single_slot"
+        }
+      ]
+    },
+    "day_plan_multi_slot": {
       "type": "object",
-      "description": "Complete lesson plan for one day",
+      "description": "Multi-slot lesson plan format using slots array. NOTE: This is for merged data only (created by tools/json_merger.py). AI should NEVER generate this structure - only single-slot.",
+      "required": ["slots"],
+      "properties": {
+        "slots": {
+          "type": "array",
+          "description": "Array of slot-specific lesson plans for this day",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/slot_plan"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "day_plan_single_slot": {
+      "type": "object",
+      "description": "Single-slot lesson plan format using legacy fields. Use this format when a day has only one lesson slot.",
       "required": [
         "unit_lesson",
         "objective",
@@ -68,6 +100,64 @@
         "homework"
       ],
       "properties": {
+        "unit_lesson": {
+          "type": "string",
+          "description": "Unit, Lesson number, and Module identifier",
+          "examples": ["Unit One Lesson Seven", "Module 3 Lesson 12"]
+        },
+        "objective": {
+          "$ref": "#/definitions/objective"
+        },
+        "anticipatory_set": {
+          "$ref": "#/definitions/anticipatory_set"
+        },
+        "vocabulary_cognates": {
+          "$ref": "#/definitions/vocabulary_cognates"
+        },
+        "sentence_frames": {
+          "$ref": "#/definitions/sentence_frames"
+        },
+        "tailored_instruction": {
+          "$ref": "#/definitions/tailored_instruction"
+        },
+        "misconceptions": {
+          "$ref": "#/definitions/misconceptions"
+        },
+        "assessment": {
+          "$ref": "#/definitions/assessment"
+        },
+        "homework": {
+          "$ref": "#/definitions/homework"
+        }
+      },
+      "additionalProperties": false
+    },
+    "slot_plan": {
+      "type": "object",
+      "description": "Complete lesson plan for one slot within a day",
+      "required": [
+        "slot_number",
+        "unit_lesson",
+        "objective",
+        "anticipatory_set",
+        "vocabulary_cognates",
+        "sentence_frames",
+        "tailored_instruction",
+        "misconceptions",
+        "assessment",
+        "homework"
+      ],
+      "properties": {
+        "slot_number": {
+          "type": "integer",
+          "description": "Slot number (1, 2, 3, etc.)",
+          "minimum": 1
+        },
+        "subject": {
+          "type": "string",
+          "description": "Subject for this slot",
+          "examples": ["ELA", "Math", "Science", "Social Studies"]
+        },
         "unit_lesson": {
           "type": "string",
           "description": "Unit, Lesson number, and Module identifier",
@@ -112,16 +202,17 @@
         },
         "student_goal": {
           "type": "string",
-          "description": "Student-friendly 'I will...' version (max 12 words for board posting)",
+          "description": "Student-friendly 'I will...' version (max 12 words for board posting) that explicitly names the WIDA language domains (listening, reading, speaking, writing) students will practice and ends with a parentheses domain tag followed by a period (e.g., '(listening, speaking).')",
           "minLength": 5,
-          "maxLength": 80,
-          "examples": ["I will explain Roman systems using evidence and a graphic organizer"]
+          "maxLength": 120,
+          "pattern": "^(?=.*\\b(?:[Ll]isten(?:ing)?|[Rr]ead(?:ing)?|[Ss]peak(?:ing)?|[Ww]rit(?:e|ing))\\b).*\\((?: *(?:listening|reading|speaking|writing))(?: *, *(?:listening|reading|speaking|writing))* *\\)\\.$",
+          "examples": ["I will explain Roman systems using evidence and speak with my team (speaking).", "I will read the article, discuss it, and write a summary (reading, speaking, writing)."]
         },
         "wida_objective": {
           "type": "string",
           "description": "Complete WIDA bilingual language objective with ELD standard",
           "minLength": 50,
-          "pattern": ".*ELD-[A-Z]{2}\\.[0-9K-]+\\.[A-Za-z]+\\.[A-Za-z/]+.*",
+          "pattern": ".*ELD-[A-Z]{2}\\.[0-9K-]+\\.[A-Za-z]+\\.(?:Listening|Reading|Speaking|Writing)(?:/(?:Listening|Reading|Speaking|Writing))*.*",
           "examples": ["Students will use language to explain how Roman law, banking, and Pax Romana enabled economic growth (ELD-SS.6-8.Explain.Reading/Writing) by using cognate awareness and graphic organizers with Portuguese-English vocabulary bridges appropriate for WIDA levels 2-5, producing a written explanation that demonstrates understanding of cause-effect relationships in historical systems."]
         }
       }
@@ -463,7 +554,7 @@
       "maxItems": 6,
       "items": {
         "type": "object",
-        "required": ["english", "portuguese"],
+        "required": ["english", "portuguese", "is_cognate", "relevance_note"],
         "properties": {
           "english": {
             "type": "string",
@@ -476,12 +567,12 @@
             "minLength": 2
           },
           "is_cognate": {
-            "type": "boolean",
-            "description": "Whether this is a true cognate pair (optional)"
+            "type": ["boolean", "null"],
+            "description": "Whether this is a true cognate pair (optional, can be null)"
           },
           "relevance_note": {
-            "type": "string",
-            "description": "Brief note on why this word pair is relevant to the lesson (optional)"
+            "type": ["string", "null"],
+            "description": "Brief note on why this word pair is relevant to the lesson (optional, can be null)"
           }
         }
       },

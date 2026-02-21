@@ -1,0 +1,24 @@
+{
+  "session_dir": "logs\\diagnostics\\session_20251229_230429",
+  "total_stages": 18,
+  "stages": [
+    "04_renderer_metadata_extracted",
+    "04_renderer_metadata_extracted",
+    "04_renderer_metadata_extracted",
+    "04_renderer_metadata_extracted",
+    "04_renderer_metadata_extracted",
+    "04_renderer_metadata_extracted",
+    "04_renderer_metadata_extracted",
+    "04_renderer_metadata_extracted",
+    "03_before_render_slot1",
+    "04_renderer_metadata_extracted",
+    "03_before_render_slot2",
+    "04_renderer_metadata_extracted",
+    "03_before_render_slot4",
+    "04_renderer_metadata_extracted",
+    "03_before_render_slot5",
+    "04_renderer_metadata_extracted",
+    "03_before_render_slot6",
+    "04_renderer_metadata_extracted"
+  ]
+}

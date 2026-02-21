@@ -93,28 +93,107 @@ class ObjectiveData(BaseModel):
     )
 
     _NO_SCHOOL_VALUES = {"no school", "holiday", "teacher workday", "testing"}
-    _WIDA_PATTERN = re.compile(r"ELD-[A-Z]{2}\.[0-9K-]+\.[A-Za-z]+\.[A-Za-z/]+")
+    _WIDA_PATTERN = re.compile(
+        r"ELD-[A-Z]{2}\.[0-9K-]+\.[A-Za-z]+\.(?:Listening|Reading|Speaking|Writing)(?:/(?:Listening|Reading|Speaking|Writing))*"
+    )
+    _STUDENT_GOAL_DOMAIN_PATTERN = re.compile(
+        r"\b(listen(?:ing)?|read(?:ing)?|speak(?:ing)?|write|writing)\b",
+        re.IGNORECASE,
+    )
+    _STUDENT_GOAL_PARENTHESES_PATTERN = re.compile(r"\(([^)]*)\)\.?\s*$")
+    _ALLOWED_GOAL_DOMAINS = {"listening", "reading", "speaking", "writing"}
+
+    @classmethod
+    def _get_no_school_values(cls) -> set:
+        """Get no school values, handling ModelPrivateAttr cases."""
+        try:
+            values = cls._NO_SCHOOL_VALUES
+            # Test if it's actually iterable
+            if isinstance(values, (set, list, tuple)):
+                return set(values)
+            # Try to use it as iterable
+            _ = iter(values)
+            return set(values)
+        except (TypeError, AttributeError):
+            # Fallback to hardcoded set
+            return {"no school", "holiday", "teacher workday", "testing"}
+
+    @classmethod
+    def _get_allowed_domains(cls) -> set:
+        """Get allowed domains, handling ModelPrivateAttr cases."""
+        try:
+            domains = cls._ALLOWED_GOAL_DOMAINS
+            # Test if it's actually iterable
+            if isinstance(domains, (set, list, tuple)):
+                return set(domains)
+            # Try to use it as iterable
+            _ = iter(domains)
+            return set(domains)
+        except (TypeError, AttributeError):
+            # Fallback to hardcoded set
+            return {"listening", "reading", "speaking", "writing"}
+
+    @classmethod
+    def _get_domain_pattern(cls) -> re.Pattern:
+        """Get domain pattern, handling ModelPrivateAttr cases."""
+        try:
+            pattern = cls._STUDENT_GOAL_DOMAIN_PATTERN
+            if isinstance(pattern, re.Pattern):
+                return pattern
+            # If it's not a Pattern, try to compile
+            if hasattr(pattern, "pattern"):
+                return pattern
+        except (TypeError, AttributeError):
+            pass
+        # Fallback to hardcoded pattern
+        return re.compile(
+            r"\b(listen(?:ing)?|read(?:ing)?|speak(?:ing)?|write|writing)\b",
+            re.IGNORECASE,
+        )
+
+    @classmethod
+    def _get_parentheses_pattern(cls) -> re.Pattern:
+        """Get parentheses pattern, handling ModelPrivateAttr cases."""
+        try:
+            pattern = cls._STUDENT_GOAL_PARENTHESES_PATTERN
+            if isinstance(pattern, re.Pattern):
+                return pattern
+            # If it's not a Pattern, try to use it
+            if hasattr(pattern, "pattern"):
+                return pattern
+        except (TypeError, AttributeError):
+            pass
+        # Fallback to hardcoded pattern
+        return re.compile(r"\(([^)]*)\)\.?\s*$")
+
+    @classmethod
+    def _get_wida_pattern(cls) -> re.Pattern:
+        """Get WIDA pattern, handling ModelPrivateAttr cases."""
+        try:
+            pattern = cls._WIDA_PATTERN
+            if isinstance(pattern, re.Pattern):
+                return pattern
+            # If it's not a Pattern, try to use it
+            if hasattr(pattern, "pattern"):
+                return pattern
+        except (TypeError, AttributeError):
+            pass
+        # Fallback to hardcoded pattern
+        return re.compile(
+            r"ELD-[A-Z]{2}\.[0-9K-]+\.[A-Za-z]+\.(?:Listening|Reading|Speaking|Writing)(?:/(?:Listening|Reading|Speaking|Writing))*"
+        )
 
     @classmethod
     def _is_no_school(cls, value: str) -> bool:
         # Handle ModelPrivateAttr or other non-string values
         if not isinstance(value, str):
             # If value is not a string (e.g., ModelPrivateAttr), convert it
-            if hasattr(value, "__class__") and "ModelPrivateAttr" in str(type(value)):
-                return False  # ModelPrivateAttr can't be "no school"
             try:
                 value = str(value)
             except:
                 return False
 
-        # Ensure _NO_SCHOOL_VALUES is actually a set/list, not ModelPrivateAttr
-        no_school_values = cls._NO_SCHOOL_VALUES
-        if hasattr(no_school_values, "__class__") and "ModelPrivateAttr" in str(
-            type(no_school_values)
-        ):
-            # Fallback to hardcoded set if class attribute is ModelPrivateAttr
-            no_school_values = {"no school", "holiday", "teacher workday", "testing"}
-
+        no_school_values = cls._get_no_school_values()
         return value.strip().lower() in no_school_values
 
     @field_validator("content_objective")
@@ -137,8 +216,85 @@ class ObjectiveData(BaseModel):
             raise ValueError(
                 "student_goal must be at least 5 characters unless 'No School'"
             )
-        if len(value.strip()) > 80:
-            raise ValueError("student_goal must be 80 characters or less")
+        if len(value.strip()) > 120:
+            raise ValueError("student_goal must be 120 characters or less")
+
+        domain_pattern = cls._get_domain_pattern()
+        stripped_value = value.strip()
+
+        if not domain_pattern.search(stripped_value):
+            raise ValueError(
+                "student_goal must mention at least one WIDA language domain (listening, reading, speaking, or writing)"
+            )
+
+        parentheses_pattern = cls._get_parentheses_pattern()
+        match = parentheses_pattern.search(stripped_value)
+        if not match:
+            raise ValueError(
+                "student_goal must end with parentheses listing the practiced domains (e.g., '(listening, speaking)')"
+            )
+
+        domains_raw = [
+            d.strip().lower() for d in match.group(1).split(",") if d.strip()
+        ]
+        if not domains_raw:
+            raise ValueError(
+                "student_goal domain tag cannot be empty; include at least one of listening, reading, speaking, writing"
+            )
+
+        # Normalize common invalid domain names
+        domain_mapping = {
+            "drawing": "writing",  # Drawing is often a form of visual writing
+            "illustrate": "writing",
+            "demonstrate": "speaking",
+            "show": "speaking",
+            "present": "speaking",
+        }
+
+        normalized_domains = []
+        seen = set()  # Track seen domains to avoid duplicates
+        for domain in domains_raw:
+            # Map invalid domains to valid ones
+            mapped_domain = domain_mapping.get(domain, domain)
+            # Only add if not already in the list (avoid duplicates)
+            if mapped_domain not in seen:
+                normalized_domains.append(mapped_domain)
+                seen.add(mapped_domain)
+
+        allowed_domains = cls._get_allowed_domains()
+        invalid_domains = [d for d in normalized_domains if d not in allowed_domains]
+        if invalid_domains:
+            raise ValueError(
+                f"student_goal domain tag may only include listening, reading, speaking, or writing. Invalid domains found: {', '.join(invalid_domains)}"
+            )
+
+        # Update the value with normalized domains if changes were made
+        # Compare normalized (deduplicated) with original (may have duplicates)
+        original_set = set(domains_raw)
+        normalized_set = set(normalized_domains)
+        if normalized_set != original_set or len(normalized_domains) != len(
+            domains_raw
+        ):
+            # Reconstruct the parentheses content with normalized domains
+            domains_str = ", ".join(normalized_domains)
+            # Replace the old domain tag with the normalized one, preserving ending period
+            normalized_value = re.sub(
+                r"\([^)]*\)\.?\s*$",
+                f"({domains_str}).",
+                stripped_value,
+            )
+            return normalized_value
+
+        if len(domains_raw) != len(set(domains_raw)):
+            raise ValueError(
+                "student_goal domain tag must not repeat domains; list each domain only once"
+            )
+
+        if not stripped_value.endswith(")."):
+            raise ValueError(
+                "student_goal must end with ').' (i.e., the domain tag followed by a period)"
+            )
+
         return value
 
     @field_validator("wida_objective")
@@ -151,21 +307,40 @@ class ObjectiveData(BaseModel):
                 "wida_objective must be at least 50 characters unless 'No School'"
             )
 
-        # Ensure _WIDA_PATTERN is actually a regex pattern, not ModelPrivateAttr
-        wida_pattern = cls._WIDA_PATTERN
-        if hasattr(wida_pattern, "__class__") and "ModelPrivateAttr" in str(
-            type(wida_pattern)
-        ):
-            # Fallback to recompiled pattern if class attribute is ModelPrivateAttr
-            import re
+        # Normalize common ELD code format mistakes before validation
+        # Fix: ELD-XX.#-#.Function/Domain -> ELD-XX.#-#.Function.Domain
+        # Pattern matches: ELD-[letters].[numbers].[Function]/[Domain]
+        # IMPORTANT: Only replace the FIRST slash after the function name, not all slashes
+        # The pattern should match: FunctionName/Domain (where FunctionName is before the slash)
+        # and convert it to: FunctionName.Domain
+        # But preserve slashes between multiple domains (e.g., Listening/Speaking/Writing)
+        normalized_value = re.sub(
+            r"(ELD-[A-Z]{2}\.[0-9K-]+\.[A-Za-z]+)/(Listening|Reading|Speaking|Writing)",
+            r"\1.\2",
+            value,
+        )
 
-            wida_pattern = re.compile(r"ELD-[A-Z]{2}\.[0-9K-]+\.[A-Za-z]+\.[A-Za-z/]+")
+        # Log normalization for debugging (only if change occurred)
+        if normalized_value != value:
+            from backend.telemetry import logger
 
-        if not wida_pattern.search(value):
+            logger.debug(
+                "eld_code_normalized",
+                extra={
+                    "original": value[:100] if len(value) > 100 else value,
+                    "normalized": normalized_value[:100]
+                    if len(normalized_value) > 100
+                    else normalized_value,
+                },
+            )
+
+        wida_pattern = cls._get_wida_pattern()
+        if not wida_pattern.search(normalized_value):
             raise ValueError(
                 "wida_objective must include an ELD code with domain(s) (e.g., ELD-SS.6-8.Explain.Writing or ELD-SS.6-8.Explain.Listening/Speaking or ELD-SS.6-8.Explain.Listening/Reading/Speaking/Writing)"
             )
-        return value
+        # Return normalized value if it was fixed, otherwise return original
+        return normalized_value if normalized_value != value else value
 
 
 class SlotMetadata(BaseModel):
@@ -175,6 +350,10 @@ class SlotMetadata(BaseModel):
     subject: str = Field(min_length=1, description="Subject name")
     grade: str = Field(min_length=1, description="Grade level")
     homeroom: Optional[str] = None
+    room: Optional[str] = Field(
+        None,
+        description="Room number or physical location where instruction takes place",
+    )
     primary_teacher_name: str = Field(min_length=1)
     primary_teacher_first_name: Optional[str] = None
     primary_teacher_last_name: Optional[str] = None

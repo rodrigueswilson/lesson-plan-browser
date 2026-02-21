@@ -1,0 +1,11 @@
+{
+  "timestamp": "2025-12-21T14:54:30.466239",
+  "stage": "07_hyperlink_placed",
+  "data": {
+    "text": " 2nd Grade Science ",
+    "slot": 6,
+    "subject": "Science",
+    "cell": "monday_anticipatory_set",
+    "confidence": 1.0
+  }
+}

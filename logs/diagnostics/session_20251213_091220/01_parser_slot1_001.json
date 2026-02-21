@@ -1,0 +1,108 @@
+{
+  "timestamp": "2025-12-13T09:12:20.449626",
+  "stage": "01_parser_slot1",
+  "data": {
+    "slot_number": 1,
+    "subject": "ELA/SS",
+    "source_file": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\25 W51\\Morais 12_15 - 12_19.docx",
+    "hyperlink_count": 12,
+    "hyperlinks": [
+      {
+        "text": "02 - Second Grade Unit Description and Summary of Key Learning",
+        "url": "https://docs.google.com/document/d/1H_hFmN04OarxjXNlCsHxSgkzyD1nfzMjDFWQfx5zc30/edit?tab=t.kofvr9ldt",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Preview Chart",
+        "url": "https://docs.google.com/document/d/1p94HeP_uTYVGiyF1MDNNFBlpwUfBJ2O4qukhx8mbxK0/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Let's Talk about Race, Book",
+        "url": "https://docs.google.com/presentation/d/1y1OFaGZ06wf_21lQBhO5DRwdFgdbP8tiZYF2_x43PEY/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Let's Talk About Race: Check for Understanding Card",
+        "url": "https://docs.google.com/document/d/1z5V_G4-y_CcS8ghgwP9rLO_J0YoS7KamzyuJP5pRgGY/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Vocabulary Boxes",
+        "url": "https://docs.google.com/document/d/1wSBDhXaYqCKMzbGdCJkXWjqATrbmubZyeyzDRcnZFF8/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Sulwe's Character Traits",
+        "url": "https://docs.google.com/document/d/1-EN411eLmvqGO2m8NrOC-Q25jpzuLqxRVdlhZ_vo_bk/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Sulwe: Culminating Task Rubric",
+        "url": "https://docs.google.com/presentation/d/1HbVmFxeyAGFGT_bNTRHLyV_h7zPpFoc1A8UuN_gJ0IA/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Single Paragraph Outline.docx",
+        "url": "https://docs.google.com/document/d/1IuGa59rW6zAc3YPJnPBqn1GZBQekZMoq/edit?usp=sharing&ouid=114185867",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Let's Talk About Race Lesson 9 Rubric",
+        "url": "https://docs.google.com/presentation/d/1-Xe7qk2rnXIjpONbJmLjOYXX0y7XrJxt7cTrE11t1jE/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Let's Talk About Race Lesson 9 Rubric",
+        "url": "https://docs.google.com/presentation/d/1-Xe7qk2rnXIjpONbJmLjOYXX0y7XrJxt7cTrE11t1jE/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Let's Talk About Race: Lesson 10 Rubric",
+        "url": "https://docs.google.com/presentation/d/14toBHDwzCBn6RHufsCh7NPQbAvVjUNQUspOuyfg0Q3I/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "What is Colorism: Lesson 11 Rubr",
+        "url": "https://docs.google.com/presentation/d/1OWR5oWVQLYVfNoRdRdrY5Q_LSrOi6eSdkZ5LxvHj0f8/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      }
+    ]
+  }
+}

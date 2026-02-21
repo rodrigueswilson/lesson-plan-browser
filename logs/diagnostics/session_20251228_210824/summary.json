@@ -1,0 +1,26 @@
+{
+  "session_dir": "logs\\diagnostics\\session_20251228_210824",
+  "total_stages": 20,
+  "stages": [
+    "01_parser_slot1",
+    "02_lesson_json_slot1",
+    "01_parser_slot2",
+    "02_lesson_json_slot2",
+    "01_parser_slot4",
+    "02_lesson_json_slot4",
+    "01_parser_slot5",
+    "02_lesson_json_slot5",
+    "01_parser_slot6",
+    "02_lesson_json_slot6",
+    "03_before_render_slot1",
+    "04_renderer_metadata_extracted",
+    "03_before_render_slot2",
+    "04_renderer_metadata_extracted",
+    "03_before_render_slot4",
+    "04_renderer_metadata_extracted",
+    "03_before_render_slot5",
+    "04_renderer_metadata_extracted",
+    "03_before_render_slot6",
+    "04_renderer_metadata_extracted"
+  ]
+}

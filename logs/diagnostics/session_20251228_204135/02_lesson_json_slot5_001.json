@@ -1,0 +1,85 @@
+{
+  "timestamp": "2025-12-28T20:41:40.058194",
+  "stage": "02_lesson_json_slot5",
+  "data": {
+    "slot_number": 5,
+    "subject": "Math",
+    "metadata_slot_number": null,
+    "metadata_subject": "Math",
+    "hyperlink_count": 48,
+    "hyperlinks_with_slot_metadata": 48,
+    "hyperlinks_with_subject_metadata": 48,
+    "sample_hyperlinks": [
+      {
+        "text": "LESSON 13: MULTIPLES OF 100",
+        "has_source_slot": true,
+        "source_slot": 5,
+        "has_source_subject": true,
+        "source_subject": "Math"
+      },
+      {
+        "text": "3.3.13 Teacher Guide",
+        "has_source_slot": true,
+        "source_slot": 5,
+        "has_source_subject": true,
+        "source_subject": "Math"
+      },
+      {
+        "text": "LESSON 14: NEAREST MULTIPLES OF 10 AND 100",
+        "has_source_slot": true,
+        "source_slot": 5,
+        "has_source_subject": true,
+        "source_subject": "Math"
+      },
+      {
+        "text": "3.3.14 Teacher Guide",
+        "has_source_slot": true,
+        "source_slot": 5,
+        "has_source_subject": true,
+        "source_subject": "Math"
+      },
+      {
+        "text": "LESSON 15: ROUND TO THE NEAREST TEN AND HUNDRED  ",
+        "has_source_slot": true,
+        "source_slot": 5,
+        "has_source_subject": true,
+        "source_subject": "Math"
+      },
+      {
+        "text": "3.3.15 Teacher Guide",
+        "has_source_slot": true,
+        "source_slot": 5,
+        "has_source_subject": true,
+        "source_subject": "Math"
+      },
+      {
+        "text": "LESSON 16: ROUND AND ROUND AGAIN",
+        "has_source_slot": true,
+        "source_slot": 5,
+        "has_source_subject": true,
+        "source_subject": "Math"
+      },
+      {
+        "text": "3.3.16 Teacher Guide",
+        "has_source_slot": true,
+        "source_slot": 5,
+        "has_source_subject": true,
+        "source_subject": "Math"
+      },
+      {
+        "text": "LESSON 17: DOES IT MAKE SENSE?",
+        "has_source_slot": true,
+        "source_slot": 5,
+        "has_source_subject": true,
+        "source_subject": "Math"
+      },
+      {
+        "text": "3.3.17 Teacher Guide",
+        "has_source_slot": true,
+        "source_slot": 5,
+        "has_source_subject": true,
+        "source_subject": "Math"
+      }
+    ]
+  }
+}

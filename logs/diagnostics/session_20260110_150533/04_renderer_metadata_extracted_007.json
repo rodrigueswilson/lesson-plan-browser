@@ -1,0 +1,14 @@
+{
+  "timestamp": "2026-01-10T15:20:59.178928",
+  "stage": "04_renderer_metadata_extracted",
+  "data": {
+    "slot_number": 2,
+    "slot_number_type": "int",
+    "slot_number_is_none": false,
+    "subject": "Social Studies",
+    "subject_is_none": false,
+    "hyperlink_count": 3,
+    "teacher": "Taina Santiago / Daniela Silva",
+    "filtering_will_activate": true
+  }
+}

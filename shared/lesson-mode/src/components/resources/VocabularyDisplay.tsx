@@ -70,7 +70,7 @@ export function VocabularyDisplay({ steps, planContext }: VocabularyDisplayProps
         id: idx,
         primaryText: vocab.english || '',
         secondaryText: vocab.portuguese || '',
-        badge: vocab.is_cognate ? 'Cognate' : vocab.is_non_cognate ? 'Non-Cognate' : undefined,
+        badge: vocab.is_cognate === true ? 'Cognate' : vocab.is_cognate === false ? 'Non-Cognate' : undefined,
         metadata: vocab.relevance_note || undefined,
       }));
 
@@ -143,7 +143,12 @@ export function VocabularyDisplay({ steps, planContext }: VocabularyDisplayProps
             </div>
           )}
           {item.badge && (
-            <div className={`mt-6 ${getCognateBadgeClasses(item.badge === 'Cognate', 'md')}`}>
+            <div 
+              className={`mt-6 ${getCognateBadgeClasses(item.badge === 'Cognate', 'md')}`}
+              style={{ 
+                color: item.badge === 'Cognate' ? '#15803d' : '#dc2626' // green-700 : red-700
+              }}
+            >
               {item.badge}
             </div>
           )}
@@ -165,7 +170,12 @@ export function VocabularyDisplay({ steps, planContext }: VocabularyDisplayProps
           </div>
         )}
         {item.badge && (
-          <div className={`mt-2 ${getCognateBadgeClasses(item.badge === 'Cognate', 'sm')}`}>
+          <div 
+            className={`mt-2 ${getCognateBadgeClasses(item.badge === 'Cognate', 'sm')}`}
+            style={{ 
+              color: item.badge === 'Cognate' ? '#15803d' : '#dc2626' // green-700 : red-700
+            }}
+          >
             {item.badge}
           </div>
         )}

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { BarChart3, TrendingUp, Clock, DollarSign, Download, RefreshCw } from 'lucide-react';
+import { BarChart3, TrendingUp, Clock, DollarSign, Download, RefreshCw, AlertCircle, CheckCircle } from 'lucide-react';
 import {
   PieChart,
   Pie,
@@ -15,7 +15,7 @@ import {
   ResponsiveContainer,
   Cell,
 } from 'recharts';
-import { analyticsApi, AnalyticsSummary, DailyAnalytics } from '@lesson-api';
+import { analyticsApi, AnalyticsSummary, DailyAnalytics, AnalyticsErrorStats, AnalyticsOperationBreakdown, ParallelProcessingStats } from '@lesson-api';
 import { useStore } from '@lesson-browser';
 
 const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'];
@@ -26,6 +26,9 @@ export function Analytics() {
   const [summary, setSummary] = useState<AnalyticsSummary | null>(null);
   const [dailyData, setDailyData] = useState<DailyAnalytics[]>([]);
   const [sessionData, setSessionData] = useState<any[]>([]);
+  const [operationsData, setOperationsData] = useState<AnalyticsOperationBreakdown[]>([]);
+  const [errorStats, setErrorStats] = useState<AnalyticsErrorStats | null>(null);
+  const [parallelStats, setParallelStats] = useState<ParallelProcessingStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [exporting, setExporting] = useState(false);
@@ -44,18 +47,24 @@ export function Analytics() {
 
     setLoading(true);
     setError(null);
-    
+
     try {
       // Filter by current user
-      const [summaryRes, dailyRes, sessionRes] = await Promise.all([
+      const [summaryRes, dailyRes, sessionRes, opsRes, errorsRes, parallelRes] = await Promise.all([
         analyticsApi.getSummary(timeRange, currentUser.id),
         analyticsApi.getDaily(timeRange, currentUser.id),
         analyticsApi.getSessions(timeRange, currentUser.id).catch(() => ({ data: [] })),
+        analyticsApi.getOperations(timeRange, currentUser.id).catch(() => ({ data: [] })),
+        analyticsApi.getErrors(timeRange, currentUser.id).catch(() => ({ data: null })),
+        analyticsApi.getParallel(timeRange, currentUser.id).catch(() => ({ data: null })),
       ]);
-      
+
       setSummary(summaryRes.data);
       setDailyData(dailyRes.data);
       setSessionData(sessionRes.data || []);
+      setOperationsData(opsRes.data || []);
+      setErrorStats(errorsRes.data);
+      setParallelStats(parallelRes.data);
     } catch (err: any) {
       console.error('Failed to fetch analytics:', err);
       setError(err.message || 'Failed to load analytics');
@@ -69,12 +78,12 @@ export function Analytics() {
       alert('Please select a user to export analytics');
       return;
     }
-    
+
     setExporting(true);
     try {
       // Export analytics for current user
       const csvData = await analyticsApi.exportCsv(timeRange, currentUser.id);
-      
+
       // Create blob and download
       const blob = new Blob([csvData as any], { type: 'text/csv' });
       const url = URL.createObjectURL(blob);
@@ -153,13 +162,14 @@ export function Analytics() {
   }));
 
   // Group operations by phase and add color coding
-  const operationChartData = (summary.operation_breakdown || [])
+  // Use operationsData derived from /analytics/operations endpoint
+  const operationChartData = (operationsData.length > 0 ? operationsData : summary.operation_breakdown || [])
     .map((item) => {
       const opType = item.operation_type;
       let phase = 'OTHER';
       let color = '#94a3b8'; // gray
       let sortOrder = 999;
-      
+
       if (opType.startsWith('parse_')) {
         phase = 'PARSE';
         color = '#3b82f6'; // blue
@@ -174,7 +184,7 @@ export function Analytics() {
         color = '#10b981'; // green
         sortOrder = 3;
       }
-      
+
       return {
         name: item.operation_type.replace(/_/g, ' '),
         fullName: item.operation_type,
@@ -211,7 +221,7 @@ export function Analytics() {
             Performance metrics and usage statistics
           </p>
         </div>
-        
+
         <div className="flex items-center gap-3">
           {/* Time Range Selector */}
           <div className="flex gap-2">
@@ -219,29 +229,27 @@ export function Analytics() {
               <button
                 key={days}
                 onClick={() => setTimeRange(days)}
-                className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
-                  timeRange === days
+                className={`px-3 py-1.5 text-sm rounded-md transition-colors ${timeRange === days
                     ? 'bg-primary text-primary-foreground'
                     : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
-                }`}
+                  }`}
               >
                 {days}d
               </button>
             ))}
           </div>
-          
+
           {/* Session Toggle */}
           <button
             onClick={() => setShowSessions(!showSessions)}
-            className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
-              showSessions
+            className={`px-3 py-1.5 text-sm rounded-md transition-colors ${showSessions
                 ? 'bg-primary text-primary-foreground'
                 : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
-            }`}
+              }`}
           >
             {showSessions ? 'Hide' : 'Show'} Sessions
           </button>
-          
+
           {/* Export Button */}
           <button
             onClick={handleExport}
@@ -259,7 +267,25 @@ export function Analytics() {
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+        {/* Success Rate Card */}
+        <div className="bg-card border rounded-lg p-6">
+          <div className="flex items-center justify-between mb-2">
+            <p className="text-sm text-muted-foreground">Success Rate</p>
+            {errorStats && errorStats.success_rate >= 90 ? (
+              <CheckCircle className="w-5 h-5 text-green-500" />
+            ) : (
+              <AlertCircle className="w-5 h-5 text-red-500" />
+            )}
+          </div>
+          <p className="text-3xl font-bold">
+            {errorStats ? `${errorStats.success_rate.toFixed(1)}%` : 'N/A'}
+          </p>
+          <p className="text-xs text-muted-foreground mt-1">
+            {errorStats ? `${errorStats.success} ok / ${errorStats.failure} fail` : 'No data'}
+          </p>
+        </div>
+
         <div className="bg-card border rounded-lg p-6">
           <div className="flex items-center justify-between mb-2">
             <p className="text-sm text-muted-foreground">Total Plans</p>
@@ -311,6 +337,26 @@ export function Analytics() {
         </div>
       </div>
 
+      {/* Error Breakdown (if failures exist) */}
+      {errorStats && errorStats.failure > 0 && (
+        <div className="bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900 rounded-lg p-4">
+          <h3 className="text-sm font-semibold text-red-800 dark:text-red-300 mb-2 flex items-center gap-2">
+            <AlertCircle className="w-4 h-4" />
+            Recent Failures Breakdown
+          </h3>
+          <div className="flex flex-wrap gap-3">
+            {Object.entries(errorStats.error_breakdown).map(([type, count]) => (
+              <div
+                key={type}
+                className="bg-white dark:bg-black/20 px-3 py-1 rounded text-xs border border-red-100 dark:border-red-900/50"
+              >
+                <span className="font-medium">{type.replace(/_/g, ' ')}:</span> {count}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Model Distribution Pie Chart */}
@@ -351,8 +397,8 @@ export function Analytics() {
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={operationChartData}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis 
-                  dataKey="name" 
+                <XAxis
+                  dataKey="name"
                   angle={-45}
                   textAnchor="end"
                   height={100}
@@ -360,7 +406,7 @@ export function Analytics() {
                   style={{ fontSize: '11px' }}
                 />
                 <YAxis label={{ value: 'Time (ms)', angle: -90, position: 'insideLeft' }} />
-                <Tooltip 
+                <Tooltip
                   content={({ active, payload }) => {
                     if (active && payload && payload.length) {
                       const data = payload[0].payload;
@@ -395,8 +441,8 @@ export function Analytics() {
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={dailyChartData}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis 
-                  dataKey="date" 
+                <XAxis
+                  dataKey="date"
                   angle={-45}
                   textAnchor="end"
                   height={100}
@@ -474,18 +520,18 @@ export function Analytics() {
                   const opTotalTime = op.avgTime * op.count;
                   const percentage = (opTotalTime / totalTime * 100).toFixed(1);
                   const isBottleneck = parseFloat(percentage) > 20;
-                  
+
                   return (
-                    <tr 
-                      key={index} 
+                    <tr
+                      key={index}
                       className={`border-b hover:bg-muted/50 ${isBottleneck ? 'bg-orange-50 dark:bg-orange-950/20' : ''}`}
                     >
                       <td className="py-2 px-3">
-                        <span 
+                        <span
                           className="inline-block px-2 py-1 rounded text-xs font-semibold"
-                          style={{ 
-                            backgroundColor: `${op.color}20`, 
-                            color: op.color 
+                          style={{
+                            backgroundColor: `${op.color}20`,
+                            color: op.color
                           }}
                         >
                           {op.phase}
@@ -518,25 +564,25 @@ export function Analytics() {
               </tbody>
             </table>
           </div>
-          
+
           {/* Phase Summary */}
           <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
             {['PARSE', 'PROCESS', 'RENDER'].map((phase) => {
               const phaseOps = operationChartData.filter(op => op.phase === phase);
               if (phaseOps.length === 0) return null;
-              
+
               const phaseTotal = phaseOps.reduce((sum, op) => sum + (op.avgTime * op.count), 0);
               const phasePercentage = ((phaseTotal / (summary.total_duration_ms || 1)) * 100).toFixed(1);
               const phaseColor = phaseOps[0]?.color || '#94a3b8';
-              
+
               return (
-                <div 
+                <div
                   key={phase}
                   className="border rounded-lg p-4"
                   style={{ borderColor: phaseColor }}
                 >
                   <div className="flex items-center justify-between mb-2">
-                    <span 
+                    <span
                       className="font-semibold"
                       style={{ color: phaseColor }}
                     >
@@ -555,6 +601,116 @@ export function Analytics() {
                 </div>
               );
             })}
+          </div>
+        </div>
+      )}
+
+      {/* Parallel Processing Stats */}
+      {parallelStats && parallelStats.total_operations > 0 && (
+        <div className="bg-card border rounded-lg p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h3 className="text-lg font-semibold">Parallel Processing Performance</h3>
+              <p className="text-sm text-muted-foreground mt-1">
+                Metrics for parallel vs sequential processing
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            {/* Parallel Operations */}
+            <div className="bg-muted/50 rounded-lg p-4">
+              <p className="text-sm text-muted-foreground mb-1">Parallel Operations</p>
+              <p className="text-2xl font-bold">{parallelStats.parallel_operations}</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                {parallelStats.parallel_percentage.toFixed(1)}% of total
+              </p>
+            </div>
+
+            {/* Time Savings */}
+            <div className="bg-muted/50 rounded-lg p-4">
+              <p className="text-sm text-muted-foreground mb-1">Time Savings</p>
+              <p className="text-2xl font-bold text-green-600">
+                {formatDuration(parallelStats.time_savings_ms)}
+              </p>
+              <p className="text-xs text-muted-foreground mt-1">
+                {parallelStats.time_savings_percent.toFixed(1)}% faster
+              </p>
+            </div>
+
+            {/* Avg Parallel Duration */}
+            <div className="bg-muted/50 rounded-lg p-4">
+              <p className="text-sm text-muted-foreground mb-1">Avg Parallel Time</p>
+              <p className="text-2xl font-bold">{formatDuration(parallelStats.avg_parallel_duration_ms)}</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                vs {formatDuration(parallelStats.avg_sequential_duration_ms)} sequential
+              </p>
+            </div>
+
+            {/* Rate Limit Errors */}
+            <div className="bg-muted/50 rounded-lg p-4">
+              <p className="text-sm text-muted-foreground mb-1">Rate Limit Errors</p>
+              <p className="text-2xl font-bold">
+                {parallelStats.total_rate_limit_errors}
+              </p>
+              <p className="text-xs text-muted-foreground mt-1">
+                {parallelStats.avg_concurrency_level > 0 
+                  ? `Avg concurrency: ${parallelStats.avg_concurrency_level.toFixed(1)}`
+                  : 'No concurrency data'}
+              </p>
+            </div>
+          </div>
+
+          {/* Detailed Stats Table */}
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b">
+                  <th className="text-left py-2 px-3">Metric</th>
+                  <th className="text-right py-2 px-3">Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr className="border-b">
+                  <td className="py-2 px-3">Total Operations</td>
+                  <td className="py-2 px-3 text-right font-medium">{parallelStats.total_operations}</td>
+                </tr>
+                <tr className="border-b">
+                  <td className="py-2 px-3">Sequential Operations</td>
+                  <td className="py-2 px-3 text-right">{parallelStats.sequential_operations}</td>
+                </tr>
+                <tr className="border-b">
+                  <td className="py-2 px-3">Avg Parallel Slot Count</td>
+                  <td className="py-2 px-3 text-right">
+                    {parallelStats.avg_parallel_slot_count > 0 
+                      ? parallelStats.avg_parallel_slot_count.toFixed(1)
+                      : 'N/A'}
+                  </td>
+                </tr>
+                <tr className="border-b">
+                  <td className="py-2 px-3">Avg Sequential Time (Est.)</td>
+                  <td className="py-2 px-3 text-right">
+                    {formatDuration(parallelStats.avg_sequential_time_ms)}
+                  </td>
+                </tr>
+                {parallelStats.avg_tpm_usage > 0 && (
+                  <tr className="border-b">
+                    <td className="py-2 px-3">Avg TPM Usage</td>
+                    <td className="py-2 px-3 text-right">
+                      {formatNumber(parallelStats.avg_tpm_usage)} tokens/min
+                    </td>
+                  </tr>
+                )}
+                {parallelStats.avg_rpm_usage > 0 && (
+                  <tr className="border-b">
+                    <td className="py-2 px-3">Avg RPM Usage</td>
+                    <td className="py-2 px-3 text-right">
+                      {formatNumber(parallelStats.avg_rpm_usage)} requests/min
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
           </div>
         </div>
       )}
@@ -590,9 +746,9 @@ export function Analytics() {
                 {sessionData.map((session, index) => {
                   const sessionStart = session.session_start ? new Date(session.session_start) : null;
                   const duration = session.duration_ms ? session.duration_ms / 1000 : 0;
-                  
+
                   return (
-                    <tr 
+                    <tr
                       key={session.plan_id || index}
                       className={`border-b hover:bg-muted/50 ${index === 0 ? 'bg-primary/5' : ''}`}
                     >
@@ -603,17 +759,17 @@ export function Analytics() {
                         )}
                       </td>
                       <td className="py-2 px-3 text-muted-foreground">
-                        {sessionStart 
-                          ? sessionStart.toLocaleString('en-US', { 
-                              month: 'short', 
-                              day: 'numeric', 
-                              hour: '2-digit', 
-                              minute: '2-digit' 
-                            })
+                        {sessionStart
+                          ? sessionStart.toLocaleString('en-US', {
+                            month: 'short',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })
                           : 'N/A'}
                       </td>
                       <td className="py-2 px-3 text-right">
-                        {duration > 0 
+                        {duration > 0
                           ? `${(duration / 60).toFixed(1)}m`
                           : '0s'}
                       </td>
@@ -627,7 +783,7 @@ export function Analytics() {
                       <td className="py-2 px-3">
                         <div className="flex flex-wrap gap-1">
                           {(session.models_used || []).slice(0, 2).map((model: string, idx: number) => (
-                            <span 
+                            <span
                               key={idx}
                               className="text-xs bg-muted px-2 py-0.5 rounded"
                             >

@@ -97,6 +97,15 @@ class PerformanceMetric(SQLModel, table=True):
     llm_model: Optional[str] = None
     cost_usd: Optional[float] = None
     error_message: Optional[str] = None
+    
+    # Parallel processing metrics
+    is_parallel: Optional[bool] = Field(default=False, description="Whether this operation was processed in parallel")
+    parallel_slot_count: Optional[int] = Field(default=None, description="Number of slots processed in parallel")
+    sequential_time_ms: Optional[float] = Field(default=None, description="Estimated time if processed sequentially")
+    rate_limit_errors: Optional[int] = Field(default=0, description="Number of rate limit errors encountered")
+    concurrency_level: Optional[int] = Field(default=None, description="Actual concurrency level used")
+    tpm_usage: Optional[int] = Field(default=None, description="Tokens per minute usage at time of request")
+    rpm_usage: Optional[int] = Field(default=None, description="Requests per minute usage at time of request")
 
 
 class LessonStep(SQLModel, table=True):
@@ -124,6 +133,50 @@ class LessonStep(SQLModel, table=True):
     vocabulary_cognates: Optional[List[Dict[str, Any]]] = Field(
         default=None, sa_column=Column(JSON, nullable=True)
     )
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+
+
+class OriginalLessonPlan(SQLModel, table=True):
+    """Store original lesson plan content from primary teachers before LLM transformation."""
+    
+    __tablename__ = "original_lesson_plans"
+    
+    id: str = Field(primary_key=True)
+    user_id: str = Field(index=True)
+    week_of: str
+    slot_number: int
+    subject: str
+    grade: str
+    homeroom: Optional[str] = None
+    
+    # Source file information
+    source_file_path: str
+    source_file_name: str
+    primary_teacher_name: Optional[str] = None
+    extracted_at: datetime = Field(default_factory=datetime.utcnow)
+    
+    # Extracted content (structured)
+    content_json: Dict[str, Any] = Field(sa_column=Column(JSON))  # Full extracted content
+    full_text: Optional[str] = None  # Plain text version for LLM
+    
+    # Per-day content breakdown (optional, for easier querying)
+    monday_content: Optional[Dict[str, Any]] = Field(default=None, sa_column=Column(JSON, nullable=True))
+    tuesday_content: Optional[Dict[str, Any]] = Field(default=None, sa_column=Column(JSON, nullable=True))
+    wednesday_content: Optional[Dict[str, Any]] = Field(default=None, sa_column=Column(JSON, nullable=True))
+    thursday_content: Optional[Dict[str, Any]] = Field(default=None, sa_column=Column(JSON, nullable=True))
+    friday_content: Optional[Dict[str, Any]] = Field(default=None, sa_column=Column(JSON, nullable=True))
+    
+    # Metadata
+    available_days: Optional[List[str]] = Field(default=None, sa_column=Column(JSON, nullable=True))
+    has_no_school: bool = Field(default=False)
+    content_hash: Optional[str] = None  # Hash for change detection
+    
+    # Status
+    status: str = Field(default="extracted")  # 'extracted', 'processed', 'error'
+    error_message: Optional[str] = None
+    
+    # Timestamps
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 

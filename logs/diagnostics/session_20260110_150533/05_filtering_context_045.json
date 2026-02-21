@@ -1,0 +1,13 @@
+{
+  "timestamp": "2026-01-10T15:20:59.500495",
+  "stage": "05_filtering_context",
+  "data": {
+    "current_slot_number": 4,
+    "current_slot_number_is_none": false,
+    "current_subject": "Science",
+    "current_subject_is_none": false,
+    "pending_hyperlinks_count": 1,
+    "cell": "wednesday_assessment",
+    "filtering_active": true
+  }
+}

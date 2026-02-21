@@ -67,6 +67,16 @@
   }
 }
 
+/* Schedule: PLC/GLM meeting cells (no border). Keep in sync with meetingPeriodInlineStyle in shared/lesson-browser/src/utils/scheduleColors.ts */
+td.schedule-cell-meeting {
+  background-color: rgb(255 251 235) !important;
+  border: none !important;
+  color: rgb(146 64 14) !important;
+}
+td.schedule-cell-meeting > div {
+  color: rgb(146 64 14) !important;
+}
+
 @layer utilities {
   /* Mobile-specific styles */
   @media (max-width: 768px) {

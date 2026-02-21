@@ -1,0 +1,823 @@
+[
+  {
+    "timestamp": "2025-12-07T13:30:02.173182",
+    "stage": "01_parser_slot1",
+    "data": {
+      "slot_number": 1,
+      "subject": "ELA/SS",
+      "source_file": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\25 W50\\Morais 12_8 - 12_12.docx",
+      "hyperlink_count": 7,
+      "hyperlinks": [
+        {
+          "text": "02 - Second Grade Unit Description and Summary of Key Learning",
+          "url": "https://docs.google.com/document/d/1H_hFmN04OarxjXNlCsHxSgkzyD1nfzMjDFWQfx5zc30/edit?tab=t.kofvr9ldt",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "02 - Second Grade Unit Description and Summary of Key Learning",
+          "url": "https://docs.google.com/document/d/1H_hFmN04OarxjXNlCsHxSgkzyD1nfzMjDFWQfx5zc30/edit?tab=t.kofvr9ldt",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "02 - Second Grade Unit Description and Summary of Key Learning",
+          "url": "https://docs.google.com/document/d/1H_hFmN04OarxjXNlCsHxSgkzyD1nfzMjDFWQfx5zc30/edit?tab=t.kofvr9ldt",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "All The Colors We Are: Lesson 1 Rubric",
+          "url": "https://docs.google.com/document/d/1ZXZ7htKduA5KfCpY0Amuhx9okwHM_M9zpMGGcWbyOZ8/edit?usp=sharing",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "The Science of Skin Color Lesson 3 Rubric",
+          "url": "https://docs.google.com/document/d/1HDf6bdkcCsX0P5bVKk2AJpCD7pPwwKSiZ1ybzPMma3w/edit?usp=sharing",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "SPO organizer",
+          "url": "https://docs.google.com/document/d/1IuGa59rW6zAc3YPJnPBqn1GZBQekZMoq/edit?usp=sharing&ouid=114185867",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "The Science of Skin Color Lesson 3 Rubric",
+          "url": "https://docs.google.com/document/d/1HDf6bdkcCsX0P5bVKk2AJpCD7pPwwKSiZ1ybzPMma3w/edit?usp=sharing",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-12-07T13:33:29.958898",
+    "stage": "02_lesson_json_slot1",
+    "data": {
+      "slot_number": 1,
+      "subject": "ELA/SS",
+      "metadata_slot_number": null,
+      "metadata_subject": "ELA/SS",
+      "hyperlink_count": 7,
+      "hyperlinks_with_slot_metadata": 0,
+      "hyperlinks_with_subject_metadata": 0,
+      "sample_hyperlinks": [
+        {
+          "text": "02 - Second Grade Unit Description and Summary of ",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "02 - Second Grade Unit Description and Summary of ",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "02 - Second Grade Unit Description and Summary of ",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "All The Colors We Are: Lesson 1 Rubric",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "The Science of Skin Color Lesson 3 Rubric",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "SPO organizer",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "The Science of Skin Color Lesson 3 Rubric",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-12-07T13:33:30.076405",
+    "stage": "01_parser_slot2",
+    "data": {
+      "slot_number": 2,
+      "subject": "Social Studies",
+      "source_file": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\25 W50\\_T. Santiago SS Plans 12_8.docx",
+      "hyperlink_count": 9,
+      "hyperlinks": [
+        {
+          "text": "Kush DBQ ",
+          "url": "https://d43fweuh3sg51.cloudfront.net/media/media_files/4nfg7ajubm8klslcr8icrnlmkimnr6pm.pdf",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Kush DBQ ",
+          "url": "https://d43fweuh3sg51.cloudfront.net/media/media_files/4nfg7ajubm8klslcr8icrnlmkimnr6pm.pdf",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Egypt/Kush DBQ Slides",
+          "url": "https://docs.google.com/presentation/d/1mFmXzM8Xflp96f5c0C6Rsg8h87_TKifN3cEZTFarvLY/edit?usp=sharing",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Kush DBQ ",
+          "url": "https://d43fweuh3sg51.cloudfront.net/media/media_files/4nfg7ajubm8klslcr8icrnlmkimnr6pm.pdf",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Egypt/Kush DBQ Slides",
+          "url": "https://docs.google.com/presentation/d/1mFmXzM8Xflp96f5c0C6Rsg8h87_TKifN3cEZTFarvLY/edit?usp=sharing",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Kush DBQ ",
+          "url": "https://d43fweuh3sg51.cloudfront.net/media/media_files/4nfg7ajubm8klslcr8icrnlmkimnr6pm.pdf",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Egypt/Kush DBQ Slides",
+          "url": "https://docs.google.com/presentation/d/1mFmXzM8Xflp96f5c0C6Rsg8h87_TKifN3cEZTFarvLY/edit?usp=sharing",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "The Mummification Project Reading",
+          "url": "https://docs.google.com/document/d/1aFQ3vMX_uW29u49oo_Fi2_8FMpj0QESwK2qClVKkAME/edit?usp=sharing",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "The Mummy Project Assignment Sheet",
+          "url": "https://docs.google.com/document/d/1weqL9ufVsIwt4dRd5pXIqSXwf5d4NkQyLDeiG5COsG8/edit?usp=sharing",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-12-07T13:37:49.565015",
+    "stage": "02_lesson_json_slot2",
+    "data": {
+      "slot_number": 2,
+      "subject": "Social Studies",
+      "metadata_slot_number": null,
+      "metadata_subject": "Social Studies",
+      "hyperlink_count": 9,
+      "hyperlinks_with_slot_metadata": 0,
+      "hyperlinks_with_subject_metadata": 0,
+      "sample_hyperlinks": [
+        {
+          "text": "Kush DBQ ",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "Kush DBQ ",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "Egypt/Kush DBQ Slides",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "Kush DBQ ",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "Egypt/Kush DBQ Slides",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "Kush DBQ ",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "Egypt/Kush DBQ Slides",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "The Mummification Project Reading",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "The Mummy Project Assignment Sheet",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-12-07T13:37:49.662483",
+    "stage": "01_parser_slot3",
+    "data": {
+      "slot_number": 3,
+      "subject": "Science",
+      "source_file": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\25 W50\\Mrs. Grande Science 12_8 12_12.docx",
+      "hyperlink_count": 0,
+      "hyperlinks": []
+    }
+  },
+  {
+    "timestamp": "2025-12-07T13:41:53.553645",
+    "stage": "01_parser_slot4",
+    "data": {
+      "slot_number": 4,
+      "subject": "Science",
+      "source_file": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\25 W50\\Morais 12_8 - 12_12.docx",
+      "hyperlink_count": 4,
+      "hyperlinks": [
+        {
+          "text": " 2nd Grade Science ",
+          "url": "https://docs.google.com/document/d/1nImdZIX6pCavnrr59YDV-iKMuixgzblvrcu5bGunB6Q/edit?tab=t.0",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": " 2nd Grade Science ",
+          "url": "https://docs.google.com/document/d/1nImdZIX6pCavnrr59YDV-iKMuixgzblvrcu5bGunB6Q/edit?tab=t.0",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": " 2nd Grade Science ",
+          "url": "https://docs.google.com/document/d/1nImdZIX6pCavnrr59YDV-iKMuixgzblvrcu5bGunB6Q/edit?tab=t.0",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": " 2nd Grade Science ",
+          "url": "https://docs.google.com/document/d/1nImdZIX6pCavnrr59YDV-iKMuixgzblvrcu5bGunB6Q/edit?tab=t.0",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-12-07T13:45:22.712853",
+    "stage": "02_lesson_json_slot4",
+    "data": {
+      "slot_number": 4,
+      "subject": "Science",
+      "metadata_slot_number": null,
+      "metadata_subject": "Science",
+      "hyperlink_count": 4,
+      "hyperlinks_with_slot_metadata": 0,
+      "hyperlinks_with_subject_metadata": 0,
+      "sample_hyperlinks": [
+        {
+          "text": " 2nd Grade Science ",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": " 2nd Grade Science ",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": " 2nd Grade Science ",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": " 2nd Grade Science ",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-12-07T13:45:22.926206",
+    "stage": "01_parser_slot5",
+    "data": {
+      "slot_number": 5,
+      "subject": "Math",
+      "source_file": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\25 W50\\Morais 12_8 - 12_12.docx",
+      "hyperlink_count": 7,
+      "hyperlinks": [
+        {
+          "text": "2.4.1 Teacher Guide",
+          "url": "https://drive.google.com/file/d/1TmY3Ay_64_ZmB1uact8Oz1YcYRGiVHMR/view?usp=drive_link",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Unit 4: Addition and Subtraction on the Number Line",
+          "url": "https://docs.google.com/document/d/1x8ll9eW0ZVYdBOKIdDfEPk1X_79X3dyOtq_zyByvpe4/edit?tab=t.0",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "2.3.14 Cool Down",
+          "url": "https://drive.google.com/file/d/1gzHds5tjFjqKcZ9N5nafJv-AbgImnYye/view?usp=drive_link",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "2.3.15 Cool Down",
+          "url": "https://drive.google.com/file/d/1YJ_TD3eXtb5laIdm_qB3gKLk47ztC_UO/view?usp=drive_link",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "2.3.16 Cool Down",
+          "url": "https://drive.google.com/file/d/1gMXjzT6Dfro502wDExh17cQrJvXhviwq/view?usp=drive_link",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "2.4.1 Cool Down",
+          "url": "https://drive.google.com/file/d/1fsmxYqaGuLlTBsUunm_Q1sNY46uYvey4/view?usp=share_link",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "U4 L1 Math hw.pdf",
+          "url": "https://drive.google.com/file/d/1VoqodhYIYhg840kNZV43WNuq8MewiMiN/view?usp=drive_link",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-12-07T13:48:57.275564",
+    "stage": "02_lesson_json_slot5",
+    "data": {
+      "slot_number": 5,
+      "subject": "Math",
+      "metadata_slot_number": null,
+      "metadata_subject": "Math",
+      "hyperlink_count": 7,
+      "hyperlinks_with_slot_metadata": 0,
+      "hyperlinks_with_subject_metadata": 0,
+      "sample_hyperlinks": [
+        {
+          "text": "2.4.1 Teacher Guide",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "Unit 4: Addition and Subtraction on the Number Lin",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "2.3.14 Cool Down",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "2.3.15 Cool Down",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "2.3.16 Cool Down",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "2.4.1 Cool Down",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "U4 L1 Math hw.pdf",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-12-07T13:48:57.322078",
+    "stage": "03_before_render_slot1",
+    "data": {
+      "slot_number": 1,
+      "subject": "ELA/SS",
+      "render_type": "multi_slot",
+      "metadata_slot_number": 1,
+      "metadata_subject": "ELA/SS",
+      "hyperlink_count": 7,
+      "all_hyperlinks_have_slot": true,
+      "all_hyperlinks_have_subject": true,
+      "hyperlink_slot_distribution": {
+        "1": 7
+      },
+      "sample_hyperlinks": [
+        {
+          "text": "02 - Second Grade Unit Description and Summary of ",
+          "source_slot": 1,
+          "source_subject": "ELA/SS"
+        },
+        {
+          "text": "02 - Second Grade Unit Description and Summary of ",
+          "source_slot": 1,
+          "source_subject": "ELA/SS"
+        },
+        {
+          "text": "02 - Second Grade Unit Description and Summary of ",
+          "source_slot": 1,
+          "source_subject": "ELA/SS"
+        },
+        {
+          "text": "All The Colors We Are: Lesson 1 Rubric",
+          "source_slot": 1,
+          "source_subject": "ELA/SS"
+        },
+        {
+          "text": "The Science of Skin Color Lesson 3 Rubric",
+          "source_slot": 1,
+          "source_subject": "ELA/SS"
+        },
+        {
+          "text": "SPO organizer",
+          "source_slot": 1,
+          "source_subject": "ELA/SS"
+        },
+        {
+          "text": "The Science of Skin Color Lesson 3 Rubric",
+          "source_slot": 1,
+          "source_subject": "ELA/SS"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-12-07T13:48:57.346049",
+    "stage": "04_renderer_metadata_extracted",
+    "data": {
+      "slot_number": 1,
+      "slot_number_type": "int",
+      "slot_number_is_none": false,
+      "subject": "ELA/SS",
+      "subject_is_none": false,
+      "hyperlink_count": 7,
+      "teacher": "Catarina Morais / Daniela Silva",
+      "filtering_will_activate": true
+    }
+  },
+  {
+    "timestamp": "2025-12-07T13:48:57.465478",
+    "stage": "03_before_render_slot2",
+    "data": {
+      "slot_number": 2,
+      "subject": "Social Studies",
+      "render_type": "multi_slot",
+      "metadata_slot_number": 2,
+      "metadata_subject": "Social Studies",
+      "hyperlink_count": 9,
+      "all_hyperlinks_have_slot": true,
+      "all_hyperlinks_have_subject": true,
+      "hyperlink_slot_distribution": {
+        "2": 9
+      },
+      "sample_hyperlinks": [
+        {
+          "text": "Kush DBQ ",
+          "source_slot": 2,
+          "source_subject": "Social Studies"
+        },
+        {
+          "text": "Kush DBQ ",
+          "source_slot": 2,
+          "source_subject": "Social Studies"
+        },
+        {
+          "text": "Egypt/Kush DBQ Slides",
+          "source_slot": 2,
+          "source_subject": "Social Studies"
+        },
+        {
+          "text": "Kush DBQ ",
+          "source_slot": 2,
+          "source_subject": "Social Studies"
+        },
+        {
+          "text": "Egypt/Kush DBQ Slides",
+          "source_slot": 2,
+          "source_subject": "Social Studies"
+        },
+        {
+          "text": "Kush DBQ ",
+          "source_slot": 2,
+          "source_subject": "Social Studies"
+        },
+        {
+          "text": "Egypt/Kush DBQ Slides",
+          "source_slot": 2,
+          "source_subject": "Social Studies"
+        },
+        {
+          "text": "The Mummification Project Reading",
+          "source_slot": 2,
+          "source_subject": "Social Studies"
+        },
+        {
+          "text": "The Mummy Project Assignment Sheet",
+          "source_slot": 2,
+          "source_subject": "Social Studies"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-12-07T13:48:57.489677",
+    "stage": "04_renderer_metadata_extracted",
+    "data": {
+      "slot_number": 2,
+      "slot_number_type": "int",
+      "slot_number_is_none": false,
+      "subject": "Social Studies",
+      "subject_is_none": false,
+      "hyperlink_count": 9,
+      "teacher": "Taina Santiago / Daniela Silva",
+      "filtering_will_activate": true
+    }
+  },
+  {
+    "timestamp": "2025-12-07T13:48:57.652397",
+    "stage": "03_before_render_slot3",
+    "data": {
+      "slot_number": 3,
+      "subject": "Science",
+      "render_type": "multi_slot",
+      "metadata_slot_number": 3,
+      "metadata_subject": "Science",
+      "hyperlink_count": 0,
+      "all_hyperlinks_have_slot": true,
+      "all_hyperlinks_have_subject": true,
+      "hyperlink_slot_distribution": {},
+      "sample_hyperlinks": []
+    }
+  },
+  {
+    "timestamp": "2025-12-07T13:48:57.665395",
+    "stage": "04_renderer_metadata_extracted",
+    "data": {
+      "slot_number": 3,
+      "slot_number_type": "int",
+      "slot_number_is_none": false,
+      "subject": "Science",
+      "subject_is_none": false,
+      "hyperlink_count": 0,
+      "teacher": "Mariela Grande / Daniela Silva",
+      "filtering_will_activate": true
+    }
+  },
+  {
+    "timestamp": "2025-12-07T13:48:57.828213",
+    "stage": "03_before_render_slot4",
+    "data": {
+      "slot_number": 4,
+      "subject": "Science",
+      "render_type": "multi_slot",
+      "metadata_slot_number": 4,
+      "metadata_subject": "Science",
+      "hyperlink_count": 4,
+      "all_hyperlinks_have_slot": true,
+      "all_hyperlinks_have_subject": true,
+      "hyperlink_slot_distribution": {
+        "4": 4
+      },
+      "sample_hyperlinks": [
+        {
+          "text": " 2nd Grade Science ",
+          "source_slot": 4,
+          "source_subject": "Science"
+        },
+        {
+          "text": " 2nd Grade Science ",
+          "source_slot": 4,
+          "source_subject": "Science"
+        },
+        {
+          "text": " 2nd Grade Science ",
+          "source_slot": 4,
+          "source_subject": "Science"
+        },
+        {
+          "text": " 2nd Grade Science ",
+          "source_slot": 4,
+          "source_subject": "Science"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-12-07T13:48:57.850707",
+    "stage": "04_renderer_metadata_extracted",
+    "data": {
+      "slot_number": 4,
+      "slot_number_type": "int",
+      "slot_number_is_none": false,
+      "subject": "Science",
+      "subject_is_none": false,
+      "hyperlink_count": 4,
+      "teacher": "Catarina Morais / Daniela Silva",
+      "filtering_will_activate": true
+    }
+  },
+  {
+    "timestamp": "2025-12-07T13:48:58.003705",
+    "stage": "03_before_render_slot5",
+    "data": {
+      "slot_number": 5,
+      "subject": "Math",
+      "render_type": "multi_slot",
+      "metadata_slot_number": 5,
+      "metadata_subject": "Math",
+      "hyperlink_count": 7,
+      "all_hyperlinks_have_slot": true,
+      "all_hyperlinks_have_subject": true,
+      "hyperlink_slot_distribution": {
+        "5": 7
+      },
+      "sample_hyperlinks": [
+        {
+          "text": "2.4.1 Teacher Guide",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "Unit 4: Addition and Subtraction on the Number Lin",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "2.3.14 Cool Down",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "2.3.15 Cool Down",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "2.3.16 Cool Down",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "2.4.1 Cool Down",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "U4 L1 Math hw.pdf",
+          "source_slot": 5,
+          "source_subject": "Math"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-12-07T13:48:58.029219",
+    "stage": "04_renderer_metadata_extracted",
+    "data": {
+      "slot_number": 5,
+      "slot_number_type": "int",
+      "slot_number_is_none": false,
+      "subject": "Math",
+      "subject_is_none": false,
+      "hyperlink_count": 7,
+      "teacher": "Catarina Morais / Daniela Silva",
+      "filtering_will_activate": true
+    }
+  }
+]

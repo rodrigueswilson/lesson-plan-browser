@@ -1,0 +1,44 @@
+{
+  "timestamp": "2025-11-29T20:47:54.050726",
+  "stage": "03_before_render_slot2",
+  "data": {
+    "slot_number": 2,
+    "subject": "ELA/SS",
+    "render_type": "multi_slot",
+    "metadata_slot_number": 2,
+    "metadata_subject": "ELA/SS",
+    "hyperlink_count": 5,
+    "all_hyperlinks_have_slot": true,
+    "all_hyperlinks_have_subject": true,
+    "hyperlink_slot_distribution": {
+      "2": 5
+    },
+    "sample_hyperlinks": [
+      {
+        "text": "Unit 3",
+        "source_slot": 2,
+        "source_subject": "ELA/SS"
+      },
+      {
+        "text": "Unit 3",
+        "source_slot": 2,
+        "source_subject": "ELA/SS"
+      },
+      {
+        "text": "Unit 3",
+        "source_slot": 2,
+        "source_subject": "ELA/SS"
+      },
+      {
+        "text": "Unit 3",
+        "source_slot": 2,
+        "source_subject": "ELA/SS"
+      },
+      {
+        "text": "Unit 3",
+        "source_slot": 2,
+        "source_subject": "ELA/SS"
+      }
+    ]
+  }
+}

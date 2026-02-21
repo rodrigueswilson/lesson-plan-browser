@@ -1,0 +1,14 @@
+{
+  "timestamp": "2026-02-20T18:01:49.996434",
+  "stage": "04_renderer_metadata_extracted",
+  "data": {
+    "slot_number": 4,
+    "slot_number_type": "int",
+    "slot_number_is_none": false,
+    "subject": "Math",
+    "subject_is_none": false,
+    "hyperlink_count": 1,
+    "teacher": "Donna Savoca / Wilson Rodrigues",
+    "filtering_will_activate": true
+  }
+}

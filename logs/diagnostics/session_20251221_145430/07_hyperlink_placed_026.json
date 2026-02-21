@@ -1,0 +1,11 @@
+{
+  "timestamp": "2025-12-21T14:54:30.605436",
+  "stage": "07_hyperlink_placed",
+  "data": {
+    "text": "cool down activity",
+    "slot": 4,
+    "subject": "Math",
+    "cell": "monday_assessment",
+    "confidence": 0.66
+  }
+}

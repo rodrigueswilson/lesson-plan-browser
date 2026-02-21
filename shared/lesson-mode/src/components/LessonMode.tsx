@@ -58,6 +58,7 @@ export function LessonMode({ currentUser, scheduleEntry, planId, day, slot, week
   const adjustmentMadeRef = useRef<number | null>(null); // Track step index that was adjusted
   const sliderAdjustmentTimeRef = useRef<number | null>(null); // Store exact dragged time from slider
   const wasRunningBeforeSliderAdjustRef = useRef<boolean>(false); // Track if timer was running before slider adjustment
+  const hasAutoStartedRef = useRef(false); // Track if timer has been auto-started
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [instructionsCollapsed, setInstructionsCollapsed] = useState(false);
   const [lessonPlanData, setLessonPlanData] = useState<(WeeklyPlan & { lesson_json?: any }) | null>(null);
@@ -108,6 +109,20 @@ export function LessonMode({ currentUser, scheduleEntry, planId, day, slot, week
   const [lessonDay, setLessonDay] = useState<string | null>(day || null);
   const [lessonSlot, setLessonSlot] = useState<number | null>(slot || null);
 
+  // Resolve the authoritative week for this lesson (prop > schedule entry > plan data)
+  const resolvedWeekOf = useMemo(() => {
+    return weekOf || currentLesson?.week_of || lessonPlanData?.week_of || null;
+  }, [weekOf, currentLesson?.week_of, lessonPlanData?.week_of]);
+
+  // Ensure schedule entry passed to the timer has accurate week information
+  const scheduleEntryForTimer = useMemo(() => {
+    if (!currentLesson) return null;
+    if (resolvedWeekOf && currentLesson.week_of !== resolvedWeekOf) {
+      return { ...currentLesson, week_of: resolvedWeekOf };
+    }
+    return currentLesson;
+  }, [currentLesson, resolvedWeekOf]);
+
   // Use timer hook for automatic synchronization
   const {
     timerState,
@@ -117,7 +132,7 @@ export function LessonMode({ currentUser, scheduleEntry, planId, day, slot, week
     changeStep: changeStepTimer,
   } = useLessonTimer({
     steps,
-    scheduleEntry: currentLesson,
+    scheduleEntry: scheduleEntryForTimer,
     autoSync: false,
     autoAdvance: autoAdvance,
     isLiveMode, // Use the calculated value instead of hardcoding false
@@ -130,6 +145,43 @@ export function LessonMode({ currentUser, scheduleEntry, planId, day, slot, week
       // Could show a completion message here
     },
   });
+
+  // Track if we're in initial load phase
+  const isInitialLoadRef = useRef(true);
+  
+  // Force step 0 during initial load - aggressive safeguard
+  // Also auto-start the timer when steps are first loaded
+  useEffect(() => {
+    if (steps.length > 0) {
+      // During initial load (first 2 seconds), force step 0 if it's not already
+      if (isInitialLoadRef.current && timerState.currentStepIndex !== 0) {
+        console.error('[LessonMode] CRITICAL: Timer at step', timerState.currentStepIndex, 'during initial load! Forcing to step 0.', {
+          stepName: steps[timerState.currentStepIndex]?.step_name,
+          firstStepName: steps[0]?.step_name,
+          stackTrace: new Error().stack,
+        });
+        changeStepTimer(0);
+      }
+      
+      // Auto-start the timer when steps are first loaded (only once)
+      if (!hasAutoStartedRef.current && timerState.currentStepIndex === 0 && !timerState.isRunning) {
+        console.log('[LessonMode] Auto-starting timer on step 0');
+        hasAutoStartedRef.current = true;
+        // Use a small delay to ensure timer state is fully initialized
+        setTimeout(() => {
+          startTimer();
+        }, 300);
+      }
+      
+      // After 2 seconds, allow normal step changes
+      const timeout = setTimeout(() => {
+        isInitialLoadRef.current = false;
+        console.log('[LessonMode] Initial load phase complete, allowing normal step changes');
+      }, 2000);
+      
+      return () => clearTimeout(timeout);
+    }
+  }, [steps.length, timerState.currentStepIndex, timerState.isRunning, changeStepTimer, startTimer]);
 
   // Initialize lesson context when component mounts or props change
   useEffect(() => {
@@ -212,6 +264,8 @@ export function LessonMode({ currentUser, scheduleEntry, planId, day, slot, week
         await loadSteps(resolvedPlanId, resolvedDay, resolvedSlot);
 
         // Load active session if exists
+        // Note: Timer will initialize to step 0 when steps are loaded
+        // Session restoration will only override if there's a valid saved session
         if (currentUser) {
           await loadActiveSession(currentUser.id, resolvedPlanId, resolvedDay, resolvedSlot);
         }
@@ -244,10 +298,26 @@ export function LessonMode({ currentUser, scheduleEntry, planId, day, slot, week
         const session = response.data;
         setSessionId(session.id);
 
-        // Restore timer state
-        if (session.current_step_index < steps.length) {
-          changeStepTimer(session.current_step_index);
-        }
+        console.log('[LessonMode] Found active session:', {
+          sessionId: session.id,
+          stepIndex: session.current_step_index,
+          stepName: steps[session.current_step_index]?.step_name,
+          remainingTime: session.remaining_time,
+          isRunning: session.is_running,
+          stepsLength: steps.length,
+          firstStepName: steps[0]?.step_name,
+        });
+
+        // Always start at step 0 when entering lesson mode
+        // Only restore session step if explicitly continuing a lesson in progress
+        // For now, always start fresh at step 0 to fix the issue
+        console.log('[LessonMode] Starting at step 0 (ignoring session step_index to fix initialization bug)');
+        changeStepTimer(0);
+        
+        // TODO: In the future, we might want to restore session state if:
+        // - The lesson is actually in progress (not just starting)
+        // - The session was created recently (within the last few minutes)
+        // - The user explicitly wants to continue from where they left off
 
         // Restore adjusted durations if present
         if (session.adjusted_durations) {
@@ -433,6 +503,12 @@ export function LessonMode({ currentUser, scheduleEntry, planId, day, slot, week
 
   const handleStepChange = (newIndex: number) => {
     if (newIndex >= 0 && newIndex < steps.length) {
+      console.log('[LessonMode] handleStepChange called:', {
+        fromIndex: timerState.currentStepIndex,
+        toIndex: newIndex,
+        stepName: steps[newIndex]?.step_name,
+        stackTrace: new Error().stack,
+      });
       changeStepTimer(newIndex);
     }
   };
@@ -1117,7 +1193,6 @@ export function LessonMode({ currentUser, scheduleEntry, planId, day, slot, week
               totalSteps={steps.length}
               onPrevious={() => handleStepChange(timerState.currentStepIndex - 1)}
               onNext={() => handleStepChange(timerState.currentStepIndex + 1)}
-              onGoToBeginning={() => handleStepChange(0)}
               isCollapsed={instructionsCollapsed}
               onToggleCollapse={() => setInstructionsCollapsed(!instructionsCollapsed)}
             />

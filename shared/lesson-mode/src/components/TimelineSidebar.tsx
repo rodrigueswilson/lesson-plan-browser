@@ -149,21 +149,8 @@ export function TimelineSidebar({
 
         {/* Current Activity */}
         <div className="space-y-3">
-          <div className="flex items-center justify-between">
-            <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-              Current
-            </div>
-            {timerState.scheduleStatus && (
-              <div className={`text-xs px-2 py-0.5 rounded ${
-                timerState.scheduleStatus === 'current' 
-                  ? 'bg-blue-100 text-blue-700' 
-                  : timerState.scheduleStatus === 'past' 
-                  ? 'bg-green-100 text-green-700' 
-                  : 'bg-orange-100 text-orange-700'
-              }`}>
-                {timerState.scheduleStatus === 'current' ? 'Live' : timerState.scheduleStatus === 'past' ? 'Past' : 'Upcoming'}
-              </div>
-            )}
+          <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+            Current
           </div>
           <Card className={`p-4 border-2 ${
             timerState.scheduleStatus === 'current' 

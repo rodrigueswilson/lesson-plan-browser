@@ -311,6 +311,28 @@ class TestNoSchoolDetection:
             finally:
                 Path(tmp_path).unlink()
 
+    def test_is_day_no_school_staff_development_and_pd_day(self):
+        """Test that is_day_no_school() detects Staff Development and PD Day for short cell text."""
+        from docx import Document
+        from tempfile import NamedTemporaryFile
+
+        doc = Document()
+        doc.add_paragraph("Placeholder")
+        with NamedTemporaryFile(suffix=".docx", delete=False) as tmp:
+            doc.save(tmp.name)
+            tmp_path = tmp.name
+        try:
+            parser = DOCXParser(tmp_path)
+            assert parser.is_day_no_school("Staff Development") is True
+            assert parser.is_day_no_school("PD Day") is True
+            assert parser.is_day_no_school("Planning Day") is True
+            assert parser.is_day_no_school("No School") is True
+            assert parser.is_day_no_school("Conference Day") is True
+            assert parser.is_day_no_school("In-Service") is True
+            assert parser.is_day_no_school("Some real lesson content here for the day.") is False
+        finally:
+            Path(tmp_path).unlink()
+
 
 if __name__ == "__main__":
     # Run tests

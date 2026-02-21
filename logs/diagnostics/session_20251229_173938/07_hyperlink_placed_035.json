@@ -1,0 +1,11 @@
+{
+  "timestamp": "2025-12-29T17:39:52.085482",
+  "stage": "07_hyperlink_placed",
+  "data": {
+    "text": "3.1 Section A: Additional Practice Problems",
+    "slot": null,
+    "subject": "Math",
+    "cell": "monday_instruction",
+    "confidence": 1.0
+  }
+}

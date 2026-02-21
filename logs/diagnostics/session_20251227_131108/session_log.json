@@ -1,0 +1,43 @@
+[
+  {
+    "timestamp": "2025-12-27T13:11:08.304567",
+    "stage": "01_parser_slot3",
+    "data": {
+      "slot_number": 3,
+      "subject": "Science",
+      "source_file": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\26 W02\\Mrs Grande Science 1_5_1_9.docx",
+      "hyperlink_count": 0,
+      "hyperlinks": []
+    }
+  },
+  {
+    "timestamp": "2025-12-27T13:14:31.744984",
+    "stage": "03_before_render_slot3",
+    "data": {
+      "slot_number": 3,
+      "subject": "Science",
+      "render_type": "single_slot",
+      "metadata_slot_number": 3,
+      "metadata_subject": "Science",
+      "hyperlink_count": 0,
+      "all_hyperlinks_have_slot": true,
+      "all_hyperlinks_have_subject": true,
+      "hyperlink_slot_distribution": {},
+      "sample_hyperlinks": []
+    }
+  },
+  {
+    "timestamp": "2025-12-27T13:14:31.750985",
+    "stage": "04_renderer_metadata_extracted",
+    "data": {
+      "slot_number": 3,
+      "slot_number_type": "int",
+      "slot_number_is_none": false,
+      "subject": "Science",
+      "subject_is_none": false,
+      "hyperlink_count": 0,
+      "teacher": "Mariela Grande / Daniela Silva",
+      "filtering_will_activate": true
+    }
+  }
+]

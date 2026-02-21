@@ -13,16 +13,26 @@ import json
 import sys
 from io import BytesIO
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 from docx import Document
-from docx.enum.text import WD_LINE_SPACING
+from docx.enum.text import WD_LINE_SPACING, WD_BREAK
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
-from docx.shared import Inches, Pt
+from docx.shared import Inches, Pt, RGBColor
+from docx.text.run import Run
+import re
+import time
+import json
 
 from backend.performance_tracker import get_tracker
 from backend.telemetry import logger
+from backend.services.sorting_utils import sort_slots
+from backend.utils.metadata_utils import (
+    get_homeroom,
+    get_subject,
+    get_teacher_name,
+)
 from tools.table_structure import StructureMetadata, TableStructureDetector
 
 # Feature flag for fuzzy matching threshold
@@ -37,13 +47,65 @@ except ImportError:
     from markdown_to_docx import MarkdownToDocx
 
 
+def sanitize_xml_text(text: str) -> str:
+    """
+    Sanitize text for XML compatibility in DOCX.
+    
+    Removes NULL bytes and control characters that are not allowed in XML.
+    Preserves common whitespace characters (space, tab, newline, carriage return).
+    
+    Args:
+        text: Input text that may contain invalid XML characters
+        
+    Returns:
+        Sanitized text safe for XML/DOCX
+    """
+    if not text:
+        return text
+    
+    # Characters allowed in XML 1.0:
+    # - #x9 (tab)
+    # - #xA (line feed/newline)
+    # - #xD (carriage return)
+    # - #x20-#xD7FF (most printable characters)
+    # - #xE000-#xFFFD (extended characters)
+    # - #x10000-#x10FFFF (supplementary characters)
+    
+    # Remove NULL bytes and other invalid control characters
+    # Keep: tab (0x09), newline (0x0A), carriage return (0x0D)
+    result = []
+    for char in text:
+        code = ord(char)
+        # Allow: tab, newline, carriage return, and printable characters
+        if code == 0x09 or code == 0x0A or code == 0x0D:
+            result.append(char)
+        elif code >= 0x20:  # Printable characters and above
+            # Exclude surrogate pairs range (0xD800-0xDFFF) which are invalid
+            if not (0xD800 <= code <= 0xDFFF):
+                result.append(char)
+        # Skip: NULL bytes (0x00) and other control characters (0x01-0x08, 0x0B-0x0C, 0x0E-0x1F)
+    
+    return ''.join(result)
+
+
+def is_signature_table(table) -> bool:
+    """Check if a table is a signature table based on common headers."""
+    if not table.rows:
+        return False
+    # Check first few cells for signature-related text
+    try:
+        first_row_text = "".join(cell.text for cell in table.rows[0].cells).lower()
+        return any(x in first_row_text for x in ["signature", "approver", "approved"])
+    except Exception:
+        return False
+
 class DOCXRenderer:
     """Render validated JSON lesson plans to DOCX format."""
-    
+
     # Table indices in the template document
     METADATA_TABLE_IDX = 0  # First table contains metadata (Name, Grade, etc.)
     DAILY_PLANS_TABLE_IDX = 1  # Second table contains daily lesson plans
-    
+
     # Row indices in the daily plans table
     UNIT_LESSON_ROW = 1  # Unit/Lesson row (first data row after headers)
 
@@ -54,40 +116,78 @@ class DOCXRenderer:
             template_path: Path to the DOCX template file
         """
         self.template_path = template_path
+        self.is_originals = False # Initialized to False, set by renderer logic
         self.logger = logger.bind(component="docx_renderer")
         self.structure_detector = TableStructureDetector()
+        
+        # Cache template in memory to avoid repeated disk I/O when reused
+        self.template_buffer = None
+        try:
+            with open(template_path, "rb") as f:
+                self.template_buffer = BytesIO(f.read())
+        except Exception as e:
+            self.logger.error(f"Failed to cache template buffer: {e}")
+
+        # Initialize structure metadata
+        self.structure_metadata = None
+        self._initialize_structure()
+
+        # Reset per-render state
+        self._reset_state()
+
+    def _reset_state(self):
+        """Reset internal state before each render call."""
         self.placement_stats = {
             "coordinate": 0,
             "label_day": 0,
             "fuzzy": 0,
             "fallback": 0,
         }
-        
-        # Initialize structure metadata
-        self.structure_metadata = None
-        self._initialize_structure()
+        self.current_file = None
+        self.current_teacher = None
+        self._current_metadata = {}
+        self.is_originals = False
 
     def _initialize_structure(self):
         """Initialize table structure metadata from template."""
         try:
-            doc = Document(self.template_path)
-            if len(doc.tables) > 1:
-                # Assume daily plans table is at index 1 (standard)
-                # If not, we might need more sophisticated detection logic
-                table = doc.tables[1] 
-                self.structure_metadata = self.structure_detector.detect_structure(table)
+            # Use buffer if available for structure detection too
+            source = self.template_buffer if self.template_buffer else self.template_path
+            if source:
+                if hasattr(source, "seek"):
+                    source.seek(0)
+                doc = Document(source)
+                if len(doc.tables) > 1:
                 
-                self.logger.info(
-                    "template_structure_detected",
-                    extra={
-                        "type": self.structure_metadata.structure_type,
-                        "rows": self.structure_metadata.num_rows,
-                        "cols": self.structure_metadata.num_cols,
-                        "has_day_row": self.structure_metadata.has_day_row
-                    }
-                )
-            else:
-                self.logger.warning("Template has fewer than 2 tables, cannot detect structure")
+                    # Find the daily plans table dynamically
+                    # It's usually the first table after the metadata table (index 0)
+                    # that is not a signature table.
+                    daily_plans_table_found = False
+                    for i in range(1, len(doc.tables)): # Start from index 1, assuming metadata is at 0
+                        table = doc.tables[i]
+                        if not is_signature_table(table):
+                            self.DAILY_PLANS_TABLE_IDX = i
+                            self.structure_metadata = self.structure_detector.detect_structure(table)
+                            daily_plans_table_found = True
+                            break
+                    
+                    if daily_plans_table_found:
+                        self.logger.info(
+                            "template_structure_detected",
+                            extra={
+                                "type": self.structure_metadata.structure_type,
+                                "rows": self.structure_metadata.num_rows,
+                                "cols": self.structure_metadata.num_cols,
+                                "has_day_row": self.structure_metadata.has_day_row,
+                                "daily_plans_table_idx": self.DAILY_PLANS_TABLE_IDX,
+                            },
+                        )
+                    else:
+                        self.logger.error("Could not locate daily plans table in template")
+                else:
+                    self.logger.warning(
+                        "Template has fewer than 2 tables, cannot detect structure"
+                    )
         except Exception as e:
             self.logger.error(f"Failed to initialize structure: {e}")
 
@@ -107,40 +207,89 @@ class DOCXRenderer:
             return idx if idx is not None else -1
         return -1
 
-    def render(self, json_data: Dict, output_path: str, plan_id: str = None) -> bool:
+    def render(
+        self,
+        json_data: Dict,
+        output_path: Any,  # Can be str, Path, or BytesIO
+        plan_id: str = None,
+        skip_fallback_sections: bool = False,
+    ) -> Any:
         """
         Render JSON data to DOCX with semantic anchoring for media.
 
         Args:
             json_data: Validated lesson plan JSON (supports both single-slot and multi-slot)
-            output_path: Path to save DOCX file
+            output_path: Path to save DOCX file or BytesIO stream
             plan_id: Optional plan ID for performance tracking
+            skip_fallback_sections: If True, don't append "Referenced Links" or "Attached Images" sections
+                                   (used when rendering slots for later merging)
 
         Returns:
-            True if successful, False otherwise
+            If skip_fallback_sections=True: Tuple (success: bool, pending_hyperlinks: List, pending_images: List)
+            Otherwise: True if successful, False otherwise
         """
         tracker = get_tracker()
+        
+        # Reset per-render state
+        self._reset_state()
 
         # Set context for logging
-        self.current_file = Path(output_path).name
-        self.current_teacher = json_data.get("metadata", {}).get(
-            "teacher_name", "unknown"
-        )
+        is_stream = hasattr(output_path, "write")
+        self.current_file = "stream.docx" if is_stream else Path(output_path).name
+        
+        metadata = json_data.get("metadata", {})
+        self.current_teacher = get_teacher_name(metadata)
+        # Store metadata for use in helper methods
+        self._current_metadata = metadata
+        self.is_originals = (metadata.get("source_type") == "originals")
 
         try:
-            # Track template loading
-            if plan_id:
-                with tracker.track_operation(plan_id, "render_load_template"):
-                    doc = Document(self.template_path)
-            else:
-                doc = Document(self.template_path)
+            # Load template
+            if self.template_buffer:
+                self.template_buffer.seek(0)
+            doc = Document(self.template_buffer if self.template_buffer else self.template_path)
+            
+            # NOTE: We no longer modify global styles or docDefaults here to avoid 
+            # corruption during docxcompose merging. All formatting is applied 
+            # per-run in the daily grid cells.
+
+            # CRITICAL: Ensure "Hyperlink" style exists to prevent "Styles 1" error
+            # Word sometimes requires this even if we use direct formatting.
+            if "Hyperlink" not in doc.styles:
+               try:
+                   from docx.enum.style import WD_STYLE_TYPE
+                   from docx.shared import Pt, RGBColor
+                   style = doc.styles.add_style("Hyperlink", WD_STYLE_TYPE.CHARACTER)
+                   style.font.name = "Times New Roman"
+                   style.font.size = Pt(8)
+                   style.font.color.rgb = RGBColor(0, 0, 255)
+                   style.font.underline = True
+               except Exception as e:
+                   # Ignore if style already exists (race condition)
+                   pass
+
+            # Prepare structure metadata
+            # Calculate table width once for use throughout rendering
+            section = doc.sections[0]
+            available_width_emus = (
+                section.page_width - section.left_margin - section.right_margin
+            )
+            available_width_inches = available_width_emus / 914400
 
             # Track metadata filling
             if plan_id:
                 with tracker.track_operation(plan_id, "render_fill_metadata"):
-                    self._fill_metadata(doc, json_data["metadata"])
+                    self._fill_metadata(doc, json_data)
             else:
-                self._fill_metadata(doc, json_data["metadata"])
+                self._fill_metadata(doc, json_data)
+
+            # Normalize metadata table immediately after filling to prevent Word auto-resizing
+            from tools.docx_utils import normalize_table_column_widths
+
+            normalize_table_column_widths(
+                doc.tables[self.METADATA_TABLE_IDX],
+                total_width_inches=available_width_inches,
+            )
 
             # Prepare media for semantic anchoring
             schema_version = json_data.get("_media_schema_version", "1.0")
@@ -156,42 +305,18 @@ class DOCXRenderer:
                 else []
             )
 
-            # v2.0: Use hybrid coordinate-based placement for hyperlinks
-            # CRITICAL: Only for single-slot documents. Multi-slot changes the table structure
-            # (combines multiple slots' content in each cell), so coordinates don't map correctly.
+            # v2.0: Hyperlink placement is now handled during cell filling to ensure 
+            # that inline replacement is always attempted before top-of-cell placement.
+            # Coordination and fuzzy matching have been unified within _fill_cell.
             is_multi_slot = any(
                 "slots" in day_data for day_data in json_data.get("days", {}).values()
             )
 
-            if schema_version == "2.0" and pending_hyperlinks and not is_multi_slot:
-                table = doc.tables[self.DAILY_PLANS_TABLE_IDX]
-                structure = self.structure_detector.detect_structure(table)
-
-                logger.info(
-                    "hyperlink_placement_v2",
-                    extra={
-                        "total_links": len(pending_hyperlinks),
-                        "structure_type": structure.structure_type,
-                        "multi_slot": is_multi_slot,
-                    },
-                )
-
-                # Process each hyperlink with hybrid strategy
-                for hyperlink in pending_hyperlinks[:]:
-                    strategy = self._place_hyperlink_hybrid(hyperlink, table, structure)
-                    self.placement_stats[strategy] += 1
-
-                    # If placed, remove from pending list
-                    if strategy != "fallback":
-                        pending_hyperlinks.remove(hyperlink)
-
-                # Log placement statistics
-                logger.info("hyperlink_placement_stats", extra=self.placement_stats)
-
             # Extract slot metadata for filtering (if present)
             # In multi-slot batch processing, each lesson JSON has slot metadata
-            slot_number = json_data.get("metadata", {}).get("slot_number")
-            subject = json_data.get("metadata", {}).get("subject")
+            metadata = json_data.get("metadata", {})
+            slot_number = metadata.get("slot_number")
+            subject = metadata.get("subject")
 
             # DEBUG: Log slot metadata extraction
             logger.info(
@@ -200,9 +325,7 @@ class DOCXRenderer:
                     "slot_number": slot_number,
                     "subject": subject,
                     "has_hyperlinks": len(json_data.get("_hyperlinks", [])),
-                    "teacher": json_data.get("metadata", {}).get(
-                        "teacher_name", "unknown"
-                    ),
+                    "teacher": get_teacher_name(json_data.get("metadata", {})),
                 },
             )
 
@@ -214,186 +337,374 @@ class DOCXRenderer:
                 slot_number,
                 subject,
                 len(json_data.get("_hyperlinks", [])),
-                json_data.get("metadata", {}).get("teacher_name", "unknown"),
+                get_teacher_name(json_data.get("metadata", {})),
             )
 
-            # Track daily plans filling            # Fill daily plans
+            # Fill daily plans
+            table = doc.tables[self.DAILY_PLANS_TABLE_IDX]
+            
+            def _fill_all_days():
+                for day_name, day_data in json_data["days"].items():
+                    # Skip if day_data is None
+                    if not day_data:
+                        continue
+                        
+                    col_idx = self._get_col_index(day_name)
+                    # print(f"  [DEBUG RENDERER] Day: {day_name}, col_idx: {col_idx}")
+                    if col_idx == -1:
+                        continue
+
+                    # Check if this day has multiple slots
+                    if "slots" in day_data:
+                        self._fill_multi_slot_day(
+                            table,
+                            col_idx,
+                            day_data["slots"],
+                            metadata=json_data.get("metadata", {}),
+                            day_name=day_name,
+                            pending_hyperlinks=pending_hyperlinks,
+                            pending_images=pending_images,
+                        )
+                    else:
+                        self._fill_single_slot_day(
+                            table,
+                            col_idx,
+                            day_data,
+                            day_name=day_name,
+                            pending_hyperlinks=pending_hyperlinks,
+                            pending_images=pending_images,
+                            slot_number=slot_number,
+                            subject=subject,
+                        )  # Append unmatched media to fallback sections
+
             if plan_id:
                 with tracker.track_operation(plan_id, "render_fill_days"):
-                    table = doc.tables[self.DAILY_PLANS_TABLE_IDX]
-                    for day_name, day_data in json_data["days"].items():
-                        col_idx = self._get_col_index(day_name)
-                        if col_idx == -1:
-                            continue
+                    _fill_all_days()
+            else:
+                _fill_all_days()
 
-                        # Check if this day has multiple slots
-                        if "slots" in day_data:
-                            self._fill_multi_slot_day(
-                                table,
-                                col_idx,
-                                day_data["slots"],
-                                day_name=day_name,
-                                pending_hyperlinks=pending_hyperlinks,
-                                pending_images=pending_images,
-                            )
+            if not skip_fallback_sections:
+                if pending_hyperlinks or pending_images:
+                    self._append_unmatched_media(doc, pending_hyperlinks, pending_images)
+                    logger.info(
+                        "unmatched_media_appended",
+                        extra={
+                            "hyperlinks": len(pending_hyperlinks),
+                            "images": len(pending_images),
+                        },
+                    )
+
+                # Legacy behavior for schema v1.0
+                if schema_version == "1.0":
+                    if "_images" in json_data and json_data["_images"]:
+                        if plan_id:
+                            with tracker.track_operation(plan_id, "render_insert_images"):
+                                self._insert_images(doc, json_data["_images"])
+                                logger.info(
+                                    "images_inserted",
+                                    extra={"count": len(json_data["_images"])},
+                                )
                         else:
-                            self._fill_single_slot_day(
-                                table,
-                                col_idx,
-                                day_data,
-                                day_name=day_name,
-                                pending_hyperlinks=pending_hyperlinks,
-                                pending_images=pending_images,
-                                slot_number=slot_number,
-                                subject=subject,
-                            )       # Append unmatched media to fallback sections
-            if pending_hyperlinks or pending_images:
-                self._append_unmatched_media(doc, pending_hyperlinks, pending_images)
-                logger.info(
-                    "unmatched_media_appended",
-                    extra={
-                        "hyperlinks": len(pending_hyperlinks),
-                        "images": len(pending_images),
-                    },
-                )
-
-            # Legacy behavior for schema v1.0
-            if schema_version == "1.0":
-                if "_images" in json_data and json_data["_images"]:
-                    if plan_id:
-                        with tracker.track_operation(plan_id, "render_insert_images"):
                             self._insert_images(doc, json_data["_images"])
                             logger.info(
                                 "images_inserted",
                                 extra={"count": len(json_data["_images"])},
                             )
-                    else:
-                        self._insert_images(doc, json_data["_images"])
-                        logger.info(
-                            "images_inserted",
-                            extra={"count": len(json_data["_images"])},
-                        )
 
-                if "_hyperlinks" in json_data and json_data["_hyperlinks"]:
-                    if plan_id:
-                        with tracker.track_operation(
-                            plan_id, "render_restore_hyperlinks"
-                        ):
+                    if "_hyperlinks" in json_data and json_data["_hyperlinks"]:
+                        if plan_id:
+                            with tracker.track_operation(
+                                plan_id, "render_restore_hyperlinks"
+                            ):
+                                self._restore_hyperlinks(doc, json_data["_hyperlinks"])
+                                logger.info(
+                                    "hyperlinks_restored",
+                                    extra={"count": len(json_data["_hyperlinks"])},
+                                )
+                        else:
                             self._restore_hyperlinks(doc, json_data["_hyperlinks"])
                             logger.info(
-                                "hyperlinks_restored",
+                                    "hyperlinks_restored",
                                 extra={"count": len(json_data["_hyperlinks"])},
                             )
-                    else:
-                        self._restore_hyperlinks(doc, json_data["_hyperlinks"])
-                        logger.info(
-                            "hyperlinks_restored",
-                            extra={"count": len(json_data["_hyperlinks"])},
-                        )
+            else:
+                # Still log remaining count even if skipped
+                logger.info(
+                    "unmatched_media_skipped",
+                    extra={
+                        "hyperlinks": len(pending_hyperlinks),
+                        "images": len(pending_images),
+                        "note": "consolidation_active",
+                    },
+                )
+
+            if self.is_originals:
+                # Remove "Required Signatures" table and paragraphs
+                # Instead of removing XML elements which can be unstable after merging,
+                # we just clear the content of target sections.
+                
+                # CRITICAL: Use list(enumerate(doc.tables)) and reverse iteration 
+                # to safely remove tables by index.
+                all_tables = list(enumerate(doc.tables))
+                for idx, table in reversed(all_tables):
+                    # Only remove tables that are not metadata (0) or daily plans (1)
+                    if idx > self.DAILY_PLANS_TABLE_IDX and is_signature_table(table):
+                        # Clear cell content first (safer for some Word versions)
+                        for row in table.rows:
+                            for cell in row.cells:
+                                cell.text = ""
+                        # Remove table element from document XML
+                        tbl = table._element
+                        tbl.getparent().remove(tbl)
+
+                # 2. Remove Signature paragraphs
+                paras_to_remove = []
+                for para in doc.paragraphs:
+                    if "Required Signatures" in para.text:
+                        paras_to_remove.append(para._element)
+                
+                for p_element in paras_to_remove:
+                    try:
+                        p_element.getparent().remove(p_element)
+                    except Exception:
+                        pass
 
             # Track table normalization
-            # Calculate table width dynamically from template page setup
-            section = doc.sections[0]
-            available_width_emus = section.page_width - section.left_margin - section.right_margin
-            available_width_inches = available_width_emus / 914400
-            
+            # Use the same width calculated earlier for consistency
+
             if plan_id:
                 with tracker.track_operation(plan_id, "render_normalize_tables"):
                     from tools.docx_utils import normalize_all_tables
 
-                    table_count = normalize_all_tables(doc, total_width_inches=available_width_inches)
-                    logger.info("tables_normalized", extra={"count": table_count, "width_inches": available_width_inches})
+                    table_count = normalize_all_tables(
+                        doc, total_width_inches=available_width_inches
+                    )
+                    logger.info(
+                        "tables_normalized",
+                        extra={
+                            "count": table_count,
+                            "width_inches": available_width_inches,
+                        },
+                    )
             else:
                 from tools.docx_utils import normalize_all_tables
 
-                table_count = normalize_all_tables(doc, total_width_inches=available_width_inches)
-                logger.info("tables_normalized", extra={"count": table_count, "width_inches": available_width_inches})
+                table_count = normalize_all_tables(
+                    doc, total_width_inches=available_width_inches
+                )
+                logger.info(
+                    "tables_normalized",
+                    extra={
+                        "count": table_count,
+                        "width_inches": available_width_inches,
+                    },
+                )
 
             # Track file saving
             if plan_id:
                 with tracker.track_operation(plan_id, "render_save_docx"):
-                    output_path = Path(output_path)
-                    output_path.parent.mkdir(parents=True, exist_ok=True)
+                    if not is_stream:
+                        output_path_obj = Path(output_path)
+                        output_path_obj.parent.mkdir(parents=True, exist_ok=True)
                     doc.save(output_path)
             else:
-                output_path = Path(output_path)
-                output_path.parent.mkdir(parents=True, exist_ok=True)
+                if not is_stream:
+                    output_path_obj = Path(output_path)
+                    output_path_obj.parent.mkdir(parents=True, exist_ok=True)
                 doc.save(output_path)
 
             logger.info("docx_render_success", extra={"output_path": str(output_path)})
+            
+            # #region agent log
+            import json
+            with open(r'd:\LP\.cursor\debug.log', 'a', encoding='utf-8') as f:
+                f.write(json.dumps({
+                    "sessionId": "debug-session",
+                    "runId": "run1",
+                    "hypothesisId": "RENDER_SUCCESS",
+                    "location": "docx_renderer.py:render:success",
+                    "message": "Render completed successfully",
+                    "data": {
+                        "output_path": str(output_path),
+                        "skip_fallback_sections": skip_fallback_sections,
+                        "is_stream": hasattr(output_path, "write"),
+                    },
+                    "timestamp": int(__import__('time').time() * 1000)
+                }) + '\n')
+            # #endregion
+            
+            # RETURN VALUE CHANGE: Return unplaced media if skip_fallback_sections is True
+            if skip_fallback_sections:
+                return True, pending_hyperlinks, pending_images
+            
             return True
 
         except Exception as e:
+            # #region agent log
+            import json
+            import traceback
+            with open(r'd:\LP\.cursor\debug.log', 'a', encoding='utf-8') as f:
+                f.write(json.dumps({
+                    "sessionId": "debug-session",
+                    "runId": "run1",
+                    "hypothesisId": "RENDER_EXCEPTION",
+                    "location": "docx_renderer.py:render:exception",
+                    "message": "Renderer exception caught",
+                    "data": {
+                        "error": str(e),
+                        "error_type": type(e).__name__,
+                        "output_path": str(output_path) if "output_path" in locals() else None,
+                        "traceback": traceback.format_exc()[:500],
+                    },
+                    "timestamp": int(__import__('time').time() * 1000)
+                }) + '\n')
+            # #endregion
             logger.exception(
                 "docx_render_error",
                 extra={
-                    "output_path": output_path if "output_path" in locals() else None,
+                    "output_path": str(output_path) if "output_path" in locals() else None,
                     "error": str(e),
                     "error_type": type(e).__name__,
                 },
             )
+            
+            if skip_fallback_sections:
+                return False, [], []
+            
             # Re-raise the exception instead of returning False
             # This allows callers to see the actual error
             raise RuntimeError(
                 f"Renderer failed to create DOCX file '{output_path}': {str(e)}"
             ) from e
 
-    def _fill_metadata(self, doc: Document, metadata: Dict):
+    def _fill_metadata(self, doc: Document, json_data: Dict):
         """
         Fill metadata table (Table 0).
 
         Template structure:
-        | Name: | Grade: | Homeroom: | Subject: | Week of: |
+        | Name: | Grade: | Homeroom: | Subject: | Week of: | Room: |
+
+        For multi-slot lessons, extracts slot-specific metadata from the first slot
+        found across all days, using standardized metadata utilities.
 
         Args:
             doc: Document object
-            metadata: Metadata dictionary
+            json_data: Full lesson plan JSON (supports both single-slot and multi-slot)
         """
+        metadata = json_data.get("metadata", {})
+
+        # Detect if this is a multi-slot lesson
+        is_multi_slot = any(
+            day_data and "slots" in day_data for day_data in json_data.get("days", {}).values()
+        )
+
+        # Extract representative slot for multi-slot lessons
+        # Use first slot found across all days (sorted by slot_number)
+        representative_slot = None
+        if "days" in json_data and isinstance(json_data["days"], dict):
+            all_slots = []
+            for day_name, day_data in json_data["days"].items():
+                if day_data and "slots" in day_data and isinstance(day_data["slots"], list):
+                    all_slots.extend(day_data["slots"])
+
+            if all_slots:
+                # Sort by slot_number and use first slot
+                sorted_slots = sorted(all_slots, key=lambda x: x.get("slot_number", 0))
+                representative_slot = sorted_slots[0]
+
         table = doc.tables[self.METADATA_TABLE_IDX]
         row = table.rows[0]
 
-        def _format_metadata_cell(cell, label: str, value: str):
-            """Format a metadata cell with bold label and Arial 10pt font."""
-            # Clear existing content
-            cell.text = ""
-            # Get or create paragraph
-            para = cell.paragraphs[0] if cell.paragraphs else cell.add_paragraph()
+        # Teacher Name (cell 0)
+        # Always use get_teacher_name() which prioritizes primary_teacher_name from metadata
+        # This ensures slot-specific teachers are shown, not the combined teacher_name
+        teacher_name = get_teacher_name(metadata, slot=representative_slot)
+        print(f"[DEBUG] DOCX_RENDERER: Metadata table teacher name")
+        print(f"  metadata.primary_teacher_name: {metadata.get('primary_teacher_name')}")
+        print(f"  metadata.teacher_name: {metadata.get('teacher_name')}")
+        print(f"  get_teacher_name() result: {teacher_name}")
             
-            # Add label run (bold, Arial 10pt)
-            label_run = para.add_run(f"{label}: ")
-            label_run.bold = True
-            label_run.font.name = "Arial"
-            label_run.font.size = Pt(10)
-            
-            # Add value run (not bold, Arial 10pt)
-            value_run = para.add_run(value)
-            value_run.font.name = "Arial"
-            value_run.font.size = Pt(10)
+        cell = row.cells[0]
+        # Use safer cell content clearing
+        cell.text = ""
+        para = cell.paragraphs[0]
+        run1 = para.add_run(sanitize_xml_text("Name: "))
+        self._force_font_arial10(run1, is_bold=True)
+        run2 = para.add_run(sanitize_xml_text(teacher_name if teacher_name and teacher_name != "Unknown" else "Unknown"))
+        self._force_font_arial10(run2, is_bold=False)
 
-        # Name (cell 0)
-        if "teacher_name" in metadata and metadata["teacher_name"]:
-            cell = row.cells[0]
-            _format_metadata_cell(cell, "Name", metadata["teacher_name"])
-
-        # Grade (cell 1)
-        if "grade" in metadata:
+        # Grade (cell 1) - prioritize slot grade if available
+        grade = None
+        if representative_slot:
+            grade = representative_slot.get("grade")
+        if not grade or grade == "N/A":
+            grade = metadata.get("grade")
+        if grade and grade != "Unknown" and grade != "N/A":
             cell = row.cells[1]
-            _format_metadata_cell(cell, "Grade", metadata["grade"])
+            # Use safer cell content clearing
+            cell.text = ""
+            para = cell.paragraphs[0]
+            run1 = para.add_run(sanitize_xml_text("Grade: "))
+            self._force_font_arial10(run1, is_bold=True)
+            run2 = para.add_run(sanitize_xml_text(grade))
+            self._force_font_arial10(run2, is_bold=False)
 
-        # Homeroom (cell 2)
-        if "homeroom" in metadata and metadata["homeroom"]:
+        # Homeroom (cell 2) - use standardized helper to prevent leakage
+        homeroom = get_homeroom(metadata, slot=representative_slot)
+        if homeroom and homeroom != "Unknown":
             cell = row.cells[2]
-            _format_metadata_cell(cell, "Homeroom", metadata["homeroom"])
+            # Use safer cell content clearing
+            cell.text = ""
+            para = cell.paragraphs[0]
+            run1 = para.add_run(sanitize_xml_text("Homeroom: "))
+            self._force_font_arial10(run1, is_bold=True)
+            run2 = para.add_run(sanitize_xml_text(homeroom))
+            self._force_font_arial10(run2, is_bold=False)
 
-        # Subject (cell 3)
-        if "subject" in metadata:
+        # Subject (cell 3) - use standardized helper
+        subject = get_subject(metadata, slot=representative_slot)
+        if subject and subject != "Unknown":
             cell = row.cells[3]
-            _format_metadata_cell(cell, "Subject", metadata["subject"])
+            # Use safer cell content clearing
+            cell.text = ""
+            para = cell.paragraphs[0]
+            run1 = para.add_run(sanitize_xml_text("Subject: "))
+            self._force_font_arial10(run1, is_bold=True)
+            run2 = para.add_run(sanitize_xml_text(subject))
+            self._force_font_arial10(run2, is_bold=False)
 
         # Week of (cell 4)
-        if "week_of" in metadata:
+        week_of = metadata.get("week_of", "Unknown")
+        if week_of and week_of != "Unknown":
             cell = row.cells[4]
-            _format_metadata_cell(cell, "Week of", metadata["week_of"])
+            # Use safer cell content clearing
+            cell.text = ""
+            para = cell.paragraphs[0]
+            run1 = para.add_run(sanitize_xml_text("Week of: "))
+            self._force_font_arial10(run1, is_bold=True)
+            run2 = para.add_run(sanitize_xml_text(week_of))
+            self._force_font_arial10(run2, is_bold=False)
+
+        # Room (cell 5, if template has it) - prioritize slot room if available
+        if len(row.cells) > 5:
+            room = None
+            if representative_slot:
+                room = representative_slot.get("room")
+            if (
+                not room
+                or room == "N/A"
+                or (isinstance(room, str) and not room.strip())
+            ):
+                room = metadata.get("room", "")
+            if room and room.strip() and room != "N/A" and room != "Unknown":
+                cell = row.cells[5]
+                # Use safer cell content clearing
+                cell.text = ""
+                para = cell.paragraphs[0]
+                run1 = para.add_run(sanitize_xml_text("Room: "))
+                self._force_font_arial10(run1, is_bold=True)
+                run2 = para.add_run(sanitize_xml_text(room))
+                self._force_font_arial10(run2, is_bold=False)
 
     def _extract_unique_teachers(self, json_data: Dict) -> List[str]:
         """
@@ -406,12 +717,14 @@ class DOCXRenderer:
             Sorted list of unique teacher names
         """
         teachers = set()
+        metadata = json_data.get("metadata", {})
         if "days" in json_data:
             for day_data in json_data["days"].values():
-                if "slots" in day_data:
+                if day_data and "slots" in day_data:
                     for slot in day_data["slots"]:
-                        if slot.get("teacher_name"):
-                            teachers.add(slot["teacher_name"])
+                        slot_teacher = get_teacher_name(metadata, slot=slot)
+                        if slot_teacher and slot_teacher != "Unknown":
+                            teachers.add(slot_teacher)
         return sorted(teachers)
 
     def _extract_unique_subjects(self, json_data: Dict) -> List[str]:
@@ -427,7 +740,7 @@ class DOCXRenderer:
         subjects = set()
         if "days" in json_data:
             for day_data in json_data["days"].values():
-                if "slots" in day_data:
+                if day_data and "slots" in day_data:
                     for slot in day_data["slots"]:
                         if slot.get("subject"):
                             subjects.add(slot["subject"])
@@ -512,10 +825,13 @@ class DOCXRenderer:
         # Check if this is multi-slot structure (has 'slots' array)
         if "slots" in day_data and isinstance(day_data["slots"], list):
             # Multi-slot: combine all slots for this day
+            # Get metadata from instance variable set in render() method
+            metadata = getattr(self, "_current_metadata", {})
             self._fill_multi_slot_day(
                 table,
                 col_idx,
                 day_data["slots"],
+                metadata=metadata,
                 day_name=day_name,
                 pending_hyperlinks=pending_hyperlinks,
                 pending_images=pending_images,
@@ -724,6 +1040,7 @@ class DOCXRenderer:
         table,
         col_idx: int,
         slots: List[Dict],
+        metadata: Dict = None,
         day_name: str = None,
         pending_hyperlinks: List[Dict] = None,
         pending_images: List[Dict] = None,
@@ -752,8 +1069,8 @@ class DOCXRenderer:
         if not slots:
             return
 
-        # Sort slots by slot_number to ensure consistent ordering
-        sorted_slots = sorted(slots, key=lambda x: x.get("slot_number", 0))
+        # Sort slots by start_time (chronological) with slot_number as fallback
+        sorted_slots = sort_slots(slots)
         num_slots = len(sorted_slots)
 
         # Check if any slot has content (for placeholder logic)
@@ -812,18 +1129,18 @@ class DOCXRenderer:
                 None,
             ),
             (
-                "assessment", 
-                self._get_row_index("assessment"), 
-                self._format_assessment, 
-                None, 
-                None
+                "assessment",
+                self._get_row_index("assessment"),
+                self._format_assessment,
+                None,
+                None,
             ),
             (
-                "homework", 
-                self._get_row_index("homework"), 
-                self._format_homework, 
-                None, 
-                100
+                "homework",
+                self._get_row_index("homework"),
+                self._format_homework,
+                None,
+                100,
             ),
         ]
 
@@ -842,10 +1159,27 @@ class DOCXRenderer:
             written_any = False
 
             # Fill each slot
+            if metadata is None:
+                metadata = {}
             for i, slot in enumerate(sorted_slots):
                 slot_num = slot.get("slot_number", "?")
                 subject = slot.get("subject", "Unknown")
-                teacher = slot.get("teacher_name", "")
+                # Use get_teacher_name() which prioritizes slot-specific teacher names
+                # This ensures each slot shows its own primary teacher, not the lesson-level teacher
+                teacher = get_teacher_name(metadata, slot=slot)
+                # Debug: Log teacher name resolution for troubleshooting
+                slot_primary = slot.get("primary_teacher_name")
+                slot_first = slot.get("primary_teacher_first_name")
+                slot_last = slot.get("primary_teacher_last_name")
+                metadata_teacher = metadata.get("teacher_name")
+                print(f"[DEBUG] DOCX_RENDERER: Slot {slot_num} ({subject})")
+                print(f"  slot.primary_teacher_name: {slot_primary}")
+                print(f"  slot.primary_teacher_first_name: {slot_first}")
+                print(f"  slot.primary_teacher_last_name: {slot_last}")
+                print(f"  metadata.teacher_name: {metadata_teacher}")
+                print(f"  get_teacher_name() result: {teacher}")
+                print(f"  Final slot_header will use: {teacher}")
+
                 has_content = slots_have_content[i]
 
                 # Check for "No School" status
@@ -969,12 +1303,83 @@ class DOCXRenderer:
             append_mode: If True, append to cell without clearing existing content
         """
         from backend.config import settings
+        import re
+        # Explicit reference to ensure Python treats it as module-level/global, not local
+        _ = (re, qn)  # Prevent UnboundLocalError by ensuring these are looked up in globals
 
         cell = table.rows[row_idx].cells[col_idx]
-
+        print(f"DEBUG: _fill_cell(row={row_idx}, col={col_idx}, day={day_name}, section={section_name})")
+        print(f"DEBUG: text[:50] = {repr(text[:50]) if text else 'None'}")
+        
         # Check if cell already has hyperlinks (from coordinate placement)
         existing_hyperlinks = cell._element.xpath(".//w:hyperlink")
         has_coordinate_hyperlinks = len(existing_hyperlinks) > 0
+        
+        # If coordinate-placed hyperlinks exist, check if text already contains them in markdown
+        # If so, remove the coordinate-placed hyperlinks to avoid duplicates
+        if has_coordinate_hyperlinks and text:
+            hyperlinks_to_remove = []
+            for hl_elem in existing_hyperlinks:
+                try:
+                    r_id = hl_elem.get(qn("r:id"))
+                    if r_id and cell.paragraphs:
+                        # Get URL from relationship
+                        para = cell.paragraphs[0]  # Use first paragraph to access part
+                        if r_id in para.part.rels:
+                            url = para.part.rels[r_id].target_ref
+                            # Get link text
+                            link_text = "".join(node.text for node in hl_elem.xpath(".//w:t") if node.text)
+                            if link_text and url:
+                                # Check if text contains this link in markdown format
+                                markdown_pattern = rf"\[{re.escape(link_text)}\]\({re.escape(url)}\)"
+                                if re.search(markdown_pattern, text, re.IGNORECASE):
+                                    # Text already has this link, mark for removal
+                                    hyperlinks_to_remove.append(hl_elem)
+                except Exception:
+                    pass  # Skip if we can't process this hyperlink
+            
+            # Remove duplicate hyperlinks
+            for hl_elem in hyperlinks_to_remove:
+                try:
+                    # Remove the hyperlink element from its parent
+                    parent = hl_elem.getparent()
+                    if parent is not None:
+                        parent.remove(hl_elem)
+                        # Also remove the paragraph if it only contained this hyperlink
+                        try:
+                            para_elem = parent.getparent()
+                            if para_elem is not None and para_elem.tag == qn("w:p"):
+                                # Check if paragraph is now empty (only formatting, no text)
+                                runs = para_elem.xpath(".//w:r")
+                                has_text = any(run.xpath(".//w:t") for run in runs)
+                                if not has_text:
+                                    para_parent = para_elem.getparent()
+                                    if para_parent is not None:
+                                        para_parent.remove(para_elem)
+                        except Exception:
+                            # If we can't remove the paragraph, that's okay - just continue
+                            pass
+                except Exception as e:
+                    # Log but don't fail - continue processing
+                    logger.warning(
+                        "failed_to_remove_duplicate_hyperlink",
+                        extra={"error": str(e), "cell": f"{day_name}_{section_name}" if day_name and section_name else "unknown"},
+                    )
+                    pass
+            
+            # Re-check after removal
+            existing_hyperlinks = cell._element.xpath(".//w:hyperlink")
+            has_coordinate_hyperlinks = len(existing_hyperlinks) > 0
+            
+            if hyperlinks_to_remove:
+                logger.info(
+                    "removed_duplicate_coordinate_hyperlinks",
+                    extra={
+                        "removed_count": len(hyperlinks_to_remove),
+                        "cell": f"{day_name}_{section_name}" if day_name and section_name else "unknown",
+                        "slot": current_slot_number,
+                    },
+                )
 
         # Clear existing content ONLY if:
         # 1. No coordinate-placed hyperlinks exist, AND
@@ -1091,271 +1496,180 @@ class DOCXRenderer:
                         )
                         continue
 
-                confidence, match_type = self._calculate_match_confidence(
-                    text, hyperlink, day_name, section_name
-                )
+                # UNIFIED PLACEMENT: Strategy 1 & 2: Structural matching (Coordinate or Label+Day)
+                # This ensures that Schema 2.0 links also benefit from Smart Inline Replacement.
+                is_structural_match = False
+                match_type = "none"
+                confidence = 0.0
+
+                # Case 1: Coordinates (v2.0)
+                if hyperlink.get("row_idx") is not None and hyperlink.get("cell_idx") is not None:
+                    # Target row index (accounting for offset from structure metadata)
+                    row_offset = self.structure_metadata.row_offset if self.structure_metadata else 0
+                    target_row = hyperlink["row_idx"] + row_offset
+                    if target_row == row_idx and hyperlink["cell_idx"] == col_idx:
+                        is_structural_match = True
+                        match_type = "coordinate"
+                        confidence = 1.0
+                
+                # Case 2: Label + Day matching (v2.0)
+                if not is_structural_match and hyperlink.get("row_label") and hyperlink.get("day_hint"):
+                    # Use existing structure metadata for robust label matching if available
+                    if self.structure_metadata:
+                        target_row_idx = self.structure_metadata.get_row_index(hyperlink["row_label"])
+                        target_col_idx = self.structure_metadata.get_col_index(hyperlink["day_hint"])
+                        # Apply row offset
+                        if target_row_idx is not None:
+                            target_row_idx += self.structure_metadata.row_offset
+                        
+                        if target_row_idx == row_idx and target_col_idx == col_idx:
+                            is_structural_match = True
+                            match_type = "label_day"
+                            confidence = 1.0
+
+                if not is_structural_match:
+                    # Case 3: Fuzzy matching (v1.1/v2.0)
+                    confidence, match_type = self._calculate_match_confidence(
+                        text, hyperlink, day_name, section_name
+                    )
 
                 if confidence >= settings.MEDIA_MATCH_CONFIDENCE_THRESHOLD:
                     matching_hyperlinks.append((hyperlink, confidence, match_type))
 
-        # CRITICAL: Format ALL paragraphs in cell consistently (including coordinate hyperlinks)
-        # This ensures coordinate-placed hyperlinks don't have default spacing/styles
-        if cell.paragraphs:
-            for para in cell.paragraphs:
-                # Only format if paragraph has content (don't format empty placeholder)
-                if para.text.strip() or para.runs:
-                    para.paragraph_format.space_after = Pt(0)
-                    para.paragraph_format.space_before = Pt(0)
-                    para.paragraph_format.line_spacing_rule = WD_LINE_SPACING.SINGLE
-                    # Ensure font formatting is consistent
-                    if row_idx > 0 and col_idx > 0:
-                        for run in para.runs:
-                            if not run.font.name or run.font.name == "Arial":
-                                run.font.name = "Times New Roman"
-                            if not run.font.size or run.font.size != Pt(8):
-                                run.font.size = Pt(8)
+        # NEW: Smart Inline Replacement
+        # If we found matching links, try to wrap their text in markdown format 
+        # so MarkdownToDocx will place them inline instead of at the top.
+        if matching_hyperlinks and text:
+            # Sort hyperlinks by text length descending to avoid partial matches
+            # (e.g., matching "Lenni Lenape" before "Lenni")
+            sorted_matching = sorted(matching_hyperlinks, key=lambda m: len(m[0].get("text", "")), reverse=True)
+            
+            for hyperlink, confidence, match_type in sorted_matching:
+                link_text = hyperlink.get("text", "")
+                link_url = hyperlink.get("url", "")
+                if not link_text or not link_url:
+                    continue
 
-        # Check if "Link:" or "Links:" header already exists (prevents duplicate headers in append mode)
-        has_links_header = False
-        if cell.paragraphs:
-            # Check first few paragraphs for existing "Link:" or "Links:" header
-            for para in cell.paragraphs[:3]:
-                para_text = para.text.strip()
-                if para_text.startswith("Link:") or para_text.startswith("Links:"):
-                    has_links_header = True
-                    break
+                # NEW: Strict Day Enforcement during Smart Inline Replacement
+                # Prevent cross-day contamination if text matches but link is for another day
+                hl_day = hyperlink.get("day_hint") or hyperlink.get("day")
+                if hl_day and day_name:
+                    if hl_day.lower().strip() != day_name.lower().strip():
+                        # Log the skip for debugging
+                        logger.debug(
+                            "hyperlink_skipped_day_mismatch_inline",
+                            extra={
+                                "text": link_text,
+                                "link_day": hl_day,
+                                "current_day": day_name,
+                                "cell": f"{day_name}_{section_name}"
+                            },
+                        )
+                        continue
+
+                # Case-insensitive search with robust matching (flexible whitespace/punctuation)
+                # We normalize search pattern to handle different spacing or minor rephrasing
+                search_pattern_raw = re.escape(link_text)
+                # Allow any amount of whitespace where input has space (escaped or literal)
+                search_pattern_flexible = re.sub(r'(\\ )+', r'\\s+', search_pattern_raw)
+                # Allow optional trailing punctuation
+                search_pattern_final = f"{search_pattern_flexible}[.,;:]?"
+                
+                match = re.search(search_pattern_final, text, re.IGNORECASE)
+                
+                # DIAGNOSTIC: Log match results
+                with open(r'd:\LP\hyperlink_debug.log', 'a', encoding='utf-8') as f:
+                    try:
+                        f.write(json.dumps({
+                            "sessionId": "debug-session",
+                            "runId": "investigation",
+                            "location": "docx_renderer.py:_fill_cell:replacement_attempt",
+                            "data": {
+                                "cell": f"{day_name}_{section_name}",
+                                "link_text": link_text,
+                                "regex": search_pattern_final,
+                                "match_found": match is not None,
+                                "text_preview": (text[:200] if text else "None"),
+                                "found_text": (match.group(0) if match else None)
+                            },
+                            "timestamp": int(time.time() * 1000)
+                        }) + '\n')
+                    except Exception as e:
+                        # Don't let diagnostic logging crash the renderer
+                        self.logger.warning(f"Diagnostic logging failed: {e}")
+                
+                if match:
+                    # Match may include leading/trailing whitespace if regex was flexible
+                    # We want to keep the whitespace OUTSIDE the link brackets for better readability
+                    raw_match_text = match.group(0)
+                    stripped_match_text = raw_match_text.strip()
+                    
+                    # NEW: Robust substitution that only replaces text NOT already inside a link
+                    # total_pattern captures [existing link](url) in group 1 OR the plain text match in group 2
+                    total_pattern = rf"(\[\s*{re.escape(stripped_match_text)}\s*\]\([^)]*\))|({search_pattern_final})"
+                    
+                    found_and_replaced = [False]
+                    
+                    def replacement_logic(m):
+                        # If we matched an existing link (group 1), return it as-is
+                        if m.group(1):
+                            return m.group(1)
+                        
+                        # If we matched plain text (group 2) AND we haven't replaced yet, link it!
+                        if not found_and_replaced[0]:
+                            found_and_replaced[0] = True
+                            plain_text = m.group(2)
+                            # Preserve surrounding whitespace
+                            leading_ws = plain_text[:plain_text.find(stripped_match_text)]
+                            trailing_ws = plain_text[plain_text.find(stripped_match_text) + len(stripped_match_text):]
+                            return f"{leading_ws}[{stripped_match_text}]({link_url}){trailing_ws}"
+                        
+                        # Otherwise return original text
+                        return m.group(0)
+
+                    # Apply substitution (case-insensitive)
+                    new_text = re.sub(total_pattern, replacement_logic, text, flags=re.IGNORECASE)
+                    
+                    if found_and_replaced[0]:
+                        text = new_text
+                        logger.info(
+                            "hyperlink_placed_smart_inline",
+                            extra={
+                                "text": stripped_match_text,
+                                "url": link_url,
+                                "cell": f"{day_name}_{section_name}",
+                                "slot": current_slot_number,
+                            },
+                        )
+                    else:
+                        # If not replaced, it might be already inline or not found as plain text
+                        logger.info(
+                            "hyperlink_already_inline_or_unmatched",
+                            extra={
+                                "text": stripped_match_text,
+                                "cell": f"{day_name}_{section_name}",
+                                "slot": current_slot_number,
+                            },
+                        )
+                    
+                    # ALWAYS remove from matching/pending if found in text (either as plain text or markdown)
+                    matching_hyperlinks = [m for m in matching_hyperlinks if m[0] != hyperlink]
+                    if hyperlink in pending_hyperlinks:
+                        pending_hyperlinks.remove(hyperlink)
 
         # Calculate total hyperlink count (coordinate + fuzzy)
         coordinate_link_count = len(existing_hyperlinks) if existing_hyperlinks else 0
         fuzzy_link_count = len(matching_hyperlinks) if matching_hyperlinks else 0
         total_link_count = coordinate_link_count + fuzzy_link_count
 
-        # Log cases where both coordinate and fuzzy links exist in the same cell
-        if matching_hyperlinks and has_coordinate_hyperlinks:
-            logger.info(
-                "hyperlink_mixed_placement_detected",
-                extra={
-                    "coordinate_links_count": coordinate_link_count,
-                    "fuzzy_links_count": fuzzy_link_count,
-                    "total_links_count": total_link_count,
-                    "cell": f"{day_name}_{section_name}",
-                    "row_idx": row_idx,
-                    "col_idx": col_idx,
-                    "slot": current_slot_number,
-                    "subject": current_subject,
-                },
-            )
 
-        # Add "Link:" or "Links:" header at TOP if we have any hyperlinks and no header exists
-        links_header_just_added = False
-        if total_link_count > 0 and not has_links_header:
-            # Determine header text: "Link:" (singular) for 1 link, "Links:" (plural) for multiple
-            header_text = "Link:" if total_link_count == 1 else "Links:"
+        # Consistently handled by fallback logic below to avoid duplicates and clutter
 
-            # Insert header paragraph at the TOP of the cell (before any existing content)
-            if cell.paragraphs:
-                # Insert before the first paragraph
-                links_header_para = cell.paragraphs[0].insert_paragraph_before()
-            else:
-                # Cell is empty, add as first paragraph
-                links_header_para = cell.add_paragraph()
-
-            links_header_run = links_header_para.add_run(header_text)
-            links_header_run.bold = True
-
-            # Remove spacing to avoid blank line between header and links
-            links_header_para.paragraph_format.space_after = Pt(0)
-            links_header_para.paragraph_format.space_before = Pt(0)
-            # Set line spacing to SINGLE (equivalent to Word's 1.0)
-            # SINGLE automatically uses font size for line spacing
-            links_header_para.paragraph_format.line_spacing_rule = WD_LINE_SPACING.SINGLE
-
-            # CRITICAL: Remove any empty paragraphs that might cause blank lines
-            # After inserting header, check if there are empty paragraphs after it
-            header_idx = None
-            for idx, para in enumerate(cell.paragraphs):
-                if para.text.strip().startswith(("Link:", "Links:")):
-                    header_idx = idx
-                    break
-
-            if header_idx is not None:
-                # Remove empty paragraphs immediately after header
-                paras_to_remove = []
-                for idx in range(header_idx + 1, len(cell.paragraphs)):
-                    para = cell.paragraphs[idx]
-                    if not para.text.strip() and not para.runs:
-                        paras_to_remove.append(para)
-
-                # Remove empty paragraphs (in reverse order to maintain indices)
-                for para in reversed(paras_to_remove):
-                    p = para._element
-                    p.getparent().remove(p)
-
-                # CRITICAL: Re-format header paragraph to ensure exact spacing
-                header_para = cell.paragraphs[header_idx]
-                header_para.paragraph_format.space_after = Pt(0)
-                header_para.paragraph_format.space_before = Pt(0)
-                header_para.paragraph_format.line_spacing_rule = WD_LINE_SPACING.SINGLE
-
-            # Apply font formatting
-            if row_idx > 0 and col_idx > 0:
-                links_header_run.font.name = "Times New Roman"
-                links_header_run.font.size = Pt(8)
-
-            links_header_just_added = True
-
-        # If we have matching fuzzy hyperlinks, inject them immediately after header
-        if matching_hyperlinks and not has_coordinate_hyperlinks:
-            # Inject all matching hyperlinks right after the header (or at top if no header)
-            for idx, (hyperlink, confidence, match_type) in enumerate(
-                matching_hyperlinks
-            ):
-                # If we just added a header, insert first hyperlink paragraph right after header with zero spacing
-                if links_header_just_added and idx == 0:
-                    # Find the header paragraph
-                    header_para_idx = None
-                    for para_idx, para in enumerate(cell.paragraphs):
-                        if para.text.strip().startswith(("Link:", "Links:")):
-                            header_para_idx = para_idx
-                            break
-
-                    if header_para_idx is not None:
-                        # Add hyperlink directly to header paragraph with line break (same paragraph = no spacing)
-                        header_para = cell.paragraphs[header_para_idx]
-
-                        # CRITICAL: Set exact line spacing and zero spacing on header paragraph
-                        header_para.paragraph_format.space_after = Pt(0)
-                        header_para.paragraph_format.space_before = Pt(0)
-                        header_para.paragraph_format.line_spacing_rule = WD_LINE_SPACING.SINGLE
-
-                        # Add line break (creates new line within same paragraph - no spacing)
-                        # Note: We add break AFTER setting formatting to ensure it inherits the formatting
-                        break_run = header_para.add_run()
-                        break_run.font.name = "Times New Roman"
-                        break_run.font.size = Pt(8)
-                        break_run.add_break()
-
-                        # Add hyperlink to the same paragraph (no new paragraph = no spacing)
-                        self._add_hyperlink(
-                            header_para, hyperlink["text"], hyperlink["url"]
-                        )
-                        # Apply font formatting to the hyperlink runs
-                        if row_idx > 0 and col_idx > 0:
-                            for run in header_para.runs:
-                                if run.text and hyperlink["text"] in run.text:
-                                    run.font.name = "Times New Roman"
-                                    run.font.size = Pt(8)
-                        # CRITICAL: Unit/Lesson row hyperlinks must be BOLD
-                        if row_idx == self.UNIT_LESSON_ROW:
-                            for run in header_para.runs:
-                                if run.text and hyperlink["text"] in run.text:
-                                    run.font.bold = True
-                    else:
-                        # Fallback: use standard method
-                        self._inject_hyperlink_inline(cell, hyperlink, row_idx=row_idx)
-                else:
-                    # Subsequent hyperlinks or header already exists - use standard method
-                    self._inject_hyperlink_inline(cell, hyperlink, row_idx=row_idx)
-
-                pending_hyperlinks.remove(hyperlink)
-
-                logger.info(
-                    "hyperlink_placed_inline",
-                    extra={
-                        "text": hyperlink["text"][:50],
-                        "url": hyperlink["url"][:50],
-                        "cell": f"{day_name}_{section_name}",
-                        "confidence": confidence,
-                        "match_type": match_type,
-                        "slot": current_slot_number,
-                        "subject": current_subject,
-                    },
-                )
-
-                # DIAGNOSTIC: Log placed hyperlink
-                diag.log_hyperlink_placed(
-                    hyperlink["text"],
-                    current_slot_number,
-                    current_subject,
-                    f"{day_name}_{section_name}",
-                    confidence,
-                )
-
-        # If we have fuzzy links but header already exists (append mode), inject links without header
-        elif matching_hyperlinks and has_links_header:
-            # Inject links without adding another header
-            for hyperlink, confidence, match_type in matching_hyperlinks:
-                self._inject_hyperlink_inline(cell, hyperlink, row_idx=row_idx)
-                pending_hyperlinks.remove(hyperlink)
-
-                logger.info(
-                    "hyperlink_placed_inline",
-                    extra={
-                        "text": hyperlink["text"][:50],
-                        "url": hyperlink["url"][:50],
-                        "cell": f"{day_name}_{section_name}",
-                        "confidence": confidence,
-                        "match_type": match_type,
-                        "slot": current_slot_number,
-                        "subject": current_subject,
-                        "note": "appended_without_header",
-                    },
-                )
-
-                # DIAGNOSTIC: Log placed hyperlink
-                diag.log_hyperlink_placed(
-                    hyperlink["text"],
-                    current_slot_number,
-                    current_subject,
-                    f"{day_name}_{section_name}",
-                    confidence,
-                )
-
-        # If we have fuzzy links but coordinate links exist, inject them (header already added above)
-        elif matching_hyperlinks and has_coordinate_hyperlinks:
-            # Inject fuzzy links (header was already added above for total count)
-            for hyperlink, confidence, match_type in matching_hyperlinks:
-                self._inject_hyperlink_inline(cell, hyperlink, row_idx=row_idx)
-                pending_hyperlinks.remove(hyperlink)
-
-                logger.info(
-                    "hyperlink_placed_inline",
-                    extra={
-                        "text": hyperlink["text"][:50],
-                        "url": hyperlink["url"][:50],
-                        "cell": f"{day_name}_{section_name}",
-                        "confidence": confidence,
-                        "match_type": match_type,
-                        "slot": current_slot_number,
-                        "subject": current_subject,
-                        "note": "mixed_with_coordinate_links",
-                    },
-                )
-
-                # DIAGNOSTIC: Log placed hyperlink
-                diag.log_hyperlink_placed(
-                    hyperlink["text"],
-                    current_slot_number,
-                    current_subject,
-                    f"{day_name}_{section_name}",
-                    confidence,
-                )
-
-        # Now add the text content
+        # Now add the text content (which may now contain our new [text](url) markdown)
         if not has_coordinate_hyperlinks and not append_mode:
             # Add formatted text
             if text:
                 MarkdownToDocx.add_multiline_text(cell, text)
-                # Apply font formatting (Times New Roman 8pt) to content cells
-                # Skip row 1 (days) and column 0 (section labels)
-                if row_idx > 0 and col_idx > 0:
-                    for para in cell.paragraphs:
-                        for run in para.runs:
-                            run.font.name = "Times New Roman"
-                            run.font.size = Pt(8)
-                            # CRITICAL: Unit/Lesson row must always be BOLD
-                            if row_idx == self._get_row_index("unit"):
-                                run.font.bold = True
         else:
             # Cell has coordinate-placed hyperlinks OR append mode - append text without clearing
             # Add text with markdown formatting to preserve existing hyperlinks
@@ -1372,35 +1686,24 @@ class DOCXRenderer:
                             # Subsequent lines
                             MarkdownToDocx.add_paragraph(cell, line)
 
-                # Apply font formatting to newly added paragraphs only
-                if row_idx > 0 and col_idx > 0:
-                    # Format only the paragraphs we just added
-                    num_new_paras = len(lines)
-                    for para in cell.paragraphs[-num_new_paras:]:
-                        for run in para.runs:
-                            run.font.name = "Times New Roman"
-                            run.font.size = Pt(8)
-                            # CRITICAL: Unit/Lesson row must always be BOLD
-                            if row_idx == self._get_row_index("unit"):
-                                run.font.bold = True
-
-        # CRITICAL: Final formatting pass - ensure ALL paragraphs have consistent formatting
-        # This catches any paragraphs that might have been missed or created with defaults
+        # CRITICAL: Final formatting pass for ALL paragraphs and runs in cell
         if cell.paragraphs:
             for para in cell.paragraphs:
-                # Format all paragraphs (including empty placeholders to prevent spacing issues)
+                # Force spacing
                 para.paragraph_format.space_after = Pt(0)
                 para.paragraph_format.space_before = Pt(0)
                 para.paragraph_format.line_spacing_rule = WD_LINE_SPACING.SINGLE
-                # Ensure font formatting is consistent for content paragraphs
-                if para.text.strip() or para.runs:
-                    if row_idx > 0 and col_idx > 0:
-                        for run in para.runs:
-                            # Only update if font is missing or default Arial
-                            if not run.font.name or run.font.name == "Arial":
-                                run.font.name = "Times New Roman"
-                            if not run.font.size or run.font.size != Pt(8):
-                                run.font.size = Pt(8)
+                
+                # Format direct runs
+                for run in para.runs:
+                    self._force_font_tnr8(run, is_bold=(row_idx == self.UNIT_LESSON_ROW))
+                
+                # Format runs inside hyperlinks
+                for hl in para._p.findall(qn("w:hyperlink")):
+                    for r_elem in hl.findall(qn("w:r")):
+                        hl_run = Run(r_elem, para)
+                        is_hl_bold = (row_idx == self.UNIT_LESSON_ROW) or hl_run.font.bold
+                        self._force_font_tnr8(hl_run, is_bold=is_hl_bold, is_hyperlink=True)
 
         # FALLBACK: Append media that belongs to this section but wasn't placed inline
         # This ensures "orphan" media stays with its relevant section
@@ -1412,32 +1715,56 @@ class DOCXRenderer:
                     link_slot = hyperlink.get("_source_slot")
                     if link_slot is not None and link_slot != current_slot_number:
                         continue
-                
-                # Check section hint
+
+                # STRICT DAY CHECK: Do not place fallback links in the wrong day
+                # This prevents "orphan" links from Monday appearing as bullets on Tuesday
+                hl_day = hyperlink.get("day_hint")
+                if hl_day and day_name:
+                    if hl_day.lower().strip() != day_name.lower().strip():
+                        continue
+
+                # Check section hint using flexible mapping
                 hint = hyperlink.get("section_hint", "").lower()
-                # Simple mapping for common section names
                 is_section_match = False
+                
+                # Flexible section mapping
+                section_mappings = {
+                    "unit_lesson": ["unit", "lesson", "module"],
+                    "objective": ["objective", "goal", "swbat"],
+                    "anticipatory_set": ["anticipatory", "warm up", "hook", "do now", "entry"],
+                    "tailored_instruction": ["instruction", "activity", "procedure", "lesson", "tailored", "differentiation"],
+                    "misconceptions": ["misconception", "misconceptions", "error", "pitfall"],
+                    "assessment": ["assessment", "check", "evaluate", "exit ticket"],
+                    "homework": ["homework", "assignment", "practice"]
+                }
+
                 if hint == section_name:
                     is_section_match = True
-                elif section_name == "unit_lesson" and hint in ["unit", "lesson"]:
-                    is_section_match = True
-                elif section_name == "anticipatory_set" and hint in ["anticipatory", "warm up", "hook"]:
-                    is_section_match = True
-                elif section_name == "tailored_instruction" and hint in ["instruction", "activity"]:
-                    is_section_match = True
-                
+                elif section_name in section_mappings:
+                    if hint in section_mappings[section_name]:
+                        is_section_match = True
+                    # Also check partial matches if hint is long enough
+                    elif any(kw in hint for kw in section_mappings[section_name] if len(kw) > 3):
+                        is_section_match = True
+
                 if is_section_match:
                     # Append as a new paragraph
+                    # Append as a new paragraph with bullet
                     p = cell.add_paragraph()
-                    MarkdownToDocx.add_formatted_text(p, f"Referenced: [{hyperlink['text']}]({hyperlink['url']})")
+                    MarkdownToDocx.add_formatted_text(
+                        p, f"• [{hyperlink['text']}]({hyperlink['url']})"
+                    )
                     # Format the new paragraph
                     p.paragraph_format.space_after = Pt(0)
                     for run in p.runs:
                         run.font.name = "Times New Roman"
                         run.font.size = Pt(8)
-                    
+
                     pending_hyperlinks.remove(hyperlink)
-                    logger.info("hyperlink_placed_fallback", extra={"text": hyperlink["text"], "section": section_name})
+                    logger.info(
+                        "hyperlink_placed_fallback",
+                        extra={"text": hyperlink["text"], "section": section_name},
+                    )
 
             # Check for images with matching section hint
             for image in pending_images[:]:
@@ -1449,19 +1776,36 @@ class DOCXRenderer:
 
                 hint = image.get("section_hint", "").lower()
                 is_section_match = False
+                
+                # Flexible section mapping (shared with hyperlinks)
+                section_mappings = {
+                    "unit_lesson": ["unit", "lesson", "module"],
+                    "objective": ["objective", "goal", "swbat"],
+                    "anticipatory_set": ["anticipatory", "warm up", "hook", "do now", "entry"],
+                    "tailored_instruction": ["instruction", "activity", "procedure", "lesson", "tailored", "differentiation"],
+                    "misconceptions": ["misconception", "misconceptions", "error", "pitfall"],
+                    "assessment": ["assessment", "check", "evaluate", "exit ticket"],
+                    "homework": ["homework", "assignment", "practice"]
+                }
+
                 if hint == section_name:
                     is_section_match = True
-                elif section_name == "unit_lesson" and hint in ["unit", "lesson"]:
-                    is_section_match = True
-                elif section_name == "anticipatory_set" and hint in ["anticipatory", "warm up", "hook"]:
-                    is_section_match = True
-                elif section_name == "tailored_instruction" and hint in ["instruction", "activity"]:
-                    is_section_match = True
+                elif section_name in section_mappings:
+                    if hint in section_mappings[section_name]:
+                        is_section_match = True
+                    # Also check partial matches if hint is long enough
+                    elif any(kw in hint for kw in section_mappings[section_name] if len(kw) > 3):
+                        is_section_match = True
 
                 if is_section_match:
-                    self._inject_image_inline(cell, image, max_width=1.3) # approx column width
+                    self._inject_image_inline(
+                        cell, image, max_width=1.3
+                    )  # approx column width
                     pending_images.remove(image)
-                    logger.info("image_placed_fallback", extra={"filename": image["filename"], "section": section_name})
+                    logger.info(
+                        "image_placed_fallback",
+                        extra={"filename": image["filename"], "section": section_name},
+                    )
 
         # CRITICAL: Remove placeholder paragraph if no content was actually added
         # This prevents empty cells from showing a placeholder when content is missing
@@ -1618,6 +1962,10 @@ class DOCXRenderer:
         if not objective:
             return ""
 
+        # Originals mode: just return the raw text
+        if self.is_originals:
+            return objective.get("content_objective") or objective.get("student_goal") or ""
+
         parts = []
 
         if "content_objective" in objective:
@@ -1636,6 +1984,10 @@ class DOCXRenderer:
         if not anticipatory:
             return ""
 
+        # Originals mode: just return the raw text
+        if self.is_originals:
+            return anticipatory.get("original_content") or ""
+
         parts = []
 
         if "original_content" in anticipatory:
@@ -1646,25 +1998,44 @@ class DOCXRenderer:
 
         return "\n".join(parts)
 
+    def _filter_valid_vocabulary_pairs(
+        self, vocabulary_cognates: List[Dict]
+    ) -> List[Dict]:
+        """Filter vocabulary pairs to only include valid ones with both english and portuguese."""
+        return [
+            pair
+            for pair in vocabulary_cognates
+            if isinstance(pair, dict)
+            and str(pair.get("english", "")).strip()
+            and str(pair.get("portuguese", "")).strip()
+        ]
+
+    def _filter_valid_sentence_frames(self, sentence_frames: List[Dict]) -> List[Dict]:
+        """Filter sentence frames to only include well-formed ones."""
+        return [
+            frame
+            for frame in sentence_frames
+            if isinstance(frame, dict)
+            and str(frame.get("english", "")).strip()
+            and str(frame.get("portuguese", "")).strip()
+            and str(frame.get("proficiency_level", "")).strip()
+        ]
+
     def _format_tailored_instruction(
         self,
         instruction: Dict,
         vocabulary_cognates: Optional[List[Dict]] = None,
         sentence_frames: Optional[List[Dict]] = None,
     ) -> str:
-        """Format tailored instruction section.
-
-        Args:
-            instruction: Tailored instruction dict for the day/slot.
-            vocabulary_cognates: Optional list of vocabulary cognate pairs for
-                this day. When provided and when a cognate_awareness strategy
-                is present in ell_support, this will be rendered as a structured
-                "Vocabulary / Cognate Awareness" block after the explanation.
-        """
+        """Format tailored instruction section."""
         if not instruction:
             return ""
 
-        parts: List[str] = []
+        # Originals mode: just return the raw text
+        if self.is_originals:
+            return instruction.get("original_content") or ""
+
+        parts = []
 
         # Original content
         if "original_content" in instruction:
@@ -1708,18 +2079,12 @@ class DOCXRenderer:
                 if strategy_id == "cognate_awareness":
                     has_cognate_awareness = True
 
-            # If we have a cognate awareness strategy and structured
-            # vocabulary_cognates data, append a formatted vocabulary block.
-            if has_cognate_awareness and vocabulary_cognates:
-                # Ensure we only render pairs with both english and portuguese
-                valid_pairs = [
-                    pair
-                    for pair in vocabulary_cognates
-                    if isinstance(pair, dict)
-                    and str(pair.get("english", "")).strip()
-                    and str(pair.get("portuguese", "")).strip()
-                ]
-
+            # If we have structured vocabulary_cognates data, append a formatted vocabulary block.
+            # Note: We render vocabulary_cognates if the data exists, similar to sentence_frames,
+            # regardless of whether cognate_awareness strategy is explicitly in ell_support.
+            # This ensures consistency with how sentence_frames are rendered.
+            if vocabulary_cognates:
+                valid_pairs = self._filter_valid_vocabulary_pairs(vocabulary_cognates)
                 if valid_pairs:
                     parts.append("\n**Vocabulary / Cognate Awareness:**")
                     for pair in valid_pairs:
@@ -1729,15 +2094,7 @@ class DOCXRenderer:
 
             # Sentence Frames grouped by proficiency level (if provided)
             if sentence_frames:
-                # Filter to well-formed frames
-                valid_frames = [
-                    frame
-                    for frame in sentence_frames
-                    if isinstance(frame, dict)
-                    and str(frame.get("english", "")).strip()
-                    and str(frame.get("portuguese", "")).strip()
-                    and str(frame.get("proficiency_level", "")).strip()
-                ]
+                valid_frames = self._filter_valid_sentence_frames(sentence_frames)
 
                 if valid_frames:
                     parts.append("\n**Sentence Frames / Stems / Questions:**")
@@ -1787,6 +2144,10 @@ class DOCXRenderer:
         if not misconceptions:
             return ""
 
+        # Originals mode: just return the raw text
+        if self.is_originals:
+            return misconceptions.get("original_content") or ""
+
         parts = []
 
         if "original_content" in misconceptions:
@@ -1805,6 +2166,10 @@ class DOCXRenderer:
         """Format assessment section."""
         if not assessment:
             return ""
+
+        # Originals mode: just return the raw text
+        if self.is_originals:
+            return assessment.get("primary_assessment") or ""
 
         parts = []
 
@@ -1915,15 +2280,6 @@ class DOCXRenderer:
                 return (1.0, "exact_text")
             return (0.0, "no_match")
 
-        # Strategy 1: Exact text match (hyperlinks only)
-        if "text" in media and media["text"] in cell_text:
-            return (1.0, "exact_text")
-
-        # Strategy 2: Context fuzzy match with hint-based boosting
-        context = media.get("context_snippet", "")
-        context_score = 0.0
-        hint_matches = 0
-
         # Normalize day hints for case-insensitive comparison
         day_hint_normalized = None
         if media.get("day_hint"):
@@ -1933,11 +2289,45 @@ class DOCXRenderer:
         if day_name:
             day_name_normalized = day_name.lower().strip()
 
+        # CRITICAL for Schema 2.0: If day_hint is provided, MUST match the current day
+        # This prevents links leaking to other days with similar text
+        if day_hint_normalized and day_name_normalized:
+            if day_hint_normalized != day_name_normalized:
+                return (0.0, "day_mismatch")
+
+        # Strategy 1: Exact text match (hyperlinks only)
+        if "text" in media and media["text"] in cell_text:
+            return (1.0, "exact_text")
+
+        # Strategy 2: Context fuzzy match with hint-based boosting
+        context = media.get("context_snippet", "")
+        context_score = 0.0
+        hint_matches = 0
+
         # Count hint matches (case-insensitive)
         if day_name_normalized and day_hint_normalized == day_name_normalized:
             hint_matches += 1
-        if section_name and media.get("section_hint") == section_name:
-            hint_matches += 1
+            
+        if section_name:
+            hint = media.get("section_hint", "").lower()
+            # Flexible section mapping (shared logic)
+            section_mappings = {
+                "unit_lesson": ["unit", "lesson", "module"],
+                "objective": ["objective", "goal", "swbat"],
+                "anticipatory_set": ["anticipatory", "warm up", "hook", "do now", "entry"],
+                "tailored_instruction": ["instruction", "activity", "procedure", "lesson", "tailored", "differentiation"],
+                "misconceptions": ["misconception", "misconceptions", "error", "pitfall"],
+                "assessment": ["assessment", "check", "evaluate", "exit ticket"],
+                "homework": ["homework", "assignment", "practice"]
+            }
+            
+            if hint == section_name:
+                hint_matches += 1
+            elif section_name in section_mappings:
+                if hint in section_mappings[section_name]:
+                    hint_matches += 1
+                elif any(kw in hint for kw in section_mappings[section_name] if len(kw) > 3):
+                    hint_matches += 1
 
         if context:
             context_score = fuzz.partial_ratio(context, cell_text) / 100.0
@@ -1979,6 +2369,40 @@ class DOCXRenderer:
             hyperlink: Hyperlink dictionary with text and url
             row_idx: Row index (for applying bold to unit/lesson row)
         """
+        # Check if cell text already contains this link in markdown format
+        # This prevents duplicate links when text already has [text](url) format
+        link_text = hyperlink.get("text", "")
+        link_url = hyperlink.get("url", "")
+        cell_text = cell.text
+        
+        # Check for markdown link pattern [link_text](link_url) in cell text
+        import re
+        markdown_pattern = rf"\[{re.escape(link_text)}\]\({re.escape(link_url)}\)"
+        if re.search(markdown_pattern, cell_text, re.IGNORECASE):
+            # #region agent log
+            import json
+            import time
+            with open(r'd:\LP\hyperlink_debug.log', 'a', encoding='utf-8') as f:
+                f.write(json.dumps({
+                    "sessionId": "debug-session",
+                    "runId": "post-fix",
+                    "hypothesisId": "FIX",
+                    "location": "docx_renderer.py:_inject_hyperlink_inline:skip_duplicate",
+                    "message": "Skipping duplicate hyperlink injection",
+                    "data": {
+                        "link_text": link_text,
+                        "link_url": link_url[:50],
+                        "cell_text_preview": cell_text[:200],
+                        "reason": "already_in_markdown"
+                    },
+                    "timestamp": int(time.time() * 1000)
+                }) + '\n')
+            # #endregion
+            logger.debug(
+                f"Skipping duplicate hyperlink injection: '{link_text}' already in markdown format in cell"
+            )
+            return
+
         # CRITICAL: Each hyperlink must start on its own line
         # Create a new paragraph for the hyperlink
         para = cell.add_paragraph()
@@ -1989,12 +2413,9 @@ class DOCXRenderer:
         para.paragraph_format.line_spacing_rule = WD_LINE_SPACING.SINGLE
 
         # Add the hyperlink to the new paragraph
-        self._add_hyperlink(para, hyperlink["text"], hyperlink["url"])
-
-        # CRITICAL: Unit/Lesson row hyperlinks must be BOLD
-        if row_idx == self.UNIT_LESSON_ROW:
-            for run in para.runs:
-                run.font.bold = True
+        # Pass bold=True if it's the unit/lesson row
+        is_bold = (row_idx == self.UNIT_LESSON_ROW)
+        self._add_hyperlink(para, hyperlink["text"], hyperlink["url"], bold=is_bold)
 
     def _place_hyperlink_hybrid(
         self, link: Dict, table, structure: StructureMetadata
@@ -2458,13 +2879,137 @@ class DOCXRenderer:
         except Exception as e:
             logger.warning("hyperlinks_restoration_error", extra={"error": str(e)})
 
-    def _add_hyperlink(self, paragraph, text: str, url: str):
-        """Add a hyperlink to a paragraph.
+    def _force_font_tnr8(self, run, is_bold: bool = False, is_hyperlink: bool = False):
+        """Force Times New Roman 8pt on a Run object.
+        Reconstructs w:rPr from scratch to ensure correct XML schema order and fix corruption.
+        """
+        r_elem = run._element
+        rPr = r_elem.get_or_add_rPr()
+        
+        # Capture existing formatting from OXML if possible
+        existing_rStyle = rPr.find(qn("w:rStyle"))
+        existing_color = rPr.find(qn("w:color"))
+        existing_u = rPr.find(qn("w:u"))
+        existing_b = rPr.find(qn("w:b"))
+        existing_bCs = rPr.find(qn("w:bCs"))
+        existing_i = rPr.find(qn("w:i"))
+        existing_iCs = rPr.find(qn("w:iCs"))
+        existing_sz = rPr.find(qn("w:sz"))
+        existing_szCs = rPr.find(qn("w:szCs"))
+        existing_vertAlign = rPr.find(qn("w:vertAlign"))
+        
+        # Clear ALL children of rPr to ensure perfect order
+        for child in list(rPr):
+            rPr.remove(child)
+            
+        # 1. rStyle (Must be first)
+        if existing_rStyle is not None:
+            rPr.append(existing_rStyle)
+            
+        # 2. rFonts (Set all 4 attributes to prevent Fallback)
+        rFonts = OxmlElement("w:rFonts")
+        rFonts.set(qn("w:ascii"), "Times New Roman")
+        rFonts.set(qn("w:hAnsi"), "Times New Roman")
+        rFonts.set(qn("w:cs"), "Times New Roman")
+        rFonts.set(qn("w:eastAsia"), "Times New Roman")
+        rPr.append(rFonts)
+        
+        # 3. Bold
+        if is_bold:
+            rPr.append(OxmlElement("w:b"))
+            rPr.append(OxmlElement("w:bCs"))
+        elif existing_b is not None:
+            rPr.append(existing_b)
+            if existing_bCs is not None:
+                rPr.append(existing_bCs)
+            else:
+                rPr.append(OxmlElement("w:bCs"))
+            
+        # 4. Color
+        if is_hyperlink:
+            color = OxmlElement("w:color")
+            color.set(qn("w:val"), "0000FF")
+            rPr.append(color)
+        elif existing_color is not None:
+            rPr.append(existing_color)
+            
+        # 5. Size (8pt = 16 half-points)
+        sz = OxmlElement("w:sz")
+        sz.set(qn("w:val"), "16")
+        rPr.append(sz)
+        szCs = OxmlElement("w:szCs")
+        szCs.set(qn("w:val"), "16")
+        rPr.append(szCs)
+        
+        # 6. Underline
+        if is_hyperlink:
+            u = OxmlElement("w:u")
+            u.set(qn("w:val"), "single")
+            rPr.append(u)
+        elif existing_u is not None:
+            rPr.append(existing_u)
 
+    def _force_font_arial10(self, run, is_bold: bool = False):
+        """Force Arial 10pt on a Run object.
+        Used for metadata table formatting.
+        Reconstructs w:rPr from scratch to ensure correct XML schema order.
+        """
+        r_elem = run._element
+        rPr = r_elem.get_or_add_rPr()
+        
+        # Capture existing formatting from OXML if possible
+        existing_rStyle = rPr.find(qn("w:rStyle"))
+        existing_color = rPr.find(qn("w:color"))
+        existing_u = rPr.find(qn("w:u"))
+        
+        # Clear ALL children of rPr to ensure perfect order
+        for child in list(rPr):
+            rPr.remove(child)
+            
+        # 1. rStyle (Must be first)
+        if existing_rStyle is not None:
+            rPr.append(existing_rStyle)
+            
+        # 2. rFonts (Set all 4 attributes to prevent Fallback)
+        rFonts = OxmlElement("w:rFonts")
+        rFonts.set(qn("w:ascii"), "Arial")
+        rFonts.set(qn("w:hAnsi"), "Arial")
+        rFonts.set(qn("w:cs"), "Arial")
+        rFonts.set(qn("w:eastAsia"), "Arial")
+        rPr.append(rFonts)
+        
+        # 3. Bold
+        if is_bold:
+            rPr.append(OxmlElement("w:b"))
+            rPr.append(OxmlElement("w:bCs"))
+            
+        # 4. Color
+        if existing_color is not None:
+            rPr.append(existing_color)
+            
+        # 5. Size (10pt = 20 half-points)
+        sz = OxmlElement("w:sz")
+        sz.set(qn("w:val"), "20")
+        rPr.append(sz)
+        szCs = OxmlElement("w:szCs")
+        szCs.set(qn("w:val"), "20")
+        rPr.append(szCs)
+        
+        # 6. Underline
+        if existing_u is not None:
+            rPr.append(existing_u)
+
+    def _add_hyperlink(self, paragraph, text: str, url: str, bold: bool = False, insert_at: int = None):
+        """Add a hyperlink to a paragraph.
+        Using direct OxmlElement construction to avoid out-of-sync paragraph.runs
+        which causes DOCX corruption.
+        
         Args:
             paragraph: Paragraph object
-            text: Display text for the hyperlink
-            url: URL to link to
+            text: Link text
+            url: Link URL
+            bold: Whether to bold the link text
+            insert_at: Optional index to insert at (for maintaining order). If None, appends to end.
         """
         # Get the paragraph's part
         part = paragraph.part
@@ -2480,47 +3025,37 @@ class DOCXRenderer:
         hyperlink = OxmlElement("w:hyperlink")
         hyperlink.set(qn("r:id"), r_id)
 
-        # Create a new run for the hyperlink text
-        new_run = OxmlElement("w:r")
-
-        # Set run properties (blue, underlined, Times New Roman 8pt)
-        rPr = OxmlElement("w:rPr")
-
-        # Add font (Times New Roman)
-        rFonts = OxmlElement("w:rFonts")
-        rFonts.set(qn("w:ascii"), "Times New Roman")
-        rFonts.set(qn("w:hAnsi"), "Times New Roman")
-        rPr.append(rFonts)
-
-        # Add font size (8pt = 16 half-points)
-        sz = OxmlElement("w:sz")
-        sz.set(qn("w:val"), "16")
-        rPr.append(sz)
-
-        # Add color (blue)
-        color = OxmlElement("w:color")
-        color.set(qn("w:val"), "0000FF")
-        rPr.append(color)
-
-        # Add underline
-        u = OxmlElement("w:u")
-        u.set(qn("w:val"), "single")
-        rPr.append(u)
-
-        new_run.append(rPr)
-
-        # Add the text
-        text_elem = OxmlElement("w:t")
-        text_elem.text = text
-        new_run.append(text_elem)
-
-        hyperlink.append(new_run)
-        paragraph._p.append(hyperlink)
+        # Create the run element directly
+        r_elem = OxmlElement("w:r")
+        
+        # We wrap it in a Run object temporarily to use our _force_font_tnr8 helper
+        from docx.text.run import Run
+        temp_run = Run(r_elem, paragraph)
+        self._force_font_tnr8(temp_run, is_bold=bold, is_hyperlink=True)
+        
+        # Add the text with preservation of spaces
+        t_elem = OxmlElement("w:t")
+        t_elem.set(qn("xml:space"), "preserve")
+        t_elem.text = text
+        r_elem.append(t_elem)
+        
+        # Add run to hyperlink
+        hyperlink.append(r_elem)
+        
+        # Insert at specified position or append to end
+        if insert_at is not None and insert_at < len(paragraph._p):
+            paragraph._p.insert(insert_at, hyperlink)
+        else:
+            paragraph._p.append(hyperlink)
 
     def _format_homework(self, homework: Dict) -> str:
         """Format homework section."""
         if not homework:
             return ""
+
+        # Originals mode: just return the raw text
+        if self.is_originals:
+            return homework.get("original_content") or ""
 
         parts = []
 

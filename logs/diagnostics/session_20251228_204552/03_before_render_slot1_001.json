@@ -1,0 +1,84 @@
+{
+  "timestamp": "2025-12-28T20:45:57.949430",
+  "stage": "03_before_render_slot1",
+  "data": {
+    "slot_number": 1,
+    "subject": "ELA",
+    "render_type": "multi_slot",
+    "metadata_slot_number": 1,
+    "metadata_subject": "ELA",
+    "hyperlink_count": 13,
+    "all_hyperlinks_have_slot": true,
+    "all_hyperlinks_have_subject": true,
+    "hyperlink_slot_distribution": {
+      "1": 13
+    },
+    "sample_hyperlinks": [
+      {
+        "text": "Lenni Lenape",
+        "source_slot": 1,
+        "source_subject": "ELA"
+      },
+      {
+        "text": "Lenni Lenape",
+        "source_slot": 1,
+        "source_subject": "ELA"
+      },
+      {
+        "text": "Lenni Lenape",
+        "source_slot": 1,
+        "source_subject": "ELA"
+      },
+      {
+        "text": "Lenni Lenape",
+        "source_slot": 1,
+        "source_subject": "ELA"
+      },
+      {
+        "text": "Lenni Lenape",
+        "source_slot": 1,
+        "source_subject": "ELA"
+      },
+      {
+        "text": "Native-Land.ca",
+        "source_slot": 1,
+        "source_subject": "ELA"
+      },
+      {
+        "text": "Spotlight On Native Americans: Delaware Lenape",
+        "source_slot": 1,
+        "source_subject": "ELA"
+      },
+      {
+        "text": "note catcher ",
+        "source_slot": 1,
+        "source_subject": "ELA"
+      },
+      {
+        "text": " Biography Slide Template",
+        "source_slot": 1,
+        "source_subject": "ELA"
+      },
+      {
+        "text": " Culture Preservation Graphic Organizer",
+        "source_slot": 1,
+        "source_subject": "ELA"
+      },
+      {
+        "text": "Carousel activity",
+        "source_slot": 1,
+        "source_subject": "ELA"
+      },
+      {
+        "text": "Unit 3 - Culminating Task 1",
+        "source_slot": 1,
+        "source_subject": "ELA"
+      },
+      {
+        "text": "Culminating Writing Task",
+        "source_slot": 1,
+        "source_subject": "ELA"
+      }
+    ]
+  }
+}

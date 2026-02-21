@@ -1,8 +1,16 @@
 # Feature Enhancement Plan - Bilingual Weekly Plan Builder
 
 **Created**: 2025-10-18  
-**Status**: PLANNING  
+**Status**: PARTIAL – many features implemented; remainder planned (see Status section below).  
 **Priority**: HIGH - User Experience & Research Capabilities
+
+---
+
+## Status (implemented vs remaining)
+
+**Implemented** (see [../IMPLEMENTATION_STATUS.md](../IMPLEMENTATION_STATUS.md)): 1 (table widths), 3 (No School), 5 (timestamped filenames), 6 (performance tracking), 7 (slot checkboxes), 9 (button state), 10 (progress bar), 12 (file open / show in folder), 13 (analytics dashboard).
+
+**Remaining (planned):** 2 (image preservation), 4 (hyperlink preservation), 8 (source folder path confirmation), 11 (session-based history view). For roadmap index see [../roadmap/README.md](../roadmap/README.md).
 
 ---
 

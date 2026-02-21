@@ -1,0 +1,11 @@
+{
+  "timestamp": "2025-12-29T17:39:46.281009",
+  "stage": "07_hyperlink_placed",
+  "data": {
+    "text": "Lesson 8",
+    "slot": null,
+    "subject": "ELA/SS",
+    "cell": "tuesday_unit_lesson",
+    "confidence": 1.0
+  }
+}

@@ -2,9 +2,11 @@ import { Card } from '@lesson-ui/Card';
 import { scheduleApi, ScheduleEntry, planApi, lessonApi } from '@lesson-api';
 import { useStore } from '../store/useStore';
 import { useState, useEffect } from 'react';
-import { getSubjectColors } from '../utils/scheduleColors';
-import { dedupeScheduleEntries } from '../utils/scheduleEntries';
+import { getSubjectColors, meetingPeriodColors } from '../utils/scheduleColors';
+import { dedupeScheduleEntries, formatEntryDisplay, isMeetingPeriod, isNonClassPeriod } from '../utils/scheduleEntries';
 import { buildSlotDataMap } from '../utils/planMatching';
+
+const MEETING_CLASSES = `${meetingPeriodColors.bg} ${meetingPeriodColors.border} ${meetingPeriodColors.text}`;
 
 interface WeekViewProps {
   weekOf: string;
@@ -13,7 +15,8 @@ interface WeekViewProps {
     day: string,
     slot: number,
     planSlotIndex?: number,
-    planSlotData?: any
+    planSlotData?: any,
+    weekOf?: string
   ) => void | Promise<void>;
   onDayClick?: (day: string) => void;
   currentLessonId?: string | null;
@@ -26,17 +29,6 @@ interface LessonData {
   planSlotIndex?: number;
   planSlot?: any;
 }
-
-// Helper function to check if entry is a non-class period
-const isNonClassPeriod = (subject: string): boolean => {
-  if (!subject) return false;
-  // Normalize by removing extra spaces and converting to uppercase
-  const normalized = subject.replace(/\s+/g, ' ').trim().toUpperCase();
-  // Check for A.M. Routine variations (with or without space after A.)
-  const amRoutinePattern = /^A\.?\s*M\.?\s*ROUTINE$/;
-  return ['PREP', 'PREP TIME', 'LUNCH', 'A.M. ROUTINE', 'A. M. ROUTINE', 'AM ROUTINE', 'MORNING ROUTINE', 'DISMISSAL'].includes(normalized) ||
-         amRoutinePattern.test(normalized);
-};
 
 // Helper function to normalize time format (ensures consistent matching)
 const normalizeTime = (time: string | null | undefined): string => {
@@ -62,6 +54,12 @@ export function WeekView({ weekOf, onLessonClick, onDayClick, currentLessonId }:
   const [nonClassPeriods, setNonClassPeriods] = useState<Record<string, ScheduleEntry[]>>({});
   const [lessonData, setLessonData] = useState<Record<string, Record<number, LessonData>>>({});
   const [loading, setLoading] = useState(true);
+  
+  // CRITICAL: Log the weekOf prop received
+  console.log('[WeekView] Component rendered/re-rendered with weekOf prop:', {
+    weekOf: weekOf,
+    note: 'This weekOf will be used to load plans and passed to onLessonClick'
+  });
 
   const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
   const dayLabels = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
@@ -69,10 +67,14 @@ export function WeekView({ weekOf, onLessonClick, onDayClick, currentLessonId }:
   useEffect(() => {
     if (!currentUser) {
       setSchedule({});
+      setNonClassPeriods({});
       setLessonData({});
       setLoading(false);
       return;
     }
+
+    // Clear previous lesson data to avoid showing stale plans when switching weeks
+    setLessonData({});
 
     const loadData = async () => {
       setLoading(true);
@@ -192,6 +194,15 @@ export function WeekView({ weekOf, onLessonClick, onDayClick, currentLessonId }:
           const plans = plansResponse.data || [];
           const plan = plans.find(p => p.week_of === weekOf);
           
+          console.log('[WeekView] Plan lookup for weekOf:', {
+            weekOf: weekOf,
+            planFound: !!plan,
+            planId: plan?.id,
+            planWeekOf: plan?.week_of,
+            availablePlansWeekOf: plans.map(p => p.week_of),
+            note: 'Looking for plan matching weekOf prop'
+          });
+          
           if (plan) {
             const planDetailResponse = await lessonApi.getPlanDetail(plan.id, currentUser.id);
             const lessonJson = planDetailResponse.data.lesson_json;
@@ -235,10 +246,15 @@ export function WeekView({ weekOf, onLessonClick, onDayClick, currentLessonId }:
               });
               
               setLessonData(data);
+            } else {
+              setLessonData({});
             }
+          } else {
+            setLessonData({});
           }
         } catch (err) {
           console.warn('Could not load lesson plan data:', err);
+          setLessonData({});
         }
       } catch (error) {
         console.error('Failed to load schedule:', error);
@@ -382,15 +398,20 @@ export function WeekView({ weekOf, onLessonClick, onDayClick, currentLessonId }:
               {days.map((day) => {
                 const entry = entryForRow[day];
                 
-                // Show non-class period if it exists
+                // Show non-class period if it exists (meetings use teal via literal classes)
                 if (entry && isNonClassPeriod(entry.subject)) {
+                  const isMeeting = isMeetingPeriod(entry.subject);
+                  const displayText = formatEntryDisplay(entry.subject, entry.grade, entry.homeroom, isMeeting);
                   const colors = getSubjectColors(entry.subject, entry.grade, entry.homeroom);
+                  const cellClass = isMeeting
+                    ? `border p-2 text-sm font-medium min-w-[150px] ${MEETING_CLASSES} cursor-pointer hover:opacity-80 transition-opacity`
+                    : `border p-2 text-sm font-medium min-w-[150px] ${colors.bg} ${colors.border} ${colors.text} cursor-pointer hover:opacity-80 transition-opacity`;
                   return (
                     <td
                       key={`${day}-${entry.id}`}
-                      className={`border p-2 text-sm font-medium min-w-[150px] ${colors.bg} ${colors.border} ${colors.text} cursor-pointer hover:opacity-80 transition-opacity`}
+                      className={cellClass}
                     >
-                      {entry.subject}
+                      {displayText}
                     </td>
                   );
                 }
@@ -414,7 +435,15 @@ export function WeekView({ weekOf, onLessonClick, onDayClick, currentLessonId }:
                       key={entry.id}
                       className={`border p-2 cursor-pointer hover:opacity-80 transition-opacity min-w-[150px] ${colors.bg} ${colors.border} ${colors.text} ${isCurrentLesson ? 'ring-2 ring-primary shadow-md' : ''}`}
                       onClick={() => {
-                        onLessonClick(entry, day, planSlotNumber, planSlotIndex, planSlot);
+                        console.log('[WeekView] Clicking lesson:', {
+                          subject: entry.subject,
+                          day: day,
+                          slot: planSlotNumber,
+                          weekOf: weekOf,
+                          entryId: entry.id,
+                          note: 'Passing weekOf to onLessonClick'
+                        });
+                        onLessonClick(entry, day, planSlotNumber, planSlotIndex, planSlot, weekOf);
                       }}
                       title={`${entry.subject}${entry.grade ? ` - Grade ${entry.grade}` : ''}${entry.homeroom ? ` - ${entry.homeroom}` : ''}`}
                     >
@@ -478,15 +507,20 @@ export function WeekView({ weekOf, onLessonClick, onDayClick, currentLessonId }:
                   e.slot_number === slotNumber && isNonClassPeriod(e.subject)
                 );
                 
-                // Show non-class period if it exists
+                // Show non-class period if it exists (meetings use teal via literal classes)
                 if (nonClassEntry) {
+                  const isMeeting = isMeetingPeriod(nonClassEntry.subject);
+                  const displayText = formatEntryDisplay(nonClassEntry.subject, nonClassEntry.grade, nonClassEntry.homeroom, isMeeting);
                   const colors = getSubjectColors(nonClassEntry.subject, nonClassEntry.grade, nonClassEntry.homeroom);
+                  const cellClass = isMeeting
+                    ? `border p-2 text-sm font-medium min-w-[150px] ${MEETING_CLASSES} cursor-pointer hover:opacity-80 transition-opacity`
+                    : `border p-2 text-sm font-medium min-w-[150px] ${colors.bg} ${colors.border} ${colors.text} cursor-pointer hover:opacity-80 transition-opacity`;
                   return (
                     <td
                       key={`${day}-${nonClassEntry.id}`}
-                      className={`border p-2 text-sm font-medium min-w-[150px] ${colors.bg} ${colors.border} ${colors.text} cursor-pointer hover:opacity-80 transition-opacity`}
+                      className={cellClass}
                     >
-                      {nonClassEntry.subject}
+                      {displayText}
                     </td>
                   );
                 }
@@ -510,7 +544,15 @@ export function WeekView({ weekOf, onLessonClick, onDayClick, currentLessonId }:
                       key={lessonEntry.id}
                       className={`border p-2 cursor-pointer hover:opacity-80 transition-opacity min-w-[150px] ${colors.bg} ${colors.border} ${colors.text} ${isCurrentLesson ? 'ring-2 ring-primary shadow-md' : ''}`}
                       onClick={() => {
-                        onLessonClick(lessonEntry, day, planSlotNumber, planSlotIndex, planSlot);
+                        console.log('[WeekView] Clicking lesson (from lessonData):', {
+                          subject: lessonEntry.subject,
+                          day: day,
+                          slot: planSlotNumber,
+                          weekOf: weekOf,
+                          entryId: lessonEntry.id,
+                          note: 'Passing weekOf to onLessonClick'
+                        });
+                        onLessonClick(lessonEntry, day, planSlotNumber, planSlotIndex, planSlot, weekOf);
                       }}
                       title={`${lessonEntry.subject}${lessonEntry.grade ? ` - Grade ${lessonEntry.grade}` : ''}${lessonEntry.homeroom ? ` - ${lessonEntry.homeroom}` : ''}`}
                     >
@@ -594,7 +636,14 @@ export function WeekView({ weekOf, onLessonClick, onDayClick, currentLessonId }:
                               grade: grade || undefined,
                               is_active: true,
                             } as ScheduleEntry;
-                            onLessonClick(mockEntry, day, slotData.planSlotNumber || slotNumber, slotData.planSlotIndex, planSlot);
+                            console.log('[WeekView] Clicking lesson (mock entry):', {
+                              subject: subject,
+                              day: day,
+                              slot: slotData.planSlotNumber || slotNumber,
+                              weekOf: weekOf,
+                              note: 'Passing weekOf to onLessonClick'
+                            });
+                            onLessonClick(mockEntry, day, slotData.planSlotNumber || slotNumber, slotData.planSlotIndex, planSlot, weekOf);
                           }}
                         >
                           <div className="space-y-1">
@@ -621,11 +670,15 @@ export function WeekView({ weekOf, onLessonClick, onDayClick, currentLessonId }:
                   <div key={day} className="space-y-2">
                     {scheduleEntries.map((entry) => {
                       const slotData = lessonData[day]?.[entry.slot_number];
+                      const isMeeting = isMeetingPeriod(entry.subject);
                       const colors = getSubjectColors(entry.subject, entry.grade, entry.homeroom);
+                      const cardClass = isMeeting
+                        ? `p-3 cursor-pointer hover:opacity-80 transition-all ${MEETING_CLASSES}`
+                        : `p-3 cursor-pointer hover:opacity-80 transition-all ${colors.bg} ${colors.border} ${colors.text}`;
                       return (
                         <Card
                           key={entry.id}
-                          className={`p-3 cursor-pointer hover:opacity-80 transition-all ${colors.bg} ${colors.border} ${colors.text}`}
+                          className={cardClass}
                           onClick={() => {
                             const slotInfo = lessonData[day]?.[entry.slot_number];
                             const dayLessons = schedule[day] || [];
@@ -636,7 +689,15 @@ export function WeekView({ weekOf, onLessonClick, onDayClick, currentLessonId }:
                             const planSlotNum = slotInfo?.planSlotNumber ?? fallbackPlanSlotNumber;
                             const planSlotIdx = slotInfo?.planSlotIndex ?? fallbackPlanSlotIndex;
                             const planSlotData = slotInfo?.planSlot;
-                            onLessonClick(entry, day, planSlotNum, planSlotIdx, planSlotData);
+                            console.log('[WeekView] Clicking lesson (from slotData):', {
+                              subject: entry.subject,
+                              day: day,
+                              slot: planSlotNum,
+                              weekOf: weekOf,
+                              entryId: entry.id,
+                              note: 'Passing weekOf to onLessonClick'
+                            });
+                            onLessonClick(entry, day, planSlotNum, planSlotIdx, planSlotData, weekOf);
                           }}
                         >
                           <div className="space-y-1">

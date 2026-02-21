@@ -1,0 +1,1747 @@
+
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+            <title>Sentence Frames - Week of 12/15-12/19</title>
+            <style>
+                
+        @import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600&display=swap');
+
+        @page {
+            size: 8.5in 11in; /* Portrait US Letter - exact size for printer */
+            margin: 0; /* No margins - use full page for maximum space */
+            /* Ensure no scaling - printers should respect exact page size */
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Source Sans Pro', 'Inter', 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: white;
+        }
+
+        .frames-page {
+            width: 8.5in;  /* Full page width */
+            height: 11in;  /* Full page height */
+            position: relative;
+            margin: 0;
+            page-break-after: always;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            position: absolute;
+            top: 0.39in; /* 1 cm from top for printer safety */
+            left: 0.39in; /* 1 cm from left for printer safety */
+            height: 0.35in;
+            font-size: 10pt;
+            color: #808080; /* 50% gray */
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            z-index: 10; /* Ensure header appears above panels */
+            border: none;
+            border-bottom: none;
+        }
+
+        .panels {
+            position: relative;
+            height: 11in; /* Full page height for accurate three-way division */
+            display: flex;
+            flex-direction: column;
+            border-top: none;
+        }
+
+        .panel {
+            height: 3.67in; /* 11in / 3 = 3.67in per panel (exact equal division for folding) */
+            box-sizing: border-box; /* Include padding in height calculation */
+            padding: 0.25in 0.3in;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            flex-shrink: 0; /* Prevent panels from shrinking */
+            flex-grow: 0; /* Prevent panels from growing */
+        }
+
+        .panel-title {
+            font-size: 10pt;
+            font-weight: 600;
+            color: #808080;
+            margin-bottom: 0.1in;
+        }
+
+        .frame-text {
+            font-size: 28pt;
+            font-weight: 600;
+            color: #000000;
+            line-height: 1.2;
+            margin-bottom: 0.1in;
+            word-wrap: break-word;
+            max-width: 100%;
+        }
+
+        .frame-text strong {
+            font-weight: 700; /* Ensure bold vocabulary words are clearly visible */
+        }
+
+        .frame-function {
+            font-size: 11pt;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #808080;
+        }
+
+        .bundle-frame-row {
+            margin: 0.05in 0;
+        }
+
+        .bundle-frame-text {
+            font-size: 18pt;
+            font-weight: 600;
+            color: #000000;
+            line-height: 1.2;
+        }
+
+        .bundle-frame-text strong {
+            font-weight: 700; /* Ensure bold vocabulary words are clearly visible */
+        }
+
+        .bundle-frame-function {
+            font-size: 9pt;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #808080;
+        }
+
+        .fold-line {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 0;
+            border-top: 1px solid rgba(128, 128, 128, 0.4); /* Thin gray line at 40% opacity */
+            z-index: 1;
+            /* Use fixed positions based on full 11" page height for printer accuracy */
+        }
+
+        /* Fold lines positioned to match exact panel divisions */
+        /* Since .panels has position: relative, fold lines are positioned relative to .panels container */
+        /* Each panel is exactly 3.67in tall (11in / 3) */
+        /* First fold: at the end of first panel = 3.67in from top of .panels */
+        .fold-line-1 {
+            top: 3.67in; /* End of first panel, start of second panel */
+        }
+
+        /* Second fold: at the end of second panel = 3.67in + 3.67in = 7.33in from top of .panels */
+        .fold-line-2 {
+            top: 7.33in; /* End of second panel, start of third panel */
+        }
+
+        @media print {
+            .frames-page {
+                page-break-after: always;
+                /* Ensure exact dimensions for print */
+                width: 8.5in !important;
+                height: 11in !important;
+            }
+            .frames-page:last-child {
+                page-break-after: auto;
+            }
+            .panels {
+                height: 11in !important; /* Enforce full page height for print */
+            }
+            .panel {
+                height: 3.67in !important; /* Enforce exact panel height for print (11in / 3) */
+                flex-shrink: 0 !important;
+                flex-grow: 0 !important;
+            }
+        }
+        
+            </style>
+        </head>
+        <body>
+            
+        <div class="frames-page frames-page-1">
+            <div class="header">12/15/25 | Monday | ELA | Grade 3 | T5</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                
+                <div class="panel panel-1">
+                    <div class="frame-text">First, they ___. Then, they ___.</div>
+                    <div class="frame-function">Sequence</div>
+                </div>
+            
+                <div class="panel panel-2">
+                    <div class="frame-text">The person preserves culture by ___ because ___.</div>
+                    <div class="frame-function">Explain</div>
+                </div>
+            
+                <div class="panel panel-3">
+                    <div class="frame-text">One example from the text is ___ which shows ___.</div>
+                    <div class="frame-function">Support</div>
+                </div>
+            
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-2">
+            <div class="header">12/15/25 | Monday | ELA | Grade 3 | T5</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                <div class="panel panel-1">
+                    <div class="panel-title">Levels 1-2</div>
+                    
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">This person is ___.</div>
+                    <div class="bundle-frame-function">Identify</div>
+                </div>
+                
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">They help keep the ___ alive.</div>
+                    <div class="bundle-frame-function">Describe</div>
+                </div>
+                
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">I see ___ in the text.</div>
+                    <div class="bundle-frame-function">Describe</div>
+                </div>
+                
+                </div>
+                <div class="panel panel-2">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text">Evidence from the chapter suggests that ___ about cultural preservation.</div>
+                    <div class="frame-function">Argue</div>
+                </div>
+                <div class="panel panel-3">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text">How does this person help the Lenni Lenape keep their traditions?</div>
+                    <div class="frame-function">Analyze</div>
+                </div>
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-1">
+            <div class="header">12/15/25 | Monday | ELA/SS | Grade 2 | 209</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                
+                <div class="panel panel-1">
+                    <div class="frame-text">First the character ___, then the character ___.</div>
+                    <div class="frame-function">Sequence</div>
+                </div>
+            
+                <div class="panel panel-2">
+                    <div class="frame-text">I describe the change because ___.</div>
+                    <div class="frame-function">Explain</div>
+                </div>
+            
+                <div class="panel panel-3">
+                    <div class="frame-text">The story shows change when ___.</div>
+                    <div class="frame-function">Explain</div>
+                </div>
+            
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-2">
+            <div class="header">12/15/25 | Monday | ELA/SS | Grade 2 | 209</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                <div class="panel panel-1">
+                    <div class="panel-title">Levels 1-2</div>
+                    
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">This is the character ___.</div>
+                    <div class="bundle-frame-function">Identify</div>
+                </div>
+                
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">I see the story has ___.</div>
+                    <div class="bundle-frame-function">Describe</div>
+                </div>
+                
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">The character changed by ___.</div>
+                    <div class="bundle-frame-function">Sequence</div>
+                </div>
+                
+                </div>
+                <div class="panel panel-2">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text">Evidence from the story suggests that the character changed because ___.</div>
+                    <div class="frame-function">Argue</div>
+                </div>
+                <div class="panel panel-3">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text">How does the character&#x27;s change affect the story?</div>
+                    <div class="frame-function">Analyze</div>
+                </div>
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-1">
+            <div class="header">12/15/25 | Monday | Math | Grade 2 | 209</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                
+                <div class="panel panel-1">
+                    <div class="frame-text">First place a point at ___, then place a point at ___.</div>
+                    <div class="frame-function">Sequence</div>
+                </div>
+            
+                <div class="panel panel-2">
+                    <div class="frame-text">The tick mark at ___ shows the number ___.</div>
+                    <div class="frame-function">Explain</div>
+                </div>
+            
+                <div class="panel panel-3">
+                    <div class="frame-text">I know this is a whole number because ___.</div>
+                    <div class="frame-function">Justify</div>
+                </div>
+            
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-2">
+            <div class="header">12/15/25 | Monday | Math | Grade 2 | 209</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                <div class="panel panel-1">
+                    <div class="panel-title">Levels 1-2</div>
+                    
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">This is the number ___.</div>
+                    <div class="bundle-frame-function">Identify</div>
+                </div>
+                
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">Point to the ___.</div>
+                    <div class="bundle-frame-function">Identify</div>
+                </div>
+                
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">The point is on the ___.</div>
+                    <div class="bundle-frame-function">Describe</div>
+                </div>
+                
+                </div>
+                <div class="panel panel-2">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text">Evidence on the number line shows that the position of the point means ___.</div>
+                    <div class="frame-function">Explain</div>
+                </div>
+                <div class="panel panel-3">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text">How does the position of a point help you know the number?</div>
+                    <div class="frame-function">Analyze</div>
+                </div>
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-1">
+            <div class="header">12/15/25 | Monday | Math | Grade 3 | T2</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                
+                <div class="panel panel-1">
+                    <div class="frame-text">First find the two multiples of 100; then choose the nearest.</div>
+                    <div class="frame-function">Sequence</div>
+                </div>
+            
+                <div class="panel panel-2">
+                    <div class="frame-text">This is closer to ___ because the distance is ___.</div>
+                    <div class="frame-function">Explain</div>
+                </div>
+            
+                <div class="panel panel-3">
+                    <div class="frame-text">I estimate ___ to check if rounding makes sense.</div>
+                    <div class="frame-function">Justify</div>
+                </div>
+            
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-2">
+            <div class="header">12/15/25 | Monday | Math | Grade 3 | T2</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                <div class="panel panel-1">
+                    <div class="panel-title">Levels 1-2</div>
+                    
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">This number is closest to ___ (hundred).</div>
+                    <div class="bundle-frame-function">Identify</div>
+                </div>
+                
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">I see ___ on the number line.</div>
+                    <div class="bundle-frame-function">Describe</div>
+                </div>
+                
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">It rounds to ___.</div>
+                    <div class="bundle-frame-function">Describe</div>
+                </div>
+                
+                </div>
+                <div class="panel panel-2">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text">Evidence shows the number rounds to ___ because it is within ___ of that multiple.</div>
+                    <div class="frame-function">Argue</div>
+                </div>
+                <div class="panel panel-3">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text">How does this number relate to the two nearest hundreds?</div>
+                    <div class="frame-function">Analyze</div>
+                </div>
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-1">
+            <div class="header">12/15/25 | Monday | Science | Grade 2 | 209</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                
+                <div class="panel panel-1">
+                    <div class="frame-text">First I observe the material, then I describe its property ___ because ___.</div>
+                    <div class="frame-function">Sequence</div>
+                </div>
+            
+                <div class="panel panel-2">
+                    <div class="frame-text">This material has the property ___ which shows ___.</div>
+                    <div class="frame-function">Explain</div>
+                </div>
+            
+                <div class="panel panel-3">
+                    <div class="frame-text">I think the mass is ___ because I felt ___ with the balance.</div>
+                    <div class="frame-function">Justify</div>
+                </div>
+            
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-2">
+            <div class="header">12/15/25 | Monday | Science | Grade 2 | 209</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                <div class="panel panel-1">
+                    <div class="panel-title">Levels 1-2</div>
+                    
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">This is a ___ (material).</div>
+                    <div class="bundle-frame-function">Identify</div>
+                </div>
+                
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">The color is ___ and the shape is ___.</div>
+                    <div class="bundle-frame-function">Describe</div>
+                </div>
+                
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">It feels ___ because of its mass.</div>
+                    <div class="bundle-frame-function">Describe</div>
+                </div>
+                
+                </div>
+                <div class="panel panel-2">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text">Evidence from the observations suggests that the material&#x27;s property ___ explains why ___.</div>
+                    <div class="frame-function">Argue</div>
+                </div>
+                <div class="panel panel-3">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text">How does the material&#x27;s mass relate to its property of ___?</div>
+                    <div class="frame-function">Analyze</div>
+                </div>
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-1">
+            <div class="header">12/16/25 | Tuesday | ELA | Grade 3 | T5</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                
+                <div class="panel panel-1">
+                    <div class="frame-text">Chapter 10 shows ___ which connects to present needs because ___.</div>
+                    <div class="frame-function">Connect</div>
+                </div>
+            
+                <div class="panel panel-2">
+                    <div class="frame-text">One way they educate the public is ___; the evidence is ___.</div>
+                    <div class="frame-function">Explain</div>
+                </div>
+            
+                <div class="panel panel-3">
+                    <div class="frame-text">I infer that ___ because ___.</div>
+                    <div class="frame-function">Infer</div>
+                </div>
+            
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-2">
+            <div class="header">12/16/25 | Tuesday | ELA | Grade 3 | T5</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                <div class="panel panel-1">
+                    <div class="panel-title">Levels 1-2</div>
+                    
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">They moved to ___.</div>
+                    <div class="bundle-frame-function">Sequence</div>
+                </div>
+                
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">They keep the ___ by ___.</div>
+                    <div class="bundle-frame-function">Describe</div>
+                </div>
+                
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">I found ___ in the text.</div>
+                    <div class="bundle-frame-function">Identify</div>
+                </div>
+                
+                </div>
+                <div class="panel panel-2">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text">The text evidence indicates that preserving tradition helps the community by ___.</div>
+                    <div class="frame-function">Explain</div>
+                </div>
+                <div class="panel panel-3">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text">In what ways does education about history affect present Lenape needs?</div>
+                    <div class="frame-function">Analyze</div>
+                </div>
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-1">
+            <div class="header">12/16/25 | Tuesday | ELA/SS | Grade 2 | 209</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                
+                <div class="panel panel-1">
+                    <div class="frame-text">I edited my sentence to make the meaning clearer by ___.</div>
+                    <div class="frame-function">Explain</div>
+                </div>
+            
+                <div class="panel panel-2">
+                    <div class="frame-text">First I check punctuation, then I check spelling.</div>
+                    <div class="frame-function">Sequence</div>
+                </div>
+            
+                <div class="panel panel-3">
+                    <div class="frame-text">I used the word ___ from the word bank to improve my sentence.</div>
+                    <div class="frame-function">Apply</div>
+                </div>
+            
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-2">
+            <div class="header">12/16/25 | Tuesday | ELA/SS | Grade 2 | 209</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                <div class="panel panel-1">
+                    <div class="panel-title">Levels 1-2</div>
+                    
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">I changed the word ___ to ___.</div>
+                    <div class="bundle-frame-function">Describe</div>
+                </div>
+                
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">My sentence needs a ___ (period/comma).</div>
+                    <div class="bundle-frame-function">Identify</div>
+                </div>
+                
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">I will fix the ___ in my sentence.</div>
+                    <div class="bundle-frame-function">Plan</div>
+                </div>
+                
+                </div>
+                <div class="panel panel-2">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text">My revised paragraph now shows clearer meaning because ___.</div>
+                    <div class="frame-function">Argue</div>
+                </div>
+                <div class="panel panel-3">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text">What change made your writing easier to read?</div>
+                    <div class="frame-function">Reflect</div>
+                </div>
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-1">
+            <div class="header">12/16/25 | Tuesday | Math | Grade 2 | 209</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                
+                <div class="panel panel-1">
+                    <div class="frame-text">The direction increases to the right, so ___.</div>
+                    <div class="frame-function">Explain</div>
+                </div>
+            
+                <div class="panel panel-2">
+                    <div class="frame-text">Label the tick marks starting at ___ and count by ___.</div>
+                    <div class="frame-function">Sequence</div>
+                </div>
+            
+                <div class="panel panel-3">
+                    <div class="frame-text">I know this because the scale is ___.</div>
+                    <div class="frame-function">Justify</div>
+                </div>
+            
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-2">
+            <div class="header">12/16/25 | Tuesday | Math | Grade 2 | 209</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                <div class="panel panel-1">
+                    <div class="panel-title">Levels 1-2</div>
+                    
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">This is an interval.</div>
+                    <div class="bundle-frame-function">Identify</div>
+                </div>
+                
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">The tick mark is at ___.</div>
+                    <div class="bundle-frame-function">Identify</div>
+                </div>
+                
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">The scale shows ___.</div>
+                    <div class="bundle-frame-function">Describe</div>
+                </div>
+                
+                </div>
+                <div class="panel panel-2">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text">Use the labeled number line to explain how interval choice changes placement of numbers.</div>
+                    <div class="frame-function">Explain</div>
+                </div>
+                <div class="panel panel-3">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text">How does changing the scale (interval) affect where numbers are placed?</div>
+                    <div class="frame-function">Analyze</div>
+                </div>
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-1">
+            <div class="header">12/16/25 | Tuesday | Math | Grade 3 | T2</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                
+                <div class="panel panel-1">
+                    <div class="frame-text">Compare the distance to the two nearest tens and hundreds.</div>
+                    <div class="frame-function">Compare</div>
+                </div>
+            
+                <div class="panel panel-2">
+                    <div class="frame-text">Because the distance to ___ is smaller, I choose ___.</div>
+                    <div class="frame-function">Explain</div>
+                </div>
+            
+                <div class="panel panel-3">
+                    <div class="frame-text">I check by estimating: ___ rounded becomes ___.</div>
+                    <div class="frame-function">Justify</div>
+                </div>
+            
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-2">
+            <div class="header">12/16/25 | Tuesday | Math | Grade 3 | T2</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                <div class="panel panel-1">
+                    <div class="panel-title">Levels 1-2</div>
+                    
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">This number is closest to ___ (ten).</div>
+                    <div class="bundle-frame-function">Identify</div>
+                </div>
+                
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">I round to ___.</div>
+                    <div class="bundle-frame-function">Describe</div>
+                </div>
+                
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">It is near ___ on the number line.</div>
+                    <div class="bundle-frame-function">Describe</div>
+                </div>
+                
+                </div>
+                <div class="panel panel-2">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text">The nearest multiple is ___ because its distance (___) is less than the alternative.</div>
+                    <div class="frame-function">Argue</div>
+                </div>
+                <div class="panel panel-3">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text">How does rounding to the nearest ten change the answer compared to rounding to the nearest hundred?</div>
+                    <div class="frame-function">Analyze</div>
+                </div>
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-1">
+            <div class="header">12/16/25 | Tuesday | Science | Grade 2 | 209</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                
+                <div class="panel panel-1">
+                    <div class="frame-text">First I arranged the items by ___, then I noticed ___.</div>
+                    <div class="frame-function">Sequence</div>
+                </div>
+            
+                <div class="panel panel-2">
+                    <div class="frame-text">The matter is in the state ___ because ___.</div>
+                    <div class="frame-function">Explain</div>
+                </div>
+            
+                <div class="panel panel-3">
+                    <div class="frame-text">I grouped these as ___ since they share the property ___.</div>
+                    <div class="frame-function">Classify</div>
+                </div>
+            
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-2">
+            <div class="header">12/16/25 | Tuesday | Science | Grade 2 | 209</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                <div class="panel panel-1">
+                    <div class="panel-title">Levels 1-2</div>
+                    
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">I put the ___ with the ___ because ___.</div>
+                    <div class="bundle-frame-function">Explain</div>
+                </div>
+                
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">This is a ___ (solid/liquid/gas).</div>
+                    <div class="bundle-frame-function">Identify</div>
+                </div>
+                
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">I sorted by ___ (shape/mass).</div>
+                    <div class="bundle-frame-function">Describe</div>
+                </div>
+                
+                </div>
+                <div class="panel panel-2">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text">Evidence from my sorting shows that arranging by ___ helps explain ___.</div>
+                    <div class="frame-function">Argue</div>
+                </div>
+                <div class="panel panel-3">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text">How does arranging matter by property help us understand its state?</div>
+                    <div class="frame-function">Analyze</div>
+                </div>
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-1">
+            <div class="header">12/17/25 | Wednesday | ELA | Grade 3 | T5</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                
+                <div class="panel panel-1">
+                    <div class="frame-text">The museum example shows ___ because ___.</div>
+                    <div class="frame-function">Explain</div>
+                </div>
+            
+                <div class="panel panel-2">
+                    <div class="frame-text">Their heritage is preserved through ___ and ___ which means ___.</div>
+                    <div class="frame-function">Describe</div>
+                </div>
+            
+                <div class="panel panel-3">
+                    <div class="frame-text">I can support my idea with evidence from chapter ___: ___.</div>
+                    <div class="frame-function">Support</div>
+                </div>
+            
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-2">
+            <div class="header">12/17/25 | Wednesday | ELA | Grade 3 | T5</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                <div class="panel panel-1">
+                    <div class="panel-title">Levels 1-2</div>
+                    
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">They teach people at the ___.</div>
+                    <div class="bundle-frame-function">Inform</div>
+                </div>
+                
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">This tradition is ___.</div>
+                    <div class="bundle-frame-function">Describe</div>
+                </div>
+                
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">I can use this evidence: ___.</div>
+                    <div class="bundle-frame-function">Cite</div>
+                </div>
+                
+                </div>
+                <div class="panel panel-2">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text">Evidence across chapters 11–13 suggests that public education and museums help preserve culture because ___.</div>
+                    <div class="frame-function">Argue</div>
+                </div>
+                <div class="panel panel-3">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text">What is the strongest evidence that the Lenape preserve their culture, and why?</div>
+                    <div class="frame-function">Evaluate</div>
+                </div>
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-1">
+            <div class="header">12/17/25 | Wednesday | ELA/SS | Grade 2 | 209</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                
+                <div class="panel panel-1">
+                    <div class="frame-text">I choose the word ___ because it means ___.</div>
+                    <div class="frame-function">Justify</div>
+                </div>
+            
+                <div class="panel panel-2">
+                    <div class="frame-text">Using the word ___ makes my sentence clearer by ___.</div>
+                    <div class="frame-function">Explain</div>
+                </div>
+            
+                <div class="panel panel-3">
+                    <div class="frame-text">When I read, the word ___ helps me understand because ___.</div>
+                    <div class="frame-function">Explain</div>
+                </div>
+            
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-2">
+            <div class="header">12/17/25 | Wednesday | ELA/SS | Grade 2 | 209</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                <div class="panel panel-1">
+                    <div class="panel-title">Levels 1-2</div>
+                    
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">The word ___ means ___.</div>
+                    <div class="bundle-frame-function">Define</div>
+                </div>
+                
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">I use the word ___ in a sentence: ___.</div>
+                    <div class="bundle-frame-function">Apply</div>
+                </div>
+                
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">This sentence has the word ___.</div>
+                    <div class="bundle-frame-function">Identify</div>
+                </div>
+                
+                </div>
+                <div class="panel panel-2">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text">Evidence from the text shows the meaning of ___ because ___.</div>
+                    <div class="frame-function">Argue</div>
+                </div>
+                <div class="panel panel-3">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text">How does knowing the meaning of ___ help you as a reader?</div>
+                    <div class="frame-function">Analyze</div>
+                </div>
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-1">
+            <div class="header">12/17/25 | Wednesday | Math | Grade 2 | 209</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                
+                <div class="panel panel-1">
+                    <div class="frame-text">I estimate the number as ___ because it is ___ of the range.</div>
+                    <div class="frame-function">Explain</div>
+                </div>
+            
+                <div class="panel panel-2">
+                    <div class="frame-text">Count the tick marks from ___ to ___ and place the point at ___.</div>
+                    <div class="frame-function">Sequence</div>
+                </div>
+            
+                <div class="panel panel-3">
+                    <div class="frame-text">This point is closer to ___ than ___ because ___.</div>
+                    <div class="frame-function">Compare</div>
+                </div>
+            
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-2">
+            <div class="header">12/17/25 | Wednesday | Math | Grade 2 | 209</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                <div class="panel panel-1">
+                    <div class="panel-title">Levels 1-2</div>
+                    
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">The number is between ___ and ___.</div>
+                    <div class="bundle-frame-function">Describe</div>
+                </div>
+                
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">I put the point at ___.</div>
+                    <div class="bundle-frame-function">Identify</div>
+                </div>
+                
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">It is near the ___ tick mark.</div>
+                    <div class="bundle-frame-function">Describe</div>
+                </div>
+                
+                </div>
+                <div class="panel panel-2">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text">Explain how you used the range and tick marks to estimate the exact number.</div>
+                    <div class="frame-function">Explain</div>
+                </div>
+                <div class="panel panel-3">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text">What evidence from the number line supports your estimate?</div>
+                    <div class="frame-function">Analyze</div>
+                </div>
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-1">
+            <div class="header">12/17/25 | Wednesday | Math | Grade 3 | T2</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                
+                <div class="panel panel-1">
+                    <div class="frame-text">The digit in the tens/hundreds place is ___, so I round to ___.</div>
+                    <div class="frame-function">Explain</div>
+                </div>
+            
+                <div class="panel panel-2">
+                    <div class="frame-text">First find place value, then decide based on distance.</div>
+                    <div class="frame-function">Sequence</div>
+                </div>
+            
+                <div class="panel panel-3">
+                    <div class="frame-text">I estimate ___ to check the result of rounding.</div>
+                    <div class="frame-function">Justify</div>
+                </div>
+            
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-2">
+            <div class="header">12/17/25 | Wednesday | Math | Grade 3 | T2</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                <div class="panel panel-1">
+                    <div class="panel-title">Levels 1-2</div>
+                    
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">I round ___ to ___.</div>
+                    <div class="bundle-frame-function">Describe</div>
+                </div>
+                
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">It becomes ___ when rounded to ten.</div>
+                    <div class="bundle-frame-function">Describe</div>
+                </div>
+                
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">It becomes ___ when rounded to hundred.</div>
+                    <div class="bundle-frame-function">Describe</div>
+                </div>
+                
+                </div>
+                <div class="panel panel-2">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text">Rounding to ten vs hundred gives ___; explain which is more useful in this context.</div>
+                    <div class="frame-function">Argue</div>
+                </div>
+                <div class="panel panel-3">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text">When does rounding to the ten and to the hundred give the same answer?</div>
+                    <div class="frame-function">Analyze</div>
+                </div>
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-1">
+            <div class="header">12/17/25 | Wednesday | Science | Grade 2 | 209</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                
+                <div class="panel panel-1">
+                    <div class="frame-text">After changing shape, the mass stayed ___ because ___.</div>
+                    <div class="frame-function">Explain</div>
+                </div>
+            
+                <div class="panel panel-2">
+                    <div class="frame-text">I measured with the balance and found ___.</div>
+                    <div class="frame-function">Report</div>
+                </div>
+            
+                <div class="panel panel-3">
+                    <div class="frame-text">This shows that shape change does not change mass because ___.</div>
+                    <div class="frame-function">Justify</div>
+                </div>
+            
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-2">
+            <div class="header">12/17/25 | Wednesday | Science | Grade 2 | 209</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                <div class="panel panel-1">
+                    <div class="panel-title">Levels 1-2</div>
+                    
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">I changed the shape, it is still ___.</div>
+                    <div class="bundle-frame-function">Describe</div>
+                </div>
+                
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">The mass is ___ on the balance.</div>
+                    <div class="bundle-frame-function">Identify</div>
+                </div>
+                
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">The material is ___ and the property is ___.</div>
+                    <div class="bundle-frame-function">Describe</div>
+                </div>
+                
+                </div>
+                <div class="panel panel-2">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text">Evidence from measurements indicates that mass remains constant despite shape change; explain why.</div>
+                    <div class="frame-function">Argue</div>
+                </div>
+                <div class="panel panel-3">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text">How do our balance readings support the idea that mass does not change with shape?</div>
+                    <div class="frame-function">Analyze</div>
+                </div>
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-1">
+            <div class="header">12/18/25 | Thursday | ELA | Grade 3 | T5</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                
+                <div class="panel panel-1">
+                    <div class="frame-text">To answer this I use evidence from page ___: ___.</div>
+                    <div class="frame-function">Support</div>
+                </div>
+            
+                <div class="panel panel-2">
+                    <div class="frame-text">This shows that the community preserves culture by ___ because ___.</div>
+                    <div class="frame-function">Explain</div>
+                </div>
+            
+                <div class="panel panel-3">
+                    <div class="frame-text">I conclude that ___ based on ___ evidence.</div>
+                    <div class="frame-function">Conclude</div>
+                </div>
+            
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-2">
+            <div class="header">12/18/25 | Thursday | ELA | Grade 3 | T5</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                <div class="panel panel-1">
+                    <div class="panel-title">Levels 1-2</div>
+                    
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">I will answer question ___: ___.</div>
+                    <div class="bundle-frame-function">Respond</div>
+                </div>
+                
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">My evidence is ___.</div>
+                    <div class="bundle-frame-function">Cite</div>
+                </div>
+                
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">The tradition is ___.</div>
+                    <div class="bundle-frame-function">Describe</div>
+                </div>
+                
+                </div>
+                <div class="panel panel-2">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text">Using multiple text examples, explain how preservation strategies support community identity.</div>
+                    <div class="frame-function">Explain</div>
+                </div>
+                <div class="panel panel-3">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text">Which preservation effort seems most effective and why?</div>
+                    <div class="frame-function">Evaluate</div>
+                </div>
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-1">
+            <div class="header">12/18/25 | Thursday | ELA/SS | Grade 2 | 209</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                
+                <div class="panel panel-1">
+                    <div class="frame-text">The character&#x27;s action of ___ shows they are ___.</div>
+                    <div class="frame-function">Explain</div>
+                </div>
+            
+                <div class="panel panel-2">
+                    <div class="frame-text">Because the character responded by ___, the theme may be ___.</div>
+                    <div class="frame-function">Explain</div>
+                </div>
+            
+                <div class="panel panel-3">
+                    <div class="frame-text">I can support my idea with the action ___ from the story.</div>
+                    <div class="frame-function">Justify</div>
+                </div>
+            
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-2">
+            <div class="header">12/18/25 | Thursday | ELA/SS | Grade 2 | 209</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                <div class="panel panel-1">
+                    <div class="panel-title">Levels 1-2</div>
+                    
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">The character is ___.</div>
+                    <div class="bundle-frame-function">Identify</div>
+                </div>
+                
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">He/She did ___ (action).</div>
+                    <div class="bundle-frame-function">Describe</div>
+                </div>
+                
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">I think the theme is ___.</div>
+                    <div class="bundle-frame-function">Infer</div>
+                </div>
+                
+                </div>
+                <div class="panel panel-2">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text">Evidence in the story suggests the theme is ___ because the character ___.</div>
+                    <div class="frame-function">Argue</div>
+                </div>
+                <div class="panel panel-3">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text">How does the character&#x27;s response to a challenge show a theme?</div>
+                    <div class="frame-function">Analyze</div>
+                </div>
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-1">
+            <div class="header">12/18/25 | Thursday | Math | Grade 2 | 209</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                
+                <div class="panel panel-1">
+                    <div class="frame-text">This number is greater because it is to the ___.</div>
+                    <div class="frame-function">Justify</div>
+                </div>
+            
+                <div class="panel panel-2">
+                    <div class="frame-text">Order these numbers from least to greatest: ___, ___, ___.</div>
+                    <div class="frame-function">Sequence</div>
+                </div>
+            
+                <div class="panel panel-3">
+                    <div class="frame-text">I compare these because ___.</div>
+                    <div class="frame-function">Explain</div>
+                </div>
+            
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-2">
+            <div class="header">12/18/25 | Thursday | Math | Grade 2 | 209</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                <div class="panel panel-1">
+                    <div class="panel-title">Levels 1-2</div>
+                    
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">The ___ is to the right of the ___.</div>
+                    <div class="bundle-frame-function">Describe</div>
+                </div>
+                
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">___ is greater than ___.</div>
+                    <div class="bundle-frame-function">Compare</div>
+                </div>
+                
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">Point to the greater number.</div>
+                    <div class="bundle-frame-function">Identify</div>
+                </div>
+                
+                </div>
+                <div class="panel panel-2">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text">Explain how positions on the number line show which number is greater and why.</div>
+                    <div class="frame-function">Explain</div>
+                </div>
+                <div class="panel panel-3">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text">What patterns do you notice when ordering numbers on different scales?</div>
+                    <div class="frame-function">Analyze</div>
+                </div>
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-1">
+            <div class="header">12/18/25 | Thursday | Math | Grade 3 | T2</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                
+                <div class="panel panel-1">
+                    <div class="frame-text">When the tens digit is ___, rounding to ten and hundred often gives the same answer.</div>
+                    <div class="frame-function">Explain</div>
+                </div>
+            
+                <div class="panel panel-2">
+                    <div class="frame-text">This pattern occurs because the digit in the ___ place controls rounding.</div>
+                    <div class="frame-function">Explain</div>
+                </div>
+            
+                <div class="panel panel-3">
+                    <div class="frame-text">We can test the pattern by rounding several examples and recording results.</div>
+                    <div class="frame-function">Inform</div>
+                </div>
+            
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-2">
+            <div class="header">12/18/25 | Thursday | Math | Grade 3 | T2</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                <div class="panel panel-1">
+                    <div class="panel-title">Levels 1-2</div>
+                    
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">Many numbers ending in ___ round to ___.</div>
+                    <div class="bundle-frame-function">Describe</div>
+                </div>
+                
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">These numbers give the same result ___ and ___.</div>
+                    <div class="bundle-frame-function">Compare</div>
+                </div>
+                
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">I notice ___ pattern.</div>
+                    <div class="bundle-frame-function">Identify</div>
+                </div>
+                
+                </div>
+                <div class="panel panel-2">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text">The pattern suggests that numbers with ___ will always round to ___; explain why with evidence.</div>
+                    <div class="frame-function">Argue</div>
+                </div>
+                <div class="panel panel-3">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text">What evidence supports the idea that this rounding pattern holds for all numbers in the range?</div>
+                    <div class="frame-function">Analyze</div>
+                </div>
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-1">
+            <div class="header">12/18/25 | Thursday | Science | Grade 2 | 209</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                
+                <div class="panel panel-1">
+                    <div class="frame-text">I assembled the parts and observed that the property ___ changed/not changed because ___.</div>
+                    <div class="frame-function">Explain</div>
+                </div>
+            
+                <div class="panel panel-2">
+                    <div class="frame-text">Disassembling showed that the mass stayed ___ while the shape changed to ___.</div>
+                    <div class="frame-function">Compare</div>
+                </div>
+            
+                <div class="panel panel-3">
+                    <div class="frame-text">I can make the structure stronger by ___ because ___.</div>
+                    <div class="frame-function">Predict</div>
+                </div>
+            
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-2">
+            <div class="header">12/18/25 | Thursday | Science | Grade 2 | 209</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                <div class="panel panel-1">
+                    <div class="panel-title">Levels 1-2</div>
+                    
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">I put the parts together to make a ___.</div>
+                    <div class="bundle-frame-function">Describe</div>
+                </div>
+                
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">When I take it apart, the pieces are ___.</div>
+                    <div class="bundle-frame-function">Describe</div>
+                </div>
+                
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">The material is ___ and the structure is ___.</div>
+                    <div class="bundle-frame-function">Identify</div>
+                </div>
+                
+                </div>
+                <div class="panel panel-2">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text">Based on the assembly and disassembly evidence, explain whether a physical change occurred and why.</div>
+                    <div class="frame-function">Explain</div>
+                </div>
+                <div class="panel panel-3">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text">What evidence supports that assembling changed the object&#x27;s property or not?</div>
+                    <div class="frame-function">Analyze</div>
+                </div>
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-1">
+            <div class="header">12/19/25 | Friday | ELA | Grade 3 | T5</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                
+                <div class="panel panel-1">
+                    <div class="frame-text">My draft shows that the Lenni Lenape preserve culture by ___; evidence: ___.</div>
+                    <div class="frame-function">Explain</div>
+                </div>
+            
+                <div class="panel panel-2">
+                    <div class="frame-text">I will revise this sentence to add evidence: ___.</div>
+                    <div class="frame-function">Revise</div>
+                </div>
+            
+                <div class="panel panel-3">
+                    <div class="frame-text">In my final paragraph I will include ___ and ___.</div>
+                    <div class="frame-function">Organize</div>
+                </div>
+            
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-2">
+            <div class="header">12/19/25 | Friday | ELA | Grade 3 | T5</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                <div class="panel panel-1">
+                    <div class="panel-title">Levels 1-2</div>
+                    
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">I will write about ___.</div>
+                    <div class="bundle-frame-function">State</div>
+                </div>
+                
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">My evidence is ___.</div>
+                    <div class="bundle-frame-function">Cite</div>
+                </div>
+                
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">The culture is ___.</div>
+                    <div class="bundle-frame-function">Describe</div>
+                </div>
+                
+                </div>
+                <div class="panel panel-2">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text">Use evidence and explanation to show how preservation efforts maintain community identity.</div>
+                    <div class="frame-function">Explain</div>
+                </div>
+                <div class="panel panel-3">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text">How does the evidence across chapters support the claim that traditions are essential for identity?</div>
+                    <div class="frame-function">Argue</div>
+                </div>
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-1">
+            <div class="header">12/19/25 | Friday | ELA/SS | Grade 2 | 209</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                
+                <div class="panel panel-1">
+                    <div class="frame-text">Discrimination happens when people are treated differently because ___.</div>
+                    <div class="frame-function">Explain</div>
+                </div>
+            
+                <div class="panel panel-2">
+                    <div class="frame-text">We can make things fair by ___.</div>
+                    <div class="frame-function">Propose</div>
+                </div>
+            
+                <div class="panel panel-3">
+                    <div class="frame-text">This example shows discrimination because ___.</div>
+                    <div class="frame-function">Justify</div>
+                </div>
+            
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-2">
+            <div class="header">12/19/25 | Friday | ELA/SS | Grade 2 | 209</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                <div class="panel panel-1">
+                    <div class="panel-title">Levels 1-2</div>
+                    
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">Discrimination is when someone is not treated ___.</div>
+                    <div class="bundle-frame-function">Define</div>
+                </div>
+                
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">That is not fair because ___.</div>
+                    <div class="bundle-frame-function">Justify</div>
+                </div>
+                
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">An example is ___.</div>
+                    <div class="bundle-frame-function">Illustrate</div>
+                </div>
+                
+                </div>
+                <div class="panel panel-2">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text">Evidence from the scenario shows unfair treatment because ___.</div>
+                    <div class="frame-function">Argue</div>
+                </div>
+                <div class="panel panel-3">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text">How can we make our classroom fair for everyone?</div>
+                    <div class="frame-function">Problem-solve</div>
+                </div>
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-1">
+            <div class="header">12/19/25 | Friday | Math | Grade 2 | 209</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                
+                <div class="panel panel-1">
+                    <div class="frame-text">I estimate ___ because the spacing shows it is about ___.</div>
+                    <div class="frame-function">Explain</div>
+                </div>
+            
+                <div class="panel panel-2">
+                    <div class="frame-text">Count the tick marks from ___ to ___ to check your estimate.</div>
+                    <div class="frame-function">Sequence</div>
+                </div>
+            
+                <div class="panel panel-3">
+                    <div class="frame-text">My approximate position is ___ because ___.</div>
+                    <div class="frame-function">Justify</div>
+                </div>
+            
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-2">
+            <div class="header">12/19/25 | Friday | Math | Grade 2 | 209</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                <div class="panel panel-1">
+                    <div class="panel-title">Levels 1-2</div>
+                    
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">I estimate the number is near ___.</div>
+                    <div class="bundle-frame-function">Estimate</div>
+                </div>
+                
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">The midpoint is ___.</div>
+                    <div class="bundle-frame-function">Identify</div>
+                </div>
+                
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">Put the dot at the approximate position.</div>
+                    <div class="bundle-frame-function">Describe</div>
+                </div>
+                
+                </div>
+                <div class="panel panel-2">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text">Describe how spacing and midpoint reasoning led to your estimate.</div>
+                    <div class="frame-function">Explain</div>
+                </div>
+                <div class="panel panel-3">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text">What strategies did you use to make a good estimate and why did they work?</div>
+                    <div class="frame-function">Analyze</div>
+                </div>
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-1">
+            <div class="header">12/19/25 | Friday | Math | Grade 3 | T2</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                
+                <div class="panel panel-1">
+                    <div class="frame-text">I rounded each number to ___ and added/subtracted to estimate the answer.</div>
+                    <div class="frame-function">Explain</div>
+                </div>
+            
+                <div class="panel panel-2">
+                    <div class="frame-text">The estimated result is ___; the actual answer is ___, so the estimate is reasonable if ___.</div>
+                    <div class="frame-function">Compare</div>
+                </div>
+            
+                <div class="panel panel-3">
+                    <div class="frame-text">I check by comparing the estimate to a rounded benchmark (e.g., 100, 200).</div>
+                    <div class="frame-function">Inform</div>
+                </div>
+            
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-2">
+            <div class="header">12/19/25 | Friday | Math | Grade 3 | T2</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                <div class="panel panel-1">
+                    <div class="panel-title">Levels 1-2</div>
+                    
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">I estimate ___ by rounding to ___.</div>
+                    <div class="bundle-frame-function">Describe</div>
+                </div>
+                
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">My estimate is ___ so the answer is ___.</div>
+                    <div class="bundle-frame-function">Describe</div>
+                </div>
+                
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">That seems reasonable because ___.</div>
+                    <div class="bundle-frame-function">Justify</div>
+                </div>
+                
+                </div>
+                <div class="panel panel-2">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text">Use rounding and estimation to determine if the solution is plausible; explain with calculations.</div>
+                    <div class="frame-function">Argue</div>
+                </div>
+                <div class="panel panel-3">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text"></div>
+                    <div class="frame-function"></div>
+                </div>
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-1">
+            <div class="header">12/19/25 | Friday | Science | Grade 2 | 209</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                
+                <div class="panel panel-1">
+                    <div class="frame-text">First I listened, then I said I felt ___ because ___.</div>
+                    <div class="frame-function">Narrate</div>
+                </div>
+            
+                <div class="panel panel-2">
+                    <div class="frame-text">I can fix this problem by ___ and asking the other person to ___.</div>
+                    <div class="frame-function">Propose</div>
+                </div>
+            
+                <div class="panel panel-3">
+                    <div class="frame-text">We agree to ___ so both feel respected because ___.</div>
+                    <div class="frame-function">Justify</div>
+                </div>
+            
+            </div>
+        </div>
+        
+
+        <div class="frames-page frames-page-2">
+            <div class="header">12/19/25 | Friday | Science | Grade 2 | 209</div>
+            <div class="panels">
+                <div class="fold-line fold-line-1"></div>
+                <div class="fold-line fold-line-2"></div>
+                <div class="panel panel-1">
+                    <div class="panel-title">Levels 1-2</div>
+                    
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">I feel ___ when ___.</div>
+                    <div class="bundle-frame-function">Express</div>
+                </div>
+                
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">I want to ___ to help solve the problem.</div>
+                    <div class="bundle-frame-function">Propose</div>
+                </div>
+                
+                <div class="bundle-frame-row">
+                    <div class="bundle-frame-text">Let&#x27;s take turns and say our feeling first.</div>
+                    <div class="bundle-frame-function">Sequence</div>
+                </div>
+                
+                </div>
+                <div class="panel panel-2">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text">Describe a time you used these steps and what happened.</div>
+                    <div class="frame-function">Narrate</div>
+                </div>
+                <div class="panel panel-3">
+                    <div class="panel-title">Levels 5-6</div>
+                    <div class="frame-text">How did listening change the outcome of the conflict?</div>
+                    <div class="frame-function">Analyze</div>
+                </div>
+            </div>
+        </div>
+        
+        </body>
+        </html>
+        

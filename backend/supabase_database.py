@@ -30,8 +30,19 @@ class LessonStepsTableMissingError(Exception):
     pass
 
 
+class LessonModeSessionsTableMissingError(Exception):
+    """Raised when lesson_mode_sessions table is missing in Supabase."""
+
+    pass
+
+
 class SupabaseDatabase(DatabaseInterface):
     """Supabase PostgreSQL database manager for user profiles and class slots."""
+
+    # Class-level flags to track if we've already warned about missing tables
+    # This prevents log spam when tables don't exist
+    _lesson_steps_table_warned = False
+    _lesson_mode_sessions_table_warned = False
 
     def __init__(self, custom_settings=None):
         """Initialize Supabase connection."""
@@ -80,7 +91,7 @@ class SupabaseDatabase(DatabaseInterface):
         payload = step_data.copy()
         if "day_of_week" in payload:
             payload["day_of_week"] = self._normalize_day(payload.get("day_of_week"))
-        for key in ("hidden_content", "sentence_frames", "materials_needed"):
+        for key in ("hidden_content", "sentence_frames", "materials_needed", "vocabulary_cognates"):
             if key in payload:
                 payload[key] = self._serialize_json_field(payload.get(key))
         return payload
@@ -88,7 +99,7 @@ class SupabaseDatabase(DatabaseInterface):
     def _hydrate_lesson_step_payload(self, payload: Dict[str, Any]) -> Dict[str, Any]:
         hydrated = payload.copy()
         hydrated["day_of_week"] = self._normalize_day(hydrated.get("day_of_week"))
-        for key in ("hidden_content", "sentence_frames", "materials_needed"):
+        for key in ("hidden_content", "sentence_frames", "materials_needed", "vocabulary_cognates"):
             hydrated[key] = self._deserialize_json_field(hydrated.get(key))
         return hydrated
 
@@ -705,6 +716,7 @@ class SupabaseDatabase(DatabaseInterface):
         output_file: Optional[str] = None,
         error_message: Optional[str] = None,
         lesson_json: Optional[Dict[str, Any]] = None,
+        total_slots: Optional[int] = None,
     ) -> bool:
         """Update weekly plan status."""
         updates: Dict[str, Any] = {}
@@ -718,6 +730,8 @@ class SupabaseDatabase(DatabaseInterface):
             # Supabase handles JSON/JSONB automatically if passed as dict/list
             normalize_objectives_in_lesson(lesson_json)
             updates["lesson_json"] = lesson_json
+        if total_slots is not None:
+            updates["total_slots"] = int(total_slots)
 
         if not updates:
             return False
@@ -1154,14 +1168,26 @@ class SupabaseDatabase(DatabaseInterface):
                 or "Could not find the table" in error_msg
                 or "lesson_steps" in error_msg.lower()
             ):
-                logger.warning(
-                    "lesson_steps_table_missing_for_create",
-                    extra={
-                        "plan_id": step_data.get("lesson_plan_id"),
-                        "step_name": step_data.get("step_name"),
-                        "details": "lesson_steps table does not exist, cannot create step",
-                    },
-                )
+                # Only log warning once per session to avoid log spam
+                if not SupabaseDatabase._lesson_steps_table_warned:
+                    logger.warning(
+                        "lesson_steps_table_missing_for_create",
+                        extra={
+                            "plan_id": step_data.get("lesson_plan_id"),
+                            "step_name": step_data.get("step_name"),
+                            "details": "lesson_steps table does not exist, cannot create step. This warning will only appear once.",
+                        },
+                    )
+                    SupabaseDatabase._lesson_steps_table_warned = True
+                else:
+                    logger.debug(
+                        "lesson_steps_table_missing_for_create",
+                        extra={
+                            "plan_id": step_data.get("lesson_plan_id"),
+                            "step_name": step_data.get("step_name"),
+                            "details": "lesson_steps table does not exist (suppressed repeated warnings)",
+                        },
+                    )
                 # Raise a specific exception so the caller can catch it and handle appropriately
                 # This allows the caller to store steps in memory or handle the missing table case
                 raise LessonStepsTableMissingError(
@@ -1239,14 +1265,25 @@ class SupabaseDatabase(DatabaseInterface):
                 or "Could not find the table" in error_msg
                 or "lesson_steps" in error_msg.lower()
             ):
-                logger.warning(
-                    "lesson_steps_table_missing",
-                    extra={
-                        "plan_id": plan_id,
-                        "error": error_msg,
-                        "details": "lesson_steps table does not exist in this Supabase project. Steps may need to be generated first.",
-                    },
-                )
+                # Only log warning once per session to avoid log spam
+                if not SupabaseDatabase._lesson_steps_table_warned:
+                    logger.warning(
+                        "lesson_steps_table_missing",
+                        extra={
+                            "plan_id": plan_id,
+                            "error": error_msg,
+                            "details": "lesson_steps table does not exist in this Supabase project. Steps may need to be generated first. This warning will only appear once.",
+                        },
+                    )
+                    SupabaseDatabase._lesson_steps_table_warned = True
+                else:
+                    logger.debug(
+                        "lesson_steps_table_missing",
+                        extra={
+                            "plan_id": plan_id,
+                            "details": "lesson_steps table does not exist (suppressed repeated warnings)",
+                        },
+                    )
                 # Return empty list instead of raising - the API can generate steps if needed
                 return []
             logger.error("lesson_steps_fetch_failed", extra={"error": str(e)})
@@ -1281,16 +1318,28 @@ class SupabaseDatabase(DatabaseInterface):
                 or "Could not find the table" in error_msg
                 or "lesson_mode_sessions" in error_msg.lower()
             ):
-                logger.warning(
-                    "lesson_mode_sessions_table_missing",
-                    extra={
-                        "plan_id": session_data.get("lesson_plan_id"),
-                        "details": "lesson_mode_sessions table does not exist, cannot create session",
-                    },
+                # Only log warning once per session to avoid log spam
+                if not SupabaseDatabase._lesson_mode_sessions_table_warned:
+                    logger.warning(
+                        "lesson_mode_sessions_table_missing",
+                        extra={
+                            "plan_id": session_data.get("lesson_plan_id"),
+                            "details": "lesson_mode_sessions table does not exist, cannot create session. This warning will only appear once.",
+                        },
+                    )
+                    SupabaseDatabase._lesson_mode_sessions_table_warned = True
+                else:
+                    logger.debug(
+                        "lesson_mode_sessions_table_missing",
+                        extra={
+                            "plan_id": session_data.get("lesson_plan_id"),
+                            "details": "lesson_mode_sessions table does not exist (suppressed repeated warnings)",
+                        },
+                    )
+                # Raise a specific exception for consistency with lesson_steps handling
+                raise LessonModeSessionsTableMissingError(
+                    "lesson_mode_sessions table does not exist in this Supabase project"
                 )
-                # Return None to indicate session couldn't be created (table missing)
-                # The caller can handle this gracefully
-                return None
             logger.error("lesson_mode_session_creation_failed", extra={"error": str(e)})
             raise
 
@@ -1317,10 +1366,18 @@ class SupabaseDatabase(DatabaseInterface):
                 or "Could not find the table" in error_msg
                 or "lesson_mode_sessions" in error_msg.lower()
             ):
-                logger.warning(
-                    "lesson_mode_sessions_table_missing",
-                    extra={"details": "lesson_mode_sessions table does not exist"},
-                )
+                # Only log warning once per session to avoid log spam
+                if not SupabaseDatabase._lesson_mode_sessions_table_warned:
+                    logger.warning(
+                        "lesson_mode_sessions_table_missing",
+                        extra={"details": "lesson_mode_sessions table does not exist. This warning will only appear once."},
+                    )
+                    SupabaseDatabase._lesson_mode_sessions_table_warned = True
+                else:
+                    logger.debug(
+                        "lesson_mode_sessions_table_missing",
+                        extra={"details": "lesson_mode_sessions table does not exist (suppressed repeated warnings)"},
+                    )
                 return None
             logger.error("lesson_mode_session_fetch_failed", extra={"error": str(e)})
             return None
@@ -1367,10 +1424,18 @@ class SupabaseDatabase(DatabaseInterface):
                 or "Could not find the table" in error_msg
                 or "lesson_mode_sessions" in error_msg.lower()
             ):
-                logger.warning(
-                    "lesson_mode_sessions_table_missing",
-                    extra={"details": "lesson_mode_sessions table does not exist"},
-                )
+                # Only log warning once per session to avoid log spam
+                if not SupabaseDatabase._lesson_mode_sessions_table_warned:
+                    logger.warning(
+                        "lesson_mode_sessions_table_missing",
+                        extra={"details": "lesson_mode_sessions table does not exist. This warning will only appear once."},
+                    )
+                    SupabaseDatabase._lesson_mode_sessions_table_warned = True
+                else:
+                    logger.debug(
+                        "lesson_mode_sessions_table_missing",
+                        extra={"details": "lesson_mode_sessions table does not exist (suppressed repeated warnings)"},
+                    )
                 return None
             logger.error(
                 "active_lesson_mode_session_fetch_failed", extra={"error": str(e)}

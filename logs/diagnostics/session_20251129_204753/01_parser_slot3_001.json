@@ -1,0 +1,44 @@
+{
+  "timestamp": "2025-11-29T20:47:53.481687",
+  "stage": "01_parser_slot3",
+  "data": {
+    "slot_number": 3,
+    "subject": "Science",
+    "source_file": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W49\\Ms. Savoca-12_1_25-12_5_25 Lesson plans.docx",
+    "hyperlink_count": 4,
+    "hyperlinks": [
+      {
+        "text": " 2nd Grade Science ",
+        "url": "https://docs.google.com/document/d/1nImdZIX6pCavnrr59YDV-iKMuixgzblvrcu5bGunB6Q/edit",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": " 2nd Grade Science ",
+        "url": "https://docs.google.com/document/d/1nImdZIX6pCavnrr59YDV-iKMuixgzblvrcu5bGunB6Q/edit?tab=t.0#bookmar",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": " 2nd Grade Science ",
+        "url": "https://docs.google.com/document/d/1nImdZIX6pCavnrr59YDV-iKMuixgzblvrcu5bGunB6Q/edit?tab=t.0#bookmar",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": " 2nd Grade Science ",
+        "url": "https://docs.google.com/document/d/1nImdZIX6pCavnrr59YDV-iKMuixgzblvrcu5bGunB6Q/edit?tab=t.0#bookmar",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      }
+    ]
+  }
+}

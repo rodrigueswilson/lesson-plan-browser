@@ -1,0 +1,11 @@
+{
+  "timestamp": "2025-12-29T17:41:58.854508",
+  "stage": "07_hyperlink_placed",
+  "data": {
+    "text": "Item UIN - M03102",
+    "slot": null,
+    "subject": "Math",
+    "cell": "thursday_assessment",
+    "confidence": 1.0
+  }
+}

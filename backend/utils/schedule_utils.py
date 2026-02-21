@@ -16,7 +16,22 @@ NON_CLASS_PERIODS = [
     "Lunch",
     "LUNCH",
     "Dismissal",
-    "DISMISSAL"
+    "DISMISSAL",
+    "PLC",
+    "PLC Meeting",
+    "Professional Learning Community",
+    "GLM",
+    "Grade Level Meeting",
+    "Grade Level Meetings",
+]
+
+MEETING_PERIODS = [
+    "PLC",
+    "PLC Meeting",
+    "Professional Learning Community",
+    "GLM",
+    "Grade Level Meeting",
+    "Grade Level Meetings",
 ]
 
 
@@ -34,6 +49,20 @@ def is_non_class_period(subject: str) -> bool:
     return subject.strip().upper() in [s.upper() for s in NON_CLASS_PERIODS]
 
 
+def is_meeting_period(subject: str) -> bool:
+    """Check if subject is a meeting period (PLC, GLM) that may have grade/homeroom.
+
+    Args:
+        subject: Subject name to check
+
+    Returns:
+        True if subject is a meeting period (PLC, GLM, etc.)
+    """
+    if not subject:
+        return False
+    return subject.strip().upper() in [s.upper() for s in MEETING_PERIODS]
+
+
 def normalize_subject(subject: str) -> str:
     """Normalize subject names (e.g., 'PREP' and 'Prep Time' -> 'PREP').
     
@@ -47,6 +76,11 @@ def normalize_subject(subject: str) -> str:
         return ""
     
     subject_upper = subject.strip().upper()
+
+    # Normalize common subject abbreviations / typos
+    # Keep this intentionally small and conservative.
+    if subject_upper in ["MAT", "MATH", "MATHS"]:
+        return "Math"
     
     # Normalize PREP variations
     if subject_upper in ["PREP", "PREP TIME", "PREP TIME"]:
@@ -97,9 +131,10 @@ def prepare_schedule_entry(
     normalized_subject = normalize_subject(subject)
     plan_slot_group_id = plan_slot_group_id.strip() if plan_slot_group_id else None
     is_non_class = is_non_class_period(normalized_subject)
-    
-    # Auto-clear homeroom and grade for non-class periods
-    if is_non_class:
+    is_meeting = is_meeting_period(normalized_subject)
+
+    # Auto-clear homeroom and grade for non-class periods (except meetings: PLC/GLM may have grade/room)
+    if is_non_class and not is_meeting:
         homeroom = None
         grade = None
         plan_slot_group_id = None

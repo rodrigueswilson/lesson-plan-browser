@@ -1,0 +1,54 @@
+{
+  "timestamp": "2025-12-07T13:48:57.322078",
+  "stage": "03_before_render_slot1",
+  "data": {
+    "slot_number": 1,
+    "subject": "ELA/SS",
+    "render_type": "multi_slot",
+    "metadata_slot_number": 1,
+    "metadata_subject": "ELA/SS",
+    "hyperlink_count": 7,
+    "all_hyperlinks_have_slot": true,
+    "all_hyperlinks_have_subject": true,
+    "hyperlink_slot_distribution": {
+      "1": 7
+    },
+    "sample_hyperlinks": [
+      {
+        "text": "02 - Second Grade Unit Description and Summary of ",
+        "source_slot": 1,
+        "source_subject": "ELA/SS"
+      },
+      {
+        "text": "02 - Second Grade Unit Description and Summary of ",
+        "source_slot": 1,
+        "source_subject": "ELA/SS"
+      },
+      {
+        "text": "02 - Second Grade Unit Description and Summary of ",
+        "source_slot": 1,
+        "source_subject": "ELA/SS"
+      },
+      {
+        "text": "All The Colors We Are: Lesson 1 Rubric",
+        "source_slot": 1,
+        "source_subject": "ELA/SS"
+      },
+      {
+        "text": "The Science of Skin Color Lesson 3 Rubric",
+        "source_slot": 1,
+        "source_subject": "ELA/SS"
+      },
+      {
+        "text": "SPO organizer",
+        "source_slot": 1,
+        "source_subject": "ELA/SS"
+      },
+      {
+        "text": "The Science of Skin Color Lesson 3 Rubric",
+        "source_slot": 1,
+        "source_subject": "ELA/SS"
+      }
+    ]
+  }
+}

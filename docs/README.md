@@ -2,6 +2,12 @@
 
 Comprehensive documentation for the Bilingual Lesson Plan Transformation System.
 
+## Current system and roadmap
+
+- **Implemented features and status:** [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) is the single source of truth for what is done.
+- **Planned work:** [roadmap/README.md](roadmap/README.md) indexes all planned modules and links to detailed design under [roadmap/design/](roadmap/design/).
+- **Documentation policy:** [DOCUMENTATION_POLICY.md](DOCUMENTATION_POLICY.md) describes how current, roadmap, and archive docs are organized and when to archive.
+
 ## Core Documentation
 
 ### **[Architecture](architecture_001.md)**

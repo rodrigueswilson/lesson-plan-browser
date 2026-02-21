@@ -1,0 +1,108 @@
+{
+  "timestamp": "2025-11-29T22:59:52.692554",
+  "stage": "01_parser_slot1",
+  "data": {
+    "slot_number": 1,
+    "subject": "ELA",
+    "source_file": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W49\\12_1-12_5 Kelsey Lang Lesson Plans 1st version.docx",
+    "hyperlink_count": 12,
+    "hyperlinks": [
+      {
+        "text": "Lenni Lenape",
+        "url": "https://docs.google.com/document/d/1_yHvguDhJIZmrIwY3ZcW-BIhfQH5VtH2xs1KtKlnNVY/edit?tab=t.9vfaqefj1",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Lenni Lenape",
+        "url": "https://docs.google.com/document/d/1_yHvguDhJIZmrIwY3ZcW-BIhfQH5VtH2xs1KtKlnNVY/edit?tab=t.9vfaqefj1",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Lenni Lenape",
+        "url": "https://docs.google.com/document/d/1_yHvguDhJIZmrIwY3ZcW-BIhfQH5VtH2xs1KtKlnNVY/edit?tab=t.9vfaqefj1",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Lenni Lenape",
+        "url": "https://docs.google.com/document/d/1_yHvguDhJIZmrIwY3ZcW-BIhfQH5VtH2xs1KtKlnNVY/edit?tab=t.9vfaqefj1",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Lenni Lenape",
+        "url": "https://docs.google.com/document/d/1_yHvguDhJIZmrIwY3ZcW-BIhfQH5VtH2xs1KtKlnNVY/edit?tab=t.9vfaqefj1",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Cause and Effects T-Chart",
+        "url": "https://docs.google.com/document/d/1Lr8MmBr3U-g92KyvZsqLPDyE7YbVlsIfhCWorofoIUE/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Opening: Cause and Effect ",
+        "url": "https://docs.google.com/presentation/d/1a_Db9OuPIWxiU0Da83iQfwR_B2AJD10asGfOeRC4CSw/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": " graphic organizer",
+        "url": "https://drive.google.com/file/d/1XVNmfbYJkcWwqO894oMqSr0VBWoYiWEK/view",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "3-2-1 sheet",
+        "url": "https://docs.google.com/document/d/17G4xIhQP7pcOvlnej3iN6yopYxdgdGMXQd3VghazLv8/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": " Cause and Effect Template ",
+        "url": "https://drive.google.com/file/d/1xgufbWI0hH-2oPl_yEPtx1zL7g0H_VXZ/view?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "3-2-1 Sheet",
+        "url": "https://docs.google.com/document/d/17G4xIhQP7pcOvlnej3iN6yopYxdgdGMXQd3VghazLv8/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Reciprocal Teaching Slides for Students",
+        "url": "https://docs.google.com/presentation/d/1FMhM4RuK_nBawtNZ7nmKrf1eY4z_h4COVxY2TeaN1wE/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      }
+    ]
+  }
+}

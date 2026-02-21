@@ -286,7 +286,25 @@ class FileManager:
             ... )
             >>> # Returns: "F:/Lesson Plan/25 W41/Maria_Rodrigues_Lesson_plan_W41_10-6-10-10_20251018_153045.docx"
         """
-        week_num = self._calculate_week_number(week_of)
+        # Extract week number from folder name if it matches pattern "YY W##" (e.g., "26 W02")
+        # This ensures filename matches the folder name
+        week_num = None
+        folder_name = week_folder.name
+        week_match = re.search(r'(\d{2})\s*W\s*(\d{1,2})\b', folder_name, re.IGNORECASE)
+        if week_match:
+            week_num = int(week_match.group(2))
+            logger.debug(
+                "week_number_extracted_from_folder",
+                extra={"folder_name": folder_name, "week_num": week_num},
+            )
+        
+        # Fallback to calculating from week_of if folder name doesn't match pattern
+        if week_num is None:
+            week_num = self._calculate_week_number(week_of)
+            logger.debug(
+                "week_number_calculated_from_date",
+                extra={"week_of": week_of, "week_num": week_num},
+            )
 
         # Clean user name (replace spaces with underscores)
         clean_name = user_name.replace(" ", "_")

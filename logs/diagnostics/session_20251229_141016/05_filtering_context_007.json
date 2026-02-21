@@ -1,0 +1,13 @@
+{
+  "timestamp": "2025-12-29T14:10:16.303363",
+  "stage": "05_filtering_context",
+  "data": {
+    "current_slot_number": 1,
+    "current_slot_number_is_none": false,
+    "current_subject": "Science",
+    "current_subject_is_none": false,
+    "pending_hyperlinks_count": 1,
+    "cell": "tuesday_tailored_instruction",
+    "filtering_active": true
+  }
+}

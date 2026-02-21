@@ -1,0 +1,11 @@
+{
+  "timestamp": "2025-12-29T17:41:52.040963",
+  "stage": "07_hyperlink_placed",
+  "data": {
+    "text": "Author’s Purpose Activity",
+    "slot": null,
+    "subject": "ELA",
+    "cell": "monday_assessment",
+    "confidence": 1.0
+  }
+}

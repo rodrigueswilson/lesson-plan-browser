@@ -1,0 +1,11 @@
+{
+  "timestamp": "2025-12-21T14:54:30.613462",
+  "stage": "07_hyperlink_placed",
+  "data": {
+    "text": "3.3.14 Cool-down",
+    "slot": 5,
+    "subject": "Math",
+    "cell": "monday_assessment",
+    "confidence": 1.0
+  }
+}

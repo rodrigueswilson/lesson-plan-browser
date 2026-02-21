@@ -1,0 +1,78 @@
+{
+  "timestamp": "2025-12-29T17:39:42.030210",
+  "stage": "02_lesson_json_slot4",
+  "data": {
+    "slot_number": 4,
+    "subject": "Math",
+    "metadata_slot_number": null,
+    "metadata_subject": "Math",
+    "hyperlink_count": 9,
+    "hyperlinks_with_slot_metadata": 9,
+    "hyperlinks_with_subject_metadata": 9,
+    "sample_hyperlinks": [
+      {
+        "text": "2.1.4 Teacher Guide",
+        "has_source_slot": true,
+        "source_slot": 4,
+        "has_source_subject": true,
+        "source_subject": "Math"
+      },
+      {
+        "text": "2.1.5 Teacher Guide",
+        "has_source_slot": true,
+        "source_slot": 4,
+        "has_source_subject": true,
+        "source_subject": "Math"
+      },
+      {
+        "text": "2.1.7 Teacher Guide",
+        "has_source_slot": true,
+        "source_slot": 4,
+        "has_source_subject": true,
+        "source_subject": "Math"
+      },
+      {
+        "text": "2.1.8 Teacher Guide",
+        "has_source_slot": true,
+        "source_slot": 4,
+        "has_source_subject": true,
+        "source_subject": "Math"
+      },
+      {
+        "text": "2.1.15 Teacher Guide",
+        "has_source_slot": true,
+        "source_slot": 4,
+        "has_source_subject": true,
+        "source_subject": "Math"
+      },
+      {
+        "text": "cool down activity.",
+        "has_source_slot": true,
+        "source_slot": 4,
+        "has_source_subject": true,
+        "source_subject": "Math"
+      },
+      {
+        "text": "cool down activity",
+        "has_source_slot": true,
+        "source_slot": 4,
+        "has_source_subject": true,
+        "source_subject": "Math"
+      },
+      {
+        "text": "cool down activity",
+        "has_source_slot": true,
+        "source_slot": 4,
+        "has_source_subject": true,
+        "source_subject": "Math"
+      },
+      {
+        "text": "cool down activity",
+        "has_source_slot": true,
+        "source_slot": 4,
+        "has_source_subject": true,
+        "source_subject": "Math"
+      }
+    ]
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "timestamp": "2025-12-29T17:41:46.041965",
+  "stage": "01_parser_slot2",
+  "data": {
+    "slot_number": 2,
+    "subject": "ELA/SS",
+    "source_file": "d:\\LP\\input\\Ms. Savoca- 9_15_24-9_19_24 Lesson plans.docx",
+    "hyperlink_count": 5,
+    "hyperlinks": [
+      {
+        "text": "Lesson 7",
+        "url": "https://docs.google.com/document/d/1toYpOE948_UDgWQV_35gvSIChQDGmuLANS93DnhP2BI/edit",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Lesson 8",
+        "url": "https://docs.google.com/document/d/1toYpOE948_UDgWQV_35gvSIChQDGmuLANS93DnhP2BI/edit",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Lesson 9",
+        "url": "https://docs.google.com/document/d/1toYpOE948_UDgWQV_35gvSIChQDGmuLANS93DnhP2BI/edit",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Lesson 10",
+        "url": "https://docs.google.com/document/d/1toYpOE948_UDgWQV_35gvSIChQDGmuLANS93DnhP2BI/edit",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Lesson 11",
+        "url": "https://docs.google.com/document/d/1toYpOE948_UDgWQV_35gvSIChQDGmuLANS93DnhP2BI/edit",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      }
+    ]
+  }
+}

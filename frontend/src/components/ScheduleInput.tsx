@@ -207,6 +207,7 @@ export function ScheduleInput() {
       
       setScheduleData(rows);
       setSuccess('Schedule loaded successfully');
+      setTimeout(() => setSuccess((s) => (s === 'Schedule loaded successfully' ? null : s)), 3000);
     } catch (err: any) {
       setError(err.message || 'Failed to load schedule');
     } finally {
@@ -444,7 +445,7 @@ export function ScheduleInput() {
       
       <div className="space-y-3">
         <div className="text-sm text-muted-foreground">
-          <p><strong>Note:</strong> For non-class periods (PREP, Lunch, A.M. Routine, Dismissal), 
+          <p><strong>Note:</strong> For non-class periods (PREP, Lunch, A.M. Routine, Dismissal, PLC, GLM), 
           grade and homeroom will be automatically cleared.</p>
         </div>
         
@@ -466,6 +467,10 @@ export function ScheduleInput() {
             <div className="flex items-center gap-2">
               <div className="w-4 h-4 rounded border border-purple-200 bg-purple-50"></div>
               <span>Dismissal</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 rounded border border-amber-300 bg-amber-50"></div>
+              <span>PLC / GLM (meetings)</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-4 h-4 rounded border border-green-300 bg-green-50"></div>

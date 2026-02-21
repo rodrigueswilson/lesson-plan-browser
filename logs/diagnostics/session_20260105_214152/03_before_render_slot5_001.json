@@ -1,0 +1,84 @@
+{
+  "timestamp": "2026-01-05T21:41:53.978593",
+  "stage": "03_before_render_slot5",
+  "data": {
+    "slot_number": 5,
+    "subject": "Math",
+    "render_type": "multi_slot",
+    "metadata_slot_number": 5,
+    "metadata_subject": "Math",
+    "hyperlink_count": 13,
+    "all_hyperlinks_have_slot": true,
+    "all_hyperlinks_have_subject": true,
+    "hyperlink_slot_distribution": {
+      "5": 13
+    },
+    "sample_hyperlinks": [
+      {
+        "text": "Target Numbers",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Capture Squares",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Tic Tac Round",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Stage 1",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Five in a Row: Mult. & Division",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Tic Tac Round",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Stage 1",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Five in a Row: Mult. & Division",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Tic Tac Round",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Stage 1",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Five in a Row: Mult. & Division",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Tic Tac Round",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Stage 1",
+        "source_slot": 5,
+        "source_subject": "Math"
+      }
+    ]
+  }
+}

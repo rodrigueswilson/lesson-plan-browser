@@ -11,12 +11,12 @@ import { Alert, AlertDescription, AlertTitle } from './ui/Alert';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from './ui/Dialog';
 
 export const BatchProcessor: React.FC = () => {
-  const { 
-    currentUser, 
-    slots, 
-    isProcessing, 
-    setIsProcessing, 
-    progress, 
+  const {
+    currentUser,
+    slots,
+    isProcessing,
+    setIsProcessing,
+    progress,
     setProgress,
     selectedSlots,
     toggleSlot,
@@ -26,40 +26,52 @@ export const BatchProcessor: React.FC = () => {
   const [weekOf, setWeekOf] = useState('');
   const [result, setResult] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
-  const [recentWeeks, setRecentWeeks] = useState<Array<{week_of: string; display: string; folder_name: string}>>([]);
-  
+  const [recentWeeks, setRecentWeeks] = useState<Array<{ week_of: string; display: string; folder_name: string }>>([]);
+
   type ButtonState = 'idle' | 'processing' | 'success' | 'error';
   const [buttonState, setButtonState] = useState<ButtonState>('idle');
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
-  
+  const [partial, setPartial] = useState(true);
+  const [missingOnly, setMissingOnly] = useState(false);
+  const [forceSlots, setForceSlots] = useState<Set<number>>(new Set());
+
+  interface WeekStatus {
+    done_slots: number[];
+    missing_slots: number[];
+    status: string | null;
+    total_slots: number;
+  }
+  const [weekStatus, setWeekStatus] = useState<WeekStatus | null>(null);
+  const [isLoadingStatus, setIsLoadingStatus] = useState(false);
+
   // Auto-select all slots when they change
   useEffect(() => {
     if (slots.length > 0 && selectedSlots.size === 0) {
       selectAllSlots();
     }
   }, [slots.length]);
-  
+
   // Load recent weeks when user changes
   useEffect(() => {
     if (currentUser?.id) {
       loadRecentWeeks();
     }
   }, [currentUser?.id]); // Only depend on user ID, not the whole object
-  
+
   const loadRecentWeeks = async () => {
     if (!currentUser) {
       console.log('[BatchProcessor] No current user, skipping recent weeks load');
       return;
     }
-    
+
     console.log('[BatchProcessor] Loading recent weeks for user:', currentUser.id);
     console.log('[BatchProcessor] User base_path_override:', currentUser.base_path_override);
-    
+
     try {
       const response = await userApi.getRecentWeeks(currentUser.id, 5);
       console.log('[BatchProcessor] Recent weeks response:', response.data);
       setRecentWeeks(response.data);
-      
+
       // Only warn if base_path_override is set but no weeks found (suggests a problem)
       // If base_path_override is not set, empty array is expected behavior
       if (response.data.length === 0 && currentUser.base_path_override) {
@@ -72,7 +84,7 @@ export const BatchProcessor: React.FC = () => {
       setRecentWeeks([]);
     }
   };
-  
+
   // Auto-reset button state after success/error
   useEffect(() => {
     if (buttonState === 'success' || buttonState === 'error') {
@@ -80,6 +92,48 @@ export const BatchProcessor: React.FC = () => {
       return () => clearTimeout(timer);
     }
   }, [buttonState]);
+
+  // Fetch week status when weekOf changes
+  useEffect(() => {
+    if (currentUser?.id && weekOf && weekOf.length >= 5) {
+      fetchWeekStatus();
+    } else {
+      setWeekStatus(null);
+    }
+  }, [currentUser?.id, weekOf]);
+
+  const fetchWeekStatus = async () => {
+    if (!currentUser?.id || !weekOf) return;
+
+    setIsLoadingStatus(true);
+    try {
+      const response = await planApi.getWeekStatus(currentUser.id, weekOf);
+      setWeekStatus(response.data);
+
+      // Clear forceSlots when week changes or status is refreshed
+      setForceSlots(new Set());
+
+      // If we have a plan and it's missing some slots, maybe recommend missing_only?
+      // For now, just store it.
+    } catch (err) {
+      console.error('[BatchProcessor] Failed to fetch week status:', err);
+      setWeekStatus(null);
+    } finally {
+      setIsLoadingStatus(false);
+    }
+  };
+
+  const toggleForceSlot = (slotNumber: number) => {
+    setForceSlots((prev) => {
+      const next = new Set(prev);
+      if (next.has(slotNumber)) {
+        next.delete(slotNumber);
+      } else {
+        next.add(slotNumber);
+      }
+      return next;
+    });
+  };
 
   const handleProcessClick = () => {
     if (!currentUser || !weekOf || selectedSlots.size === 0) return;
@@ -89,18 +143,26 @@ export const BatchProcessor: React.FC = () => {
   const handleConfirmProcess = async () => {
     setShowConfirmDialog(false);
     if (!currentUser || !weekOf || selectedSlots.size === 0) return;
-    
+
     setButtonState('processing');
     setIsProcessing(true);
     setError(null);
     setResult(null);
     setProgress({ current: 0, total: selectedSlots.size, message: 'Starting...' });
-    
+
     try {
       // Start processing with selected slots
       const selectedSlotIds = Array.from(selectedSlots);
-      const response = await planApi.process(currentUser.id, weekOf, 'openai', selectedSlotIds);
-      
+      const response = await planApi.process(
+        currentUser.id,
+        weekOf,
+        'openai',
+        selectedSlotIds,
+        partial,
+        missingOnly,
+        Array.from(forceSlots)
+      );
+
       // Set up SSE for progress updates
       if (response.data.plan_id) {
         const eventSource = createProgressStream(response.data.plan_id, (data) => {
@@ -109,12 +171,12 @@ export const BatchProcessor: React.FC = () => {
             total: data.total || selectedSlots.size,
             message: data.message || 'Processing...',
           });
-          
+
           // Close stream when complete - check for both 'complete' and 'completed'
           if (data.status === 'completed' || data.status === 'complete' || data.status === 'failed' || data.status === 'error') {
             eventSource.close();
             setIsProcessing(false);
-            
+
             if (data.status === 'completed' || data.status === 'complete') {
               // Use result data from progress stream if available, otherwise use initial response
               const finalResult = {
@@ -132,12 +194,14 @@ export const BatchProcessor: React.FC = () => {
                 total: data.total || selectedSlots.size,
                 message: 'Completed successfully',
               });
+              // Refresh status to show new "Done" badges
+              fetchWeekStatus();
             } else {
               // Extract error message from progress data
               const errorMessage = data.message || data.error || 'Processing failed';
               setError(errorMessage);
               setButtonState('error');
-              
+
               // Use result data from progress stream if available
               const finalResult = {
                 ...response.data,
@@ -149,13 +213,14 @@ export const BatchProcessor: React.FC = () => {
             }
           }
         });
-        
+
       } else {
         // No progress stream, just show result
         setIsProcessing(false);
         if (response.data.success) {
           setResult(response.data);
           setButtonState('success');
+          fetchWeekStatus();
         } else {
           setError('Processing failed');
           setButtonState('error');
@@ -170,7 +235,7 @@ export const BatchProcessor: React.FC = () => {
 
   const handleDownload = () => {
     if (!result?.output_file) return;
-    
+
     // Open download URL
     const downloadUrl = `http://localhost:8000/api/render/${result.output_file.split('/').pop()}`;
     window.open(downloadUrl, '_blank');
@@ -196,8 +261,8 @@ export const BatchProcessor: React.FC = () => {
     );
   }
 
-  const progressPercentage = progress.total > 0 
-    ? (progress.current / progress.total) * 100 
+  const progressPercentage = progress.total > 0
+    ? (progress.current / progress.total) * 100
     : 0;
 
   // Sort slots by display_order (same as SlotConfigurator)
@@ -218,7 +283,7 @@ export const BatchProcessor: React.FC = () => {
       <CardContent className="space-y-6">
         <div className="space-y-2">
           <Label htmlFor="week">Week Of (MM-DD-MM-DD)</Label>
-          
+
           {recentWeeks.length > 0 && (
             <div className="mb-2">
               <Label className="text-xs text-muted-foreground">Recent Weeks:</Label>
@@ -238,7 +303,7 @@ export const BatchProcessor: React.FC = () => {
               </div>
             </div>
           )}
-          
+
           <div className="flex gap-2">
             <Input
               id="week"
@@ -251,10 +316,9 @@ export const BatchProcessor: React.FC = () => {
             <Button
               onClick={handleProcessClick}
               disabled={(buttonState === 'processing' || isProcessing) || !weekOf || selectedSlots.size === 0}
-              className={`min-w-[140px] ${
-                buttonState === 'success' ? 'bg-green-600 hover:bg-green-700 text-white' : 
+              className={`min-w-[140px] ${buttonState === 'success' ? 'bg-green-600 hover:bg-green-700 text-white' :
                 buttonState === 'error' ? 'bg-red-600 hover:bg-red-700 text-white' : ''
-              }`}
+                }`}
             >
               {buttonState === 'processing' && (
                 <>
@@ -366,7 +430,10 @@ export const BatchProcessor: React.FC = () => {
 
         <div className="pt-4 border-t">
           <div className="flex items-center justify-between mb-3">
-            <h4 className="text-sm font-medium">Select Slots to Process:</h4>
+            <div className="flex items-center gap-2">
+              <h4 className="text-sm font-medium">Select Slots to Process:</h4>
+              {isLoadingStatus && <Loader2 className="w-3 h-3 animate-spin text-muted-foreground" />}
+            </div>
             <div className="flex gap-2">
               <Button
                 variant="outline"
@@ -394,9 +461,8 @@ export const BatchProcessor: React.FC = () => {
               return (
                 <div
                   key={slot.id}
-                  className={`flex items-center gap-3 text-sm p-2 rounded cursor-pointer transition-colors ${
-                    isSelected ? 'bg-primary/10 border border-primary/20' : 'bg-muted/50 hover:bg-muted'
-                  }`}
+                  className={`flex items-center gap-3 text-sm p-2 rounded cursor-pointer transition-colors ${isSelected ? 'bg-primary/10 border border-primary/20' : 'bg-muted/50 hover:bg-muted'
+                    }`}
                   onClick={() => !isProcessing && toggleSlot(slot.id)}
                 >
                   <input
@@ -410,19 +476,54 @@ export const BatchProcessor: React.FC = () => {
                     onClick={(e) => e.stopPropagation()}
                   />
                   <FileText className="w-4 h-4 text-muted-foreground" />
-                  <div className="flex-1">
-                    <span className="font-medium">{slot.subject}</span>
-                    {' - '}
-                    <span className="text-muted-foreground">
-                      {slot.primary_teacher_name || 'No teacher'}, Grade {slot.grade}
-                    </span>
+                  <div className="flex-1 flex justify-between items-center">
+                    <div>
+                      <span className="font-medium">{slot.subject}</span>
+                      {' - '}
+                      <span className="text-muted-foreground">
+                        {slot.primary_teacher_name || 'No teacher'}, Grade {slot.grade}
+                      </span>
+                    </div>
+                    {weekStatus && weekStatus.done_slots.includes(slot.slot_number) && (
+                      <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-1 text-green-600 text-xs font-medium bg-green-50 px-2 py-0.5 rounded-full border border-green-100">
+                          <CheckCircle2 className="w-3 h-3" />
+                          Done
+                        </div>
+                        {isSelected && (
+                          <div
+                            className={`flex items-center gap-1.5 px-2 py-0.5 rounded-full border text-[10px] uppercase tracking-wider font-bold transition-all ${forceSlots.has(slot.slot_number)
+                              ? 'bg-orange-500 text-white border-orange-600 shadow-sm'
+                              : 'bg-white text-muted-foreground border-muted-foreground/20 hover:border-orange-400 hover:text-orange-600'
+                              }`}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              toggleForceSlot(slot.slot_number);
+                            }}
+                            title="Force AI transformation for this slot"
+                          >
+                            {forceSlots.has(slot.slot_number) ? (
+                              <>
+                                <Loader2 className="w-2.5 h-2.5 animate-spin" />
+                                Recall AI
+                              </>
+                            ) : (
+                              <>
+                                <Play className="w-2.5 h-2.5" />
+                                Skip AI
+                              </>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
               );
             })}
           </div>
         </div>
-        
+
         <Dialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
           <DialogContent>
             <DialogHeader>
@@ -431,20 +532,49 @@ export const BatchProcessor: React.FC = () => {
                 Please verify the details before generating the weekly plan.
               </DialogDescription>
             </DialogHeader>
-            
-            <div className="space-y-3 py-4">
+
+            <div className="space-y-4 py-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm font-medium">Source Folder:</p>
+                  <p className="text-sm text-muted-foreground mt-1 truncate">
+                    {currentUser?.base_path_override || 'Default path'}
+                  </p>
+                </div>
+
+                <div>
+                  <p className="text-sm font-medium">Week:</p>
+                  <p className="text-sm text-muted-foreground mt-1">{weekOf}</p>
+                </div>
+              </div>
+
               <div>
-                <p className="text-sm font-medium">Source Folder:</p>
-                <p className="text-sm text-muted-foreground mt-1">
-                  {currentUser?.base_path_override || 'Default path'}
+                <p className="text-sm font-medium">Processing Mode:</p>
+                <div className="flex gap-4 mt-2">
+                  <label className="flex items-center gap-2 text-sm cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={partial}
+                      onChange={(e) => setPartial(e.target.checked)}
+                      className="w-4 h-4"
+                    />
+                    Partial/Merge
+                  </label>
+                  <label className="flex items-center gap-2 text-sm cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={missingOnly}
+                      onChange={(e) => setMissingOnly(e.target.checked)}
+                      className="w-4 h-4"
+                    />
+                    Missing Only
+                  </label>
+                </div>
+                <p className="text-[10px] text-muted-foreground mt-1">
+                  {missingOnly ? 'Will only process slots not yet in the plan.' : partial ? 'Will merge new slots into the existing plan.' : 'Will create a fresh plan (overwriting existing).'}
                 </p>
               </div>
-              
-              <div>
-                <p className="text-sm font-medium">Week:</p>
-                <p className="text-sm text-muted-foreground mt-1">{weekOf}</p>
-              </div>
-              
+
               <div>
                 <p className="text-sm font-medium">Slots to Process:</p>
                 <p className="text-sm text-muted-foreground mt-1">
@@ -452,7 +582,7 @@ export const BatchProcessor: React.FC = () => {
                 </p>
               </div>
             </div>
-            
+
             <DialogFooter>
               <Button
                 variant="outline"

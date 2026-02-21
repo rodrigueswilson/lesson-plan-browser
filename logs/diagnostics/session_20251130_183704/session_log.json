@@ -1,0 +1,609 @@
+[
+  {
+    "timestamp": "2025-11-30T18:37:04.041702",
+    "stage": "01_parser_slot4",
+    "data": {
+      "slot_number": 4,
+      "subject": "Science",
+      "source_file": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\25 W49\\Catarina Morais 12_1 - 12_4.docx",
+      "hyperlink_count": 4,
+      "hyperlinks": [
+        {
+          "text": " 2nd Grade Science ",
+          "url": "https://docs.google.com/document/d/1nImdZIX6pCavnrr59YDV-iKMuixgzblvrcu5bGunB6Q/edit?tab=t.0#bookmar",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": " 2nd Grade Science ",
+          "url": "https://docs.google.com/document/d/1nImdZIX6pCavnrr59YDV-iKMuixgzblvrcu5bGunB6Q/edit?tab=t.0#bookmar",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": " 2nd Grade Science ",
+          "url": "https://docs.google.com/document/d/1nImdZIX6pCavnrr59YDV-iKMuixgzblvrcu5bGunB6Q/edit?tab=t.0#bookmar",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": " 2nd Grade Science ",
+          "url": "https://docs.google.com/document/d/1nImdZIX6pCavnrr59YDV-iKMuixgzblvrcu5bGunB6Q/edit?tab=t.0#bookmar",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-11-30T18:40:31.646039",
+    "stage": "02_lesson_json_slot4",
+    "data": {
+      "slot_number": 4,
+      "subject": "Science",
+      "metadata_slot_number": null,
+      "metadata_subject": "Science",
+      "hyperlink_count": 4,
+      "hyperlinks_with_slot_metadata": 0,
+      "hyperlinks_with_subject_metadata": 0,
+      "sample_hyperlinks": [
+        {
+          "text": " 2nd Grade Science ",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": " 2nd Grade Science ",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": " 2nd Grade Science ",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": " 2nd Grade Science ",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-11-30T18:40:31.841030",
+    "stage": "01_parser_slot5",
+    "data": {
+      "slot_number": 5,
+      "subject": "Math",
+      "source_file": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\25 W49\\Catarina Morais 12_1 - 12_4.docx",
+      "hyperlink_count": 12,
+      "hyperlinks": [
+        {
+          "text": "2.3.9 Teacher Guide",
+          "url": "https://drive.google.com/file/d/1vW0Wo-PG0REErKzwCvFD3P12UDWqEmtt/view?usp=drive_link",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "2.3.10 Teacher Guide",
+          "url": "https://drive.google.com/file/d/1Hcf0M0UJ02QEJp5WSy9gQJEFLd-Pyr5f/view?usp=drive_link",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Unit 3: Measuring Length",
+          "url": "https://docs.google.com/document/d/1jS0EN5RQpawPPkDnTkUnbktDeqnLDjeojFHudRl5zGY/edit#heading=h.m0gax",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Unit 3: Measuring Length",
+          "url": "https://docs.google.com/document/d/1jS0EN5RQpawPPkDnTkUnbktDeqnLDjeojFHudRl5zGY/edit#heading=h.m0gax",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "LESSON 10: Saree Silk Stories: Necklaces and Bracelets ",
+          "url": "https://newarkps.ilclassroom.com/lesson_plans/367277-lesson-11-saree-silk-stories-necklaces-and-brac",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "LESSON 11: Saree Silk Stories: Friendship Bracelets",
+          "url": "https://newarkps.ilclassroom.com/lesson_plans/367304-lesson-12-saree-silk-stories-friendship-bracele",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "LESSON 12: What is a Line Plot? ",
+          "url": "https://newarkps.ilclassroom.com/lesson_plans/367354-lesson-14-what-is-a-line-plot?path=Wiki.9879318",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "2.3.9 Cool-down",
+          "url": "https://drive.google.com/file/d/1qG4rdBqwgPC1h-8ovX1lBOKYMzi755Ju/view?usp=drive_link",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "2.3.10 Cool-down",
+          "url": "https://drive.google.com/file/d/1BQ7KCFSxDDfYAHb4sucGn8jntUXsg-pp/view?usp=drive_link",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "2.3.11 Cool Down",
+          "url": "https://drive.google.com/file/d/19M2gkY3h5gSZiqDHiIEoVW21-zxzMH-Y/view?usp=drive_link",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "2.3.12 Cool Down",
+          "url": "https://drive.google.com/file/d/1u8cXR5-IosF6sCH0WEj53ZYwbb1ux03B/view?usp=drive_link",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "2.3.14 Cool Down",
+          "url": "https://drive.google.com/file/d/1gzHds5tjFjqKcZ9N5nafJv-AbgImnYye/view?usp=drive_link",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-11-30T18:44:41.326171",
+    "stage": "02_lesson_json_slot5",
+    "data": {
+      "slot_number": 5,
+      "subject": "Math",
+      "metadata_slot_number": null,
+      "metadata_subject": "Math",
+      "hyperlink_count": 12,
+      "hyperlinks_with_slot_metadata": 0,
+      "hyperlinks_with_subject_metadata": 0,
+      "sample_hyperlinks": [
+        {
+          "text": "2.3.9 Teacher Guide",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "2.3.10 Teacher Guide",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "Unit 3: Measuring Length",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "Unit 3: Measuring Length",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "LESSON 10: Saree Silk Stories: Necklaces and Brace",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "LESSON 11: Saree Silk Stories: Friendship Bracelet",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "LESSON 12: What is a Line Plot? ",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "2.3.9 Cool-down",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "2.3.10 Cool-down",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "2.3.11 Cool Down",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-11-30T18:44:41.374189",
+    "stage": "03_before_render_slot1",
+    "data": {
+      "slot_number": 1,
+      "subject": "ELA/SS",
+      "render_type": "multi_slot",
+      "metadata_slot_number": 1,
+      "metadata_subject": "ELA/SS",
+      "hyperlink_count": 9,
+      "all_hyperlinks_have_slot": true,
+      "all_hyperlinks_have_subject": true,
+      "hyperlink_slot_distribution": {
+        "1": 9
+      },
+      "sample_hyperlinks": [
+        {
+          "text": "02 - Second Grade Unit Description and Summary of ",
+          "source_slot": 1,
+          "source_subject": "ELA/SS"
+        },
+        {
+          "text": "02 - Second Grade Unit Description and Summary of ",
+          "source_slot": 1,
+          "source_subject": "ELA/SS"
+        },
+        {
+          "text": "Animals Teach Young People a Lot About How to Unde",
+          "source_slot": 1,
+          "source_subject": "ELA/SS"
+        },
+        {
+          "text": "Kindness Unit lesson 12 Vocabulary",
+          "source_slot": 1,
+          "source_subject": "ELA/SS"
+        },
+        {
+          "text": "Main Idea Anchor Chart",
+          "source_slot": 1,
+          "source_subject": "ELA/SS"
+        },
+        {
+          "text": "Kindness Unit lesson 12 Vocabulary",
+          "source_slot": 1,
+          "source_subject": "ELA/SS"
+        },
+        {
+          "text": "Rubric",
+          "source_slot": 1,
+          "source_subject": "ELA/SS"
+        },
+        {
+          "text": "Rubric",
+          "source_slot": 1,
+          "source_subject": "ELA/SS"
+        },
+        {
+          "text": "All The Colors We Are: Lesson 1 Rubric",
+          "source_slot": 1,
+          "source_subject": "ELA/SS"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-11-30T18:44:41.401242",
+    "stage": "04_renderer_metadata_extracted",
+    "data": {
+      "slot_number": 1,
+      "slot_number_type": "int",
+      "slot_number_is_none": false,
+      "subject": "ELA/SS",
+      "subject_is_none": false,
+      "hyperlink_count": 9,
+      "teacher": "Catarina Morais / Daniela Silva",
+      "filtering_will_activate": true
+    }
+  },
+  {
+    "timestamp": "2025-11-30T18:44:41.596009",
+    "stage": "03_before_render_slot2",
+    "data": {
+      "slot_number": 2,
+      "subject": "Social Studies",
+      "render_type": "multi_slot",
+      "metadata_slot_number": 2,
+      "metadata_subject": "Social Studies",
+      "hyperlink_count": 8,
+      "all_hyperlinks_have_slot": true,
+      "all_hyperlinks_have_subject": true,
+      "hyperlink_slot_distribution": {
+        "2": 8
+      },
+      "sample_hyperlinks": [
+        {
+          "text": "Slides & Choice Board",
+          "source_slot": 2,
+          "source_subject": "Social Studies"
+        },
+        {
+          "text": "Slides",
+          "source_slot": 2,
+          "source_subject": "Social Studies"
+        },
+        {
+          "text": "The Hittites and Ancient Anatolia”",
+          "source_slot": 2,
+          "source_subject": "Social Studies"
+        },
+        {
+          "text": "Kush DBQ ",
+          "source_slot": 2,
+          "source_subject": "Social Studies"
+        },
+        {
+          "text": "Kush DBQ ",
+          "source_slot": 2,
+          "source_subject": "Social Studies"
+        },
+        {
+          "text": "Egypt/Kush DBQ Slides",
+          "source_slot": 2,
+          "source_subject": "Social Studies"
+        },
+        {
+          "text": "Slides & Choice Board",
+          "source_slot": 2,
+          "source_subject": "Social Studies"
+        },
+        {
+          "text": "Society in Ancient Egypt",
+          "source_slot": 2,
+          "source_subject": "Social Studies"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-11-30T18:44:41.624007",
+    "stage": "04_renderer_metadata_extracted",
+    "data": {
+      "slot_number": 2,
+      "slot_number_type": "int",
+      "slot_number_is_none": false,
+      "subject": "Social Studies",
+      "subject_is_none": false,
+      "hyperlink_count": 8,
+      "teacher": "Taina Santiago / Daniela Silva",
+      "filtering_will_activate": true
+    }
+  },
+  {
+    "timestamp": "2025-11-30T18:44:41.926447",
+    "stage": "03_before_render_slot3",
+    "data": {
+      "slot_number": 3,
+      "subject": "Science",
+      "render_type": "multi_slot",
+      "metadata_slot_number": 3,
+      "metadata_subject": "Science",
+      "hyperlink_count": 0,
+      "all_hyperlinks_have_slot": true,
+      "all_hyperlinks_have_subject": true,
+      "hyperlink_slot_distribution": {},
+      "sample_hyperlinks": []
+    }
+  },
+  {
+    "timestamp": "2025-11-30T18:44:41.941313",
+    "stage": "04_renderer_metadata_extracted",
+    "data": {
+      "slot_number": 3,
+      "slot_number_type": "int",
+      "slot_number_is_none": false,
+      "subject": "Science",
+      "subject_is_none": false,
+      "hyperlink_count": 0,
+      "teacher": "Mariela Grande / Daniela Silva",
+      "filtering_will_activate": true
+    }
+  },
+  {
+    "timestamp": "2025-11-30T18:44:42.124750",
+    "stage": "03_before_render_slot4",
+    "data": {
+      "slot_number": 4,
+      "subject": "Science",
+      "render_type": "multi_slot",
+      "metadata_slot_number": 4,
+      "metadata_subject": "Science",
+      "hyperlink_count": 4,
+      "all_hyperlinks_have_slot": true,
+      "all_hyperlinks_have_subject": true,
+      "hyperlink_slot_distribution": {
+        "4": 4
+      },
+      "sample_hyperlinks": [
+        {
+          "text": " 2nd Grade Science ",
+          "source_slot": 4,
+          "source_subject": "Science"
+        },
+        {
+          "text": " 2nd Grade Science ",
+          "source_slot": 4,
+          "source_subject": "Science"
+        },
+        {
+          "text": " 2nd Grade Science ",
+          "source_slot": 4,
+          "source_subject": "Science"
+        },
+        {
+          "text": " 2nd Grade Science ",
+          "source_slot": 4,
+          "source_subject": "Science"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-11-30T18:44:42.146511",
+    "stage": "04_renderer_metadata_extracted",
+    "data": {
+      "slot_number": 4,
+      "slot_number_type": "int",
+      "slot_number_is_none": false,
+      "subject": "Science",
+      "subject_is_none": false,
+      "hyperlink_count": 4,
+      "teacher": "Catarina Morais / Daniela Silva",
+      "filtering_will_activate": true
+    }
+  },
+  {
+    "timestamp": "2025-11-30T18:44:42.299177",
+    "stage": "03_before_render_slot5",
+    "data": {
+      "slot_number": 5,
+      "subject": "Math",
+      "render_type": "multi_slot",
+      "metadata_slot_number": 5,
+      "metadata_subject": "Math",
+      "hyperlink_count": 12,
+      "all_hyperlinks_have_slot": true,
+      "all_hyperlinks_have_subject": true,
+      "hyperlink_slot_distribution": {
+        "5": 12
+      },
+      "sample_hyperlinks": [
+        {
+          "text": "2.3.9 Teacher Guide",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "2.3.10 Teacher Guide",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "Unit 3: Measuring Length",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "Unit 3: Measuring Length",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "LESSON 10: Saree Silk Stories: Necklaces and Brace",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "LESSON 11: Saree Silk Stories: Friendship Bracelet",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "LESSON 12: What is a Line Plot? ",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "2.3.9 Cool-down",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "2.3.10 Cool-down",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "2.3.11 Cool Down",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "2.3.12 Cool Down",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "2.3.14 Cool Down",
+          "source_slot": 5,
+          "source_subject": "Math"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-11-30T18:44:42.327178",
+    "stage": "04_renderer_metadata_extracted",
+    "data": {
+      "slot_number": 5,
+      "slot_number_type": "int",
+      "slot_number_is_none": false,
+      "subject": "Math",
+      "subject_is_none": false,
+      "hyperlink_count": 12,
+      "teacher": "Catarina Morais / Daniela Silva",
+      "filtering_will_activate": true
+    }
+  }
+]

@@ -4,9 +4,11 @@ import { scheduleApi, ScheduleEntry, planApi, lessonApi } from '@lesson-api';
 import { useStore } from '../store/useStore';
 import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { getSubjectColors } from '../utils/scheduleColors';
-import { dedupeScheduleEntries } from '../utils/scheduleEntries';
+import { getSubjectColors, meetingPeriodColors } from '../utils/scheduleColors';
+import { dedupeScheduleEntries, formatEntryDisplay, isMeetingPeriod, isNonClassPeriod } from '../utils/scheduleEntries';
 import { buildSlotDataMap } from '../utils/planMatching';
+
+const MEETING_CLASSES = `${meetingPeriodColors.bg} ${meetingPeriodColors.border} ${meetingPeriodColors.text}`;
 
 interface DayViewProps {
   weekOf: string;
@@ -16,7 +18,8 @@ interface DayViewProps {
     day: string,
     slot: number,
     planSlotIndex?: number,
-    planSlotData?: any
+    planSlotData?: any,
+    weekOf?: string
   ) => void | Promise<void>;
   onDaySwitch?: (day: string) => void;
 }
@@ -29,17 +32,6 @@ interface LessonSlotData {
   planSlotIndex?: number;
   planSlot?: any;
 }
-
-// Helper function to check if entry is a non-class period
-const isNonClassPeriod = (subject: string): boolean => {
-  if (!subject) return false;
-  // Normalize by removing extra spaces and converting to uppercase
-  const normalized = subject.replace(/\s+/g, ' ').trim().toUpperCase();
-  // Check for A.M. Routine variations (with or without space after A.)
-  const amRoutinePattern = /^A\.?\s*M\.?\s*ROUTINE$/;
-  return ['PREP', 'PREP TIME', 'LUNCH', 'A.M. ROUTINE', 'A. M. ROUTINE', 'AM ROUTINE', 'MORNING ROUTINE', 'DISMISSAL'].includes(normalized) ||
-         amRoutinePattern.test(normalized);
-};
 
 export function DayView({ weekOf, day, onLessonClick, onDaySwitch }: DayViewProps) {
   const { currentUser } = useStore();
@@ -233,10 +225,15 @@ export function DayView({ weekOf, day, onLessonClick, onDaySwitch }: DayViewProp
                     {/* Content */}
                     {isNonClass ? (
                       (() => {
+                        const isMeeting = isMeetingPeriod(entry.subject);
+                        const displayText = formatEntryDisplay(entry.subject, entry.grade, entry.homeroom, isMeeting);
                         const colors = getSubjectColors(entry.subject, entry.grade, entry.homeroom);
+                        const divClass = isMeeting
+                          ? `text-xs px-3 py-1 flex items-center ${MEETING_CLASSES}`
+                          : `text-xs px-3 py-1 flex items-center ${colors.bg} ${colors.border} ${colors.text}`;
                         return (
-                          <div className={`text-xs px-3 py-1 flex items-center ${colors.bg} ${colors.border} ${colors.text}`}>
-                            {entry.subject}
+                          <div className={divClass}>
+                            {displayText}
                           </div>
                         );
                       })()
@@ -250,10 +247,15 @@ export function DayView({ weekOf, day, onLessonClick, onDaySwitch }: DayViewProp
                             day: day,
                             time: `${entry.start_time}-${entry.end_time}`
                           });
+                          const isMeeting = isMeetingPeriod(entry.subject);
+                          const displayText = formatEntryDisplay(entry.subject, entry.grade, entry.homeroom, isMeeting);
                           const colors = getSubjectColors(entry.subject, entry.grade, entry.homeroom);
+                          const divClass = isMeeting
+                            ? `text-xs px-3 py-1 flex items-center ${MEETING_CLASSES}`
+                            : `text-xs px-3 py-1 flex items-center ${colors.bg} ${colors.border} ${colors.text}`;
                           return (
-                            <div className={`text-xs px-3 py-1 flex items-center ${colors.bg} ${colors.border} ${colors.text}`}>
-                              {entry.subject}
+                            <div className={divClass}>
+                              {displayText}
                             </div>
                           );
                         }
@@ -270,7 +272,7 @@ export function DayView({ weekOf, day, onLessonClick, onDaySwitch }: DayViewProp
                         return (
                           <Card
                             className={`p-2 cursor-pointer hover:opacity-80 transition-all rounded-none border-0 h-full flex flex-col ${colors.bg} ${colors.border} ${colors.text}`}
-                            onClick={() => onLessonClick(entry, day, planSlotNumber, planSlotIndex, planSlotData)}
+                            onClick={() => onLessonClick(entry, day, planSlotNumber, planSlotIndex, planSlotData, weekOf)}
                           >
                             <div className="space-y-1.5 flex-1 flex flex-col justify-center">
                               <div className="flex items-start justify-between">

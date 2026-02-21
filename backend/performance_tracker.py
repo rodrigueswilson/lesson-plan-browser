@@ -151,6 +151,15 @@ class PerformanceTracker:
         llm_provider = result.get("llm_provider", "")
         error_message = result.get("error")
 
+        # Extract parallel processing metrics
+        is_parallel = result.get("is_parallel", False)
+        parallel_slot_count = result.get("parallel_slot_count")
+        sequential_time_ms = result.get("sequential_time_ms")
+        rate_limit_errors = result.get("rate_limit_errors", 0)
+        concurrency_level = result.get("concurrency_level")
+        tpm_usage = result.get("tpm_usage")
+        rpm_usage = result.get("rpm_usage")
+
         # Calculate cost
         cost_usd = 0.0
         if llm_model and tokens_input > 0:
@@ -173,6 +182,13 @@ class PerformanceTracker:
                 cost_usd=cost_usd,
                 error_message=error_message,
                 metadata=operation["metadata"],
+                is_parallel=is_parallel,
+                parallel_slot_count=parallel_slot_count,
+                sequential_time_ms=sequential_time_ms,
+                rate_limit_errors=rate_limit_errors,
+                concurrency_level=concurrency_level,
+                tpm_usage=tpm_usage,
+                rpm_usage=rpm_usage,
             )
 
             logger.info(
@@ -244,6 +260,13 @@ class PerformanceTracker:
             error_message=kwargs["error_message"],
             slot_number=slot_number,
             day_number=day_number,
+            is_parallel=kwargs.get("is_parallel"),
+            parallel_slot_count=kwargs.get("parallel_slot_count"),
+            sequential_time_ms=kwargs.get("sequential_time_ms"),
+            rate_limit_errors=kwargs.get("rate_limit_errors"),
+            concurrency_level=kwargs.get("concurrency_level"),
+            tpm_usage=kwargs.get("tpm_usage"),
+            rpm_usage=kwargs.get("rpm_usage"),
         )
 
     def get_plan_metrics(self, plan_id: str) -> List[Dict[str, Any]]:
@@ -298,7 +321,7 @@ class PerformanceTracker:
         # Update weekly_plans
         updated = self.db.update_plan_summary(
             plan_id=plan_id,
-            processing_time_ms=summary.get("total_duration_ms"),
+            processing_time_ms=summary.get("total_time_ms"),
             total_tokens=summary.get("total_tokens"),
             total_cost_usd=summary.get("total_cost_usd"),
             llm_model=llm_model,
@@ -309,7 +332,7 @@ class PerformanceTracker:
                 "plan_summary_updated",
                 extra={
                     "plan_id": plan_id,
-                    "duration_ms": summary.get("total_duration_ms"),
+                    "duration_ms": summary.get("total_time_ms"),
                     "tokens": summary.get("total_tokens"),
                     "cost_usd": summary.get("total_cost_usd"),
                 },
@@ -398,6 +421,51 @@ class PerformanceTracker:
             List of session statistics, ordered by most recent first
         """
         return self.db.get_session_breakdown(days=days, user_id=user_id)
+
+    def get_operation_stats(
+        self, days: int = 30, user_id: Optional[str] = None
+    ) -> List[Dict[str, Any]]:
+        """
+        Get time breakdown by operation type.
+
+        Args:
+            days: Number of days to look back
+            user_id: Optional user filter
+
+        Returns:
+            List of operation statistics
+        """
+        return self.db.get_operation_stats(days=days, user_id=user_id)
+
+    def get_error_stats(
+        self, days: int = 30, user_id: Optional[str] = None
+    ) -> Dict[str, Any]:
+        """
+        Get success vs failure stats with error distribution.
+
+        Args:
+            days: Number of days to look back
+            user_id: Optional user filter
+
+        Returns:
+            Dict with success/failure counts and error breakdown
+        """
+        return self.db.get_error_stats(days=days, user_id=user_id)
+
+    def get_parallel_processing_stats(
+        self, days: int = 30, user_id: Optional[str] = None
+    ) -> Dict[str, Any]:
+        """
+        Get parallel processing statistics.
+
+        Args:
+            days: Number of days to look back
+            user_id: Optional user filter
+
+        Returns:
+            Dict with parallel processing metrics
+        """
+        return self.db.get_parallel_processing_stats(days=days, user_id=user_id)
 
     def export_analytics_csv(
         self, days: int = 30, user_id: Optional[str] = None

@@ -118,10 +118,14 @@ The system automatically detects "No School" days to skip LLM processing, saving
 4. **First Match Wins**: Returns `True` on first match
 5. **Log Detection**: Records which pattern matched
 
+### Day-level detection (table cells)
+
+When the parser extracts content **per day** from a table (e.g. one column per weekday), it uses `is_day_no_school(day_text)` to decide whether that day should be treated as "No School". For **short** day text (under 30 characters), day-level detection now matches the same development/workday/planning/conference patterns as document-level detection: "Staff Development", "PD Day", "Planning Day", "Teacher Workday", "Prep Day", "Conference Day", "In-Service", etc. This ensures that a Wednesday cell containing only "Staff Development" or "PD Day" is correctly flagged and not filled with generated lesson content. Longer cell text still uses stricter start/end patterns to avoid false positives in lesson content.
+
 ### Code Location
 
 **File**: `tools/docx_parser.py`  
-**Method**: `DOCXParser.is_no_school_day()`
+**Methods**: `DOCXParser.is_no_school_day()` (whole document), `DOCXParser.is_day_no_school(day_text)` (single day/cell)
 
 ```python
 def is_no_school_day(self) -> bool:

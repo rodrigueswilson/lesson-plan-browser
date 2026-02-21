@@ -1,0 +1,50 @@
+{
+  "timestamp": "2025-12-28T21:18:31.830195",
+  "stage": "02_lesson_json_slot2",
+  "data": {
+    "slot_number": 2,
+    "subject": "ELA/SS",
+    "metadata_slot_number": null,
+    "metadata_subject": "ELA/SS",
+    "hyperlink_count": 5,
+    "hyperlinks_with_slot_metadata": 5,
+    "hyperlinks_with_subject_metadata": 5,
+    "sample_hyperlinks": [
+      {
+        "text": "02 - Second Grade Unit Description and Summary of ",
+        "has_source_slot": true,
+        "source_slot": 2,
+        "has_source_subject": true,
+        "source_subject": "ELA/SS"
+      },
+      {
+        "text": "02 - Second Grade Unit Description and Summary of ",
+        "has_source_slot": true,
+        "source_slot": 2,
+        "has_source_subject": true,
+        "source_subject": "ELA/SS"
+      },
+      {
+        "text": "02 - Second Grade Unit Description and Summary of ",
+        "has_source_slot": true,
+        "source_slot": 2,
+        "has_source_subject": true,
+        "source_subject": "ELA/SS"
+      },
+      {
+        "text": "02 - Second Grade Unit Description and Summary of ",
+        "has_source_slot": true,
+        "source_slot": 2,
+        "has_source_subject": true,
+        "source_subject": "ELA/SS"
+      },
+      {
+        "text": "02 - Second Grade Unit Description and Summary of ",
+        "has_source_slot": true,
+        "source_slot": 2,
+        "has_source_subject": true,
+        "source_subject": "ELA/SS"
+      }
+    ]
+  }
+}

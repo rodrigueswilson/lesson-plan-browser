@@ -1,6 +1,16 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   darkMode: ['class'],
+  safelist: [
+    { pattern: /^(bg|border|text)-teal-/ },
+    '!bg-teal-50',
+    'border-teal-300',
+    'text-teal-800',
+    { pattern: /^(bg|border|text)-amber-/ },
+    '!bg-amber-50',
+    'border-amber-300',
+    'text-amber-800',
+  ],
   content: [
     './index.html',
     './src/**/*.{js,ts,jsx,tsx}',

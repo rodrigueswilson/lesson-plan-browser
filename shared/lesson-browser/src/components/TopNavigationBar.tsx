@@ -1,8 +1,10 @@
+import { useState } from 'react';
 import { Clock, Grid, CalendarDays, FileText, PlayCircle, ArrowLeft, RefreshCw } from 'lucide-react';
 import { Button } from '@lesson-ui/Button';
 import { Select } from '@lesson-ui/Select';
 import { Label } from '@lesson-ui/Label';
 import type { ScheduleEntry } from '@lesson-api';
+import { LessonMetadataDisplay } from './LessonMetadataDisplay';
 
 interface TopNavigationBarProps {
   // Clock and date
@@ -74,77 +76,11 @@ export function TopNavigationBar({
   onTodayClick,
   findLessonForLessonMode,
 }: TopNavigationBarProps) {
-  // Determine lesson timing status (current, past, or future)
-  // Use scheduleStatus from timer if available, otherwise calculate it
-  const getLessonTimingStatus = (): 'current' | 'past' | 'future' | null => {
-    // Prefer scheduleStatus from timer (more accurate, uses performance.now())
-    if (lessonMetadata?.scheduleStatus) {
-      return lessonMetadata.scheduleStatus;
-    }
-
-    // Fallback to calculating from metadata
-    if (!lessonMetadata?.start_time || !lessonMetadata?.end_time) {
-      return null;
-    }
-
-    try {
-      const now = currentTime;
-      const startTimeParts = lessonMetadata.start_time.split(':');
-      const endTimeParts = lessonMetadata.end_time.split(':');
-      
-      if (startTimeParts.length < 2 || endTimeParts.length < 2) {
-        return null;
-      }
-      
-      const [startH, startM] = startTimeParts.map(Number);
-      const [endH, endM] = endTimeParts.map(Number);
-      
-      if (isNaN(startH) || isNaN(startM) || isNaN(endH) || isNaN(endM)) {
-        return null;
-      }
-      
-      const start = new Date(now);
-      start.setHours(startH, startM, 0, 0);
-      
-      const end = new Date(now);
-      end.setHours(endH, endM, 0, 0);
-      
-      // Check if lesson is currently happening
-      if (now >= start && now <= end) {
-        return 'current';
-      }
-      
-      // Check if lesson is in the past
-      if (now > end) {
-        return 'past';
-      }
-      
-      // Lesson is in the future
-      return 'future';
-    } catch (error) {
-      console.error('Error calculating lesson timing status:', error);
-      return null;
-    }
-  };
-
-  const lessonTimingStatus = getLessonTimingStatus();
+  // Get timing status for header background color
+  // Prefer scheduleStatus from timer if available, otherwise will be calculated by LessonMetadataDisplay
+  const [calculatedStatus, setCalculatedStatus] = useState<'past' | 'current' | 'future' | null>(null);
+  const lessonTimingStatus = lessonMetadata?.scheduleStatus || calculatedStatus;
   
-  // Determine color classes based on timing status
-  // Green: past (already happened)
-  // Blue: current (happening now)
-  // Orange: future (will happen)
-  const getMetadataColorClasses = () => {
-    switch (lessonTimingStatus) {
-      case 'current':
-        return 'bg-blue-50 border-blue-200 text-blue-800';
-      case 'past':
-        return 'bg-green-50 border-green-200 text-green-800';
-      case 'future':
-        return 'bg-orange-50 border-orange-200 text-orange-800';
-      default:
-        return 'bg-muted/30 border-muted';
-    }
-  };
   const headerBgColor = lessonTimingStatus === 'current' 
     ? 'bg-blue-50' 
     : lessonTimingStatus === 'past' 
@@ -168,50 +104,14 @@ export function TopNavigationBar({
         </div>
 
         {/* Lesson Metadata */}
-        {lessonMetadata && (lessonMetadata.subject || lessonMetadata.grade || lessonMetadata.homeroom) && (() => {
-          console.log('[TopNavigationBar] Rendering lessonMetadata:', {
-            subject: lessonMetadata.subject,
-            grade: lessonMetadata.grade,
-            homeroom: lessonMetadata.homeroom,
-            day_of_week: lessonMetadata.day_of_week,
-            formatted_date: lessonMetadata.formatted_date,
-            start_time: lessonMetadata.start_time,
-            end_time: lessonMetadata.end_time
-          });
-          return true;
-        })() && (
-          <div className={`flex items-center gap-2 px-3 py-1.5 rounded-md border ${getMetadataColorClasses()}`}>
-            <div className="text-sm text-muted-foreground flex items-center gap-0">
-              {lessonMetadata.subject && (
-                <span className="font-medium">{lessonMetadata.subject}</span>
-              )}
-              {lessonMetadata.grade && (
-                <span className={lessonTimingStatus ? 'opacity-90' : ''}>
-                  • Grade {lessonMetadata.grade}
-                </span>
-              )}
-              {lessonMetadata.homeroom && (
-                <span className={lessonTimingStatus ? 'opacity-90' : ''}>
-                  • {lessonMetadata.homeroom}
-                </span>
-              )}
-              {lessonMetadata.day_of_week && (
-                <span className={lessonTimingStatus ? 'opacity-90' : ''}>
-                  • {lessonMetadata.day_of_week}
-                </span>
-              )}
-              {lessonMetadata.formatted_date && (
-                <span className={lessonTimingStatus ? 'opacity-90' : ''}>
-                  • {lessonMetadata.formatted_date}
-                </span>
-              )}
-              {lessonMetadata.start_time && lessonMetadata.end_time && (
-                <span className={lessonTimingStatus ? 'opacity-90' : ''}>
-                  • {lessonMetadata.start_time} - {lessonMetadata.end_time}
-                </span>
-              )}
-            </div>
-          </div>
+        {lessonMetadata && (lessonMetadata.subject || lessonMetadata.grade || lessonMetadata.homeroom) && (
+          <LessonMetadataDisplay
+            lessonMetadata={lessonMetadata}
+            day={lessonMetadata.day_of_week}
+            weekOf={selectedWeek || undefined}
+            showStatusBadge={true}
+            onStatusCalculate={setCalculatedStatus}
+          />
         )}
 
         {/* View Mode Buttons - Only show when NOT in lesson-mode */}
@@ -260,7 +160,7 @@ export function TopNavigationBar({
                       lessonData.slot,
                       lessonData.planId,
                       undefined, // previousViewMode
-                      undefined // weekOf - will be calculated from lessonPlanData
+                      selectedWeek || undefined // weekOf - use selectedWeek if available
                     );
                   } else {
                     console.warn('[TopNavigationBar] No lesson available for Lesson Mode');
@@ -320,6 +220,7 @@ export function TopNavigationBar({
               Today
             </Button>
           )}
+
 
           {/* Exit Lesson Mode Button - Only show when IN lesson-mode, positioned on the right */}
           {viewMode === 'lesson-mode' && onExitLessonMode && (

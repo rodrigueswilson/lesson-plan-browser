@@ -33,8 +33,25 @@ class Settings(BaseSettings):
         description="Comma-separated list of allowed CORS origins",
     )
 
-    DATABASE_URL: str = "sqlite:///./data/lesson_planner.db"
-    SQLITE_DB_PATH: Path = Path("data/lesson_planner.db")
+    # Database
+    DATABASE_URL: str = Field(
+        default="sqlite:///./data/lesson_planner.db",
+        description="SQLite database URL (absolute path computed from root)",
+    )
+    SQLITE_DB_PATH: Path = Field(
+        default=Path("data/lesson_planner.db"),
+        description="SQLite database path (absolute path computed from root)",
+    )
+
+    def __init__(self, **values):
+        super().__init__(**values)
+        # Force absolute paths after loading from env
+        root = Path(__file__).parents[1]
+        db_file = root / "data" / "lesson_planner.db"
+        db_file.parent.mkdir(parents=True, exist_ok=True)
+        
+        self.SQLITE_DB_PATH = db_file.absolute()
+        self.DATABASE_URL = f"sqlite:///{self.SQLITE_DB_PATH}"
 
     # Supabase Configuration
     USE_SUPABASE: bool = Field(
@@ -128,9 +145,38 @@ class Settings(BaseSettings):
     OPENAI_API_KEY: Optional[str] = None
     ANTHROPIC_API_KEY: Optional[str] = None
 
+    # Parallel Processing Configuration
+    PARALLEL_LLM_PROCESSING: bool = Field(
+        default=True,
+        description="Enable parallel LLM API calls for multiple slots (faster but uses more API quota). Default: True"
+    )
+    MAX_CONCURRENT_LLM_REQUESTS: int = Field(
+        default=5,
+        description="Maximum concurrent LLM requests (typical: 5 slots). Adjust based on API tier limits. Default: 5"
+    )
+    RATE_LIMIT_RETRY_ATTEMPTS: int = Field(
+        default=3,
+        description="Number of retry attempts for rate limit errors. Default: 3"
+    )
+    RATE_LIMIT_BACKOFF_MULTIPLIER: float = Field(
+        default=2.0,
+        description="Exponential backoff multiplier for rate limit retries. Default: 2.0"
+    )
+    # OpenAI Rate Limits (default to Tier 1 - adjust based on your tier)
+    OPENAI_RPM_LIMIT: int = Field(
+        default=500,
+        description="OpenAI requests per minute limit (based on tier). Tier 1: 500, Tier 2+: higher. Default: 500"
+    )
+    OPENAI_TPM_LIMIT: int = Field(
+        default=500_000,
+        description="OpenAI tokens per minute limit (based on tier). Tier 1: 500K, Tier 2+: higher. Default: 500000"
+    )
+
     # Token budget settings
     MAX_PROMPT_TOKENS: int = 8000
-    MAX_COMPLETION_TOKENS: int = 4000
+    MAX_COMPLETION_TOKENS: int = (
+        16000  # Increased from 4000 to handle full 5-day multi-slot lesson plans
+    )
     TOKEN_ALERT_THRESHOLD_PCT: int = 20  # Alert if increase > 20%
 
     # Path settings
@@ -230,6 +276,16 @@ class Settings(BaseSettings):
 
     # DOCX Template
     DOCX_TEMPLATE_PATH: str = "input/Lesson Plan Template SY'25-26.docx"
+
+    # School Year Configuration
+    SCHOOL_YEAR_START_YEAR: Optional[int] = Field(
+        default=None,
+        description="Start year of school year (e.g., 2025 for SY 2025-2026). If None, will be inferred from dates.",
+    )
+    SCHOOL_YEAR_END_YEAR: Optional[int] = Field(
+        default=None,
+        description="End year of school year (e.g., 2026 for SY 2025-2026). If None, will be inferred from dates.",
+    )
 
     # Media Anchoring Settings (Session 7)
     MEDIA_MATCH_CONFIDENCE_THRESHOLD: float = Field(

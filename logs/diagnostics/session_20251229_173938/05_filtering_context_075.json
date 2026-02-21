@@ -1,0 +1,13 @@
+{
+  "timestamp": "2025-12-29T17:39:47.137009",
+  "stage": "05_filtering_context",
+  "data": {
+    "current_slot_number": null,
+    "current_slot_number_is_none": true,
+    "current_subject": "Math",
+    "current_subject_is_none": false,
+    "pending_hyperlinks_count": 1,
+    "cell": "thursday_instruction",
+    "filtering_active": false
+  }
+}

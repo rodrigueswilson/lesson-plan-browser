@@ -1,0 +1,74 @@
+{
+  "timestamp": "2026-02-14T11:30:57.862296",
+  "stage": "03_before_render_slot5",
+  "data": {
+    "slot_number": 5,
+    "subject": "Math",
+    "render_type": "multi_slot",
+    "metadata_slot_number": 5,
+    "metadata_subject": "Math",
+    "hyperlink_count": 11,
+    "all_hyperlinks_have_slot": true,
+    "all_hyperlinks_have_subject": true,
+    "hyperlink_slot_distribution": {
+      "5": 11
+    },
+    "sample_hyperlinks": [
+      {
+        "text": "Stage 5",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "3.4.13 Problems About The Farm",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Stage 3",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Stage 6",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "3.4.14 Multiplying Numbers Greater Than 20",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Stage 3",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Stage 6",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "3.4.14 Multiplying Numbers Greater Than 20",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Stage 3",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Stage 6",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "3.4.15 Planting Pepper Seeds",
+        "source_slot": 5,
+        "source_subject": "Math"
+      }
+    ]
+  }
+}

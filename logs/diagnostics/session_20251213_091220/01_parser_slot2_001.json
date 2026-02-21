@@ -1,0 +1,100 @@
+{
+  "timestamp": "2025-12-13T09:16:46.402715",
+  "stage": "01_parser_slot2",
+  "data": {
+    "slot_number": 2,
+    "subject": "Social Studies",
+    "source_file": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\25 W51\\T. Santiago SS Plans 12_15.docx",
+    "hyperlink_count": 11,
+    "hyperlinks": [
+      {
+        "text": "The Mummification Project Reading",
+        "url": "https://docs.google.com/document/d/1aFQ3vMX_uW29u49oo_Fi2_8FMpj0QESwK2qClVKkAME/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "The Mummy Project Assignment Sheet",
+        "url": "https://docs.google.com/document/d/1weqL9ufVsIwt4dRd5pXIqSXwf5d4NkQyLDeiG5COsG8/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "The Mummification Project Reading",
+        "url": "https://docs.google.com/document/d/1aFQ3vMX_uW29u49oo_Fi2_8FMpj0QESwK2qClVKkAME/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "The Mummy Project Assignment Sheet",
+        "url": "https://docs.google.com/document/d/1weqL9ufVsIwt4dRd5pXIqSXwf5d4NkQyLDeiG5COsG8/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "The Mummification Project Reading",
+        "url": "https://docs.google.com/document/d/1aFQ3vMX_uW29u49oo_Fi2_8FMpj0QESwK2qClVKkAME/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "The Mummy Project Assignment Sheet",
+        "url": "https://docs.google.com/document/d/1weqL9ufVsIwt4dRd5pXIqSXwf5d4NkQyLDeiG5COsG8/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "The Mummification Project Reading",
+        "url": "https://docs.google.com/document/d/1aFQ3vMX_uW29u49oo_Fi2_8FMpj0QESwK2qClVKkAME/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "The Mummy Project Assignment Sheet",
+        "url": "https://docs.google.com/document/d/1weqL9ufVsIwt4dRd5pXIqSXwf5d4NkQyLDeiG5COsG8/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Rubric",
+        "url": "https://docs.google.com/document/d/1Xijvp_VkzE4BVo9Ez0taJnS3wo5tl7XBeM37cJw-jJk/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "The Mummification Project Reading",
+        "url": "https://docs.google.com/document/d/1aFQ3vMX_uW29u49oo_Fi2_8FMpj0QESwK2qClVKkAME/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "The Mummy Project Assignment Sheet",
+        "url": "https://docs.google.com/document/d/1weqL9ufVsIwt4dRd5pXIqSXwf5d4NkQyLDeiG5COsG8/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      }
+    ]
+  }
+}

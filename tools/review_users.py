@@ -19,9 +19,15 @@ def main():
     print(f"\nTotal users: {len(users)}\n")
     
     for i, user in enumerate(users, 1):
-        user_id = user['id']
-        name = user.get('name', 'N/A')
-        email = user.get('email', 'N/A')
+        # Handle both SQLModel objects and dictionaries
+        if hasattr(user, "id"):
+            user_id = user.id
+            name = getattr(user, "name", "N/A")
+            email = getattr(user, "email", "N/A")
+        else:
+            user_id = user['id']
+            name = user.get('name', 'N/A')
+            email = user.get('email', 'N/A')
         
         slots = db.get_user_slots(user_id)
         plans = db.get_user_plans(user_id, limit=10000)
@@ -29,7 +35,9 @@ def main():
         # Count performance metrics for this user's plans
         metrics_count = 0
         for plan in plans:
-            plan_metrics = db.get_plan_metrics(plan['id'])
+            # Handle both object and dict access for plans
+            plan_id = plan.id if hasattr(plan, "id") else plan['id']
+            plan_metrics = db.get_plan_metrics(plan_id)
             metrics_count += len(plan_metrics)
         
         print(f"{i}. {name}")

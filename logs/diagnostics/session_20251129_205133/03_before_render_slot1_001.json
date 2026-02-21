@@ -1,0 +1,79 @@
+{
+  "timestamp": "2025-11-29T20:51:34.521350",
+  "stage": "03_before_render_slot1",
+  "data": {
+    "slot_number": 1,
+    "subject": "ELA",
+    "render_type": "multi_slot",
+    "metadata_slot_number": 1,
+    "metadata_subject": "ELA",
+    "hyperlink_count": 12,
+    "all_hyperlinks_have_slot": true,
+    "all_hyperlinks_have_subject": true,
+    "hyperlink_slot_distribution": {
+      "1": 12
+    },
+    "sample_hyperlinks": [
+      {
+        "text": "Lenni Lenape",
+        "source_slot": 1,
+        "source_subject": "ELA"
+      },
+      {
+        "text": "Lenni Lenape",
+        "source_slot": 1,
+        "source_subject": "ELA"
+      },
+      {
+        "text": "Lenni Lenape",
+        "source_slot": 1,
+        "source_subject": "ELA"
+      },
+      {
+        "text": "Lenni Lenape",
+        "source_slot": 1,
+        "source_subject": "ELA"
+      },
+      {
+        "text": "Lenni Lenape",
+        "source_slot": 1,
+        "source_subject": "ELA"
+      },
+      {
+        "text": "Cause and Effects T-Chart",
+        "source_slot": 1,
+        "source_subject": "ELA"
+      },
+      {
+        "text": "Opening: Cause and Effect ",
+        "source_slot": 1,
+        "source_subject": "ELA"
+      },
+      {
+        "text": " graphic organizer",
+        "source_slot": 1,
+        "source_subject": "ELA"
+      },
+      {
+        "text": "3-2-1 sheet",
+        "source_slot": 1,
+        "source_subject": "ELA"
+      },
+      {
+        "text": " Cause and Effect Template ",
+        "source_slot": 1,
+        "source_subject": "ELA"
+      },
+      {
+        "text": "3-2-1 Sheet",
+        "source_slot": 1,
+        "source_subject": "ELA"
+      },
+      {
+        "text": "Reciprocal Teaching Slides for Students",
+        "source_slot": 1,
+        "source_subject": "ELA"
+      }
+    ]
+  }
+}

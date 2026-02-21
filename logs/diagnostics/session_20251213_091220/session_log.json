@@ -1,0 +1,1079 @@
+[
+  {
+    "timestamp": "2025-12-13T09:12:20.449626",
+    "stage": "01_parser_slot1",
+    "data": {
+      "slot_number": 1,
+      "subject": "ELA/SS",
+      "source_file": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\25 W51\\Morais 12_15 - 12_19.docx",
+      "hyperlink_count": 12,
+      "hyperlinks": [
+        {
+          "text": "02 - Second Grade Unit Description and Summary of Key Learning",
+          "url": "https://docs.google.com/document/d/1H_hFmN04OarxjXNlCsHxSgkzyD1nfzMjDFWQfx5zc30/edit?tab=t.kofvr9ldt",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Preview Chart",
+          "url": "https://docs.google.com/document/d/1p94HeP_uTYVGiyF1MDNNFBlpwUfBJ2O4qukhx8mbxK0/edit?usp=sharing",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Let's Talk about Race, Book",
+          "url": "https://docs.google.com/presentation/d/1y1OFaGZ06wf_21lQBhO5DRwdFgdbP8tiZYF2_x43PEY/edit?usp=sharing",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Let's Talk About Race: Check for Understanding Card",
+          "url": "https://docs.google.com/document/d/1z5V_G4-y_CcS8ghgwP9rLO_J0YoS7KamzyuJP5pRgGY/edit?usp=sharing",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Vocabulary Boxes",
+          "url": "https://docs.google.com/document/d/1wSBDhXaYqCKMzbGdCJkXWjqATrbmubZyeyzDRcnZFF8/edit?usp=sharing",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Sulwe's Character Traits",
+          "url": "https://docs.google.com/document/d/1-EN411eLmvqGO2m8NrOC-Q25jpzuLqxRVdlhZ_vo_bk/edit?usp=sharing",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Sulwe: Culminating Task Rubric",
+          "url": "https://docs.google.com/presentation/d/1HbVmFxeyAGFGT_bNTRHLyV_h7zPpFoc1A8UuN_gJ0IA/edit?usp=sharing",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Single Paragraph Outline.docx",
+          "url": "https://docs.google.com/document/d/1IuGa59rW6zAc3YPJnPBqn1GZBQekZMoq/edit?usp=sharing&ouid=114185867",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Let's Talk About Race Lesson 9 Rubric",
+          "url": "https://docs.google.com/presentation/d/1-Xe7qk2rnXIjpONbJmLjOYXX0y7XrJxt7cTrE11t1jE/edit?usp=sharing",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Let's Talk About Race Lesson 9 Rubric",
+          "url": "https://docs.google.com/presentation/d/1-Xe7qk2rnXIjpONbJmLjOYXX0y7XrJxt7cTrE11t1jE/edit?usp=sharing",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Let's Talk About Race: Lesson 10 Rubric",
+          "url": "https://docs.google.com/presentation/d/14toBHDwzCBn6RHufsCh7NPQbAvVjUNQUspOuyfg0Q3I/edit?usp=sharing",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "What is Colorism: Lesson 11 Rubr",
+          "url": "https://docs.google.com/presentation/d/1OWR5oWVQLYVfNoRdRdrY5Q_LSrOi6eSdkZ5LxvHj0f8/edit?usp=sharing",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-12-13T09:16:46.265179",
+    "stage": "02_lesson_json_slot1",
+    "data": {
+      "slot_number": 1,
+      "subject": "ELA/SS",
+      "metadata_slot_number": null,
+      "metadata_subject": "ELA/SS",
+      "hyperlink_count": 12,
+      "hyperlinks_with_slot_metadata": 0,
+      "hyperlinks_with_subject_metadata": 0,
+      "sample_hyperlinks": [
+        {
+          "text": "02 - Second Grade Unit Description and Summary of ",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "Preview Chart",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "Let's Talk about Race, Book",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "Let's Talk About Race: Check for Understanding Car",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "Vocabulary Boxes",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "Sulwe's Character Traits",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "Sulwe: Culminating Task Rubric",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "Single Paragraph Outline.docx",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "Let's Talk About Race Lesson 9 Rubric",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "Let's Talk About Race Lesson 9 Rubric",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-12-13T09:16:46.402715",
+    "stage": "01_parser_slot2",
+    "data": {
+      "slot_number": 2,
+      "subject": "Social Studies",
+      "source_file": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\25 W51\\T. Santiago SS Plans 12_15.docx",
+      "hyperlink_count": 11,
+      "hyperlinks": [
+        {
+          "text": "The Mummification Project Reading",
+          "url": "https://docs.google.com/document/d/1aFQ3vMX_uW29u49oo_Fi2_8FMpj0QESwK2qClVKkAME/edit?usp=sharing",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "The Mummy Project Assignment Sheet",
+          "url": "https://docs.google.com/document/d/1weqL9ufVsIwt4dRd5pXIqSXwf5d4NkQyLDeiG5COsG8/edit?usp=sharing",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "The Mummification Project Reading",
+          "url": "https://docs.google.com/document/d/1aFQ3vMX_uW29u49oo_Fi2_8FMpj0QESwK2qClVKkAME/edit?usp=sharing",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "The Mummy Project Assignment Sheet",
+          "url": "https://docs.google.com/document/d/1weqL9ufVsIwt4dRd5pXIqSXwf5d4NkQyLDeiG5COsG8/edit?usp=sharing",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "The Mummification Project Reading",
+          "url": "https://docs.google.com/document/d/1aFQ3vMX_uW29u49oo_Fi2_8FMpj0QESwK2qClVKkAME/edit?usp=sharing",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "The Mummy Project Assignment Sheet",
+          "url": "https://docs.google.com/document/d/1weqL9ufVsIwt4dRd5pXIqSXwf5d4NkQyLDeiG5COsG8/edit?usp=sharing",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "The Mummification Project Reading",
+          "url": "https://docs.google.com/document/d/1aFQ3vMX_uW29u49oo_Fi2_8FMpj0QESwK2qClVKkAME/edit?usp=sharing",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "The Mummy Project Assignment Sheet",
+          "url": "https://docs.google.com/document/d/1weqL9ufVsIwt4dRd5pXIqSXwf5d4NkQyLDeiG5COsG8/edit?usp=sharing",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Rubric",
+          "url": "https://docs.google.com/document/d/1Xijvp_VkzE4BVo9Ez0taJnS3wo5tl7XBeM37cJw-jJk/edit?usp=sharing",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "The Mummification Project Reading",
+          "url": "https://docs.google.com/document/d/1aFQ3vMX_uW29u49oo_Fi2_8FMpj0QESwK2qClVKkAME/edit?usp=sharing",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "The Mummy Project Assignment Sheet",
+          "url": "https://docs.google.com/document/d/1weqL9ufVsIwt4dRd5pXIqSXwf5d4NkQyLDeiG5COsG8/edit?usp=sharing",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-12-13T09:20:36.941550",
+    "stage": "02_lesson_json_slot2",
+    "data": {
+      "slot_number": 2,
+      "subject": "Social Studies",
+      "metadata_slot_number": null,
+      "metadata_subject": "Social Studies",
+      "hyperlink_count": 11,
+      "hyperlinks_with_slot_metadata": 0,
+      "hyperlinks_with_subject_metadata": 0,
+      "sample_hyperlinks": [
+        {
+          "text": "The Mummification Project Reading",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "The Mummy Project Assignment Sheet",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "The Mummification Project Reading",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "The Mummy Project Assignment Sheet",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "The Mummification Project Reading",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "The Mummy Project Assignment Sheet",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "The Mummification Project Reading",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "The Mummy Project Assignment Sheet",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "Rubric",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "The Mummification Project Reading",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-12-13T09:20:37.060988",
+    "stage": "01_parser_slot3",
+    "data": {
+      "slot_number": 3,
+      "subject": "Science",
+      "source_file": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\25 W51\\Mrs. Grande Science 12_15 12_19.docx",
+      "hyperlink_count": 0,
+      "hyperlinks": []
+    }
+  },
+  {
+    "timestamp": "2025-12-13T09:24:40.684846",
+    "stage": "01_parser_slot4",
+    "data": {
+      "slot_number": 4,
+      "subject": "Science",
+      "source_file": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\25 W51\\Morais 12_15 - 12_19.docx",
+      "hyperlink_count": 3,
+      "hyperlinks": [
+        {
+          "text": " 2nd Grade Science ",
+          "url": "https://docs.google.com/document/d/1nImdZIX6pCavnrr59YDV-iKMuixgzblvrcu5bGunB6Q/edit?tab=t.0",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": " 2nd Grade Science ",
+          "url": "https://docs.google.com/document/d/1nImdZIX6pCavnrr59YDV-iKMuixgzblvrcu5bGunB6Q/edit?tab=t.0",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": " 2nd Grade Science ",
+          "url": "https://docs.google.com/document/d/1nImdZIX6pCavnrr59YDV-iKMuixgzblvrcu5bGunB6Q/edit?tab=t.0",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-12-13T09:27:55.033850",
+    "stage": "02_lesson_json_slot4",
+    "data": {
+      "slot_number": 4,
+      "subject": "Science",
+      "metadata_slot_number": null,
+      "metadata_subject": "Science",
+      "hyperlink_count": 3,
+      "hyperlinks_with_slot_metadata": 0,
+      "hyperlinks_with_subject_metadata": 0,
+      "sample_hyperlinks": [
+        {
+          "text": " 2nd Grade Science ",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": " 2nd Grade Science ",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": " 2nd Grade Science ",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-12-13T09:27:55.231327",
+    "stage": "01_parser_slot5",
+    "data": {
+      "slot_number": 5,
+      "subject": "Math",
+      "source_file": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\25 W51\\Morais 12_15 - 12_19.docx",
+      "hyperlink_count": 19,
+      "hyperlinks": [
+        {
+          "text": "2.4.1 Teacher Guide",
+          "url": "https://drive.google.com/file/d/1TmY3Ay_64_ZmB1uact8Oz1YcYRGiVHMR/view?usp=drive_link",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "2.4.3 Teacher Guide",
+          "url": "https://drive.google.com/file/d/1E3ki9EoICdgm_N0uKNCo2oTAXe8AFqao/view?usp=drive_link",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "2.4.4 Teacher Guide",
+          "url": "https://drive.google.com/file/d/1G3FWwm025AhUBY5VrWX1dIT1Dh7c1OMZ/view?usp=drive_link",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "2.4.5 Teacher Guide",
+          "url": "https://drive.google.com/file/d/1IcVfSWgc1N-5lz922x8uLaRc3gvh3wH8/view?usp=drive_link",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Unit 4: Addition and Subtraction on the Number Line",
+          "url": "https://docs.google.com/document/d/1x8ll9eW0ZVYdBOKIdDfEPk1X_79X3dyOtq_zyByvpe4/edit?tab=t.0",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Unit 4: Addition and Subtraction on the Number Line",
+          "url": "https://docs.google.com/document/d/1x8ll9eW0ZVYdBOKIdDfEPk1X_79X3dyOtq_zyByvpe4/edit?tab=t.0",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Unit 4: Addition and Subtraction on the Number Line",
+          "url": "https://docs.google.com/document/d/1x8ll9eW0ZVYdBOKIdDfEPk1X_79X3dyOtq_zyByvpe4/edit?tab=t.0",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Unit 4: Addition and Subtraction on the Number Line",
+          "url": "https://docs.google.com/document/d/1x8ll9eW0ZVYdBOKIdDfEPk1X_79X3dyOtq_zyByvpe4/edit?tab=t.0",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Unit 4: Addition and Subtraction on the Number Line",
+          "url": "https://docs.google.com/document/d/1x8ll9eW0ZVYdBOKIdDfEPk1X_79X3dyOtq_zyByvpe4/edit?tab=t.0",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "2.4.1 Cool Down",
+          "url": "https://drive.google.com/file/d/1fsmxYqaGuLlTBsUunm_Q1sNY46uYvey4/view?usp=share_link",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "2.4.2 Cool Down",
+          "url": "https://drive.google.com/file/d/1yM5n_6Pnf0L3AYpAHs6GIc9881NTRp5q/view?usp=sharing",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "2.4.3 Cool Down",
+          "url": "https://drive.google.com/file/d/1UK0aKF1QcIOp05quEfabh8M1QaLfylGe/view?usp=share_link",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "2.4.4 Cool Down",
+          "url": "https://drive.google.com/file/d/1GabETFXGkbRQuOwx1lk1CsBLlV07Byqc/view?usp=share_link",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "2.5.5 Cool Down",
+          "url": "https://drive.google.com/file/d/12B0lLzbm7Y7OvWLt6ncVWd0bSqpaxOYJ/view?usp=share_link",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Grade 02 Unit 4 Section A Checkpoint (English)",
+          "url": "https://drive.google.com/file/d/18ZtjoPEbKpSLenvhbTg24zkn97GldlhF/view?usp=drive_link",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "U4 L1 Math hw.pdf",
+          "url": "https://drive.google.com/file/d/1VoqodhYIYhg840kNZV43WNuq8MewiMiN/view?usp=drive_link",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "ADM-2-4-02-SE-practice-1E.pdf",
+          "url": "https://drive.google.com/file/d/1JklmM8Vi_H4tjh0GvKwoc9UzM17ExVi1/view?usp=drive_link",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "ADM-G2-U4-L3-additional-practice-1E.pdf",
+          "url": "https://drive.google.com/file/d/1ho7by3zo7YbWnAMuEC9AodcPojILpUxW/view?usp=drive_link",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "ADM-2-4-04-SE-practice-1E.pdf",
+          "url": "https://drive.google.com/file/d/1cDZB6rzJLgp0YPxHkgtw3vsh_zSlvM9E/view?usp=drive_link",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-12-13T09:32:04.365728",
+    "stage": "02_lesson_json_slot5",
+    "data": {
+      "slot_number": 5,
+      "subject": "Math",
+      "metadata_slot_number": null,
+      "metadata_subject": "Math",
+      "hyperlink_count": 19,
+      "hyperlinks_with_slot_metadata": 0,
+      "hyperlinks_with_subject_metadata": 0,
+      "sample_hyperlinks": [
+        {
+          "text": "2.4.1 Teacher Guide",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "2.4.3 Teacher Guide",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "2.4.4 Teacher Guide",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "2.4.5 Teacher Guide",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "Unit 4: Addition and Subtraction on the Number Lin",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "Unit 4: Addition and Subtraction on the Number Lin",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "Unit 4: Addition and Subtraction on the Number Lin",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "Unit 4: Addition and Subtraction on the Number Lin",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "Unit 4: Addition and Subtraction on the Number Lin",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        },
+        {
+          "text": "2.4.1 Cool Down",
+          "has_source_slot": false,
+          "source_slot": null,
+          "has_source_subject": false,
+          "source_subject": null
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-12-13T09:32:04.411246",
+    "stage": "03_before_render_slot1",
+    "data": {
+      "slot_number": 1,
+      "subject": "ELA/SS",
+      "render_type": "multi_slot",
+      "metadata_slot_number": 1,
+      "metadata_subject": "ELA/SS",
+      "hyperlink_count": 12,
+      "all_hyperlinks_have_slot": true,
+      "all_hyperlinks_have_subject": true,
+      "hyperlink_slot_distribution": {
+        "1": 12
+      },
+      "sample_hyperlinks": [
+        {
+          "text": "02 - Second Grade Unit Description and Summary of ",
+          "source_slot": 1,
+          "source_subject": "ELA/SS"
+        },
+        {
+          "text": "Preview Chart",
+          "source_slot": 1,
+          "source_subject": "ELA/SS"
+        },
+        {
+          "text": "Let's Talk about Race, Book",
+          "source_slot": 1,
+          "source_subject": "ELA/SS"
+        },
+        {
+          "text": "Let's Talk About Race: Check for Understanding Car",
+          "source_slot": 1,
+          "source_subject": "ELA/SS"
+        },
+        {
+          "text": "Vocabulary Boxes",
+          "source_slot": 1,
+          "source_subject": "ELA/SS"
+        },
+        {
+          "text": "Sulwe's Character Traits",
+          "source_slot": 1,
+          "source_subject": "ELA/SS"
+        },
+        {
+          "text": "Sulwe: Culminating Task Rubric",
+          "source_slot": 1,
+          "source_subject": "ELA/SS"
+        },
+        {
+          "text": "Single Paragraph Outline.docx",
+          "source_slot": 1,
+          "source_subject": "ELA/SS"
+        },
+        {
+          "text": "Let's Talk About Race Lesson 9 Rubric",
+          "source_slot": 1,
+          "source_subject": "ELA/SS"
+        },
+        {
+          "text": "Let's Talk About Race Lesson 9 Rubric",
+          "source_slot": 1,
+          "source_subject": "ELA/SS"
+        },
+        {
+          "text": "Let's Talk About Race: Lesson 10 Rubric",
+          "source_slot": 1,
+          "source_subject": "ELA/SS"
+        },
+        {
+          "text": "What is Colorism: Lesson 11 Rubr",
+          "source_slot": 1,
+          "source_subject": "ELA/SS"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-12-13T09:32:04.453330",
+    "stage": "04_renderer_metadata_extracted",
+    "data": {
+      "slot_number": 1,
+      "slot_number_type": "int",
+      "slot_number_is_none": false,
+      "subject": "ELA/SS",
+      "subject_is_none": false,
+      "hyperlink_count": 12,
+      "teacher": "Catarina Morais / Daniela Silva",
+      "filtering_will_activate": true
+    }
+  },
+  {
+    "timestamp": "2025-12-13T09:32:04.672679",
+    "stage": "03_before_render_slot2",
+    "data": {
+      "slot_number": 2,
+      "subject": "Social Studies",
+      "render_type": "multi_slot",
+      "metadata_slot_number": 2,
+      "metadata_subject": "Social Studies",
+      "hyperlink_count": 11,
+      "all_hyperlinks_have_slot": true,
+      "all_hyperlinks_have_subject": true,
+      "hyperlink_slot_distribution": {
+        "2": 11
+      },
+      "sample_hyperlinks": [
+        {
+          "text": "The Mummification Project Reading",
+          "source_slot": 2,
+          "source_subject": "Social Studies"
+        },
+        {
+          "text": "The Mummy Project Assignment Sheet",
+          "source_slot": 2,
+          "source_subject": "Social Studies"
+        },
+        {
+          "text": "The Mummification Project Reading",
+          "source_slot": 2,
+          "source_subject": "Social Studies"
+        },
+        {
+          "text": "The Mummy Project Assignment Sheet",
+          "source_slot": 2,
+          "source_subject": "Social Studies"
+        },
+        {
+          "text": "The Mummification Project Reading",
+          "source_slot": 2,
+          "source_subject": "Social Studies"
+        },
+        {
+          "text": "The Mummy Project Assignment Sheet",
+          "source_slot": 2,
+          "source_subject": "Social Studies"
+        },
+        {
+          "text": "The Mummification Project Reading",
+          "source_slot": 2,
+          "source_subject": "Social Studies"
+        },
+        {
+          "text": "The Mummy Project Assignment Sheet",
+          "source_slot": 2,
+          "source_subject": "Social Studies"
+        },
+        {
+          "text": "Rubric",
+          "source_slot": 2,
+          "source_subject": "Social Studies"
+        },
+        {
+          "text": "The Mummification Project Reading",
+          "source_slot": 2,
+          "source_subject": "Social Studies"
+        },
+        {
+          "text": "The Mummy Project Assignment Sheet",
+          "source_slot": 2,
+          "source_subject": "Social Studies"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-12-13T09:32:04.702680",
+    "stage": "04_renderer_metadata_extracted",
+    "data": {
+      "slot_number": 2,
+      "slot_number_type": "int",
+      "slot_number_is_none": false,
+      "subject": "Social Studies",
+      "subject_is_none": false,
+      "hyperlink_count": 11,
+      "teacher": "Taina Santiago / Daniela Silva",
+      "filtering_will_activate": true
+    }
+  },
+  {
+    "timestamp": "2025-12-13T09:32:04.935353",
+    "stage": "03_before_render_slot3",
+    "data": {
+      "slot_number": 3,
+      "subject": "Science",
+      "render_type": "multi_slot",
+      "metadata_slot_number": 3,
+      "metadata_subject": "Science",
+      "hyperlink_count": 0,
+      "all_hyperlinks_have_slot": true,
+      "all_hyperlinks_have_subject": true,
+      "hyperlink_slot_distribution": {},
+      "sample_hyperlinks": []
+    }
+  },
+  {
+    "timestamp": "2025-12-13T09:32:04.949354",
+    "stage": "04_renderer_metadata_extracted",
+    "data": {
+      "slot_number": 3,
+      "slot_number_type": "int",
+      "slot_number_is_none": false,
+      "subject": "Science",
+      "subject_is_none": false,
+      "hyperlink_count": 0,
+      "teacher": "Mariela Grande / Daniela Silva",
+      "filtering_will_activate": true
+    }
+  },
+  {
+    "timestamp": "2025-12-13T09:32:05.157443",
+    "stage": "03_before_render_slot4",
+    "data": {
+      "slot_number": 4,
+      "subject": "Science",
+      "render_type": "multi_slot",
+      "metadata_slot_number": 4,
+      "metadata_subject": "Science",
+      "hyperlink_count": 3,
+      "all_hyperlinks_have_slot": true,
+      "all_hyperlinks_have_subject": true,
+      "hyperlink_slot_distribution": {
+        "4": 3
+      },
+      "sample_hyperlinks": [
+        {
+          "text": " 2nd Grade Science ",
+          "source_slot": 4,
+          "source_subject": "Science"
+        },
+        {
+          "text": " 2nd Grade Science ",
+          "source_slot": 4,
+          "source_subject": "Science"
+        },
+        {
+          "text": " 2nd Grade Science ",
+          "source_slot": 4,
+          "source_subject": "Science"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-12-13T09:32:05.181509",
+    "stage": "04_renderer_metadata_extracted",
+    "data": {
+      "slot_number": 4,
+      "slot_number_type": "int",
+      "slot_number_is_none": false,
+      "subject": "Science",
+      "subject_is_none": false,
+      "hyperlink_count": 3,
+      "teacher": "Catarina Morais / Daniela Silva",
+      "filtering_will_activate": true
+    }
+  },
+  {
+    "timestamp": "2025-12-13T09:32:05.362647",
+    "stage": "03_before_render_slot5",
+    "data": {
+      "slot_number": 5,
+      "subject": "Math",
+      "render_type": "multi_slot",
+      "metadata_slot_number": 5,
+      "metadata_subject": "Math",
+      "hyperlink_count": 19,
+      "all_hyperlinks_have_slot": true,
+      "all_hyperlinks_have_subject": true,
+      "hyperlink_slot_distribution": {
+        "5": 19
+      },
+      "sample_hyperlinks": [
+        {
+          "text": "2.4.1 Teacher Guide",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "2.4.3 Teacher Guide",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "2.4.4 Teacher Guide",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "2.4.5 Teacher Guide",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "Unit 4: Addition and Subtraction on the Number Lin",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "Unit 4: Addition and Subtraction on the Number Lin",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "Unit 4: Addition and Subtraction on the Number Lin",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "Unit 4: Addition and Subtraction on the Number Lin",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "Unit 4: Addition and Subtraction on the Number Lin",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "2.4.1 Cool Down",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "2.4.2 Cool Down",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "2.4.3 Cool Down",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "2.4.4 Cool Down",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "2.5.5 Cool Down",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "Grade 02 Unit 4 Section A Checkpoint (English)",
+          "source_slot": 5,
+          "source_subject": "Math"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-12-13T09:32:05.400151",
+    "stage": "04_renderer_metadata_extracted",
+    "data": {
+      "slot_number": 5,
+      "slot_number_type": "int",
+      "slot_number_is_none": false,
+      "subject": "Math",
+      "subject_is_none": false,
+      "hyperlink_count": 19,
+      "teacher": "Catarina Morais / Daniela Silva",
+      "filtering_will_activate": true
+    }
+  }
+]

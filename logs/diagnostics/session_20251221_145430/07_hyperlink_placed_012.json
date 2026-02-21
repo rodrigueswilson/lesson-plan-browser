@@ -1,0 +1,11 @@
+{
+  "timestamp": "2025-12-21T14:54:30.296266",
+  "stage": "07_hyperlink_placed",
+  "data": {
+    "text": "3.3.16 Teacher Guide",
+    "slot": 5,
+    "subject": "Math",
+    "cell": "monday_unit_lesson",
+    "confidence": 0.7481481481481481
+  }
+}

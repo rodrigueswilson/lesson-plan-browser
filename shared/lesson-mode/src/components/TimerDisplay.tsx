@@ -66,9 +66,14 @@ export function TimerDisplay({
   const [isDragging, setIsDragging] = useState(false);
   const [dragValue, setDragValue] = useState(0);
   const [isBlinking, setIsBlinking] = useState(false);
+  const [shouldBlink, setShouldBlink] = useState(false);
+  const previousShouldBlinkRef = useRef<boolean>(false);
   // Removed countdownRef - we use remainingTime from useLessonTimer hook directly
   const progressBarRef = useRef<HTMLDivElement>(null);
-  const blinkIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const blinkTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const currentRemainingTimeRef = useRef<number>(0);
+  const isRunningRef = useRef<boolean>(false);
+  const wasBlinkingRef = useRef<boolean>(false);
   const buttonsContainerRef = useRef<HTMLDivElement>(null);
   const lastSpaceLimitedStateRef = useRef<boolean | null>(null);
   const isTabletDevice = isTablet();
@@ -285,59 +290,128 @@ export function TimerDisplay({
     };
   }, [isTabletDevice]);
 
-  // Blinking effect for timer display
+  // Update refs with current values
   useEffect(() => {
-    // Clear any existing blink interval
-    if (blinkIntervalRef.current) {
-      clearInterval(blinkIntervalRef.current);
-      blinkIntervalRef.current = null;
+    currentRemainingTimeRef.current = effectiveDisplayTime;
+  }, [effectiveDisplayTime]);
+
+  useEffect(() => {
+    isRunningRef.current = isRunning;
+  }, [isRunning]);
+
+  // Determine if we should be blinking based on time and running state
+  // Only update state when crossing the threshold to avoid restarting the blink loop
+  useEffect(() => {
+    const newShouldBlink = isRunning && effectiveDisplayTime <= 10 && effectiveDisplayTime > 0;
+    if (newShouldBlink !== previousShouldBlinkRef.current) {
+      setShouldBlink(newShouldBlink);
+      previousShouldBlinkRef.current = newShouldBlink;
+    }
+  }, [isRunning, effectiveDisplayTime]);
+
+  // Blinking effect for timer display with constant acceleration from 10 to 0
+  // This effect only runs when shouldBlink changes (entering/leaving blink zone)
+  useEffect(() => {
+    // Clear any existing timeout
+    if (blinkTimeoutRef.current) {
+      clearTimeout(blinkTimeoutRef.current);
+      blinkTimeoutRef.current = null;
     }
 
-    // Start blinking when 10 seconds or less remaining
-    if (isRunning && effectiveDisplayTime <= 10 && effectiveDisplayTime > 0) {
-      if (effectiveDisplayTime <= 5) {
-        // Blink 2 times per second from 5 to 0 (every 250ms)
-        blinkIntervalRef.current = setInterval(() => {
-          setIsBlinking((prev) => !prev);
-        }, 250);
-      } else {
-        // Blink once per second from 10 to 6 (every 500ms)
-        blinkIntervalRef.current = setInterval(() => {
-          setIsBlinking((prev) => !prev);
-        }, 500);
-      }
-    } else {
-      // Stop blinking when timer stops or goes above 10 seconds
+    if (!shouldBlink) {
       setIsBlinking(false);
+      return;
     }
+
+    // Calculate interval with constant acceleration
+    // At 10 seconds: 500ms interval, at 0 seconds: 100ms interval
+    // Linear acceleration: interval = 100 + 40 * remainingTime
+    const calculateInterval = (remaining: number): number => {
+      const clampedRemaining = Math.max(0, Math.min(10, remaining));
+      return 100 + 40 * clampedRemaining; // 100ms to 500ms
+    };
+
+    // Recursive function to schedule next blink with accelerating interval
+    const scheduleNextBlink = () => {
+      const currentTime = currentRemainingTimeRef.current;
+      const currentlyRunning = isRunningRef.current;
+      
+      // Check if we should still be blinking
+      if (!currentlyRunning || currentTime <= 0 || currentTime > 10) {
+        setIsBlinking(false);
+        return;
+      }
+
+      // Toggle blink state
+      setIsBlinking((prev) => !prev);
+
+      // Calculate interval based on current remaining time
+      const interval = calculateInterval(currentTime);
+
+      // Schedule next blink with updated interval
+      blinkTimeoutRef.current = setTimeout(() => {
+        scheduleNextBlink();
+      }, interval);
+    };
+
+    // Start with visible state
+    setIsBlinking(false);
+    // Start the blinking sequence immediately
+    scheduleNextBlink();
 
     return () => {
-      if (blinkIntervalRef.current) {
-        clearInterval(blinkIntervalRef.current);
-        blinkIntervalRef.current = null;
+      if (blinkTimeoutRef.current) {
+        clearTimeout(blinkTimeoutRef.current);
+        blinkTimeoutRef.current = null;
       }
     };
-  }, [isRunning, effectiveDisplayTime]);
+  }, [shouldBlink]);
 
   // Calculate progress based on current totalDuration
   // Use totalDuration as the max so progress bar shows correctly
-  const progress = totalDuration > 0 ? Math.min(100, (effectiveDisplayTime / totalDuration) * 100) : 0;
+  // During last 10 seconds, show narrowing effect: 100% at 10s, decreasing to 0% at 0s
+  const progress = effectiveDisplayTime <= 10 && effectiveDisplayTime > 0
+    ? (effectiveDisplayTime / 10) * 100  // Narrow from 100% to 0% over 10 seconds
+    : totalDuration > 0 ? Math.min(100, (effectiveDisplayTime / totalDuration) * 100) : 0;
   
+  // Helper function to interpolate between two RGB colors
+  const interpolateColor = (color1: [number, number, number], color2: [number, number, number], factor: number): string => {
+    const clampedFactor = Math.max(0, Math.min(1, factor));
+    const r = Math.round(color1[0] + (color2[0] - color1[0]) * clampedFactor);
+    const g = Math.round(color1[1] + (color2[1] - color1[1]) * clampedFactor);
+    const b = Math.round(color1[2] + (color2[2] - color1[2]) * clampedFactor);
+    return `rgb(${r}, ${g}, ${b})`;
+  };
+
   // Calculate color scheme based on remaining time
-  // Green: >20s, Orange/Yellow: 20-10s, Red: <=10s
-  const actualColorScheme = 
-    effectiveDisplayTime > 20 ? 'green' :
-    effectiveDisplayTime > 10 ? 'orange' : 'red';
+  // Green: >20s, Gradual Orange to Red: 20s to 0s
+  const getProgressBarColor = (): string => {
+    if (effectiveDisplayTime > 20) {
+      return '#22c55e'; // Green
+    }
+    // Gradual transition from orange to red (20s to 0s)
+    const factor = 1 - (effectiveDisplayTime / 20); // 0 at 20s, 1 at 0s
+    const orange: [number, number, number] = [249, 115, 22]; // #f97316
+    const red: [number, number, number] = [239, 68, 68]; // #ef4444
+    return interpolateColor(orange, red, factor);
+  };
+
+  const getTextColor = (): string => {
+    if (effectiveDisplayTime > 20) {
+      return '#16a34a'; // Green
+    }
+    // Gradual transition from orange to red (20s to 0s)
+    const factor = 1 - (effectiveDisplayTime / 20); // 0 at 20s, 1 at 0s
+    const orange: [number, number, number] = [234, 88, 12]; // #ea580c
+    const red: [number, number, number] = [220, 38, 38]; // #dc2626
+    return interpolateColor(orange, red, factor);
+  };
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
-
-  const progressBarColor = 
-    actualColorScheme === 'green' ? 'bg-green-500' :
-    actualColorScheme === 'orange' ? 'bg-orange-500' : 'bg-red-500';
 
   // Calculate time from mouse/touch position - memoized
   // Allow dragging beyond totalDuration to add more time
@@ -440,11 +514,12 @@ export function TimerDisplay({
           style={{ touchAction: 'none' }} // Prevent scrolling while dragging on touch devices
         >
           <div
-            className={`h-full transition-all ${isDragging ? '' : 'duration-300'}`}
+            className={`h-full ${isDragging ? '' : ''}`}
             style={{ 
               width: `${progress}%`,
-              backgroundColor: actualColorScheme === 'green' ? '#22c55e' : 
-                              actualColorScheme === 'orange' ? '#f97316' : '#ef4444'
+              backgroundColor: getProgressBarColor(),
+              opacity: isBlinking ? 0.3 : 1,
+              transition: isDragging ? '' : 'opacity 0.1s ease-in-out, width 0.3s ease-in-out'
             }}
           />
           {isDragging && (
@@ -459,12 +534,11 @@ export function TimerDisplay({
         {/* Timer Display - Larger text for tablet */}
         <div className="text-center">
           <div 
-            className={`text-6xl md:text-4xl font-bold transition-all duration-300 ${
-              isBlinking ? 'opacity-30' : 'opacity-100'
-            }`}
+            className="text-6xl md:text-4xl font-bold"
             style={{
-              color: actualColorScheme === 'green' ? '#16a34a' : 
-                     actualColorScheme === 'orange' ? '#ea580c' : '#dc2626'
+              color: getTextColor(),
+              opacity: isBlinking ? 0.3 : 1,
+              transition: 'opacity 0.1s ease-in-out'
             }}
           >
             {formatTime(effectiveDisplayTime)}

@@ -1,0 +1,11 @@
+{
+  "timestamp": "2025-12-21T14:54:30.644579",
+  "stage": "07_hyperlink_placed",
+  "data": {
+    "text": "3.3 Section C: Practice Problems",
+    "slot": 5,
+    "subject": "Math",
+    "cell": "monday_homework",
+    "confidence": 1.0
+  }
+}

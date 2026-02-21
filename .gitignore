@@ -113,5 +113,3 @@ frontend/src-tauri/binaries/python-sync-processor-x86_64-pc-windows-msvc.exe
 *.zip
 *.7z
 *.rar
-
-!lesson-plan-browser/frontend/src-tauri/gen/android/

@@ -1,0 +1,59 @@
+{
+  "timestamp": "2025-11-30T18:36:24.770213",
+  "stage": "03_before_render_slot2",
+  "data": {
+    "slot_number": 2,
+    "subject": "Social Studies",
+    "render_type": "multi_slot",
+    "metadata_slot_number": 2,
+    "metadata_subject": "Social Studies",
+    "hyperlink_count": 8,
+    "all_hyperlinks_have_slot": true,
+    "all_hyperlinks_have_subject": true,
+    "hyperlink_slot_distribution": {
+      "2": 8
+    },
+    "sample_hyperlinks": [
+      {
+        "text": "Slides & Choice Board",
+        "source_slot": 2,
+        "source_subject": "Social Studies"
+      },
+      {
+        "text": "Slides",
+        "source_slot": 2,
+        "source_subject": "Social Studies"
+      },
+      {
+        "text": "The Hittites and Ancient Anatolia”",
+        "source_slot": 2,
+        "source_subject": "Social Studies"
+      },
+      {
+        "text": "Kush DBQ ",
+        "source_slot": 2,
+        "source_subject": "Social Studies"
+      },
+      {
+        "text": "Kush DBQ ",
+        "source_slot": 2,
+        "source_subject": "Social Studies"
+      },
+      {
+        "text": "Egypt/Kush DBQ Slides",
+        "source_slot": 2,
+        "source_subject": "Social Studies"
+      },
+      {
+        "text": "Slides & Choice Board",
+        "source_slot": 2,
+        "source_subject": "Social Studies"
+      },
+      {
+        "text": "Society in Ancient Egypt",
+        "source_slot": 2,
+        "source_subject": "Social Studies"
+      }
+    ]
+  }
+}

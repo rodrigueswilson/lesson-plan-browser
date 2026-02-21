@@ -1,0 +1,68 @@
+{
+  "timestamp": "2025-12-07T13:30:02.173182",
+  "stage": "01_parser_slot1",
+  "data": {
+    "slot_number": 1,
+    "subject": "ELA/SS",
+    "source_file": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\25 W50\\Morais 12_8 - 12_12.docx",
+    "hyperlink_count": 7,
+    "hyperlinks": [
+      {
+        "text": "02 - Second Grade Unit Description and Summary of Key Learning",
+        "url": "https://docs.google.com/document/d/1H_hFmN04OarxjXNlCsHxSgkzyD1nfzMjDFWQfx5zc30/edit?tab=t.kofvr9ldt",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "02 - Second Grade Unit Description and Summary of Key Learning",
+        "url": "https://docs.google.com/document/d/1H_hFmN04OarxjXNlCsHxSgkzyD1nfzMjDFWQfx5zc30/edit?tab=t.kofvr9ldt",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "02 - Second Grade Unit Description and Summary of Key Learning",
+        "url": "https://docs.google.com/document/d/1H_hFmN04OarxjXNlCsHxSgkzyD1nfzMjDFWQfx5zc30/edit?tab=t.kofvr9ldt",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "All The Colors We Are: Lesson 1 Rubric",
+        "url": "https://docs.google.com/document/d/1ZXZ7htKduA5KfCpY0Amuhx9okwHM_M9zpMGGcWbyOZ8/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "The Science of Skin Color Lesson 3 Rubric",
+        "url": "https://docs.google.com/document/d/1HDf6bdkcCsX0P5bVKk2AJpCD7pPwwKSiZ1ybzPMma3w/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "SPO organizer",
+        "url": "https://docs.google.com/document/d/1IuGa59rW6zAc3YPJnPBqn1GZBQekZMoq/edit?usp=sharing&ouid=114185867",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "The Science of Skin Color Lesson 3 Rubric",
+        "url": "https://docs.google.com/document/d/1HDf6bdkcCsX0P5bVKk2AJpCD7pPwwKSiZ1ybzPMma3w/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      }
+    ]
+  }
+}

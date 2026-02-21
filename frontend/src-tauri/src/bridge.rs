@@ -3,22 +3,35 @@
 //! On desktop: Uses std::process::Command to spawn Python directly
 //! On Android: Will use Tauri shell plugin API (implementation pending)
 
+use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::io::{BufRead, BufReader, Write};
 #[cfg(not(target_os = "android"))]
 use std::process::{Child, ChildStdin, ChildStdout, Command, Stdio};
 use std::sync::Mutex;
-use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize)]
 #[serde(tag = "type")]
 pub enum PythonMessage {
     #[serde(rename = "sql_query")]
-    SqlQuery { request_id: String, sql: String, params: Vec<serde_json::Value> },
+    SqlQuery {
+        request_id: String,
+        sql: String,
+        params: Vec<serde_json::Value>,
+    },
     #[serde(rename = "sql_execute")]
-    SqlExecute { request_id: String, sql: String, params: Vec<serde_json::Value> },
+    SqlExecute {
+        request_id: String,
+        sql: String,
+        params: Vec<serde_json::Value>,
+    },
     #[serde(rename = "response")]
-    Response { request_id: String, status: String, data: Option<serde_json::Value>, error: Option<String> },
+    Response {
+        request_id: String,
+        status: String,
+        data: Option<serde_json::Value>,
+        error: Option<String>,
+    },
 }
 
 #[derive(Debug, Serialize)]
@@ -44,7 +57,9 @@ impl RustMessage {
             msg_type: "command".to_string(),
             request_id: request_id.to_string(),
             command: Some(command.to_string()),
-            status: None, data: None, error: None,
+            status: None,
+            data: None,
+            error: None,
             user_id: user_id.map(|s| s.to_string()),
         }
     }
@@ -56,7 +71,8 @@ impl RustMessage {
             command: None,
             status: Some("success".to_string()),
             data: Some(data),
-            error: None, user_id: None,
+            error: None,
+            user_id: None,
         }
     }
 
@@ -90,6 +106,7 @@ pub struct SidecarBridge {
     is_running: Mutex<bool>,
 }
 
+#[allow(dead_code)]
 impl SidecarBridge {
     pub fn new() -> Self {
         #[cfg(not(target_os = "android"))]
@@ -114,18 +131,32 @@ impl SidecarBridge {
     }
 
     #[cfg(not(target_os = "android"))]
-    pub fn spawn(&self, executable: &str, args: &[&str], working_dir: Option<&std::path::Path>) -> Result<(), String> {
+    pub fn spawn(
+        &self,
+        executable: &str,
+        args: &[&str],
+        working_dir: Option<&std::path::Path>,
+    ) -> Result<(), String> {
         self.spawn_with_env(executable, args, working_dir, None)
     }
-    
+
     #[cfg(not(target_os = "android"))]
-    pub fn spawn_with_env(&self, executable: &str, args: &[&str], working_dir: Option<&std::path::Path>, env_vars: Option<&HashMap<String, String>>) -> Result<(), String> {
+    pub fn spawn_with_env(
+        &self,
+        executable: &str,
+        args: &[&str],
+        working_dir: Option<&std::path::Path>,
+        env_vars: Option<&HashMap<String, String>>,
+    ) -> Result<(), String> {
         let mut is_running = self.is_running.lock().map_err(|e| e.to_string())?;
-        if *is_running { 
+        if *is_running {
             eprintln!("[Sidecar] Sidecar already running, reusing existing process");
-            return Ok(()); 
+            return Ok(());
         }
-        eprintln!("[Sidecar] Spawning sidecar: {} {:?} (working_dir: {:?})", executable, args, working_dir);
+        eprintln!(
+            "[Sidecar] Spawning sidecar: {} {:?} (working_dir: {:?})",
+            executable, args, working_dir
+        );
 
         let mut cmd = Command::new(executable);
         if !args.is_empty() {
@@ -134,11 +165,11 @@ impl SidecarBridge {
         cmd.stdin(Stdio::piped())
             .stdout(Stdio::piped())
             .stderr(Stdio::inherit());
-        
+
         if let Some(dir) = working_dir {
             cmd.current_dir(dir);
         }
-        
+
         // Set environment variables if provided
         if let Some(envs) = env_vars {
             eprintln!("[Sidecar] Setting {} environment variables", envs.len());
@@ -146,9 +177,8 @@ impl SidecarBridge {
                 cmd.env(key, value);
             }
         }
-        
-        let mut child = cmd.spawn()
-            .map_err(|e| format!("Spawn failed: {}", e))?;
+
+        let mut child = cmd.spawn().map_err(|e| format!("Spawn failed: {}", e))?;
 
         *self.stdin.lock().unwrap() = child.stdin.take();
         *self.stdout.lock().unwrap() = child.stdout.take().map(BufReader::new);
@@ -158,12 +188,23 @@ impl SidecarBridge {
     }
 
     #[cfg(target_os = "android")]
-    pub fn spawn(&self, _python_exe: &str, _args: &[&str], _working_dir: Option<&std::path::Path>) -> Result<(), String> {
+    pub fn spawn(
+        &self,
+        _python_exe: &str,
+        _args: &[&str],
+        _working_dir: Option<&std::path::Path>,
+    ) -> Result<(), String> {
         self.spawn_with_env(_python_exe, _args, _working_dir, None)
     }
-    
+
     #[cfg(target_os = "android")]
-    pub fn spawn_with_env(&self, _python_exe: &str, _args: &[&str], _working_dir: Option<&std::path::Path>, _env_vars: Option<&HashMap<String, String>>) -> Result<(), String> {
+    pub fn spawn_with_env(
+        &self,
+        _python_exe: &str,
+        _args: &[&str],
+        _working_dir: Option<&std::path::Path>,
+        _env_vars: Option<&HashMap<String, String>>,
+    ) -> Result<(), String> {
         // Android sidecar not implemented - just return ok for now to avoid panic during startup
         eprintln!("[Sidecar] Android sidecar called but not implemented - returning success");
         Ok(())
@@ -182,16 +223,19 @@ impl SidecarBridge {
     #[cfg(target_os = "android")]
     pub fn send(&self, message: &RustMessage) -> Result<(), String> {
         use std::io::Write;
-        
+
         let json = serde_json::to_string(message).map_err(|e| e.to_string())?;
-        
+
         if let Some(stdin) = self.stdin.lock().unwrap().as_mut() {
-            writeln!(stdin, "{}", json).map_err(|e| format!("Failed to write to sidecar stdin: {}", e))?;
-            stdin.flush().map_err(|e| format!("Failed to flush stdin: {}", e))?;
+            writeln!(stdin, "{}", json)
+                .map_err(|e| format!("Failed to write to sidecar stdin: {}", e))?;
+            stdin
+                .flush()
+                .map_err(|e| format!("Failed to flush stdin: {}", e))?;
         } else {
             return Err("No stdin available for sidecar".into());
         }
-        
+
         Ok(())
     }
 
@@ -209,10 +253,11 @@ impl SidecarBridge {
     #[cfg(target_os = "android")]
     pub fn receive(&self) -> Result<PythonMessage, String> {
         use std::io::BufRead;
-        
+
         if let Some(stdout) = self.stdout.lock().unwrap().as_mut() {
             let mut line = String::new();
-            stdout.read_line(&mut line)
+            stdout
+                .read_line(&mut line)
                 .map_err(|e| format!("Failed to read from sidecar stdout: {}", e))?;
             serde_json::from_str(line.trim()).map_err(|e| e.to_string())
         } else {
@@ -232,12 +277,14 @@ impl SidecarBridge {
     #[cfg(target_os = "android")]
     pub fn shutdown(&self) -> Result<(), String> {
         if let Some(mut child) = self.sidecar_handle.lock().unwrap().take() {
-            child.kill().map_err(|e| format!("Failed to kill sidecar: {}", e))?;
+            child
+                .kill()
+                .map_err(|e| format!("Failed to kill sidecar: {}", e))?;
         }
         *self.is_running.lock().unwrap() = false;
         Ok(())
     }
-    
+
     // set_app_handle is available for all platforms, but only needed on Android
     pub fn set_app_handle(&self, app: tauri::AppHandle) {
         #[cfg(target_os = "android")]

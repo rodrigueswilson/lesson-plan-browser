@@ -1,0 +1,76 @@
+{
+  "timestamp": "2025-11-30T18:58:47.222165",
+  "stage": "01_parser_slot2",
+  "data": {
+    "slot_number": 2,
+    "subject": "Social Studies",
+    "source_file": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\25 W49\\_T. Santiago SS Plans 12_1.docx",
+    "hyperlink_count": 8,
+    "hyperlinks": [
+      {
+        "text": "Slides & Choice Board",
+        "url": "https://docs.google.com/presentation/d/1LdlWpLH0-Pw4UNAtrUt-5j4ttm9vFhsLr_kTNmIdk8E/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Slides",
+        "url": "https://docs.google.com/presentation/d/1pSJpUlHEjgsacNl-9q_8TosmC5sEyKplOcKLLBZe1cw/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "The Hittites and Ancient Anatolia”",
+        "url": "https://www.khanacademy.org/humanities/world-history/world-history-beginnings/ancient-egypt-hittites",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Kush DBQ ",
+        "url": "https://d43fweuh3sg51.cloudfront.net/media/media_files/4nfg7ajubm8klslcr8icrnlmkimnr6pm.pdf",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Kush DBQ ",
+        "url": "https://d43fweuh3sg51.cloudfront.net/media/media_files/4nfg7ajubm8klslcr8icrnlmkimnr6pm.pdf",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Egypt/Kush DBQ Slides",
+        "url": "https://docs.google.com/presentation/d/1mFmXzM8Xflp96f5c0C6Rsg8h87_TKifN3cEZTFarvLY/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Slides & Choice Board",
+        "url": "https://docs.google.com/presentation/d/1LdlWpLH0-Pw4UNAtrUt-5j4ttm9vFhsLr_kTNmIdk8E/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Society in Ancient Egypt",
+        "url": "https://docs.google.com/presentation/d/1pSJpUlHEjgsacNl-9q_8TosmC5sEyKplOcKLLBZe1cw/edit?usp=sharing",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      }
+    ]
+  }
+}

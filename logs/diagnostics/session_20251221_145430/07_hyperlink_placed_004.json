@@ -1,0 +1,11 @@
+{
+  "timestamp": "2025-12-21T14:54:30.245420",
+  "stage": "07_hyperlink_placed",
+  "data": {
+    "text": "Lenni Lenape",
+    "slot": 1,
+    "subject": "ELA",
+    "cell": "monday_unit_lesson",
+    "confidence": 1.0
+  }
+}

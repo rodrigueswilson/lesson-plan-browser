@@ -7,12 +7,29 @@ with fold lines and thirds).
 
 from __future__ import annotations
 
-from datetime import datetime, timedelta
+import html as html_module
+import re
+from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
+from docx import Document
+from docx.enum.section import WD_ORIENT, WD_SECTION
+from docx.oxml import OxmlElement
+from docx.oxml.ns import qn
+from docx.shared import Inches, Pt, RGBColor
+
+from backend.config import settings
 from backend.file_manager import get_file_manager
+from backend.services.sorting_utils import sort_slots
 from backend.telemetry import logger
+from backend.utils.metadata_utils import (
+    build_document_header,
+    get_day_date,
+    get_homeroom,
+    get_subject,
+    get_teacher_name,
+)
 
 
 class SentenceFramesPDFGenerator:
@@ -53,7 +70,7 @@ class SentenceFramesPDFGenerator:
         self, lesson_json: Dict[str, Any], user_name: Optional[str]
     ) -> str:
         metadata = lesson_json.get("metadata", {})
-        teacher = user_name or metadata.get("teacher_name") or "Teacher"
+        teacher = get_teacher_name(metadata, user_name=user_name) or "Teacher"
         week_label = metadata.get("week_of") or datetime.now().strftime("%m-%d")
         teacher_slug = self._sanitize_for_filename(teacher, "Teacher")
         week_slug = self._sanitize_for_filename(week_label.replace("/", "-"), "Week")
@@ -99,21 +116,122 @@ class SentenceFramesPDFGenerator:
 
     # --- CSS / HTML templates ---
 
+    @staticmethod
+    def _convert_markdown_to_html(text: str) -> str:
+        """Convert markdown bold syntax (**word**) to HTML <strong> tags.
+
+        This function handles vocabulary words that are wrapped in markdown
+        double asterisks and converts them to proper HTML formatting.
+        """
+        # Escape any existing HTML to prevent XSS
+        text = html_module.escape(text)
+
+        # Convert **word** to <strong>word</strong>
+        # Pattern matches **word** where word can contain spaces, punctuation, etc.
+        # Uses non-greedy matching to handle multiple bold words in one sentence
+        pattern = r"\*\*(.+?)\*\*"
+        text = re.sub(pattern, r"<strong>\1</strong>", text)
+
+        return text
+
+    @staticmethod
+    def _extract_bold_words_from_markdown(text: str) -> Tuple[str, List[str]]:
+        """Extract bold words from markdown and return cleaned text with list of bold words.
+
+        Returns:
+            Tuple of (cleaned_text, list_of_bold_words)
+        """
+        bold_words: List[str] = []
+        pattern = r"\*\*([^*]+?)\*\*"
+
+        # Find all bold words
+        matches = re.finditer(pattern, text)
+        for match in matches:
+            bold_words.append(match.group(1))
+
+        # Remove markdown syntax
+        cleaned_text = re.sub(pattern, r"\1", text)
+
+        return cleaned_text, bold_words
+
+    def _add_bold_text_to_paragraph(
+        self,
+        paragraph,
+        text: str,
+        bold_words: List[str],
+        font_size: int,
+        font_name: str = "Source Sans Pro",
+    ):
+        """Add text to a paragraph with specified words in bold.
+
+        Args:
+            paragraph: docx Paragraph object
+            text: Text to add
+            bold_words: List of words that should be bold (case-insensitive)
+            font_size: Font size in points
+            font_name: Font name
+        """
+        if not bold_words:
+            run = paragraph.add_run(text)
+            run.font.size = Pt(font_size)
+            run.font.bold = True
+            run.font.name = font_name
+            return
+
+        # Create a case-insensitive pattern for all bold words
+        words_pattern = re.compile(
+            r"\b(" + "|".join(re.escape(word) for word in bold_words) + r")\b",
+            re.IGNORECASE,
+        )
+
+        last_index = 0
+        for match in words_pattern.finditer(text):
+            # Add text before the match
+            if match.start() > last_index:
+                run = paragraph.add_run(text[last_index : match.start()])
+                run.font.size = Pt(font_size)
+                run.font.bold = True
+                run.font.name = font_name
+
+            # Add bold word (extra bold)
+            bold_run = paragraph.add_run(match.group(0))
+            bold_run.font.size = Pt(font_size)
+            bold_run.font.bold = True
+            bold_run.font.name = font_name
+
+            last_index = match.end()
+
+        # Add remaining text
+        if last_index < len(text):
+            run = paragraph.add_run(text[last_index:])
+            run.font.size = Pt(font_size)
+            run.font.bold = True
+            run.font.name = font_name
+
     def _get_css_template(self) -> str:
         """Return CSS for sentence frame pages.
 
         Layout assumptions:
-        - Portrait US Letter with 0.5" margins.
-        - Each .frames-page has three equal-height panels, separated by
-          two fold lines positioned at 1/3 and 2/3 of the usable height.
+        - Portrait US Letter (8.5" x 11") with no CSS margins (full page usage).
+        - Content area: 8.5" wide x 11" tall (full page dimensions).
+        - Header: 0.35" tall at the top of each page (positioned 1 cm from top/left for printer safety).
+        - Three equal-height panels: each panel is exactly 3.67" tall.
+          Calculation: 11" page height / 3 = 3.67" per panel (for accurate folding).
+        - Panels use explicit heights (not flexbox) for reliable print output.
+        - Fold lines are positioned at exact panel boundaries:
+          - First fold: 3.67" from top of page (end of panel 1)
+          - Second fold: 7.33" from top of page (end of panel 2)
+        - Note: Some printers have non-printable margins (typically 0.1-0.2") which may slightly
+          affect the exact measurements. For best results, print at 100% scale with no margins.
         - English-only frames, with a mandatory function label.
         """
         return """
         @import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600&display=swap');
 
         @page {
-            size: 8.5in 11in; /* Portrait US Letter */
-            margin: 0.5in;
+            size: 8.5in 11in; /* Portrait US Letter - exact size for printer */
+            margin: 0; /* No margins - use full page for maximum space */
+            /* Ensure no scaling - printers should respect exact page size */
         }
 
         * {
@@ -128,43 +246,49 @@ class SentenceFramesPDFGenerator:
         }
 
         .frames-page {
-            width: 7.5in;  /* 8.5 - 1" margins */
-            height: 10in;  /* 11 - 1" margins */
+            width: 8.5in;  /* Full page width */
+            height: 11in;  /* Full page height */
             position: relative;
-            margin: 0 auto 0.25in auto;
+            margin: 0;
             page-break-after: always;
             display: flex;
             flex-direction: column;
         }
 
         .header {
+            position: absolute;
+            top: 0.39in; /* 1 cm from top for printer safety */
+            left: 0.39in; /* 1 cm from left for printer safety */
             height: 0.35in;
             font-size: 10pt;
             color: #808080; /* 50% gray */
             display: flex;
             align-items: center;
             justify-content: flex-start;
-            margin-bottom: 0;
+            z-index: 10; /* Ensure header appears above panels */
             border: none;
             border-bottom: none;
         }
 
         .panels {
             position: relative;
-            flex: 1;
+            height: 11in; /* Full page height for accurate three-way division */
             display: flex;
             flex-direction: column;
             border-top: none;
         }
 
         .panel {
-            flex: 1;
+            height: 3.67in; /* 11in / 3 = 3.67in per panel (exact equal division for folding) */
+            box-sizing: border-box; /* Include padding in height calculation */
             padding: 0.25in 0.3in;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
+            flex-shrink: 0; /* Prevent panels from shrinking */
+            flex-grow: 0; /* Prevent panels from growing */
         }
 
         .panel-title {
@@ -182,6 +306,10 @@ class SentenceFramesPDFGenerator:
             margin-bottom: 0.1in;
             word-wrap: break-word;
             max-width: 100%;
+        }
+
+        .frame-text strong {
+            font-weight: 700; /* Ensure bold vocabulary words are clearly visible */
         }
 
         .frame-function {
@@ -202,6 +330,10 @@ class SentenceFramesPDFGenerator:
             line-height: 1.2;
         }
 
+        .bundle-frame-text strong {
+            font-weight: 700; /* Ensure bold vocabulary words are clearly visible */
+        }
+
         .bundle-frame-function {
             font-size: 9pt;
             text-transform: uppercase;
@@ -214,24 +346,41 @@ class SentenceFramesPDFGenerator:
             left: 0;
             right: 0;
             height: 0;
-            border-top: 1px solid #808080; /* Darker gray for better visibility */
+            border-top: 1px solid rgba(128, 128, 128, 0.4); /* Thin gray line at 40% opacity */
             z-index: 1;
+            /* Use fixed positions based on full 11" page height for printer accuracy */
         }
 
+        /* Fold lines positioned to match exact panel divisions */
+        /* Since .panels has position: relative, fold lines are positioned relative to .panels container */
+        /* Each panel is exactly 3.67in tall (11in / 3) */
+        /* First fold: at the end of first panel = 3.67in from top of .panels */
         .fold-line-1 {
-            top: 33.333%;
+            top: 3.67in; /* End of first panel, start of second panel */
         }
 
+        /* Second fold: at the end of second panel = 3.67in + 3.67in = 7.33in from top of .panels */
         .fold-line-2 {
-            top: 66.666%;
+            top: 7.33in; /* End of second panel, start of third panel */
         }
 
         @media print {
             .frames-page {
                 page-break-after: always;
+                /* Ensure exact dimensions for print */
+                width: 8.5in !important;
+                height: 11in !important;
             }
             .frames-page:last-child {
                 page-break-after: auto;
+            }
+            .panels {
+                height: 11in !important; /* Enforce full page height for print */
+            }
+            .panel {
+                height: 3.67in !important; /* Enforce exact panel height for print (11in / 3) */
+                flex-shrink: 0 !important;
+                flex-grow: 0 !important;
             }
         }
         """
@@ -256,15 +405,17 @@ class SentenceFramesPDFGenerator:
 
     # --- Extraction ---
 
-    def extract_sentence_frames(self, lesson_json: Dict[str, Any]) -> List[Dict[str, Any]]:
+    def extract_sentence_frames(
+        self, lesson_json: Dict[str, Any]
+    ) -> List[Dict[str, Any]]:
         """Extract sentence frame payloads from lesson JSON, ordered by schedule (day and slot).
 
         Each item is a dict with metadata and three level buckets:
         - levels_1_2: list of 3 frames
         - levels_3_4: list of 3 frames
         - levels_5_6: list of 2 frames
-        
-        Frames are ordered by day (Monday-Friday) and then by slot_number to follow schedule order.
+
+        Frames are ordered by day (Monday-Friday) and then by start_time (chronological) to follow schedule order.
         """
         results: List[Dict[str, Any]] = []
 
@@ -275,9 +426,8 @@ class SentenceFramesPDFGenerator:
         metadata = lesson_json.get("metadata", {})
         week_of = metadata.get("week_of", "Unknown")
         default_grade = metadata.get("grade", "Unknown")
-        default_subject = metadata.get("subject", "Unknown")
-        default_homeroom = metadata.get("homeroom", "Unknown")
-        default_teacher_name = metadata.get("teacher_name", "Unknown")
+        default_room = metadata.get("room", "")
+        default_teacher_name = get_teacher_name(metadata)
 
         day_names = ["monday", "tuesday", "wednesday", "thursday", "friday"]
 
@@ -290,38 +440,63 @@ class SentenceFramesPDFGenerator:
             slots = day_data.get("slots") or []
             if isinstance(slots, list) and len(slots) > 0:
                 # Multi-slot: process each slot individually, ordered by slot_number
-                # Sort slots by slot_number to maintain schedule order
-                sorted_slots = sorted(
-                    slots,
-                    key=lambda s: s.get("slot_number", 0) if isinstance(s, dict) else 0
+                # Sort slots by start_time (chronological) with slot_number as fallback
+                sorted_slots = sort_slots(slots)
+                from backend.telemetry import logger
+
+                logger.debug(
+                    f"Extracting sentence frames for {day_name}: {len(sorted_slots)} slots found (slot_numbers: {[s.get('slot_number', 0) for s in sorted_slots]})"
                 )
-                
+
                 for slot in sorted_slots:
                     if not isinstance(slot, dict):
                         continue
-                    
+
+                    slot_num = slot.get("slot_number", 0)
                     slot_unit_lesson = slot.get("unit_lesson", "")
-                    
+
                     # Skip "No School" entries
-                    if slot_unit_lesson and slot_unit_lesson.strip().lower() == "no school":
+                    if (
+                        slot_unit_lesson
+                        and slot_unit_lesson.strip().lower() == "no school"
+                    ):
+                        logger.debug(
+                            f"Skipping slot {slot_num} ({day_name}) - No School entry"
+                        )
                         continue
-                    
+
                     # Get slot-specific sentence frames
                     slot_frames = slot.get("sentence_frames") or []
                     if not isinstance(slot_frames, list) or len(slot_frames) == 0:
-                        continue
-                    
+                        # Include slot even if it has no sentence frames - use empty structure
+                        logger.debug(
+                            f"Slot {slot_num} ({day_name}) has no sentence frames - including with empty frames"
+                        )
+                        slot_frames = []
+                    else:
+                        logger.debug(
+                            f"Processing slot {slot_num} ({day_name}) for sentence frames extraction ({len(slot_frames)} frames)"
+                        )
+
+                    # Continue processing even with empty frames to include the slot
+
                     # Use slot-specific metadata, fallback to defaults
                     slot_grade = slot.get("grade", default_grade)
-                    slot_subject = slot.get("subject", default_subject)
-                    slot_homeroom = slot.get("homeroom", default_homeroom)
-                    slot_teacher = slot.get("teacher_name", default_teacher_name)
-                    
+                    # Get subject using standardized helper (metadata only)
+                    slot_subject = get_subject(metadata, slot=slot)
+                    # Use standardized helper to prevent homeroom leakage
+                    slot_homeroom = get_homeroom(metadata, slot=slot)
+                    # Similar logic for room: use slot room if present, otherwise default
+                    slot_room = slot.get("room")
+                    if slot_room is None:
+                        slot_room = default_room
+                    slot_teacher = get_teacher_name(metadata, slot=slot)
+
                     # Organize frames by proficiency level
                     levels_1_2: List[Dict[str, Any]] = []
                     levels_3_4: List[Dict[str, Any]] = []
                     levels_5_6: List[Dict[str, Any]] = []
-                    
+
                     for frame in slot_frames:
                         if not isinstance(frame, dict):
                             continue
@@ -332,20 +507,42 @@ class SentenceFramesPDFGenerator:
                             levels_3_4.append(frame)
                         elif level == "levels_5_6":
                             levels_5_6.append(frame)
-                    
-                    if not (levels_1_2 or levels_3_4 or levels_5_6):
-                        continue
-                    
+
+                    # Include slot even if it has no frames - this ensures slots that appear
+                    # in DOCX also appear in sentence frames output
+                    # if not (levels_1_2 or levels_3_4 or levels_5_6):
+                    #     continue
+
+                    # Homeroom already handled by get_homeroom helper (prevents leakage)
+
+                    # Handle room similar to homeroom - avoid leakage between slots
+                    final_room = slot_room
+                    if (
+                        not final_room
+                        or final_room == "N/A"
+                        or final_room.strip() == ""
+                    ):
+                        if default_room and default_room != "Unknown":
+                            final_room = default_room
+                        else:
+                            final_room = ""
+
                     results.append(
                         {
                             "week_of": week_of,
                             "day": day_name.capitalize(),
-                            "grade": slot_grade if slot_grade and slot_grade != "N/A" else default_grade,
-                            "subject": slot_subject if slot_subject and slot_subject != "Unknown" else default_subject,
-                            "homeroom": slot_homeroom if slot_homeroom and slot_homeroom != "N/A" else default_homeroom,
-                            "teacher_name": slot_teacher if slot_teacher else default_teacher_name,
+                            "grade": slot_grade
+                            if slot_grade and slot_grade != "N/A"
+                            else default_grade,
+                            "subject": slot_subject,  # Already uses get_subject helper with proper fallback
+                            "homeroom": slot_homeroom,  # Already uses get_homeroom helper (prevents leakage)
+                            "room": final_room,
+                            "teacher_name": slot_teacher
+                            if slot_teacher != "Unknown"
+                            else default_teacher_name,
                             "unit_lesson": slot_unit_lesson,
                             "slot_number": slot.get("slot_number", 0),
+                            "start_time": slot.get("start_time", ""),  # Include start_time for sorting
                             "levels_1_2": levels_1_2,
                             "levels_3_4": levels_3_4,
                             "levels_5_6": levels_5_6,
@@ -354,20 +551,20 @@ class SentenceFramesPDFGenerator:
             else:
                 # Single-slot or day-level frames: process day-level frames if present
                 day_unit_lesson = day_data.get("unit_lesson", "")
-                
+
                 # Skip "No School" entries
                 if day_unit_lesson and day_unit_lesson.strip().lower() == "no school":
                     continue
-                
+
                 day_level_frames = day_data.get("sentence_frames") or []
                 if not isinstance(day_level_frames, list) or len(day_level_frames) == 0:
                     continue
-                
+
                 # Organize frames by proficiency level
                 levels_1_2: List[Dict[str, Any]] = []
                 levels_3_4: List[Dict[str, Any]] = []
                 levels_5_6: List[Dict[str, Any]] = []
-                
+
                 for frame in day_level_frames:
                     if not isinstance(frame, dict):
                         continue
@@ -378,126 +575,128 @@ class SentenceFramesPDFGenerator:
                         levels_3_4.append(frame)
                     elif level == "levels_5_6":
                         levels_5_6.append(frame)
-                
+
                 if not (levels_1_2 or levels_3_4 or levels_5_6):
                     continue
-                
+
                 results.append(
                     {
                         "week_of": week_of,
                         "day": day_name.capitalize(),
                         "grade": default_grade,
-                        "subject": default_subject,
-                        "homeroom": default_homeroom,
-                        "teacher_name": default_teacher_name,
+                        "subject": get_subject(metadata),  # Use standardized helper
+                        "homeroom": get_homeroom(metadata),  # Use standardized helper
+                        "room": default_room if default_room else "",
+                        "teacher_name": get_teacher_name(metadata),
                         "unit_lesson": day_data.get("unit_lesson", ""),
                         "slot_number": 0,
                         "levels_1_2": levels_1_2,
                         "levels_3_4": levels_3_4,
                         "levels_5_6": levels_5_6,
-                    }
-                )
+                        }
+                    )
 
+        # Sort results by day (Monday-Friday) and then by start_time (chronological)
+        # This ensures consistent ordering matching the schedule and objectives
+        day_order = {"Monday": 0, "Tuesday": 1, "Wednesday": 2, "Thursday": 3, "Friday": 4}
+        
+        def get_result_sort_key(result: Dict[str, Any]) -> tuple:
+            day = result.get("day", "")
+            day_idx = day_order.get(day, 99)
+            start_time = result.get("start_time", "") or ""
+            slot_num = result.get("slot_number", 0)
+            
+            # Convert time to sortable format (HH:MM -> minutes since midnight)
+            time_sort = 0
+            if start_time:
+                try:
+                    parts = str(start_time).split(":")
+                    if len(parts) >= 2:
+                        time_sort = int(parts[0]) * 60 + int(parts[1])
+                except (ValueError, TypeError):
+                    pass
+            
+            return (day_idx, time_sort, slot_num)
+        
+        results.sort(key=get_result_sort_key)
         return results
 
     # --- HTML generation ---
 
     def _calculate_day_date(self, week_of: str, day: str) -> str:
-        """Calculate the specific date for a given day in the week.
-        
+        """Calculate the specific date for a given day in the week using standardized utility.
+
         Args:
-            week_of: Week range string like "11/17-11/21" or "11-17-11-21"
+            week_of: Week range string like "11/17-11/21" or "11/17/2025-11/21/2025"
             day: Day name like "Monday", "Tuesday", etc.
-        
+
         Returns:
             Formatted date string "MM/DD/YY" (e.g., "11/17/25")
         """
-        # Day name to offset mapping
-        day_offsets = {
-            "Monday": 0,
-            "Tuesday": 1,
-            "Wednesday": 2,
-            "Thursday": 3,
-            "Friday": 4,
-        }
-        
-        # Normalize day name to match dictionary keys (capitalize first letter)
-        normalized_day = day.capitalize() if day else "Monday"
-        offset = day_offsets.get(normalized_day, 0)
-        
-        try:
-            # Parse week start date from week_of
-            # Handle formats: "11/17-11/21" or "11-17-11-21"
-            if "-" in week_of:
-                first_part = week_of.split("-")[0].strip()
-                # Normalize to MM/DD format
-                if "/" in first_part:
-                    month, day_str = first_part.split("/")
-                elif "-" in first_part:
-                    month, day_str = first_part.split("-")
-                else:
-                    # Fallback: use first date as-is
-                    return f"{first_part}/25"
-                
-                # Create datetime object for week start (assuming 2025)
-                start_date = datetime(2025, int(month), int(day_str))
-                # Add offset days
-                target_date = start_date + timedelta(days=offset)
-                # Format as MM/DD/YY
-                return target_date.strftime("%m/%d/%y")
-            else:
-                # Single date format - use as-is
-                if "/" in week_of:
-                    return f"{week_of}/25"
-                else:
-                    return f"{week_of}/25"
-        except (ValueError, IndexError) as e:
-            # Fallback: extract first date and use it
-            if "-" in week_of:
-                first_date = week_of.split("-")[0].strip()
-                if "/" in first_date:
-                    return f"{first_date}/25"
-                elif "-" in first_date:
-                    return f"{first_date.replace('-', '/')}/25"
-            return "Unknown"
+        # Get school year from config if available
+        config_school_year = None
+        if settings.SCHOOL_YEAR_START_YEAR and settings.SCHOOL_YEAR_END_YEAR:
+            config_school_year = (
+                settings.SCHOOL_YEAR_START_YEAR,
+                settings.SCHOOL_YEAR_END_YEAR,
+            )
 
-    def _build_header_text(self, payload: Dict[str, Any]) -> str:
-        parts: List[str] = []
-        # Date: calculate specific date for this day
+        # Use standardized utility
+        full_date = get_day_date(week_of, day, config_school_year=config_school_year)
+
+        # Convert MM/DD/YYYY to MM/DD/YY format
+        if full_date and full_date != week_of:
+            try:
+                date_obj = datetime.strptime(full_date, "%m/%d/%Y")
+                return date_obj.strftime("%m/%d/%y")
+            except ValueError:
+                return full_date
+
+        return week_of
+
+    def _build_header_text(
+        self, payload: Dict[str, Any], metadata: Dict[str, Any]
+    ) -> str:
+        """
+        Build standardized header text using metadata_utils helper.
+
+        Args:
+            payload: Payload dictionary with day, week_of, subject, grade, homeroom, room
+            metadata: Lesson-level metadata dictionary
+
+        Returns:
+            Formatted header string
+        """
+        # Calculate day date
         week_of = payload.get("week_of", "Unknown")
-        day = payload.get("day", "Unknown")
-        if week_of and week_of != "Unknown" and day and day != "Unknown":
-            day_date = self._calculate_day_date(week_of, day)
-            parts.append(day_date)
-        else:
-            parts.append("Unknown")
+        day_name = payload.get("day", "Unknown")
+        day_date = None
+        if week_of and week_of != "Unknown" and day_name and day_name != "Unknown":
+            day_date = self._calculate_day_date(week_of, day_name)
 
-        # Day: add the day name (e.g., "Wednesday")
-        day = payload.get("day")
-        if day and day != "Unknown":
-            parts.append(day)
+        # Reconstruct slot dict for header builder (if slot-specific)
+        slot_dict = None
+        if (
+            payload.get("subject")
+            or payload.get("grade")
+            or payload.get("homeroom")
+            or payload.get("room")
+        ):
+            slot_dict = {
+                "subject": payload.get("subject"),
+                "grade": payload.get("grade"),
+                "homeroom": payload.get("homeroom"),
+                "room": payload.get("room"),
+            }
 
-        # Subject: take only the first subject if multiple are listed
-        subject = payload.get("subject")
-        if subject and subject != "Unknown":
-            # Split by " / " and take the first subject
-            if " / " in subject:
-                first_subject = subject.split(" / ")[0].strip()
-                parts.append(first_subject)
-            else:
-                parts.append(subject)
-        else:
-            parts.append("Unknown")
-
-        grade = payload.get("grade")
-        if grade and grade != "Unknown":
-            parts.append(f"Grade {grade}")
-
-        homeroom = payload.get("homeroom")
-        if homeroom and homeroom != "Unknown":
-            parts.append(homeroom)
-
-        return " | ".join(parts)
+        return build_document_header(
+            metadata=metadata,
+            slot=slot_dict,
+            day_date=day_date,
+            day_name=day_name if day_name != "Unknown" else None,
+            include_time=False,  # Sentence Frames PDF doesn't include time
+            include_day_name=True,  # Include day name for consistency
+        )
 
     @staticmethod
     def _pretty_function(label: str) -> str:
@@ -506,9 +705,11 @@ class SentenceFramesPDFGenerator:
         text = label.replace("_", " ").strip()
         return text[:1].upper() + text[1:]
 
-    def _render_page_pair(self, payload: Dict[str, Any]) -> str:
+    def _render_page_pair(
+        self, payload: Dict[str, Any], metadata: Dict[str, Any]
+    ) -> str:
         """Render the two pages (front/back) for a single day's frames."""
-        header_text = self._build_header_text(payload)
+        header_text = self._build_header_text(payload, metadata)
 
         levels_3_4 = payload.get("levels_3_4") or []
         levels_1_2 = payload.get("levels_1_2") or []
@@ -522,7 +723,11 @@ class SentenceFramesPDFGenerator:
         # Helper to get safe english/function
         def _frame_text(frame: Dict[str, Any]) -> Tuple[str, str]:
             english = str(frame.get("english", "")).strip()
-            func = self._pretty_function(str(frame.get("language_function", "")).strip())
+            # Convert markdown bold (**word**) to HTML <strong> tags
+            english = self._convert_markdown_to_html(english)
+            func = self._pretty_function(
+                str(frame.get("language_function", "")).strip()
+            )
             return english, func
 
         # Page 1: three Levels 3-4 frames, one per panel
@@ -532,7 +737,7 @@ class SentenceFramesPDFGenerator:
             if idx < len(levels_3_4):
                 english, func = _frame_text(levels_3_4[idx])
             panel_html = f"""
-                <div class=\"panel panel-{idx+1}\">
+                <div class=\"panel panel-{idx + 1}\">
                     <div class=\"frame-text\">{english}</div>
                     <div class=\"frame-function\">{func}</div>
                 </div>
@@ -545,7 +750,7 @@ class SentenceFramesPDFGenerator:
             <div class=\"panels\">
                 <div class=\"fold-line fold-line-1\"></div>
                 <div class=\"fold-line fold-line-2\"></div>
-                {''.join(page1_panels)}
+                {"".join(page1_panels)}
             </div>
         </div>
         """
@@ -615,9 +820,10 @@ class SentenceFramesPDFGenerator:
         if not payloads:
             raise ValueError("No sentence_frames found in lesson plan")
 
+        metadata = lesson_json.get("metadata", {})
         pages: List[str] = []
         for payload in payloads:
-            pages.append(self._render_page_pair(payload))
+            pages.append(self._render_page_pair(payload, metadata))
 
         final_html = self.html_template.format(
             css=self.css_template,
@@ -639,7 +845,6 @@ class SentenceFramesPDFGenerator:
         )
 
         return str(output_file)
-
 
     def convert_to_pdf(self, html_path: str, pdf_path: str) -> str:
         """Convert HTML file to PDF using WeasyPrint with Playwright fallback.
@@ -691,7 +896,19 @@ class SentenceFramesPDFGenerator:
             browser = p.chromium.launch()
             page = browser.new_page()
             page.goto(f"file:///{html_file}", wait_until="networkidle")
-            page.pdf(path=str(pdf_file), format="Letter", landscape=False, print_background=True)
+            page.pdf(
+                path=str(pdf_file),
+                format="Letter",
+                landscape=False,
+                print_background=True,
+                prefer_css_page_size=True,  # Use CSS @page size instead of default
+                margin={
+                    "top": "0",
+                    "right": "0",
+                    "bottom": "0",
+                    "left": "0",
+                },  # No margins - use full page
+            )
             browser.close()
 
         logger.info(
@@ -699,6 +916,303 @@ class SentenceFramesPDFGenerator:
             extra={"html_path": str(html_file), "pdf_path": str(pdf_file)},
         )
         return str(pdf_file)
+
+    def _add_gray_line(self, paragraph):
+        """Add a thin gray horizontal line to a paragraph."""
+        p = paragraph._element
+        pPr = p.get_or_add_pPr()
+        pBdr = OxmlElement("w:pBdr")
+        pPr.append(pBdr)
+
+        bottom = OxmlElement("w:bottom")
+        bottom.set(qn("w:val"), "single")
+        bottom.set(qn("w:sz"), "6")  # 0.75pt line
+        bottom.set(qn("w:space"), "1")
+        bottom.set(qn("w:color"), "808080")  # 50% gray
+        pBdr.append(bottom)
+
+    def generate_docx(
+        self,
+        lesson_json: Dict[str, Any],
+        output_path: Optional[str] = None,
+        user_name: Optional[str] = None,
+    ) -> str:
+        """Generate DOCX file with sentence frames, two pages per day (front/back).
+
+        Each day gets two pages:
+        - Page 1: Three Levels 3-4 frames, one per panel (top, middle, bottom)
+        - Page 2: Top panel = Levels 1-2 frames (bundled), Middle/Bottom = Levels 5-6 frames
+
+        Layout:
+        - Portrait US Letter (8.5" x 11")
+        - Header: Date | Day | Subject | Grade | Homeroom (10pt, gray)
+        - Three equal-height panels per page (3.67" each = 11" / 3 for accurate folding)
+        - Frame text: 28pt (Page 1) or 18pt (Page 2 bundle), bold
+        - Function label: 11pt (Page 1) or 9pt (Page 2), uppercase, gray
+
+        Args:
+            lesson_json: Lesson plan JSON structure
+            output_path: Optional path to save DOCX file
+            user_name: Optional teacher name for file naming
+
+        Returns:
+            Path to generated DOCX file
+        """
+        payloads = self.extract_sentence_frames(lesson_json)
+        if not payloads:
+            raise ValueError("No sentence frames found in lesson plan")
+
+        metadata = lesson_json.get("metadata", {})
+
+        # Resolve output path
+        if output_path:
+            docx_file = Path(output_path)
+        else:
+            directory = self._resolve_output_directory(lesson_json)
+            base_name = self._build_default_basename(lesson_json, user_name)
+            docx_file = directory / f"{base_name}.docx"
+
+        docx_file.parent.mkdir(parents=True, exist_ok=True)
+
+        # Create document
+        doc = Document()
+
+        # Set page orientation to portrait
+        section = doc.sections[0]
+        section.orientation = WD_ORIENT.PORTRAIT
+        section.page_width = Inches(8.5)  # Portrait width
+        section.page_height = Inches(11)  # Portrait height
+
+        # No margins - use full page (matching PDF layout)
+        section.top_margin = Inches(0)
+        section.bottom_margin = Inches(0)
+        section.left_margin = Inches(0)
+        section.right_margin = Inches(0)
+
+        # Page dimensions: 8.5" x 11" (full page)
+        # Three equal panels: divide full page height by 3 for accurate folding
+        # Each panel: 11" / 3 = 3.67" per panel
+        # Note: Panel height is used implicitly in spacing calculations below
+
+        # Generate two pages per payload (day)
+        for payload_idx, payload in enumerate(payloads):
+            header_text = self._build_header_text(payload, metadata)
+
+            levels_3_4 = payload.get("levels_3_4") or []
+            levels_1_2 = payload.get("levels_1_2") or []
+            levels_5_6 = payload.get("levels_5_6") or []
+
+            # Ensure predictable ordering
+            levels_3_4 = list(levels_3_4)[:3]
+            levels_1_2 = list(levels_1_2)[:3]
+            levels_5_6 = list(levels_5_6)[:2]
+
+            # Helper to get frame text and extract bold words
+            def _get_frame_data(frame: Dict[str, Any]) -> Tuple[str, List[str], str]:
+                english = str(frame.get("english", "")).strip()
+                cleaned_text, bold_words = self._extract_bold_words_from_markdown(
+                    english
+                )
+                func = self._pretty_function(
+                    str(frame.get("language_function", "")).strip()
+                )
+                return cleaned_text, bold_words, func
+
+            # PAGE 1: Three Levels 3-4 frames, one per panel
+            if payload_idx > 0 or payload_idx == 0:
+                # Add new section for each page (except first)
+                if payload_idx > 0 or (payload_idx == 0 and len(payloads) > 1):
+                    doc.add_section(WD_SECTION.NEW_PAGE)
+                    section = doc.sections[-1]
+                    section.orientation = WD_ORIENT.PORTRAIT
+                    section.page_width = Inches(8.5)
+                    section.page_height = Inches(11)
+                    section.top_margin = Inches(0)
+                    section.bottom_margin = Inches(0)
+                    section.left_margin = Inches(0)
+                    section.right_margin = Inches(0)
+
+            # Header - positioned 1 cm from top and left (0.39 inches)
+            header_para = doc.add_paragraph()
+            header_para.paragraph_format.space_before = Inches(0.39)  # 1 cm top margin
+            header_para.paragraph_format.left_indent = Inches(0.39)  # 1 cm left margin
+            header_run = header_para.add_run(header_text)
+            header_run.font.size = Pt(10)
+            header_run.font.name = "Source Sans Pro"
+            header_run.font.color.rgb = RGBColor(128, 128, 128)  # 50% gray
+            header_para.paragraph_format.space_after = Pt(0)
+            header_para.paragraph_format.alignment = 0  # Left align
+
+            # Three panels for Page 1
+            for panel_idx in range(3):
+                panel_para = doc.add_paragraph()
+                panel_para.paragraph_format.alignment = 1  # Center align
+                panel_para.paragraph_format.space_before = Pt(0)
+                panel_para.paragraph_format.space_after = Pt(0)
+
+                # Set panel height using spacing
+                # Each panel should be 3.55" = 255.6pt
+                if panel_idx == 0:
+                    # First panel: minimal spacing
+                    panel_para.paragraph_format.space_before = Pt(0)
+                else:
+                    # Subsequent panels: space to position them
+                    panel_para.paragraph_format.space_before = Pt(0)
+
+                english, bold_words, func = ("", [], "")
+                if panel_idx < len(levels_3_4):
+                    english, bold_words, func = _get_frame_data(levels_3_4[panel_idx])
+
+                # Frame text (28pt, bold) - apply bold to vocabulary words
+                self._add_bold_text_to_paragraph(
+                    panel_para, english, bold_words, 28, "Source Sans Pro"
+                )
+
+                # Function label (11pt, uppercase, gray)
+                if func:
+                    func_para = doc.add_paragraph()
+                    func_para.paragraph_format.alignment = 1  # Center align
+                    func_run = func_para.add_run(func.upper())
+                    func_run.font.size = Pt(11)
+                    func_run.font.name = "Source Sans Pro"
+                    func_run.font.color.rgb = RGBColor(128, 128, 128)  # 50% gray
+                    func_para.paragraph_format.space_before = Pt(2)
+                    func_para.paragraph_format.space_after = Pt(0)
+
+                # Add spacing to position next panel (approximate 3.55" panel height)
+                # Use line spacing and paragraph spacing to approximate panel height
+                panel_para.paragraph_format.line_spacing = 1.2
+                if panel_idx < 2:  # Not the last panel
+                    # Add spacing to approximate panel separation
+                    panel_para.paragraph_format.space_after = Pt(20)
+
+            # PAGE 2: Top panel = Levels 1-2 frames (bundled), Middle/Bottom = Levels 5-6 frames
+            doc.add_section(WD_SECTION.NEW_PAGE)
+            section = doc.sections[-1]
+            section.orientation = WD_ORIENT.PORTRAIT
+            section.page_width = Inches(8.5)
+            section.page_height = Inches(11)
+            section.top_margin = Inches(0)
+            section.bottom_margin = Inches(0)
+            section.left_margin = Inches(0)
+            section.right_margin = Inches(0)
+
+            # Header - positioned 1 cm from top and left (0.39 inches)
+            header_para = doc.add_paragraph()
+            header_para.paragraph_format.space_before = Inches(0.39)  # 1 cm top margin
+            header_para.paragraph_format.left_indent = Inches(0.39)  # 1 cm left margin
+            header_run = header_para.add_run(header_text)
+            header_run.font.size = Pt(10)
+            header_run.font.name = "Source Sans Pro"
+            header_run.font.color.rgb = RGBColor(128, 128, 128)  # 50% gray
+            header_para.paragraph_format.space_after = Pt(0)
+
+            # Top panel: Levels 1-2 (bundled)
+            panel1_para = doc.add_paragraph()
+            panel1_para.paragraph_format.alignment = 1  # Center align
+
+            # Panel title
+            title_run = panel1_para.add_run("Levels 1-2")
+            title_run.font.size = Pt(10)
+            title_run.font.bold = True
+            title_run.font.name = "Source Sans Pro"
+            title_run.font.color.rgb = RGBColor(128, 128, 128)  # 50% gray
+            panel1_para.paragraph_format.space_after = Pt(5)
+
+            # Bundle frames (18pt, bold)
+            for frame in levels_1_2:
+                english, bold_words, func = _get_frame_data(frame)
+
+                frame_para = doc.add_paragraph()
+                frame_para.paragraph_format.alignment = 1  # Center align
+                self._add_bold_text_to_paragraph(
+                    frame_para, english, bold_words, 18, "Source Sans Pro"
+                )
+                frame_para.paragraph_format.space_after = Pt(2)
+
+                # Function label (9pt, uppercase, gray)
+                if func:
+                    func_para = doc.add_paragraph()
+                    func_para.paragraph_format.alignment = 1  # Center align
+                    func_run = func_para.add_run(func.upper())
+                    func_run.font.size = Pt(9)
+                    func_run.font.name = "Source Sans Pro"
+                    func_run.font.color.rgb = RGBColor(128, 128, 128)  # 50% gray
+                    func_para.paragraph_format.space_after = Pt(5)
+
+            # Middle panel: Levels 5-6 (first frame)
+            panel2_para = doc.add_paragraph()
+            panel2_para.paragraph_format.alignment = 1  # Center align
+
+            # Panel title
+            title_run = panel2_para.add_run("Levels 5-6")
+            title_run.font.size = Pt(10)
+            title_run.font.bold = True
+            title_run.font.name = "Source Sans Pro"
+            title_run.font.color.rgb = RGBColor(128, 128, 128)  # 50% gray
+            panel2_para.paragraph_format.space_after = Pt(5)
+
+            if len(levels_5_6) >= 1:
+                english, bold_words, func = _get_frame_data(levels_5_6[0])
+
+                frame_para = doc.add_paragraph()
+                frame_para.paragraph_format.alignment = 1  # Center align
+                self._add_bold_text_to_paragraph(
+                    frame_para, english, bold_words, 28, "Source Sans Pro"
+                )
+                frame_para.paragraph_format.space_after = Pt(2)
+
+                if func:
+                    func_para = doc.add_paragraph()
+                    func_para.paragraph_format.alignment = 1  # Center align
+                    func_run = func_para.add_run(func.upper())
+                    func_run.font.size = Pt(11)
+                    func_run.font.name = "Source Sans Pro"
+                    func_run.font.color.rgb = RGBColor(128, 128, 128)  # 50% gray
+
+            # Bottom panel: Levels 5-6 (second frame)
+            panel3_para = doc.add_paragraph()
+            panel3_para.paragraph_format.alignment = 1  # Center align
+
+            # Panel title
+            title_run = panel3_para.add_run("Levels 5-6")
+            title_run.font.size = Pt(10)
+            title_run.font.bold = True
+            title_run.font.name = "Source Sans Pro"
+            title_run.font.color.rgb = RGBColor(128, 128, 128)  # 50% gray
+            panel3_para.paragraph_format.space_after = Pt(5)
+
+            if len(levels_5_6) >= 2:
+                english, bold_words, func = _get_frame_data(levels_5_6[1])
+
+                frame_para = doc.add_paragraph()
+                frame_para.paragraph_format.alignment = 1  # Center align
+                self._add_bold_text_to_paragraph(
+                    frame_para, english, bold_words, 28, "Source Sans Pro"
+                )
+                frame_para.paragraph_format.space_after = Pt(2)
+
+                if func:
+                    func_para = doc.add_paragraph()
+                    func_para.paragraph_format.alignment = 1  # Center align
+                    func_run = func_para.add_run(func.upper())
+                    func_run.font.size = Pt(11)
+                    func_run.font.name = "Source Sans Pro"
+                    func_run.font.color.rgb = RGBColor(128, 128, 128)  # 50% gray
+
+        # Save document
+        doc.save(str(docx_file))
+
+        logger.info(
+            "sentence_frames_docx_generated",
+            extra={
+                "output_path": str(docx_file),
+                "page_pairs": len(payloads),
+                "week_of": payloads[0]["week_of"] if payloads else "Unknown",
+            },
+        )
+
+        return str(docx_file)
 
     def generate_pdf(
         self,
@@ -745,3 +1259,13 @@ def generate_sentence_frames_pdf(
     """Convenience wrapper to generate sentence frames PDF from lesson JSON."""
     generator = SentenceFramesPDFGenerator()
     return generator.generate_pdf(lesson_json, output_path, user_name, keep_html)
+
+
+def generate_sentence_frames_docx(
+    lesson_json: Dict[str, Any],
+    output_path: str,
+    user_name: Optional[str] = None,
+) -> str:
+    """Convenience wrapper to generate sentence frames DOCX from lesson JSON."""
+    generator = SentenceFramesPDFGenerator()
+    return generator.generate_docx(lesson_json, output_path, user_name)

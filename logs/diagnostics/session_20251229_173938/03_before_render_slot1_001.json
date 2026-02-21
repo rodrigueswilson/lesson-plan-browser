@@ -1,0 +1,79 @@
+{
+  "timestamp": "2025-12-29T17:39:52.763019",
+  "stage": "03_before_render_slot1",
+  "data": {
+    "slot_number": 1,
+    "subject": "ELA",
+    "render_type": "multi_slot",
+    "metadata_slot_number": 1,
+    "metadata_subject": "ELA",
+    "hyperlink_count": 12,
+    "all_hyperlinks_have_slot": true,
+    "all_hyperlinks_have_subject": true,
+    "hyperlink_slot_distribution": {
+      "1": 12
+    },
+    "sample_hyperlinks": [
+      {
+        "text": "Unit 1: Forces and Motion",
+        "source_slot": 1,
+        "source_subject": "ELA"
+      },
+      {
+        "text": "Lesson 5 Day 1",
+        "source_slot": 1,
+        "source_subject": "ELA"
+      },
+      {
+        "text": "Unit 1: Forces and Motion",
+        "source_slot": 1,
+        "source_subject": "ELA"
+      },
+      {
+        "text": "Lesson 5 Day 2",
+        "source_slot": 1,
+        "source_subject": "ELA"
+      },
+      {
+        "text": "carousel activity",
+        "source_slot": 1,
+        "source_subject": "ELA"
+      },
+      {
+        "text": "gallery walk",
+        "source_slot": 1,
+        "source_subject": "ELA"
+      },
+      {
+        "text": "Author's Purpose Graphic Organizer",
+        "source_slot": 1,
+        "source_subject": "ELA"
+      },
+      {
+        "text": "Author’s Purpose Activity",
+        "source_slot": 1,
+        "source_subject": "ELA"
+      },
+      {
+        "text": "Higher Order Thinking Questions",
+        "source_slot": 1,
+        "source_subject": "ELA"
+      },
+      {
+        "text": "activity",
+        "source_slot": 1,
+        "source_subject": "ELA"
+      },
+      {
+        "text": "text-dependent questions",
+        "source_slot": 1,
+        "source_subject": "ELA"
+      },
+      {
+        "text": "activity",
+        "source_slot": 1,
+        "source_subject": "ELA"
+      }
+    ]
+  }
+}

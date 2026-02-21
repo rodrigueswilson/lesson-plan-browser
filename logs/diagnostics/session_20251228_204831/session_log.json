@@ -1,0 +1,1226 @@
+[
+  {
+    "timestamp": "2025-12-28T20:48:31.789798",
+    "stage": "01_parser_slot1",
+    "data": {
+      "slot_number": 1,
+      "subject": "ELA",
+      "source_file": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W51\\12_15-12_19 Lang Lesson Plans.docx",
+      "hyperlink_count": 13,
+      "hyperlinks": [
+        {
+          "text": "Lenni Lenape",
+          "url": "https://docs.google.com/document/d/1_yHvguDhJIZmrIwY3ZcW-BIhfQH5VtH2xs1KtKlnNVY/edit?tab=t.9vfaqefj1",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Lenni Lenape",
+          "url": "https://docs.google.com/document/d/1_yHvguDhJIZmrIwY3ZcW-BIhfQH5VtH2xs1KtKlnNVY/edit?tab=t.9vfaqefj1",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Lenni Lenape",
+          "url": "https://docs.google.com/document/d/1_yHvguDhJIZmrIwY3ZcW-BIhfQH5VtH2xs1KtKlnNVY/edit?tab=t.9vfaqefj1",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Lenni Lenape",
+          "url": "https://docs.google.com/document/d/1_yHvguDhJIZmrIwY3ZcW-BIhfQH5VtH2xs1KtKlnNVY/edit?tab=t.9vfaqefj1",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Lenni Lenape",
+          "url": "https://docs.google.com/document/d/1_yHvguDhJIZmrIwY3ZcW-BIhfQH5VtH2xs1KtKlnNVY/edit?tab=t.9vfaqefj1",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Native-Land.ca",
+          "url": "https://native-land.ca",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Spotlight On Native Americans: Delaware Lenape",
+          "url": "https://docs.google.com/presentation/d/1SF1FWvS7_XGEF66Y-zwwcdCFpPJMXWTEZqPkiA-p78Y/edit?usp=drive_l",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "note catcher ",
+          "url": "https://docs.google.com/document/d/1OrLBdZHu8PTQa9rkrKdpcwNnPvtRW555QF0FiNffulc/edit?usp=sharing",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": " Biography Slide Template",
+          "url": "https://docs.google.com/presentation/d/1xBSBfJRc4O0i-pa-UHpZa6L-wRzcTqHHjhNKEVa_mmE/edit?usp=sharing",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": " Culture Preservation Graphic Organizer",
+          "url": "https://docs.google.com/document/d/1OrLBdZHu8PTQa9rkrKdpcwNnPvtRW555QF0FiNffulc/edit?usp=sharing",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Carousel activity",
+          "url": "https://drive.google.com/file/d/1RpsS1RdsdEfzayy-nJY8SAUIHmqCztXK/view?usp=sharing",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Unit 3 - Culminating Task 1",
+          "url": "https://docs.google.com/document/d/1d9wxmTmMishled9o5JkHJJmI1RvoUTQhLNogWn0UY-Y/edit?usp=sharing",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Culminating Writing Task",
+          "url": "https://docs.google.com/document/d/1YWfscllds8gxVWFlfklIf3HbOUveY_lcFp8s7yAytI8/edit?usp=sharing",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-12-28T20:48:32.837902",
+    "stage": "02_lesson_json_slot1",
+    "data": {
+      "slot_number": 1,
+      "subject": "ELA",
+      "metadata_slot_number": null,
+      "metadata_subject": "ELA",
+      "hyperlink_count": 13,
+      "hyperlinks_with_slot_metadata": 13,
+      "hyperlinks_with_subject_metadata": 13,
+      "sample_hyperlinks": [
+        {
+          "text": "Lenni Lenape",
+          "has_source_slot": true,
+          "source_slot": 1,
+          "has_source_subject": true,
+          "source_subject": "ELA"
+        },
+        {
+          "text": "Lenni Lenape",
+          "has_source_slot": true,
+          "source_slot": 1,
+          "has_source_subject": true,
+          "source_subject": "ELA"
+        },
+        {
+          "text": "Lenni Lenape",
+          "has_source_slot": true,
+          "source_slot": 1,
+          "has_source_subject": true,
+          "source_subject": "ELA"
+        },
+        {
+          "text": "Lenni Lenape",
+          "has_source_slot": true,
+          "source_slot": 1,
+          "has_source_subject": true,
+          "source_subject": "ELA"
+        },
+        {
+          "text": "Lenni Lenape",
+          "has_source_slot": true,
+          "source_slot": 1,
+          "has_source_subject": true,
+          "source_subject": "ELA"
+        },
+        {
+          "text": "Native-Land.ca",
+          "has_source_slot": true,
+          "source_slot": 1,
+          "has_source_subject": true,
+          "source_subject": "ELA"
+        },
+        {
+          "text": "Spotlight On Native Americans: Delaware Lenape",
+          "has_source_slot": true,
+          "source_slot": 1,
+          "has_source_subject": true,
+          "source_subject": "ELA"
+        },
+        {
+          "text": "note catcher ",
+          "has_source_slot": true,
+          "source_slot": 1,
+          "has_source_subject": true,
+          "source_subject": "ELA"
+        },
+        {
+          "text": " Biography Slide Template",
+          "has_source_slot": true,
+          "source_slot": 1,
+          "has_source_subject": true,
+          "source_subject": "ELA"
+        },
+        {
+          "text": " Culture Preservation Graphic Organizer",
+          "has_source_slot": true,
+          "source_slot": 1,
+          "has_source_subject": true,
+          "source_subject": "ELA"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-12-28T20:48:32.974640",
+    "stage": "01_parser_slot2",
+    "data": {
+      "slot_number": 2,
+      "subject": "ELA/SS",
+      "source_file": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W51\\Ms. Savoca-12_15_25-12_19_25 Lesson plans.docx",
+      "hyperlink_count": 5,
+      "hyperlinks": [
+        {
+          "text": "02 - Second Grade Unit Description and Summary of Key Learning",
+          "url": "https://docs.google.com/document/d/1H_hFmN04OarxjXNlCsHxSgkzyD1nfzMjDFWQfx5zc30/edit?usp=sharing",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "02 - Second Grade Unit Description and Summary of Key Learning",
+          "url": "https://docs.google.com/document/d/1H_hFmN04OarxjXNlCsHxSgkzyD1nfzMjDFWQfx5zc30/edit?usp=sharing",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "02 - Second Grade Unit Description and Summary of Key Learning",
+          "url": "https://docs.google.com/document/d/1H_hFmN04OarxjXNlCsHxSgkzyD1nfzMjDFWQfx5zc30/edit?usp=sharing",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "02 - Second Grade Unit Description and Summary of Key Learning",
+          "url": "https://docs.google.com/document/d/1H_hFmN04OarxjXNlCsHxSgkzyD1nfzMjDFWQfx5zc30/edit?usp=sharing",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "02 - Second Grade Unit Description and Summary of Key Learning",
+          "url": "https://docs.google.com/document/d/1H_hFmN04OarxjXNlCsHxSgkzyD1nfzMjDFWQfx5zc30/edit?usp=sharing",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-12-28T20:48:34.036956",
+    "stage": "02_lesson_json_slot2",
+    "data": {
+      "slot_number": 2,
+      "subject": "ELA/SS",
+      "metadata_slot_number": null,
+      "metadata_subject": "ELA/SS",
+      "hyperlink_count": 5,
+      "hyperlinks_with_slot_metadata": 5,
+      "hyperlinks_with_subject_metadata": 5,
+      "sample_hyperlinks": [
+        {
+          "text": "02 - Second Grade Unit Description and Summary of ",
+          "has_source_slot": true,
+          "source_slot": 2,
+          "has_source_subject": true,
+          "source_subject": "ELA/SS"
+        },
+        {
+          "text": "02 - Second Grade Unit Description and Summary of ",
+          "has_source_slot": true,
+          "source_slot": 2,
+          "has_source_subject": true,
+          "source_subject": "ELA/SS"
+        },
+        {
+          "text": "02 - Second Grade Unit Description and Summary of ",
+          "has_source_slot": true,
+          "source_slot": 2,
+          "has_source_subject": true,
+          "source_subject": "ELA/SS"
+        },
+        {
+          "text": "02 - Second Grade Unit Description and Summary of ",
+          "has_source_slot": true,
+          "source_slot": 2,
+          "has_source_subject": true,
+          "source_subject": "ELA/SS"
+        },
+        {
+          "text": "02 - Second Grade Unit Description and Summary of ",
+          "has_source_slot": true,
+          "source_slot": 2,
+          "has_source_subject": true,
+          "source_subject": "ELA/SS"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-12-28T20:48:34.166733",
+    "stage": "01_parser_slot4",
+    "data": {
+      "slot_number": 4,
+      "subject": "Math",
+      "source_file": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W51\\Ms. Savoca-12_15_25-12_19_25 Lesson plans.docx",
+      "hyperlink_count": 10,
+      "hyperlinks": [
+        {
+          "text": "Unit 4: Addition and Subtraction on the Number Line",
+          "url": "https://docs.google.com/document/d/1x8ll9eW0ZVYdBOKIdDfEPk1X_79X3dyOtq_zyByvpe4/edit?tab=t.0",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Unit 4: Addition and Subtraction on the Number Line",
+          "url": "https://docs.google.com/document/d/1x8ll9eW0ZVYdBOKIdDfEPk1X_79X3dyOtq_zyByvpe4/edit?tab=t.0",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Unit 3: Measuring Length",
+          "url": "https://docs.google.com/document/d/1jS0EN5RQpawPPkDnTkUnbktDeqnLDjeojFHudRl5zGY/edit",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Unit 3: Measuring Length",
+          "url": "https://docs.google.com/document/d/1jS0EN5RQpawPPkDnTkUnbktDeqnLDjeojFHudRl5zGY/edit",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Unit 3: Measuring Length",
+          "url": "https://docs.google.com/document/d/1jS0EN5RQpawPPkDnTkUnbktDeqnLDjeojFHudRl5zGY/edit",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "2.3.1 Cool Down",
+          "url": "https://drive.google.com/file/d/1rL8iWCJh1O-l34fpD9yYSXEIGzpM8hj8/view?usp=drive_link",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "cool down activity",
+          "url": "https://drive.google.com/file/d/1I1ff5nTSqZVycwzq6AT3qdTkPYPl5rwq/view?usp=drive_link",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "2.3.2 Cool Down",
+          "url": "https://drive.google.com/file/d/16NKbjA7ytDtFMkqjpMmyjRn7vW46H56M/view?usp=drive_link",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "2.3.3 Cool Down",
+          "url": "https://drive.google.com/file/d/1LPIZ8AP83-NuAWS5w0BBh93wgZoovsZg/view?usp=drive_link",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "2.3.4 Cool Down",
+          "url": "https://drive.google.com/file/d/19LxMyLuFhUGEWLk7bxjUMsEOuNajtcne/view?usp=drive_link",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-12-28T20:48:35.221831",
+    "stage": "02_lesson_json_slot4",
+    "data": {
+      "slot_number": 4,
+      "subject": "Math",
+      "metadata_slot_number": null,
+      "metadata_subject": "Math",
+      "hyperlink_count": 10,
+      "hyperlinks_with_slot_metadata": 10,
+      "hyperlinks_with_subject_metadata": 10,
+      "sample_hyperlinks": [
+        {
+          "text": "Unit 4: Addition and Subtraction on the Number Lin",
+          "has_source_slot": true,
+          "source_slot": 4,
+          "has_source_subject": true,
+          "source_subject": "Math"
+        },
+        {
+          "text": "Unit 4: Addition and Subtraction on the Number Lin",
+          "has_source_slot": true,
+          "source_slot": 4,
+          "has_source_subject": true,
+          "source_subject": "Math"
+        },
+        {
+          "text": "Unit 3: Measuring Length",
+          "has_source_slot": true,
+          "source_slot": 4,
+          "has_source_subject": true,
+          "source_subject": "Math"
+        },
+        {
+          "text": "Unit 3: Measuring Length",
+          "has_source_slot": true,
+          "source_slot": 4,
+          "has_source_subject": true,
+          "source_subject": "Math"
+        },
+        {
+          "text": "Unit 3: Measuring Length",
+          "has_source_slot": true,
+          "source_slot": 4,
+          "has_source_subject": true,
+          "source_subject": "Math"
+        },
+        {
+          "text": "2.3.1 Cool Down",
+          "has_source_slot": true,
+          "source_slot": 4,
+          "has_source_subject": true,
+          "source_subject": "Math"
+        },
+        {
+          "text": "cool down activity",
+          "has_source_slot": true,
+          "source_slot": 4,
+          "has_source_subject": true,
+          "source_subject": "Math"
+        },
+        {
+          "text": "2.3.2 Cool Down",
+          "has_source_slot": true,
+          "source_slot": 4,
+          "has_source_subject": true,
+          "source_subject": "Math"
+        },
+        {
+          "text": "2.3.3 Cool Down",
+          "has_source_slot": true,
+          "source_slot": 4,
+          "has_source_subject": true,
+          "source_subject": "Math"
+        },
+        {
+          "text": "2.3.4 Cool Down",
+          "has_source_slot": true,
+          "source_slot": 4,
+          "has_source_subject": true,
+          "source_subject": "Math"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-12-28T20:48:35.412216",
+    "stage": "01_parser_slot5",
+    "data": {
+      "slot_number": 5,
+      "subject": "Math",
+      "source_file": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W51\\12_15-12_19 Davies Lesson Plans.docx",
+      "hyperlink_count": 48,
+      "hyperlinks": [
+        {
+          "text": "LESSON 13: MULTIPLES OF 100",
+          "url": "https://newarkps.ilclassroom.com/lesson_plans/371426-lesson-13-multiples-of-100?path=Wiki.11178204%2",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "3.3.13 Teacher Guide",
+          "url": "https://drive.google.com/file/d/1bOy1chSRLJVzrMWDB0UAmDVmZVF44iGF/view?usp=drive_link",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "LESSON 14: NEAREST MULTIPLES OF 10 AND 100",
+          "url": "https://newarkps.ilclassroom.com/lesson_plans/371446-lesson-14-nearest-multiples-of-10-and-of-100?pa",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "3.3.14 Teacher Guide",
+          "url": "https://drive.google.com/file/d/1kYwHwePVrOemIvjwZl_Hm57kvD7SX-ot/view?usp=drive_link",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "LESSON 15: ROUND TO THE NEAREST TEN AND HUNDRED  ",
+          "url": "https://newarkps.ilclassroom.com/lesson_plans/371473-lesson-15-round-to-the-nearest-ten-and-the-near",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "3.3.15 Teacher Guide",
+          "url": "https://drive.google.com/file/d/1js4466RU_jLGj_2FInH8yrBBaYFIFLYS/view?usp=drive_link",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "LESSON 16: ROUND AND ROUND AGAIN",
+          "url": "https://newarkps.ilclassroom.com/lesson_plans/371497-lesson-16-round-and-round-again?path=Wiki.11178",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "3.3.16 Teacher Guide",
+          "url": "https://drive.google.com/file/d/1aW40UDQRWVumuqX9MA9QzZ8fwVxdt82O/view?usp=drive_link",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "LESSON 17: DOES IT MAKE SENSE?",
+          "url": "https://newarkps.ilclassroom.com/lesson_plans/371521-lesson-17-does-it-make-sense?path=Wiki.11178204",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "3.3.17 Teacher Guide",
+          "url": "https://drive.google.com/file/d/16q3JelU3mEO-l_xmhmzXar_OojmSUOlL/view?usp=drive_link",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Target Numbers ",
+          "url": "https://docs.google.com/presentation/d/1Dp6YqEkemNm7ufLOj9UGxhD5tU-_hUveF1nTQgQY3cc/edit?usp=drive_l",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Stage 7",
+          "url": "https://newarkps.ilclassroom.com/wikis/10047909-target-numbers-1-5?path=Wiki.10465245",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "How Close?",
+          "url": "https://docs.google.com/presentation/d/1wkmDhDjK8fV54qV7YUVmJkM07rax3Bjc-dSTui3s_9A/edit?usp=drive_l",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Stage 4",
+          "url": "https://newarkps.ilclassroom.com/wikis/10023920-how-close-1-5?path=Wiki.10465245",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Target Numbers ",
+          "url": "https://docs.google.com/presentation/d/1Dp6YqEkemNm7ufLOj9UGxhD5tU-_hUveF1nTQgQY3cc/edit?usp=drive_l",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Stage 7",
+          "url": "https://newarkps.ilclassroom.com/wikis/10047909-target-numbers-1-5?path=Wiki.10465245",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "How Close?",
+          "url": "https://docs.google.com/presentation/d/1wkmDhDjK8fV54qV7YUVmJkM07rax3Bjc-dSTui3s_9A/edit?usp=drive_l",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Stage 4",
+          "url": "https://newarkps.ilclassroom.com/wikis/10023920-how-close-1-5?path=Wiki.10465245",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Capture Squares ",
+          "url": "https://docs.google.com/presentation/d/102LkVT-DFCSLHmQB6BJ4-3pC3Oy9IuMhJibv5l5YoGo/edit?usp=drive_l",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": "Stage 6",
+          "url": "https://newarkps.ilclassroom.com/wikis/10000687-capture-squares-1-3?path=Wiki.10465245",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-12-28T20:48:36.470475",
+    "stage": "02_lesson_json_slot5",
+    "data": {
+      "slot_number": 5,
+      "subject": "Math",
+      "metadata_slot_number": null,
+      "metadata_subject": "Math",
+      "hyperlink_count": 48,
+      "hyperlinks_with_slot_metadata": 48,
+      "hyperlinks_with_subject_metadata": 48,
+      "sample_hyperlinks": [
+        {
+          "text": "LESSON 13: MULTIPLES OF 100",
+          "has_source_slot": true,
+          "source_slot": 5,
+          "has_source_subject": true,
+          "source_subject": "Math"
+        },
+        {
+          "text": "3.3.13 Teacher Guide",
+          "has_source_slot": true,
+          "source_slot": 5,
+          "has_source_subject": true,
+          "source_subject": "Math"
+        },
+        {
+          "text": "LESSON 14: NEAREST MULTIPLES OF 10 AND 100",
+          "has_source_slot": true,
+          "source_slot": 5,
+          "has_source_subject": true,
+          "source_subject": "Math"
+        },
+        {
+          "text": "3.3.14 Teacher Guide",
+          "has_source_slot": true,
+          "source_slot": 5,
+          "has_source_subject": true,
+          "source_subject": "Math"
+        },
+        {
+          "text": "LESSON 15: ROUND TO THE NEAREST TEN AND HUNDRED  ",
+          "has_source_slot": true,
+          "source_slot": 5,
+          "has_source_subject": true,
+          "source_subject": "Math"
+        },
+        {
+          "text": "3.3.15 Teacher Guide",
+          "has_source_slot": true,
+          "source_slot": 5,
+          "has_source_subject": true,
+          "source_subject": "Math"
+        },
+        {
+          "text": "LESSON 16: ROUND AND ROUND AGAIN",
+          "has_source_slot": true,
+          "source_slot": 5,
+          "has_source_subject": true,
+          "source_subject": "Math"
+        },
+        {
+          "text": "3.3.16 Teacher Guide",
+          "has_source_slot": true,
+          "source_slot": 5,
+          "has_source_subject": true,
+          "source_subject": "Math"
+        },
+        {
+          "text": "LESSON 17: DOES IT MAKE SENSE?",
+          "has_source_slot": true,
+          "source_slot": 5,
+          "has_source_subject": true,
+          "source_subject": "Math"
+        },
+        {
+          "text": "3.3.17 Teacher Guide",
+          "has_source_slot": true,
+          "source_slot": 5,
+          "has_source_subject": true,
+          "source_subject": "Math"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-12-28T20:48:36.599943",
+    "stage": "01_parser_slot6",
+    "data": {
+      "slot_number": 6,
+      "subject": "Science",
+      "source_file": "F:\\rodri\\Documents\\OneDrive\\AS\\Lesson Plan\\25 W51\\Ms. Savoca-12_15_25-12_19_25 Lesson plans.docx",
+      "hyperlink_count": 4,
+      "hyperlinks": [
+        {
+          "text": " 2nd Grade Science ",
+          "url": "https://docs.google.com/document/d/1nImdZIX6pCavnrr59YDV-iKMuixgzblvrcu5bGunB6Q/edit",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": " 2nd Grade Science ",
+          "url": "https://docs.google.com/document/d/1nImdZIX6pCavnrr59YDV-iKMuixgzblvrcu5bGunB6Q/edit?tab=t.0",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": " 2nd Grade Science ",
+          "url": "https://docs.google.com/document/d/1nImdZIX6pCavnrr59YDV-iKMuixgzblvrcu5bGunB6Q/edit?tab=t.0",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        },
+        {
+          "text": " 2nd Grade Science ",
+          "url": "https://docs.google.com/document/d/1nImdZIX6pCavnrr59YDV-iKMuixgzblvrcu5bGunB6Q/edit?tab=t.0",
+          "has_source_slot": false,
+          "has_source_subject": false,
+          "source_slot": null,
+          "source_subject": null
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-12-28T20:48:37.646950",
+    "stage": "02_lesson_json_slot6",
+    "data": {
+      "slot_number": 6,
+      "subject": "Science",
+      "metadata_slot_number": null,
+      "metadata_subject": "Science",
+      "hyperlink_count": 4,
+      "hyperlinks_with_slot_metadata": 4,
+      "hyperlinks_with_subject_metadata": 4,
+      "sample_hyperlinks": [
+        {
+          "text": " 2nd Grade Science ",
+          "has_source_slot": true,
+          "source_slot": 6,
+          "has_source_subject": true,
+          "source_subject": "Science"
+        },
+        {
+          "text": " 2nd Grade Science ",
+          "has_source_slot": true,
+          "source_slot": 6,
+          "has_source_subject": true,
+          "source_subject": "Science"
+        },
+        {
+          "text": " 2nd Grade Science ",
+          "has_source_slot": true,
+          "source_slot": 6,
+          "has_source_subject": true,
+          "source_subject": "Science"
+        },
+        {
+          "text": " 2nd Grade Science ",
+          "has_source_slot": true,
+          "source_slot": 6,
+          "has_source_subject": true,
+          "source_subject": "Science"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-12-28T20:48:37.767413",
+    "stage": "03_before_render_slot1",
+    "data": {
+      "slot_number": 1,
+      "subject": "ELA",
+      "render_type": "multi_slot",
+      "metadata_slot_number": 1,
+      "metadata_subject": "ELA",
+      "hyperlink_count": 13,
+      "all_hyperlinks_have_slot": true,
+      "all_hyperlinks_have_subject": true,
+      "hyperlink_slot_distribution": {
+        "1": 13
+      },
+      "sample_hyperlinks": [
+        {
+          "text": "Lenni Lenape",
+          "source_slot": 1,
+          "source_subject": "ELA"
+        },
+        {
+          "text": "Lenni Lenape",
+          "source_slot": 1,
+          "source_subject": "ELA"
+        },
+        {
+          "text": "Lenni Lenape",
+          "source_slot": 1,
+          "source_subject": "ELA"
+        },
+        {
+          "text": "Lenni Lenape",
+          "source_slot": 1,
+          "source_subject": "ELA"
+        },
+        {
+          "text": "Lenni Lenape",
+          "source_slot": 1,
+          "source_subject": "ELA"
+        },
+        {
+          "text": "Native-Land.ca",
+          "source_slot": 1,
+          "source_subject": "ELA"
+        },
+        {
+          "text": "Spotlight On Native Americans: Delaware Lenape",
+          "source_slot": 1,
+          "source_subject": "ELA"
+        },
+        {
+          "text": "note catcher ",
+          "source_slot": 1,
+          "source_subject": "ELA"
+        },
+        {
+          "text": " Biography Slide Template",
+          "source_slot": 1,
+          "source_subject": "ELA"
+        },
+        {
+          "text": " Culture Preservation Graphic Organizer",
+          "source_slot": 1,
+          "source_subject": "ELA"
+        },
+        {
+          "text": "Carousel activity",
+          "source_slot": 1,
+          "source_subject": "ELA"
+        },
+        {
+          "text": "Unit 3 - Culminating Task 1",
+          "source_slot": 1,
+          "source_subject": "ELA"
+        },
+        {
+          "text": "Culminating Writing Task",
+          "source_slot": 1,
+          "source_subject": "ELA"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-12-28T20:48:37.800654",
+    "stage": "04_renderer_metadata_extracted",
+    "data": {
+      "slot_number": 1,
+      "slot_number_type": "int",
+      "slot_number_is_none": false,
+      "subject": "ELA",
+      "subject_is_none": false,
+      "hyperlink_count": 13,
+      "teacher": "Kelsey Lang / Wilson Rodrigues",
+      "filtering_will_activate": true
+    }
+  },
+  {
+    "timestamp": "2025-12-28T20:48:37.879273",
+    "stage": "03_before_render_slot2",
+    "data": {
+      "slot_number": 2,
+      "subject": "ELA/SS",
+      "render_type": "multi_slot",
+      "metadata_slot_number": 2,
+      "metadata_subject": "ELA/SS",
+      "hyperlink_count": 5,
+      "all_hyperlinks_have_slot": true,
+      "all_hyperlinks_have_subject": true,
+      "hyperlink_slot_distribution": {
+        "2": 5
+      },
+      "sample_hyperlinks": [
+        {
+          "text": "02 - Second Grade Unit Description and Summary of ",
+          "source_slot": 2,
+          "source_subject": "ELA/SS"
+        },
+        {
+          "text": "02 - Second Grade Unit Description and Summary of ",
+          "source_slot": 2,
+          "source_subject": "ELA/SS"
+        },
+        {
+          "text": "02 - Second Grade Unit Description and Summary of ",
+          "source_slot": 2,
+          "source_subject": "ELA/SS"
+        },
+        {
+          "text": "02 - Second Grade Unit Description and Summary of ",
+          "source_slot": 2,
+          "source_subject": "ELA/SS"
+        },
+        {
+          "text": "02 - Second Grade Unit Description and Summary of ",
+          "source_slot": 2,
+          "source_subject": "ELA/SS"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-12-28T20:48:37.905530",
+    "stage": "04_renderer_metadata_extracted",
+    "data": {
+      "slot_number": 2,
+      "slot_number_type": "int",
+      "slot_number_is_none": false,
+      "subject": "ELA/SS",
+      "subject_is_none": false,
+      "hyperlink_count": 5,
+      "teacher": "Donna Savoca / Wilson Rodrigues",
+      "filtering_will_activate": true
+    }
+  },
+  {
+    "timestamp": "2025-12-28T20:48:37.973925",
+    "stage": "03_before_render_slot4",
+    "data": {
+      "slot_number": 4,
+      "subject": "Math",
+      "render_type": "multi_slot",
+      "metadata_slot_number": 4,
+      "metadata_subject": "Math",
+      "hyperlink_count": 10,
+      "all_hyperlinks_have_slot": true,
+      "all_hyperlinks_have_subject": true,
+      "hyperlink_slot_distribution": {
+        "4": 10
+      },
+      "sample_hyperlinks": [
+        {
+          "text": "Unit 4: Addition and Subtraction on the Number Lin",
+          "source_slot": 4,
+          "source_subject": "Math"
+        },
+        {
+          "text": "Unit 4: Addition and Subtraction on the Number Lin",
+          "source_slot": 4,
+          "source_subject": "Math"
+        },
+        {
+          "text": "Unit 3: Measuring Length",
+          "source_slot": 4,
+          "source_subject": "Math"
+        },
+        {
+          "text": "Unit 3: Measuring Length",
+          "source_slot": 4,
+          "source_subject": "Math"
+        },
+        {
+          "text": "Unit 3: Measuring Length",
+          "source_slot": 4,
+          "source_subject": "Math"
+        },
+        {
+          "text": "2.3.1 Cool Down",
+          "source_slot": 4,
+          "source_subject": "Math"
+        },
+        {
+          "text": "cool down activity",
+          "source_slot": 4,
+          "source_subject": "Math"
+        },
+        {
+          "text": "2.3.2 Cool Down",
+          "source_slot": 4,
+          "source_subject": "Math"
+        },
+        {
+          "text": "2.3.3 Cool Down",
+          "source_slot": 4,
+          "source_subject": "Math"
+        },
+        {
+          "text": "2.3.4 Cool Down",
+          "source_slot": 4,
+          "source_subject": "Math"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-12-28T20:48:38.005311",
+    "stage": "04_renderer_metadata_extracted",
+    "data": {
+      "slot_number": 4,
+      "slot_number_type": "int",
+      "slot_number_is_none": false,
+      "subject": "Math",
+      "subject_is_none": false,
+      "hyperlink_count": 10,
+      "teacher": "Donna Savoca / Wilson Rodrigues",
+      "filtering_will_activate": true
+    }
+  },
+  {
+    "timestamp": "2025-12-28T20:48:38.078509",
+    "stage": "03_before_render_slot5",
+    "data": {
+      "slot_number": 5,
+      "subject": "Math",
+      "render_type": "multi_slot",
+      "metadata_slot_number": 5,
+      "metadata_subject": "Math",
+      "hyperlink_count": 48,
+      "all_hyperlinks_have_slot": true,
+      "all_hyperlinks_have_subject": true,
+      "hyperlink_slot_distribution": {
+        "5": 48
+      },
+      "sample_hyperlinks": [
+        {
+          "text": "LESSON 13: MULTIPLES OF 100",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "3.3.13 Teacher Guide",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "LESSON 14: NEAREST MULTIPLES OF 10 AND 100",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "3.3.14 Teacher Guide",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "LESSON 15: ROUND TO THE NEAREST TEN AND HUNDRED  ",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "3.3.15 Teacher Guide",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "LESSON 16: ROUND AND ROUND AGAIN",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "3.3.16 Teacher Guide",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "LESSON 17: DOES IT MAKE SENSE?",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "3.3.17 Teacher Guide",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "Target Numbers ",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "Stage 7",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "How Close?",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "Stage 4",
+          "source_slot": 5,
+          "source_subject": "Math"
+        },
+        {
+          "text": "Target Numbers ",
+          "source_slot": 5,
+          "source_subject": "Math"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-12-28T20:48:38.141699",
+    "stage": "04_renderer_metadata_extracted",
+    "data": {
+      "slot_number": 5,
+      "slot_number_type": "int",
+      "slot_number_is_none": false,
+      "subject": "Math",
+      "subject_is_none": false,
+      "hyperlink_count": 48,
+      "teacher": "Caitlin Davies / Wilson Rodrigues",
+      "filtering_will_activate": true
+    }
+  },
+  {
+    "timestamp": "2025-12-28T20:48:38.224340",
+    "stage": "03_before_render_slot6",
+    "data": {
+      "slot_number": 6,
+      "subject": "Science",
+      "render_type": "multi_slot",
+      "metadata_slot_number": 6,
+      "metadata_subject": "Science",
+      "hyperlink_count": 4,
+      "all_hyperlinks_have_slot": true,
+      "all_hyperlinks_have_subject": true,
+      "hyperlink_slot_distribution": {
+        "6": 4
+      },
+      "sample_hyperlinks": [
+        {
+          "text": " 2nd Grade Science ",
+          "source_slot": 6,
+          "source_subject": "Science"
+        },
+        {
+          "text": " 2nd Grade Science ",
+          "source_slot": 6,
+          "source_subject": "Science"
+        },
+        {
+          "text": " 2nd Grade Science ",
+          "source_slot": 6,
+          "source_subject": "Science"
+        },
+        {
+          "text": " 2nd Grade Science ",
+          "source_slot": 6,
+          "source_subject": "Science"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-12-28T20:48:38.248991",
+    "stage": "04_renderer_metadata_extracted",
+    "data": {
+      "slot_number": 6,
+      "slot_number_type": "int",
+      "slot_number_is_none": false,
+      "subject": "Science",
+      "subject_is_none": false,
+      "hyperlink_count": 4,
+      "teacher": "Donna Savoca / Wilson Rodrigues",
+      "filtering_will_activate": true
+    }
+  }
+]

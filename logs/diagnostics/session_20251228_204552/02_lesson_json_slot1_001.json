@@ -1,0 +1,85 @@
+{
+  "timestamp": "2025-12-28T20:45:53.186857",
+  "stage": "02_lesson_json_slot1",
+  "data": {
+    "slot_number": 1,
+    "subject": "ELA",
+    "metadata_slot_number": null,
+    "metadata_subject": "ELA",
+    "hyperlink_count": 13,
+    "hyperlinks_with_slot_metadata": 13,
+    "hyperlinks_with_subject_metadata": 13,
+    "sample_hyperlinks": [
+      {
+        "text": "Lenni Lenape",
+        "has_source_slot": true,
+        "source_slot": 1,
+        "has_source_subject": true,
+        "source_subject": "ELA"
+      },
+      {
+        "text": "Lenni Lenape",
+        "has_source_slot": true,
+        "source_slot": 1,
+        "has_source_subject": true,
+        "source_subject": "ELA"
+      },
+      {
+        "text": "Lenni Lenape",
+        "has_source_slot": true,
+        "source_slot": 1,
+        "has_source_subject": true,
+        "source_subject": "ELA"
+      },
+      {
+        "text": "Lenni Lenape",
+        "has_source_slot": true,
+        "source_slot": 1,
+        "has_source_subject": true,
+        "source_subject": "ELA"
+      },
+      {
+        "text": "Lenni Lenape",
+        "has_source_slot": true,
+        "source_slot": 1,
+        "has_source_subject": true,
+        "source_subject": "ELA"
+      },
+      {
+        "text": "Native-Land.ca",
+        "has_source_slot": true,
+        "source_slot": 1,
+        "has_source_subject": true,
+        "source_subject": "ELA"
+      },
+      {
+        "text": "Spotlight On Native Americans: Delaware Lenape",
+        "has_source_slot": true,
+        "source_slot": 1,
+        "has_source_subject": true,
+        "source_subject": "ELA"
+      },
+      {
+        "text": "note catcher ",
+        "has_source_slot": true,
+        "source_slot": 1,
+        "has_source_subject": true,
+        "source_subject": "ELA"
+      },
+      {
+        "text": " Biography Slide Template",
+        "has_source_slot": true,
+        "source_slot": 1,
+        "has_source_subject": true,
+        "source_subject": "ELA"
+      },
+      {
+        "text": " Culture Preservation Graphic Organizer",
+        "has_source_slot": true,
+        "source_slot": 1,
+        "has_source_subject": true,
+        "source_subject": "ELA"
+      }
+    ]
+  }
+}

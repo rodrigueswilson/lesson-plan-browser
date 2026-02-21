@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { Button } from './ui/Button';
 import { Input } from './ui/Input';
 import { Label } from './ui/Label';
-import { getSubjectColors } from '@lesson-browser/utils/scheduleColors';
+import { getSubjectColors, meetingPeriodInlineStyle } from '@lesson-browser/utils/scheduleColors';
+import { isMeetingPeriod as isMeetingPeriodShared } from '@lesson-browser/utils/scheduleEntries';
 
 interface ScheduleCell {
   subject: string;
@@ -31,12 +32,22 @@ const NON_CLASS_PERIODS = [
   'Lunch',
   'LUNCH',
   'Dismissal',
-  'DISMISSAL'
+  'DISMISSAL',
+  'PLC',
+  'PLC Meeting',
+  'Professional Learning Community',
+  'GLM',
+  'Grade Level Meeting',
+  'Grade Level Meetings',
 ];
 
 function isNonClassPeriod(subject: string): boolean {
   if (!subject) return false;
   return NON_CLASS_PERIODS.includes(subject.trim().toUpperCase());
+}
+
+function isMeetingPeriod(subject: string): boolean {
+  return isMeetingPeriodShared(subject);
 }
 
 function normalizeSubject(subject: string): string {
@@ -65,15 +76,15 @@ function normalizeSubject(subject: string): string {
 
 function formatCellDisplay(subject: string, grade: string | null, homeroom: string | null): string {
   if (!subject) return '';
-  
-  if (isNonClassPeriod(subject)) {
+
+  if (isNonClassPeriod(subject) && !isMeetingPeriod(subject)) {
     return subject;
   }
-  
+
   const parts = [subject];
   if (grade) parts.push(`(${grade})`);
   if (homeroom) parts.push(homeroom);
-  
+
   return parts.join(' ');
 }
 
@@ -106,8 +117,13 @@ export function ScheduleCell({
   }, [cell]);
   
   const isNonClass = isNonClassPeriod(subject);
+  const isMeeting = isMeetingPeriod(subject);
+  const gradeHomeroomEnabled = !isNonClass || isMeeting;
   const displayText = cell ? formatCellDisplay(cell.subject, cell.grade, cell.homeroom) : '';
-  const cellColors = getSubjectColors(cell?.subject, cell?.grade, cell?.homeroom);
+  const isMeetingCell = cell && isMeetingPeriod(cell.subject);
+  const cellColors = isMeetingCell
+    ? { bg: '!bg-teal-50', border: 'border-teal-300', text: 'text-teal-800' }
+    : getSubjectColors(cell?.subject, cell?.grade, cell?.homeroom);
   
   const handleSave = () => {
     const normalizedSubject = normalizeSubject(subject);
@@ -119,13 +135,15 @@ export function ScheduleCell({
     }
     
     const isNonClass = isNonClassPeriod(normalizedSubject);
-    
+    const isMeeting = isMeetingPeriod(normalizedSubject);
+    const clearGradeHomeroom = isNonClass && !isMeeting;
+
     const normalizedGroup = planSlotGroupId.trim();
 
     const newCell: ScheduleCell = {
       subject: normalizedSubject,
-      grade: isNonClass ? null : (grade.trim() || null),
-      homeroom: isNonClass ? null : (homeroom.trim() || null),
+      grade: clearGradeHomeroom ? null : (grade.trim() || null),
+      homeroom: clearGradeHomeroom ? null : (homeroom.trim() || null),
       plan_slot_group_id: isNonClass ? null : (normalizedGroup || null),
     };
     
@@ -151,13 +169,14 @@ export function ScheduleCell({
 
   const handleSubjectChange = (newSubject: string) => {
     setSubject(newSubject);
-    
-    if (isNonClassPeriod(newSubject)) {
+
+    const isNonClass = isNonClassPeriod(newSubject);
+    const isMeeting = isMeetingPeriod(newSubject);
+    if (isNonClass && !isMeeting) {
       setGrade('');
       setHomeroom('');
     }
-
-    if (isNonClassPeriod(newSubject)) {
+    if (isNonClass) {
       setPlanSlotGroupId('');
     }
   };
@@ -189,7 +208,7 @@ export function ScheduleCell({
               placeholder="5, 2, K..."
               value={grade}
               onChange={(e) => setGrade(e.target.value)}
-              disabled={isNonClass}
+              disabled={!gradeHomeroomEnabled}
               className="h-8 text-sm"
             />
           </div>
@@ -201,7 +220,7 @@ export function ScheduleCell({
               placeholder="T5, 209, T2..."
               value={homeroom}
               onChange={(e) => setHomeroom(e.target.value)}
-              disabled={isNonClass}
+              disabled={!gradeHomeroomEnabled}
               className="h-8 text-sm"
             />
           </div>
@@ -279,18 +298,21 @@ export function ScheduleCell({
     );
   }
   
-  // Apply color coding based on subject
-  const cellClasses = cell 
-    ? `${cellColors.bg} ${cellColors.border} ${cellColors.text} border p-2 cursor-pointer hover:opacity-80 min-w-[150px] transition-opacity`
+  const baseCellClass = 'border p-2 cursor-pointer hover:opacity-80 min-w-[150px] transition-opacity';
+  const meetingBaseClass = 'p-2 cursor-pointer hover:opacity-80 min-w-[150px] transition-opacity';
+  const cellClasses = cell
+    ? isMeetingCell
+      ? `schedule-cell-meeting ${meetingBaseClass}`
+      : `${cellColors.bg} ${cellColors.border} ${cellColors.text} ${baseCellClass}`
     : "border p-2 cursor-pointer hover:bg-accent min-w-[150px]";
-  
-  return (
-    <td
-      className={cellClasses}
-      onClick={() => setIsEditing(true)}
-      title={cell ? `Click to edit ${cell.subject}` : "Click to add"}
-    >
-      <div className={`text-sm font-medium ${cell ? cellColors.text : ''}`}>
+
+  const meetingCellStyle = isMeetingCell
+    ? { backgroundColor: meetingPeriodInlineStyle.backgroundColor, color: meetingPeriodInlineStyle.color }
+    : undefined;
+
+  const cellContent = (
+    <>
+      <div className={`text-sm font-medium ${cell ? (isMeetingCell ? '' : cellColors.text) : ''}`} style={isMeetingCell ? { color: meetingPeriodInlineStyle.color } : undefined}>
         {displayText || (
           <span className="text-muted-foreground italic">Click to add</span>
         )}
@@ -306,6 +328,27 @@ export function ScheduleCell({
           Linked: {cell.plan_slot_group_id}
           {hasGroupConflict && <span className="ml-1 font-semibold">• Fix mismatch</span>}
         </div>
+      )}
+    </>
+  );
+
+  return (
+    <td
+      className={cellClasses}
+      style={meetingCellStyle}
+      data-cell-type={isMeetingCell ? 'meeting' : (cell ? 'class' : 'empty')}
+      onClick={() => setIsEditing(true)}
+      title={cell ? `Click to edit ${cell.subject}` : "Click to add"}
+    >
+      {isMeetingCell ? (
+        <div
+          className="min-h-full min-w-full -m-2 p-2"
+          style={{ backgroundColor: meetingPeriodInlineStyle.backgroundColor, color: meetingPeriodInlineStyle.color }}
+        >
+          {cellContent}
+        </div>
+      ) : (
+        cellContent
       )}
     </td>
   );

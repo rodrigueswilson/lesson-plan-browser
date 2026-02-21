@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { Card } from '@lesson-ui/Card';
 import type { WeeklyPlan } from '@lesson-api';
 import { highlightVocabularyWords, extractVocabularyWords, getCognateBadgeClasses, getCognateBadgeLabel } from '../../utils/vocabularyHighlight';
+import { parseMarkdown } from '../../utils/markdownUtils';
 
 interface LessonPlanDisplayProps {
   lessonPlanData: (WeeklyPlan & { lesson_json?: any }) | null;
@@ -14,33 +15,33 @@ function renderParagraphs(text: string) {
   if (!text) return null;
   const paragraphs = text.split('\n').filter((p) => p.trim());
   return paragraphs.map((para, idx) => (
-    <p key={idx} className="mb-2 last:mb-0">
-      {para}
-    </p>
+    <div key={idx} className="mb-2 last:mb-0">
+      {parseMarkdown(para)}
+    </div>
   ));
 }
 
 export function LessonPlanDisplay({ lessonPlanData, day, slot }: LessonPlanDisplayProps) {
   const slotData = useMemo(() => {
     if (!lessonPlanData) return null;
-    
+
     try {
       const lessonJson = typeof lessonPlanData.lesson_json === 'string'
         ? JSON.parse(lessonPlanData.lesson_json)
         : lessonPlanData.lesson_json;
-      
+
       if (!lessonJson || typeof lessonJson !== 'object') {
         return null;
       }
-      
+
       const days = lessonJson.days || {};
       const dayKey = day?.toLowerCase() || '';
       const dayData = days[dayKey];
-      
+
       if (!dayData || typeof dayData !== 'object') {
         return null;
       }
-      
+
       const slots = dayData.slots || [];
       if (Array.isArray(slots) && slots.length > 0) {
         // Try to find exact match first
@@ -49,15 +50,15 @@ export function LessonPlanDisplay({ lessonPlanData, day, slot }: LessonPlanDispl
           const sSlot = s.slot_number;
           return sSlot === slot || String(sSlot) === String(slot) || Number(sSlot) === Number(slot);
         });
-        
+
         // If no exact match, try first slot
         if (!foundSlot) {
           foundSlot = slots[0];
         }
-        
+
         return foundSlot;
       }
-      
+
       return null;
     } catch (err) {
       console.error('[LessonPlanDisplay] Error extracting slot data:', err);
@@ -80,7 +81,7 @@ export function LessonPlanDisplay({ lessonPlanData, day, slot }: LessonPlanDispl
         {/* Unit/Lesson */}
         <Card className="p-4">
           <h3 className="font-semibold mb-2">Unit/Lesson</h3>
-          <div>{slotData.unit_lesson || 'N/A'}</div>
+          <div>{parseMarkdown(slotData.unit_lesson) || 'N/A'}</div>
         </Card>
 
         {/* Objectives */}
@@ -92,7 +93,7 @@ export function LessonPlanDisplay({ lessonPlanData, day, slot }: LessonPlanDispl
                 <div className="text-xs font-semibold text-muted-foreground mb-1">
                   Content Objective
                 </div>
-                <div>{slotData.objective.content_objective}</div>
+                <div>{parseMarkdown(slotData.objective.content_objective)}</div>
               </div>
             )}
             {slotData.objective?.student_goal && (
@@ -100,7 +101,7 @@ export function LessonPlanDisplay({ lessonPlanData, day, slot }: LessonPlanDispl
                 <div className="text-xs font-semibold text-muted-foreground mb-1">
                   Student Goal
                 </div>
-                <div>{slotData.objective.student_goal}</div>
+                <div>{parseMarkdown(slotData.objective.student_goal)}</div>
               </div>
             )}
             {slotData.objective?.wida_objective && (
@@ -108,7 +109,7 @@ export function LessonPlanDisplay({ lessonPlanData, day, slot }: LessonPlanDispl
                 <div className="text-xs font-semibold text-muted-foreground mb-1">
                   WIDA Objective
                 </div>
-                <div>{slotData.objective.wida_objective}</div>
+                <div>{parseMarkdown(slotData.objective.wida_objective)}</div>
               </div>
             )}
           </div>
@@ -122,7 +123,7 @@ export function LessonPlanDisplay({ lessonPlanData, day, slot }: LessonPlanDispl
               <div className="text-xs font-semibold text-muted-foreground mb-1">
                 Original
               </div>
-              <div>{slotData.anticipatory_set.original_content}</div>
+              <div>{parseMarkdown(slotData.anticipatory_set.original_content)}</div>
             </div>
           )}
           {slotData.anticipatory_set?.bilingual_bridge && (
@@ -130,7 +131,7 @@ export function LessonPlanDisplay({ lessonPlanData, day, slot }: LessonPlanDispl
               <div className="text-xs font-semibold text-muted-foreground mb-1">
                 Bilingual Bridge
               </div>
-              <div>{slotData.anticipatory_set.bilingual_bridge}</div>
+              <div>{parseMarkdown(slotData.anticipatory_set.bilingual_bridge)}</div>
             </div>
           )}
         </Card>
@@ -147,9 +148,14 @@ export function LessonPlanDisplay({ lessonPlanData, day, slot }: LessonPlanDispl
                     <span className="mx-2 text-muted-foreground">→</span>
                     <span className="italic text-muted-foreground">{vocab.portuguese}</span>
                   </div>
-                    <span className={`text-[10px] uppercase tracking-wider font-bold px-1.5 py-0.5 rounded ${getCognateBadgeClasses(vocab.is_cognate, 'sm')}`}>
-                      {getCognateBadgeLabel(vocab.is_cognate)}
-                    </span>
+                  <span
+                    className={getCognateBadgeClasses(vocab.is_cognate, 'sm')}
+                    style={{
+                      color: vocab.is_cognate ? '#15803d' : '#dc2626' // green-700 : red-700
+                    }}
+                  >
+                    {getCognateBadgeLabel(vocab.is_cognate)}
+                  </span>
                 </div>
               ))}
             </div>
@@ -164,7 +170,7 @@ export function LessonPlanDisplay({ lessonPlanData, day, slot }: LessonPlanDispl
               <div className="text-xs font-semibold text-muted-foreground mb-1">
                 Primary Assessment
               </div>
-              <div>{slotData.assessment.primary_assessment}</div>
+              <div>{parseMarkdown(slotData.assessment.primary_assessment)}</div>
             </div>
           )}
           {slotData.assessment?.bilingual_check && (
@@ -172,7 +178,7 @@ export function LessonPlanDisplay({ lessonPlanData, day, slot }: LessonPlanDispl
               <div className="text-xs font-semibold text-muted-foreground mb-1">
                 Bilingual Check
               </div>
-              <div>{slotData.assessment.bilingual_check}</div>
+              <div>{parseMarkdown(slotData.assessment.bilingual_check)}</div>
             </div>
           )}
         </Card>
@@ -202,14 +208,14 @@ export function LessonPlanDisplay({ lessonPlanData, day, slot }: LessonPlanDispl
                     {slotData.tailored_instruction.co_teaching_model.model_name || 'N/A'}
                   </div>
                   {slotData.tailored_instruction.co_teaching_model.rationale && (
-                    <p className="text-sm text-muted-foreground">
-                      {slotData.tailored_instruction.co_teaching_model.rationale}
-                    </p>
+                    <div className="text-sm text-muted-foreground">
+                      {parseMarkdown(slotData.tailored_instruction.co_teaching_model.rationale)}
+                    </div>
                   )}
                   {slotData.tailored_instruction.co_teaching_model.wida_context && (
-                    <p className="text-xs text-muted-foreground">
-                      {slotData.tailored_instruction.co_teaching_model.wida_context}
-                    </p>
+                    <div className="text-xs text-muted-foreground">
+                      {parseMarkdown(slotData.tailored_instruction.co_teaching_model.wida_context)}
+                    </div>
                   )}
                   {Array.isArray(slotData.tailored_instruction.co_teaching_model.implementation_notes) &&
                     slotData.tailored_instruction.co_teaching_model.implementation_notes.length > 0 && (
@@ -220,7 +226,7 @@ export function LessonPlanDisplay({ lessonPlanData, day, slot }: LessonPlanDispl
                         <ul className="list-disc list-inside space-y-1 text-sm">
                           {slotData.tailored_instruction.co_teaching_model.implementation_notes.map(
                             (note: string, idx: number) => (
-                              <li key={`implementation-note-${idx}`}>{note}</li>
+                              <li key={`implementation-note-${idx}`}>{parseMarkdown(note)}</li>
                             )
                           )}
                         </ul>
@@ -247,19 +253,19 @@ export function LessonPlanDisplay({ lessonPlanData, day, slot }: LessonPlanDispl
                                   {phase?.bilingual_teacher_role && (
                                     <div>
                                       <span className="font-semibold text-foreground">Bilingual:</span>{' '}
-                                      {phase.bilingual_teacher_role}
+                                      {parseMarkdown(phase.bilingual_teacher_role)}
                                     </div>
                                   )}
                                   {phase?.primary_teacher_role && (
                                     <div>
                                       <span className="font-semibold text-foreground">Primary:</span>{' '}
-                                      {phase.primary_teacher_role}
+                                      {parseMarkdown(phase.primary_teacher_role)}
                                     </div>
                                   )}
                                   {phase?.details && (
                                     <div>
                                       <span className="font-semibold text-foreground">Details:</span>{' '}
-                                      {phase.details}
+                                      {parseMarkdown(phase.details)}
                                     </div>
                                   )}
                                 </div>
@@ -281,14 +287,14 @@ export function LessonPlanDisplay({ lessonPlanData, day, slot }: LessonPlanDispl
                         if (typeof support === 'string') {
                           return (
                             <div key={`ell-support-${idx}`} className="text-sm">
-                              {support}
+                              {parseMarkdown(support)}
                             </div>
                           );
                         }
                         return (
                           <div key={`ell-support-${support?.strategy_id || idx}`} className="rounded-md border border-border/60 p-3">
                             <div className="text-sm font-semibold">
-                              {support?.strategy_name || support?.description || 'ELL Support'}
+                              {parseMarkdown(support?.strategy_name || support?.description || 'ELL Support')}
                             </div>
                             {support?.proficiency_levels && (
                               <div className="text-xs uppercase tracking-wide text-muted-foreground mb-1">
@@ -296,7 +302,7 @@ export function LessonPlanDisplay({ lessonPlanData, day, slot }: LessonPlanDispl
                               </div>
                             )}
                             {support?.implementation && (
-                              <div className="text-sm text-muted-foreground">{support.implementation}</div>
+                              <div className="text-sm text-muted-foreground">{parseMarkdown(support.implementation)}</div>
                             )}
                           </div>
                         );
@@ -314,7 +320,7 @@ export function LessonPlanDisplay({ lessonPlanData, day, slot }: LessonPlanDispl
                     <ul className="list-disc list-inside space-y-1 text-sm">
                       {slotData.tailored_instruction.special_needs_support.map(
                         (support: string, idx: number) => (
-                          <li key={`special-support-${idx}`}>{support}</li>
+                          <li key={`special-support-${idx}`}>{parseMarkdown(support)}</li>
                         )
                       )}
                     </ul>
@@ -327,7 +333,7 @@ export function LessonPlanDisplay({ lessonPlanData, day, slot }: LessonPlanDispl
                     <div className="text-xs font-semibold text-muted-foreground mb-1">Materials</div>
                     <ul className="list-disc list-inside space-y-1 text-sm">
                       {slotData.tailored_instruction.materials.map((material: string, idx: number) => (
-                        <li key={`material-${idx}`}>{material}</li>
+                        <li key={`material-${idx}`}>{parseMarkdown(material)}</li>
                       ))}
                     </ul>
                   </div>
@@ -364,19 +370,19 @@ export function LessonPlanDisplay({ lessonPlanData, day, slot }: LessonPlanDispl
                       {frames.map((frame: any, idx: number) => {
                         // Extract vocabulary words for highlighting
                         const vocabWords = extractVocabularyWords(slotData.vocabulary_cognates);
-                        
+
                         return (
-                        <div key={idx} className="text-sm">
-                          <div className="font-medium">
-                            {highlightVocabularyWords(frame.english, vocabWords)}
-                          </div>
-                          <div className="text-muted-foreground italic">{frame.portuguese}</div>
-                          {frame.language_function && (
-                            <div className="mt-1 inline-block text-[10px] uppercase tracking-wide text-muted-foreground bg-muted px-1.5 rounded">
-                              {frame.language_function.replace(/_/g, ' ')}
+                          <div key={idx} className="text-sm">
+                            <div className="font-medium">
+                              {highlightVocabularyWords(frame.english, vocabWords)}
                             </div>
-                          )}
-                        </div>
+                            <div className="text-muted-foreground italic">{frame.portuguese}</div>
+                            {frame.language_function && (
+                              <div className="mt-1 inline-block text-[10px] uppercase tracking-wide text-muted-foreground bg-muted px-1.5 rounded">
+                                {frame.language_function.replace(/_/g, ' ')}
+                              </div>
+                            )}
+                          </div>
                         );
                       })}
                     </div>
@@ -405,7 +411,7 @@ export function LessonPlanDisplay({ lessonPlanData, day, slot }: LessonPlanDispl
               </div>
               <div className="space-y-2">
                 {typeof slotData.misconceptions.linguistic_note === 'string' ? (
-                  <div>{slotData.misconceptions.linguistic_note}</div>
+                  <div>{parseMarkdown(slotData.misconceptions.linguistic_note)}</div>
                 ) : (
                   <>
                     {slotData.misconceptions.linguistic_note.pattern_id && (
@@ -417,13 +423,13 @@ export function LessonPlanDisplay({ lessonPlanData, day, slot }: LessonPlanDispl
                     {slotData.misconceptions.linguistic_note.note && (
                       <div>
                         <span className="font-semibold">Note: </span>
-                        {slotData.misconceptions.linguistic_note.note}
+                        {parseMarkdown(slotData.misconceptions.linguistic_note.note)}
                       </div>
                     )}
                     {slotData.misconceptions.linguistic_note.prevention_tip && (
                       <div>
                         <span className="font-semibold">Prevention Tip: </span>
-                        {slotData.misconceptions.linguistic_note.prevention_tip}
+                        {parseMarkdown(slotData.misconceptions.linguistic_note.prevention_tip)}
                       </div>
                     )}
                   </>
@@ -468,7 +474,7 @@ export function LessonPlanDisplay({ lessonPlanData, day, slot }: LessonPlanDispl
               <div className="text-xs font-semibold text-muted-foreground mb-1">
                 Original
               </div>
-              <div>{slotData.homework.original_content}</div>
+              <div>{parseMarkdown(slotData.homework.original_content)}</div>
             </div>
           )}
           {slotData.homework?.family_connection && (
@@ -476,7 +482,7 @@ export function LessonPlanDisplay({ lessonPlanData, day, slot }: LessonPlanDispl
               <div className="text-xs font-semibold text-muted-foreground mb-1">
                 Family Connection
               </div>
-              <div>{slotData.homework.family_connection}</div>
+              <div>{parseMarkdown(slotData.homework.family_connection)}</div>
             </div>
           )}
         </Card>

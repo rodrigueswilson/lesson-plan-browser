@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Grid, CalendarDays, FileText, Clock, PlayCircle, ArrowLeft } from 'lucide-react';
 import { WeekView } from './WeekView';
 import { DayView } from './DayView';
@@ -9,21 +9,10 @@ import { useStore } from '../store/useStore';
 import { Button } from '@lesson-ui/Button';
 import { Select } from '@lesson-ui/Select';
 import { Label } from '@lesson-ui/Label';
-import { dedupeScheduleEntries, normalizeSubject } from '../utils/scheduleEntries';
+import { dedupeScheduleEntries, isNonClassPeriod, normalizeSubject } from '../utils/scheduleEntries';
 import { findPlanSlotForEntry } from '../utils/planMatching';
 
 type ViewMode = 'week' | 'day' | 'lesson';
-
-// Helper function to check if entry is a non-class period
-const isNonClassPeriod = (subject: string): boolean => {
-  if (!subject) return false;
-  // Normalize by removing extra spaces and converting to uppercase
-  const normalized = subject.replace(/\s+/g, ' ').trim().toUpperCase();
-  // Check for A.M. Routine variations (with or without space after A.)
-  const amRoutinePattern = /^A\.?\s*M\.?\s*ROUTINE$/;
-  return ['PREP', 'PREP TIME', 'LUNCH', 'A.M. ROUTINE', 'A. M. ROUTINE', 'AM ROUTINE', 'MORNING ROUTINE', 'DISMISSAL'].includes(normalized) ||
-         amRoutinePattern.test(normalized);
-};
 
 const sortLessons = (entries: ScheduleEntry[]) => {
   return [...entries].sort((a, b) => {
@@ -44,6 +33,115 @@ const sortLessons = (entries: ScheduleEntry[]) => {
     }
 
     return (a.subject || '').localeCompare(b.subject || '');
+  });
+};
+
+const getSortedWeekValues = (
+  plans: WeeklyPlan[],
+  weeks: Array<{ week_of: string; latest_created_at?: string }>
+): string[] => {
+  const weekSet = new Set<string>();
+  const weekMeta = new Map<string, { latest_created_at?: string }>();
+
+  // Use weeks (from API) as primary source for metadata
+  weeks.forEach((week) => {
+    if (week.week_of) {
+      weekSet.add(week.week_of);
+      weekMeta.set(week.week_of, { latest_created_at: week.latest_created_at });
+    }
+  });
+
+  // PLANS (local cache) might also have generated_at, but RecenetWeek is authoritative for "latest"
+  plans.forEach((plan) => {
+    if (plan.week_of) {
+      weekSet.add(plan.week_of);
+      if (!weekMeta.has(plan.week_of)) {
+        // If plan not in RecentWeeks, fall back to its own generated_at
+        weekMeta.set(plan.week_of, { latest_created_at: plan.generated_at });
+      }
+    }
+  });
+
+  const getSortableValue = (weekOf: string): number => {
+    // 1. EXTRACT TARGET MONTH (MM)
+    const clean = weekOf.replace(/^week of\s+/i, '').trim();
+    const match = clean.match(/^(\d{1,2})[-/](\d{1,2})/);
+    if (!match) return 0;
+    const tMonth = parseInt(match[1], 10); // 1-12
+
+    // 2. DETERMINE CREATION DATE (YYYY, MM)
+    let cYear = 0;
+    let cMonth = 0;
+
+    // Start with a fallback default year (e.g. current year or recent past)
+    // Only used if NO plan data exists at all
+    const now = new Date();
+    cYear = now.getFullYear();
+    cMonth = now.getMonth() + 1;
+
+    const meta = weekMeta.get(weekOf);
+    if (meta?.latest_created_at) {
+      const d = new Date(meta.latest_created_at);
+      if (!Number.isNaN(d.getTime())) {
+        cYear = d.getFullYear();
+        cMonth = d.getMonth() + 1; // 1-12
+      }
+    }
+
+    // 3. DEDUCE TARGET CALENDAR YEAR (tYear)
+    // Heuristic: If we are creating a plan for a month "far ahead" or "far behind"
+    // the creation date, we likely crossed a year boundary.
+    // E.g. Created Dec(12) 2025 for Jan(1) -> Jan is 2026.
+    // E.g. Created Jan(1) 2026 for Dec(12) -> Dec is 2025.
+
+    let tYear = cYear;
+
+    const diff = tMonth - cMonth;
+    if (diff < -6) {
+      // Target is WAY less than Create (e.g. Jan - Dec = -11). 
+      // Likely Next Year.
+      tYear = cYear + 1;
+    } else if (diff > 6) {
+      // Target is WAY more than Create (e.g. Dec - Jan = 11). 
+      // Likely Previous Year.
+      tYear = cYear - 1;
+    }
+
+    // 4. CALCULATE ACADEMIC BASE YEAR & SCORE
+    // Academic Year runs Aug (Month 8) to July (Month 7).
+    // We treat Aug-Dec as "Early Part" and Jan-July as "Late Part".
+    // We normalize to the "Start Year" of the Academic Cycle.
+
+    let acadBaseYear = tYear;
+    let acadMonthIndex = 0; // 0=Aug, 1=Sep... 11=July
+
+    // Map Calendar Month (1-12) to Academic Index (0-11)
+    // 8->0, 9->1... 12->4, 1->5... 7->11
+    if (tMonth >= 8) {
+      acadMonthIndex = tMonth - 8;
+      acadBaseYear = tYear; // Fall 2025 belongs to Acad Year 2025
+    } else {
+      acadMonthIndex = tMonth + 4;
+      acadBaseYear = tYear - 1; // Spring 2026 belongs to Acad Year 2025
+    }
+
+    // Final Sort Value: YYYYMM (Academic)
+    // This makes Jan 2026 (202505) > Dec 2025 (202504)
+    // And Jan 2027 (202605) > Jan 2026 (202505)
+
+    return (acadBaseYear * 100) + acadMonthIndex;
+  };
+
+  return Array.from(weekSet).sort((a, b) => {
+    const valA = getSortableValue(a);
+    const valB = getSortableValue(b);
+
+    // Sort DESCENDING (Newest first)
+    if (valA !== valB) {
+      return valB - valA;
+    }
+
+    return b.localeCompare(a);
   });
 };
 
@@ -72,10 +170,10 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
   const { currentUser, slots } = useStore();
   const [currentTime, setCurrentTime] = useState(new Date());
   const [plans, setPlans] = useState<WeeklyPlan[]>([]);
-  const [availableWeeks, setAvailableWeeks] = useState<Array<{week_of: string; display: string}>>([]);
+  const [availableWeeks, setAvailableWeeks] = useState<Array<{ week_of: string; display: string }>>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  
+
   // View state - initialize to 'lesson' if initialLesson is provided to prevent flash
   const [viewMode, setViewMode] = useState<ViewMode>(() => {
     // If initialLesson is provided, start with 'lesson' view to prevent flash
@@ -89,6 +187,7 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
     slot: number;
     planSlotIndex?: number;
     planSlotData?: any;
+    weekOf?: string; // Store the weekOf from when the lesson was clicked
   } | null>(null);
   const [currentDayLessons, setCurrentDayLessons] = useState<ScheduleEntry[]>([]);
   const [currentDayLessonSlots, setCurrentDayLessonSlots] = useState<Record<string, LessonSlotInfo>>({});
@@ -96,12 +195,12 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
   const [cachedLessonPlanWeek, setCachedLessonPlanWeek] = useState<string | null>(null);
   const [isNavigating, setIsNavigating] = useState(false);
   const [currentLesson, setCurrentLesson] = useState<ScheduleEntry | null>(null);
-  
+
   // Use a ref to prevent race conditions with state updates
   const isNavigatingRef = useRef(false);
   const hasInitializedLesson = useRef(false);
   const currentLessonIntervalRef = useRef<number | null>(null);
-  
+
   // Cache for plans to prevent redundant API calls
   const plansCacheRef = useRef<{
     data: WeeklyPlan[];
@@ -122,7 +221,7 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
   // Handle initialDay prop - open day view when exiting lesson mode
   // Use a ref to track if we've already processed this initialDay to prevent re-triggering
   const processedInitialDayRef = useRef<string | null>(null);
-  
+
   useEffect(() => {
     if (initialDay && !loading && plans.length > 0) {
       // Only process if this is a new initialDay value
@@ -148,16 +247,16 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
       // Ensure view mode is set to 'lesson' before opening
       setViewMode('lesson');
       console.log('[LessonPlanBrowser] Auto-opening initial lesson:', initialLesson);
-      
+
       // Find the plan for this lesson
       // First try to use the planId if provided (from lesson mode)
       let matchingPlan: WeeklyPlan | undefined;
-      
+
       if (initialLesson.planId) {
         matchingPlan = plans.find(p => p.id === initialLesson.planId);
         console.log('[LessonPlanBrowser] Found plan by ID:', initialLesson.planId, 'plan:', matchingPlan?.id);
       }
-      
+
       // If not found by ID, try to find by week
       if (!matchingPlan) {
         const scheduleWeek = initialLesson.scheduleEntry.week_of;
@@ -166,13 +265,13 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
           console.log('[LessonPlanBrowser] Found plan by week:', scheduleWeek, 'plan:', matchingPlan?.id);
         }
       }
-      
+
       // Fallback to first plan
       if (!matchingPlan && plans.length > 0) {
         matchingPlan = plans[0];
         console.log('[LessonPlanBrowser] Using first plan as fallback:', matchingPlan.id);
       }
-      
+
       const openLesson = async () => {
         // Check if we already have cached data for this week
         if (matchingPlan && matchingPlan.week_of === cachedLessonPlanWeek && cachedLessonPlanData) {
@@ -181,7 +280,7 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
           const dayData = cachedLessonPlanData.days?.[initialLesson.day];
           let planSlotIndex: number | undefined;
           let planSlotData: any;
-          
+
           if (dayData) {
             const slotInfo = findPlanSlotForEntry(dayData, initialLesson.scheduleEntry);
             if (slotInfo) {
@@ -195,7 +294,7 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
               }
             }
           }
-          
+
           // Use handleLessonClick with cached data - it won't reload if data is cached
           await handleLessonClick(
             initialLesson.scheduleEntry,
@@ -206,28 +305,28 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
           );
           return;
         }
-        
+
         // Only load if we don't have cached data
         if (matchingPlan) {
           try {
             console.log('[LessonPlanBrowser] Loading plan detail for:', matchingPlan.id);
             const planDetailResponse = await lessonApi.getPlanDetail(matchingPlan.id, currentUser.id);
-            
+
             if (planDetailResponse.data?.lesson_json) {
-              const lessonJson = typeof planDetailResponse.data.lesson_json === 'string' 
-                ? JSON.parse(planDetailResponse.data.lesson_json) 
+              const lessonJson = typeof planDetailResponse.data.lesson_json === 'string'
+                ? JSON.parse(planDetailResponse.data.lesson_json)
                 : planDetailResponse.data.lesson_json;
-              
+
               // Enrich and cache the plan data
               const enrichedPlanData = enrichPlanDataWithSlots(lessonJson, slots);
               setCachedLessonPlanData(enrichedPlanData);
               setCachedLessonPlanWeek(matchingPlan.week_of);
-              
+
               // Find the slot data
               const dayData = enrichedPlanData.days?.[initialLesson.day];
               let planSlotIndex: number | undefined;
               let planSlotData: any;
-              
+
               if (dayData) {
                 const slotInfo = findPlanSlotForEntry(dayData, initialLesson.scheduleEntry);
                 if (slotInfo) {
@@ -241,7 +340,7 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
                   }
                 }
               }
-              
+
               // Now use handleLessonClick with the loaded data
               // handleLessonClick will check cache first, so this should be fast
               await handleLessonClick(
@@ -257,7 +356,7 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
             console.error('[LessonPlanBrowser] Error loading plan detail:', err);
           }
         }
-        
+
         // Fallback: use handleLessonClick - it will handle loading if needed
         await handleLessonClick(
           initialLesson.scheduleEntry,
@@ -265,7 +364,7 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
           initialLesson.slot
         );
       };
-      
+
       if (matchingPlan && matchingPlan.week_of) {
         console.log('[LessonPlanBrowser] Setting selected week to:', matchingPlan.week_of);
         setSelectedWeek(matchingPlan.week_of);
@@ -292,22 +391,6 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
     }
   }, [initialLesson, loading, currentUser, plans]);
 
-  // Combine weeks from plans and available weeks from folder detection
-  const uniqueWeeks = useMemo(() => {
-    const weekSet = new Set<string>();
-    // Add weeks from existing plans
-    plans.forEach(plan => {
-      if (plan.week_of) {
-        weekSet.add(plan.week_of);
-      }
-    });
-    // Add weeks from folder detection
-    availableWeeks.forEach(week => {
-      weekSet.add(week.week_of);
-    });
-    return Array.from(weekSet).sort().reverse(); // Sort descending (newest first)
-  }, [plans, availableWeeks]);
-
   const fetchPlans = async (isRefresh = false) => {
     if (!currentUser) {
       setPlans([]);
@@ -319,21 +402,69 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
     // Check cache first (unless it's a refresh)
     const now = Date.now();
     const cache = plansCacheRef.current;
-    if (!isRefresh && 
-        cache.userId === currentUser.id && 
-        cache.data.length > 0 && 
-        (now - cache.timestamp) < CACHE_DURATION_MS) {
+    let cachedPlans: WeeklyPlan[] | null = null;
+    let cachedWeeks: Array<{ week_of: string; display: string }> = [];
+    let cacheValid = false;
+
+    if (
+      !isRefresh &&
+      cache.userId === currentUser.id &&
+      cache.data.length > 0 &&
+      now - cache.timestamp < CACHE_DURATION_MS
+    ) {
+      cacheValid = true;
+      cachedPlans = cache.data;
       console.log('[LessonPlanBrowser] Using cached plans');
-      setPlans(cache.data);
+      setPlans(cachedPlans);
+
       // Still fetch weeks as they might change
       try {
-        const weeksResponse = await userApi.getRecentWeeks(currentUser.id, 10, currentUser.id).catch(() => ({ data: [] }));
-        setAvailableWeeks(weeksResponse.data || []);
+        const weeksResponse = await userApi
+          .getRecentWeeks(currentUser.id, 25, currentUser.id)
+          .catch(() => ({ data: [] }));
+        cachedWeeks = weeksResponse.data || [];
+        const cachedWeekValues = getSortedWeekValues(
+          cachedPlans || [],
+          cachedWeeks
+        );
+        const weekLookup = new Map(
+          cachedWeeks.map((week) => [week.week_of, week])
+        );
+        const sortedWeekOptions = cachedWeekValues
+          .map((value) => weekLookup.get(value))
+          .filter(
+            (option): option is { week_of: string; display: string } =>
+              Boolean(option)
+          );
+        setAvailableWeeks(
+          sortedWeekOptions.length > 0 ? sortedWeekOptions : cachedWeeks
+        );
       } catch (error) {
         console.error('Failed to fetch weeks:', error);
       }
-      setLoading(false);
-      return;
+
+      const desiredWeek =
+        selectedWeek ||
+        cachedWeeks[0]?.week_of ||
+        cachedPlans[0]?.week_of ||
+        null;
+      const cacheHasDesiredWeek = desiredWeek
+        ? cachedPlans.some((p) => p.week_of === desiredWeek)
+        : false;
+
+      if (cacheHasDesiredWeek) {
+        setLoading(false);
+        return;
+      }
+
+      console.warn(
+        '[LessonPlanBrowser] Cached plans missing desired week, fetching fresh data',
+        {
+          desiredWeek,
+          cachedWeeks: cachedPlans.map((p) => p.week_of),
+        }
+      );
+      // Fall through to fresh fetch
     }
 
     // Prevent concurrent calls
@@ -354,35 +485,66 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
       // Fetch both plans and available weeks in parallel
       const [plansResponse, weeksResponse] = await Promise.all([
         planApi.list(currentUser.id, 100, currentUser.id),
-        userApi.getRecentWeeks(currentUser.id, 10, currentUser.id).catch(() => ({ data: [] }))
+        userApi.getRecentWeeks(currentUser.id, 25, currentUser.id).catch(() => ({ data: [] }))
       ]);
-      
-      const plans = plansResponse.data || [];
+
+      console.log('*** DEBUG: EXECUTING LESSON PLAN BROWSER FILTER LOGIC ***');
+      console.log('*** DEBUG: Current User ID:', currentUser.id);
+
+      const rawPlans = plansResponse.data || [];
+      // Robustly filter plans by current user ID to prevent data leakage from backend/local DB
+      const plans = rawPlans.filter(p => p.user_id === currentUser.id);
+
+      if (rawPlans.length !== plans.length) {
+        console.warn(`[LessonPlanBrowser] Filtered out ${rawPlans.length - plans.length} plans belonging to other users`);
+      }
+
       const weeks = weeksResponse.data || [];
-      
+
+      console.log('[LessonPlanBrowser] fetchPlans result:', {
+        planCount: plans.length,
+        weekCount: weeks.length,
+        planWeekOfValues: plans.map(p => p.week_of),
+        weekWeekOfValues: weeks.map(w => w.week_of),
+        currentSelectedWeek: selectedWeek
+      });
+
       // Update cache
       plansCacheRef.current = {
         data: plans,
         timestamp: Date.now(),
         userId: currentUser.id
       };
-      
+
       setPlans(plans);
-      setAvailableWeeks(weeks);
-      
-      // Auto-select first week if none selected
-      if (!selectedWeek) {
-        const weekSet = new Set<string>();
-        plans.forEach(plan => {
-          if (plan.week_of) weekSet.add(plan.week_of);
+
+      const sortedWeekValues = getSortedWeekValues(plans, weeks);
+      const weekLookup = new Map(weeks.map((week) => [week.week_of, week]));
+      const sortedWeekOptions = sortedWeekValues
+        .map((value) => weekLookup.get(value))
+        .filter(
+          (option): option is { week_of: string; display: string } => Boolean(option)
+        );
+      const finalWeekOptions =
+        sortedWeekOptions.length > 0 ? sortedWeekOptions : weeks;
+      setAvailableWeeks(finalWeekOptions);
+
+      if (!selectedWeek && sortedWeekValues.length > 0) {
+        const autoSelectedWeek = sortedWeekValues[0];
+        console.log('[LessonPlanBrowser] Auto-selecting week:', {
+          availableWeeks: sortedWeekValues,
+          selected: autoSelectedWeek
         });
-        weeks.forEach(week => {
-          weekSet.add(week.week_of);
-        });
-        const uniqueWeeks = Array.from(weekSet).sort().reverse();
-        if (uniqueWeeks.length > 0) {
-          setSelectedWeek(uniqueWeeks[0]);
-        }
+        setSelectedWeek(autoSelectedWeek);
+      } else if (
+        selectedWeek &&
+        !sortedWeekValues.includes(selectedWeek) &&
+        sortedWeekValues.length > 0
+      ) {
+        console.log('[LessonPlanBrowser] Selected week not available, switching to:', sortedWeekValues[0]);
+        setSelectedWeek(sortedWeekValues[0]);
+      } else {
+        console.log('[LessonPlanBrowser] Keeping existing selectedWeek:', selectedWeek);
       }
     } catch (error) {
       console.error('Failed to fetch plans:', error);
@@ -584,7 +746,11 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
       return existing;
     }
 
-    if (cachedLessonPlanData && cachedLessonPlanWeek === selectedWeek) {
+    // CRITICAL: Use week from selectedLesson if available, otherwise fall back to selectedWeek
+    // This ensures we use the correct week even when navigating between lessons
+    const weekToUse = selectedLesson?.weekOf || selectedLesson?.scheduleEntry?.week_of || selectedWeek;
+
+    if (cachedLessonPlanData && cachedLessonPlanWeek === weekToUse) {
       const dayData = cachedLessonPlanData.days?.[day];
       const match = findPlanSlotForEntry(dayData, lesson);
       if (match) {
@@ -604,7 +770,8 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
     day: string,
     slot: number,
     planSlotIndex?: number,
-    planSlotData?: any
+    planSlotData?: any,
+    weekOfFromView?: string // weekOf from the view (WeekView/DayView) that triggered the click
   ) => {
     // Prevent opening lesson plans for non-class periods
     const subject = scheduleEntry.subject || '';
@@ -615,14 +782,48 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
       isNonClassPeriod: isNonClass,
       entryId: scheduleEntry.id,
       day: day,
-      slot: slot
+      slot: slot,
+      entryWeekOf: scheduleEntry.week_of,
+      selectedWeek: selectedWeek
     });
-    
+
     if (isNonClass) {
       console.log('[handleLessonClick] Ignoring click on non-class period:', subject);
       return;
     }
-    
+
+    // CRITICAL FIX: Determine the correct weekOf for this lesson
+    // Priority: weekOfFromView (from WeekView/DayView) > scheduleEntry.week_of > selectedWeek
+    // weekOfFromView is the most reliable because it comes directly from the view displaying the lesson
+    const lessonWeekOf = weekOfFromView || scheduleEntry.week_of || selectedWeek;
+
+    console.log('[handleLessonClick] Week resolution:', {
+      weekOfFromView: weekOfFromView,
+      scheduleEntry_week_of: scheduleEntry.week_of,
+      selectedWeek: selectedWeek,
+      using_weekOf: lessonWeekOf,
+      day: day,
+      priority: weekOfFromView ? 'weekOfFromView (highest)' : scheduleEntry.week_of ? 'scheduleEntry.week_of' : 'selectedWeek (fallback)',
+    });
+
+    // Update selectedWeek if scheduleEntry has a different week_of
+    if (scheduleEntry.week_of && scheduleEntry.week_of !== selectedWeek) {
+      console.log('[handleLessonClick] Updating selectedWeek from', selectedWeek, 'to', scheduleEntry.week_of);
+      setSelectedWeek(scheduleEntry.week_of);
+      // Clear cached data since we're switching weeks
+      setCachedLessonPlanData(null);
+      setCachedLessonPlanWeek(null);
+    }
+
+    // Also update selectedWeek if weekOfFromView is different (most reliable source)
+    if (weekOfFromView && weekOfFromView !== selectedWeek) {
+      console.log('[handleLessonClick] Updating selectedWeek from', selectedWeek, 'to weekOfFromView:', weekOfFromView);
+      setSelectedWeek(weekOfFromView);
+      // Clear cached data since we're switching weeks
+      setCachedLessonPlanData(null);
+      setCachedLessonPlanWeek(null);
+    }
+
     setViewMode('lesson');
     // CRITICAL: Use the plan slot number (from plan matching) to find content
     // The schedule entry's slot_number might not match the plan slot number
@@ -635,16 +836,28 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
       planSlotData_slot: planSlotData?.slot_number,
       planSlotIndex,
       using_display_slot: displaySlot,
+      lessonWeekOf: lessonWeekOf,
       note: 'Using plan slot number (from plan matching) for content display',
     });
-    setSelectedLesson({
+    const lessonToStore = {
       scheduleEntry,
       day,
       slot: displaySlot,
       planSlotIndex,
       planSlotData,
+      weekOf: lessonWeekOf || undefined, // Store the weekOf for this lesson
+    };
+
+    console.log('[handleLessonClick] Storing lesson in selectedLesson:', {
+      subject: scheduleEntry.subject,
+      day: day,
+      slot: displaySlot,
+      weekOf: lessonWeekOf,
+      note: 'This weekOf will be used by LessonDetailView'
     });
-    
+
+    setSelectedLesson(lessonToStore);
+
     // Fetch all lessons for this day to enable navigation
     try {
       const response = await scheduleApi.getSchedule(currentUser!.id, day);
@@ -682,9 +895,9 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
         setSelectedLesson((prev) =>
           prev
             ? {
-                ...prev,
-                scheduleEntry: canonicalEntry,
-              }
+              ...prev,
+              scheduleEntry: canonicalEntry,
+            }
             : prev
         );
       }
@@ -698,8 +911,18 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
       }
 
       // Check cache first to avoid duplicate API calls
+      // CRITICAL: Use lessonWeekOf (the correct week for this lesson) not selectedWeek (which might be stale)
       let planData =
-        cachedLessonPlanWeek === selectedWeek ? cachedLessonPlanData : null;
+        cachedLessonPlanWeek === lessonWeekOf ? cachedLessonPlanData : null;
+
+      console.log('[handleLessonClick] Cache check:', {
+        cachedLessonPlanWeek: cachedLessonPlanWeek,
+        selectedWeek: selectedWeek,
+        lessonWeekOf: lessonWeekOf,
+        usingCachedData: planData !== null,
+        note: 'Using lessonWeekOf for cache check, not selectedWeek'
+      });
+
       planData = enrichPlanDataWithSlots(planData, slots);
 
       // Skip API call if we already have planSlotData (caller already loaded it)
@@ -707,62 +930,95 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
       if (!planData && !planSlotData) {
         let availablePlans = plans;
 
-      if (!availablePlans.some((p) => p.week_of === selectedWeek)) {
-        // Check cache first before making API call
-        const cache = plansCacheRef.current;
-        if (cache.userId === currentUser!.id && cache.data.length > 0) {
-          availablePlans = cache.data;
-          setPlans(availablePlans);
-        } else {
-          const plansResponse = await planApi.list(currentUser!.id, 100, currentUser!.id);
-          availablePlans = plansResponse.data || [];
-          // Update cache
-          plansCacheRef.current = {
-            data: availablePlans,
-            timestamp: Date.now(),
-            userId: currentUser!.id
-          };
-          setPlans(availablePlans);
+        // CRITICAL: Use lessonWeekOf (the correct week for this lesson) not selectedWeek
+        if (!availablePlans.some((p) => p.week_of === lessonWeekOf)) {
+          console.log('[handleLessonClick] Plan not in availablePlans, checking cache/refetching:', {
+            lessonWeekOf: lessonWeekOf,
+            availableWeekOfValues: availablePlans.map(p => p.week_of)
+          });
+          // Check cache first before making API call
+          const cache = plansCacheRef.current;
+          if (cache.userId === currentUser!.id && cache.data.length > 0) {
+            availablePlans = cache.data;
+            setPlans(availablePlans);
+          } else {
+            const plansResponse = await planApi.list(currentUser!.id, 100, currentUser!.id);
+            availablePlans = plansResponse.data || [];
+            // Update cache
+            plansCacheRef.current = {
+              data: availablePlans,
+              timestamp: Date.now(),
+              userId: currentUser!.id
+            };
+            setPlans(availablePlans);
+          }
         }
-      }
 
-      const completedPlans = availablePlans
-        .filter((p) => p.week_of === selectedWeek && p.status === 'completed')
-        .sort(
-          (a, b) =>
-            new Date(b.generated_at ?? 0).getTime() - new Date(a.generated_at ?? 0).getTime()
-        );
-
-      const fallbackPlans = availablePlans
-        .filter((p) => p.week_of === selectedWeek)
-        .sort(
-          (a, b) =>
-            new Date(b.generated_at ?? 0).getTime() - new Date(a.generated_at ?? 0).getTime()
-        );
-
-      const plan = completedPlans[0] ?? fallbackPlans[0];
-
-      if (plan) {
-        const planDetailResponse = await lessonApi.getPlanDetail(plan.id, currentUser!.id);
-        if (planDetailResponse.data?.lesson_json) {
-          const enrichedPlanData = enrichPlanDataWithSlots(
-            planDetailResponse.data.lesson_json,
-            slots
+        // CRITICAL: Use lessonWeekOf (the correct week for this lesson) not selectedWeek
+        const completedPlans = availablePlans
+          .filter((p) => p.week_of === lessonWeekOf && p.status === 'completed')
+          .sort(
+            (a, b) =>
+              new Date(b.generated_at ?? 0).getTime() - new Date(a.generated_at ?? 0).getTime()
           );
-          setCachedLessonPlanData(enrichedPlanData);
-          setCachedLessonPlanWeek(selectedWeek);
+
+        // CRITICAL: Use lessonWeekOf (the correct week for this lesson) not selectedWeek
+        const fallbackPlans = availablePlans
+          .filter((p) => p.week_of === lessonWeekOf)
+          .sort(
+            (a, b) =>
+              new Date(b.generated_at ?? 0).getTime() - new Date(a.generated_at ?? 0).getTime()
+          );
+
+        const plan = completedPlans[0] ?? fallbackPlans[0];
+
+        console.log('[handleLessonClick] Plan selection:', {
+          lessonWeekOf: lessonWeekOf,
+          selectedWeek: selectedWeek,
+          completedPlansCount: completedPlans.length,
+          fallbackPlansCount: fallbackPlans.length,
+          selectedPlanId: plan?.id,
+          selectedPlanWeekOf: plan?.week_of,
+          note: 'Using lessonWeekOf to find plan, not selectedWeek'
+        });
+
+        if (!plan) {
+          console.error('[handleLessonClick] No plan found for selected week. Aborting lesson click.', {
+            desiredWeek: lessonWeekOf,
+            availableWeekOfValues: availablePlans.map((p) => p.week_of),
+          });
+          alert(
+            `No lesson plan was found for week ${lessonWeekOf}. Please generate the lesson plan for this week before selecting a lesson.`
+          );
+          setIsNavigating(false);
+          isNavigatingRef.current = false;
+          setLoading(false);
+          return;
+        }
+
+        if (plan) {
+          const planDetailResponse = await lessonApi.getPlanDetail(plan.id, currentUser!.id);
+          if (planDetailResponse.data?.lesson_json) {
+            const enrichedPlanData = enrichPlanDataWithSlots(
+              planDetailResponse.data.lesson_json,
+              slots
+            );
+            // CRITICAL: Cache with lessonWeekOf, not selectedWeek
+            setCachedLessonPlanData(enrichedPlanData);
+            setCachedLessonPlanWeek(lessonWeekOf);
+            console.log('[handleLessonClick] Caching plan data for week:', lessonWeekOf);
             planData = enrichedPlanData;
+          } else {
+            setCachedLessonPlanData(null);
+            setCachedLessonPlanWeek(null);
+          }
         } else {
           setCachedLessonPlanData(null);
           setCachedLessonPlanWeek(null);
         }
-      } else {
-        setCachedLessonPlanData(null);
-        setCachedLessonPlanWeek(null);
-      }
       } else if (planData) {
         // We have cached data, no need to reload
-        console.log('[handleLessonClick] Using cached plan data for week:', selectedWeek);
+        console.log('[handleLessonClick] Using cached plan data for week:', lessonWeekOf);
       } else if (planSlotData) {
         // Caller already provided slot data, skip reload to avoid rate limiting
         console.log('[handleLessonClick] Using provided planSlotData, skipping API call');
@@ -798,7 +1054,7 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
       setCachedLessonPlanData(null);
       setCachedLessonPlanWeek(null);
     }
-    
+
     // Ensure day is set when clicking lesson from week view
     if (!selectedDay) {
       setSelectedDay(day);
@@ -822,17 +1078,17 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
 
   const handlePreviousLesson = async () => {
     if (!selectedLesson || currentDayLessons.length === 0 || isNavigating) return;
-    
+
     setIsNavigating(true);
-    
+
     const currentIndex = currentDayLessons.findIndex(
       lesson => lesson.id === selectedLesson.scheduleEntry.id
     );
-    
+
     if (currentIndex > 0) {
       const prevLesson = currentDayLessons[currentIndex - 1];
       const planSlotInfo = getLessonPlanSlot(prevLesson, selectedLesson.day);
-      
+
       if (planSlotInfo) {
         setSelectedLesson({
           scheduleEntry: prevLesson,
@@ -844,7 +1100,7 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
         setIsNavigating(false);
         return;
       }
-      
+
       try {
         await handleLessonClick(prevLesson, selectedLesson.day, prevLesson.slot_number);
       } finally {
@@ -857,29 +1113,29 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
 
   const handleNextLesson = async () => {
     console.log(`[handleNextLesson] Called. isNavigatingRef: ${isNavigatingRef.current}`);
-    
+
     // Use ref for synchronous check
     if (!selectedLesson || currentDayLessons.length === 0 || isNavigatingRef.current) {
       console.log(`[handleNextLesson] Blocked - isNavigatingRef: ${isNavigatingRef.current}, selectedLesson: ${!!selectedLesson}, currentDayLessons: ${currentDayLessons.length}`);
       return;
     }
-    
+
     console.log(`[handleNextLesson] Starting navigation...`);
     isNavigatingRef.current = true;
     setIsNavigating(true);
-    
+
     const currentIndex = currentDayLessons.findIndex(
       lesson => lesson.id === selectedLesson.scheduleEntry.id
     );
-    
+
     if (currentIndex < currentDayLessons.length - 1) {
       const nextLesson = currentDayLessons[currentIndex + 1];
-      
+
       console.log(`[handleNextLesson] Moving to next lesson. Current index: ${currentIndex}, day: ${selectedLesson.day}`);
       console.log(`[handleNextLesson] Has cached data: ${!!cachedLessonPlanData}`);
       console.log(`[handleNextLesson] Has planSlotData: ${!!selectedLesson.planSlotData}`);
       const planSlotInfo = getLessonPlanSlot(nextLesson, selectedLesson.day);
-      
+
       if (planSlotInfo) {
         setSelectedLesson({
           scheduleEntry: nextLesson,
@@ -892,7 +1148,7 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
         setIsNavigating(false);
         return;
       }
-      
+
       console.log(`[handleNextLesson] No cached data available, calling handleLessonClick`);
       try {
         await handleLessonClick(nextLesson, selectedLesson.day, nextLesson.slot_number);
@@ -950,7 +1206,7 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
         return null;
       }
 
-      const classLessons = allScheduleEntries.filter(entry => 
+      const classLessons = allScheduleEntries.filter(entry =>
         entry.subject && !isNonClassPeriod(entry.subject)
       );
 
@@ -976,10 +1232,10 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
 
       // Check today's lessons
       if (currentDayOfWeek >= 1 && currentDayOfWeek <= 5) {
-        const todayLessons = classLessons.filter(entry => 
+        const todayLessons = classLessons.filter(entry =>
           entry.day_of_week?.toLowerCase() === currentDayName
         );
-        
+
         for (const lesson of todayLessons) {
           const startTime = parseTime(lesson.start_time);
           if (startTime > currentTime) {
@@ -994,7 +1250,7 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
       if (!nextLesson && classLessons.length > 0) {
         const weekDays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
         for (const dayName of weekDays) {
-          const dayLessons = classLessons.filter(entry => 
+          const dayLessons = classLessons.filter(entry =>
             entry.day_of_week?.toLowerCase() === dayName
           );
           if (dayLessons.length > 0) {
@@ -1054,7 +1310,7 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
       // If no current lesson, fetch schedule and find next lesson
       console.log('[LessonPlanBrowser] No current lesson, finding next lesson...');
       const allScheduleEntries = await scheduleApi.getSchedule(currentUser.id);
-      
+
       if (!allScheduleEntries || allScheduleEntries.length === 0) {
         console.log('[LessonPlanBrowser] No schedule entries found, using fallback');
         // Fallback: find previous Monday's first lesson
@@ -1063,7 +1319,7 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
       }
 
       // Filter out non-class periods
-      const classLessons = allScheduleEntries.filter(entry => 
+      const classLessons = allScheduleEntries.filter(entry =>
         entry.subject && !isNonClassPeriod(entry.subject)
       );
 
@@ -1095,10 +1351,10 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
 
       // First, check if there's a lesson today after current time
       if (currentDayOfWeek >= 1 && currentDayOfWeek <= 5) { // Monday-Friday
-        const todayLessons = classLessons.filter(entry => 
+        const todayLessons = classLessons.filter(entry =>
           entry.day_of_week?.toLowerCase() === currentDayName
         );
-        
+
         for (const lesson of todayLessons) {
           const startTime = parseTime(lesson.start_time);
           if (startTime > currentTime) {
@@ -1112,15 +1368,15 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
       // If no lesson found today, find next lesson in the week
       if (!nextLesson) {
         const weekDays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
-        let startDayIndex = currentDayOfWeek >= 1 && currentDayOfWeek <= 5 
-          ? currentDayOfWeek - 1 
+        let startDayIndex = currentDayOfWeek >= 1 && currentDayOfWeek <= 5
+          ? currentDayOfWeek - 1
           : 0; // Start from Monday if weekend
 
         // Search from today (or Monday if weekend) through Friday
         for (let i = 0; i < 5; i++) {
           const dayIndex = (startDayIndex + i) % 5;
           const dayName = weekDays[dayIndex];
-          const dayLessons = classLessons.filter(entry => 
+          const dayLessons = classLessons.filter(entry =>
             entry.day_of_week?.toLowerCase() === dayName
           );
 
@@ -1137,7 +1393,7 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
 
             // If it's today and we're looking at today, skip lessons that already passed
             if (dayIndex === startDayIndex && currentDayOfWeek >= 1 && currentDayOfWeek <= 5) {
-              const futureLessons = dayLessons.filter(lesson => 
+              const futureLessons = dayLessons.filter(lesson =>
                 parseTime(lesson.start_time) > currentTime
               );
               if (futureLessons.length > 0) {
@@ -1161,7 +1417,7 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
       }
 
       console.log('[LessonPlanBrowser] Found next lesson:', nextLesson);
-      
+
       // Try to open the lesson, but handle errors gracefully
       try {
         await handleLessonClick(
@@ -1172,7 +1428,7 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
       } catch (error: any) {
         // If this lesson fails (e.g., no phase_plan), try to find another lesson
         console.warn('[LessonPlanBrowser] Lesson failed to open, trying next available:', error);
-        
+
         // Remove this lesson from consideration and try again
         const remainingLessons = classLessons.filter(l => l.id !== nextLesson.id);
         if (remainingLessons.length > 0) {
@@ -1184,7 +1440,7 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
             if (dayA !== dayB) return dayA - dayB;
             return (a.slot_number || 0) - (b.slot_number || 0);
           });
-          
+
           try {
             const alternativeLesson = sortedRemaining[0];
             console.log('[LessonPlanBrowser] Trying alternative lesson:', alternativeLesson);
@@ -1218,7 +1474,7 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
       // Get current week
       const now = new Date();
       const currentWeekOf = getWeekOfDate(now);
-      
+
       console.log('[LessonPlanBrowser] Finding fallback lesson from previous week in lesson plan database');
 
       // Get all available plans from the database
@@ -1250,7 +1506,7 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
         const allSortedPlans = availablePlans
           .filter(p => p.week_of)
           .sort((a, b) => b.week_of!.localeCompare(a.week_of!));
-        
+
         if (allSortedPlans.length === 0) {
           console.log('[LessonPlanBrowser] No plans available at all');
           return;
@@ -1283,7 +1539,7 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
       }
 
       // Filter lessons from the previous week that have lesson plans
-      const previousWeekLessons = allScheduleEntries.filter(entry => 
+      const previousWeekLessons = allScheduleEntries.filter(entry =>
         entry.week_of === previousWeekOf &&
         entry.subject &&
         !isNonClassPeriod(entry.subject)
@@ -1299,39 +1555,39 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
         try {
           const dayKey = day.toLowerCase();
           const dayData = planDataToCheck.days?.[dayKey];
-          
+
           if (!dayData) {
             console.log('[LessonPlanBrowser] No day data for:', dayKey, 'Available days:', Object.keys(planDataToCheck.days || {}));
             return false;
           }
-          
+
           if (!dayData.slots || !Array.isArray(dayData.slots)) {
             console.log('[LessonPlanBrowser] No slots array for day:', dayKey);
             return false;
           }
-          
+
           const slotData = dayData.slots.find((s: any) => s.slot_number === slot);
           if (!slotData) {
             console.log('[LessonPlanBrowser] No slot data for:', { day: dayKey, slot, availableSlots: dayData.slots.map((s: any) => s.slot_number) });
             return false;
           }
-          
+
           // Check for phase_plan in the nested structure
           const tailoredInstruction = slotData.tailored_instruction;
           if (!tailoredInstruction) {
             console.log('[LessonPlanBrowser] No tailored_instruction for:', { day: dayKey, slot });
             return false;
           }
-          
+
           const coTeachingModel = tailoredInstruction.co_teaching_model;
           if (!coTeachingModel) {
             console.log('[LessonPlanBrowser] No co_teaching_model for:', { day: dayKey, slot });
             return false;
           }
-          
+
           const phasePlan = coTeachingModel.phase_plan;
           const hasPlan = Array.isArray(phasePlan) && phasePlan.length > 0;
-          
+
           console.log('[LessonPlanBrowser] Phase plan check result:', {
             day: dayKey,
             slot,
@@ -1340,7 +1596,7 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
             phasePlanLength: Array.isArray(phasePlan) ? phasePlan.length : 'not array',
             phasePlanValue: phasePlan
           });
-          
+
           return hasPlan;
         } catch (error) {
           console.error('[LessonPlanBrowser] Error checking phase_plan:', error, { day, slot });
@@ -1349,21 +1605,21 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
       };
 
       // Find Monday's first lesson (slot 1, or earliest available) that has a phase_plan
-      const mondayLessons = previousWeekLessons.filter(entry => 
+      const mondayLessons = previousWeekLessons.filter(entry =>
         entry.day_of_week?.toLowerCase() === 'monday'
       );
 
       // Sort lessons by day and slot
-      const sortedLessons = mondayLessons.length > 0 
+      const sortedLessons = mondayLessons.length > 0
         ? mondayLessons.sort((a, b) => a.slot_number - b.slot_number)
         : previousWeekLessons.sort((a, b) => {
-            // Sort by day, then by slot
-            const dayOrder = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
-            const dayA = dayOrder.indexOf(a.day_of_week?.toLowerCase() || '');
-            const dayB = dayOrder.indexOf(b.day_of_week?.toLowerCase() || '');
-            if (dayA !== dayB) return dayA - dayB;
-            return a.slot_number - b.slot_number;
-          });
+          // Sort by day, then by slot
+          const dayOrder = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
+          const dayA = dayOrder.indexOf(a.day_of_week?.toLowerCase() || '');
+          const dayB = dayOrder.indexOf(b.day_of_week?.toLowerCase() || '');
+          if (dayA !== dayB) return dayA - dayB;
+          return a.slot_number - b.slot_number;
+        });
 
       // Find the first lesson that has a phase_plan
       // Try all lessons in order until we find one with phase_plan
@@ -1371,11 +1627,11 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
       let finalPlanData = planData;
       let finalWeekOf = previousWeekOf;
       let finalPlan = previousWeekPlan;
-      
+
       for (const lesson of sortedLessons) {
         const day = lesson.day_of_week?.toLowerCase() || 'monday';
         const slot = lesson.slot_number || 1;
-        
+
         if (hasPhasePlan(lesson, day, slot, planData)) {
           console.log('[LessonPlanBrowser] Found lesson with phase_plan:', { day, slot });
           fallbackLesson = lesson;
@@ -1386,33 +1642,33 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
       // If no lesson with phase_plan found in first previous week, try earlier weeks
       if (!fallbackLesson) {
         console.log('[LessonPlanBrowser] No lessons with phase_plan found in first previous week, trying earlier weeks...');
-        
+
         // Try all previous weeks until we find one with a lesson that has phase_plan
         for (let i = 1; i < sortedPlans.length && i < 5; i++) { // Limit to 5 weeks back
           const earlierWeekPlan = sortedPlans[i];
           const earlierWeekOf = earlierWeekPlan.week_of!;
-          
+
           console.log('[LessonPlanBrowser] Trying earlier week:', earlierWeekOf);
-          
+
           // Load plan detail for earlier week
           const earlierPlanDetailResponse = await lessonApi.getPlanDetail(earlierWeekPlan.id, currentUser.id);
           const earlierPlanData = earlierPlanDetailResponse.data?.lesson_json;
-          
+
           if (!earlierPlanData) {
             continue;
           }
-          
+
           // Find lessons from earlier week
-          const earlierWeekLessons = allScheduleEntries.filter(entry => 
+          const earlierWeekLessons = allScheduleEntries.filter(entry =>
             entry.week_of === earlierWeekOf &&
             entry.subject &&
             !isNonClassPeriod(entry.subject)
           );
-          
+
           if (earlierWeekLessons.length === 0) {
             continue;
           }
-          
+
           // Sort and find first with phase_plan
           const sortedEarlierLessons = earlierWeekLessons.sort((a, b) => {
             const dayOrder = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
@@ -1421,11 +1677,11 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
             if (dayA !== dayB) return dayA - dayB;
             return a.slot_number - b.slot_number;
           });
-          
+
           for (const lesson of sortedEarlierLessons) {
             const day = lesson.day_of_week?.toLowerCase() || 'monday';
             const slot = lesson.slot_number || 1;
-            
+
             if (hasPhasePlan(lesson, day, slot, earlierPlanData)) {
               console.log('[LessonPlanBrowser] Found lesson with phase_plan in earlier week:', {
                 week: earlierWeekOf,
@@ -1439,12 +1695,12 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
               break;
             }
           }
-          
+
           if (fallbackLesson) {
             break; // Found a lesson, stop searching
           }
         }
-        
+
         // If still no lesson found, use first available as last resort
         if (!fallbackLesson) {
           console.log('[LessonPlanBrowser] No lessons with phase_plan found in any previous week, using first available lesson');
@@ -1497,12 +1753,12 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
     const diff = dateCopy.getDate() - day + (day === 0 ? -6 : 1); // Adjust when day is Sunday
     const monday = new Date(dateCopy);
     monday.setDate(diff);
-    
+
     // Format as YYYY-MM-DD
     const year = monday.getFullYear();
     const month = String(monday.getMonth() + 1).padStart(2, '0');
     const dayOfMonth = String(monday.getDate()).padStart(2, '0');
-    
+
     return `${year}-${month}-${dayOfMonth}`;
   };
 
@@ -1581,8 +1837,8 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
       <div className="flex-1 overflow-hidden min-h-0">
         {viewMode === 'week' && !initialLesson && (
           <div className="h-full w-full overflow-hidden">
-            <WeekView 
-              weekOf={selectedWeek!} 
+            <WeekView
+              weekOf={selectedWeek!}
               onLessonClick={handleLessonClick}
               onDayClick={handleWeekDayClick}
               currentLessonId={currentLesson?.id}
@@ -1592,7 +1848,7 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
 
         {viewMode === 'day' && selectedDay && (
           <div className="h-full w-full overflow-hidden">
-            <DayView 
+            <DayView
               weekOf={selectedWeek!}
               day={selectedDay}
               onLessonClick={handleLessonClick}
@@ -1609,7 +1865,23 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
               );
               const canGoPrevious = currentIndex > 0;
               const canGoNext = currentIndex < currentDayLessons.length - 1;
-              
+
+              // Use the weekOf stored in selectedLesson (from when lesson was clicked)
+              // This ensures we use the correct week even if selectedWeek hasn't updated yet
+              // Fallback to selectedWeek if weekOf wasn't stored
+              const weekOfForLesson = selectedLesson.weekOf || selectedLesson.scheduleEntry.week_of || selectedWeek;
+
+              console.log('[LessonPlanBrowser] Rendering LessonDetailView with weekOf:', {
+                selectedLesson_weekOf: selectedLesson.weekOf,
+                scheduleEntry_week_of: selectedLesson.scheduleEntry.week_of,
+                selectedWeek: selectedWeek,
+                final_weekOfForLesson: weekOfForLesson,
+                subject: selectedLesson.scheduleEntry.subject,
+                day: selectedLesson.day,
+                slot: selectedLesson.slot,
+                priority: selectedLesson.weekOf ? 'selectedLesson.weekOf' : selectedLesson.scheduleEntry.week_of ? 'scheduleEntry.week_of' : 'selectedWeek (fallback)'
+              });
+
               return (
                 <LessonDetailView
                   scheduleEntry={selectedLesson.scheduleEntry}
@@ -1617,11 +1889,12 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
                   slot={selectedLesson.slot}
                   planSlotIndex={selectedLesson.planSlotIndex}
                   initialSlotData={selectedLesson.planSlotData}
-                  weekOf={selectedWeek!}
+                  weekOf={weekOfForLesson || ''}
                   onBack={handleBack}
                   onEnterLessonMode={onEnterLessonMode ? (scheduleEntry, day, slot, planId, previousViewMode, weekOf) => {
                     // Pass 'lesson' view mode and weekOf when entering from LessonDetailView
-                    onEnterLessonMode(scheduleEntry, day, slot, planId, 'lesson', weekOf);
+                    // Use selectedWeek as fallback if weekOf is not provided
+                    onEnterLessonMode(scheduleEntry, day, slot, planId, 'lesson', weekOf || selectedWeek || undefined);
                   } : undefined}
                   onPreviousLesson={handlePreviousLesson}
                   onNextLesson={handleNextLesson}

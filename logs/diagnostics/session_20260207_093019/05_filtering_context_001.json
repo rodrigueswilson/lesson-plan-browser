@@ -1,0 +1,13 @@
+{
+  "timestamp": "2026-02-07T09:39:09.795760",
+  "stage": "05_filtering_context",
+  "data": {
+    "current_slot_number": 1,
+    "current_slot_number_is_none": false,
+    "current_subject": "ELA/SS",
+    "current_subject_is_none": false,
+    "pending_hyperlinks_count": 2,
+    "cell": "monday_unit_lesson",
+    "filtering_active": true
+  }
+}

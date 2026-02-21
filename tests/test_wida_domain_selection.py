@@ -289,7 +289,7 @@ class TestValidation:
         # Should not raise validation error
         obj = ObjectiveData(
             content_objective="Students will explain the water cycle",
-            student_goal="I will write about the water cycle.",
+            student_goal="I will write about the water cycle (writing).",
             wida_objective=wida_objective,
         )
         
@@ -305,7 +305,7 @@ class TestValidation:
         
         obj = ObjectiveData(
             content_objective="Students will compare fractions",
-            student_goal="I will listen and speak about fractions.",
+            student_goal="I will listen and speak about fractions (listening, speaking).",
             wida_objective=wida_objective,
         )
         
@@ -322,7 +322,7 @@ class TestValidation:
         
         obj = ObjectiveData(
             content_objective="Students will explain historical events",
-            student_goal="I will listen, read, speak, and write about history.",
+            student_goal="I will listen, read, speak, and write about history (listening, reading, speaking, writing).",
             wida_objective=wida_objective,
         )
         
@@ -338,7 +338,7 @@ class TestValidation:
         with pytest.raises(ValueError, match="ELD code"):
             ObjectiveData(
                 content_objective="Students will explain the water cycle",
-                student_goal="I will write about the water cycle.",
+                student_goal="I will write about the water cycle (writing).",
                 wida_objective=wida_objective,
             )
 
@@ -349,7 +349,7 @@ class TestValidation:
         with pytest.raises(ValueError) as exc_info:
             ObjectiveData(
                 content_objective="Test",
-                student_goal="I will test.",
+                student_goal="I will test (writing).",
                 wida_objective=wida_objective,
             )
         
@@ -366,9 +366,9 @@ class TestStudentGoalRequirements:
     def test_student_goal_starts_with_i_will(self):
         """Test that student goals start with 'I will'"""
         valid_goals = [
-            "I will write a paragraph about the water cycle.",
-            "I will listen to my partner and speak to share my ideas.",
-            "I will read the story and write about my favorite part.",
+            "I will write a paragraph about the water cycle (writing).",
+            "I will listen to my partner and speak to share my ideas (listening, speaking).",
+            "I will read the story and write about my favorite part (reading, writing).",
         ]
         
         for goal in valid_goals:
@@ -381,9 +381,9 @@ class TestStudentGoalRequirements:
 
     def test_student_goal_length_validation(self):
         """Test that student goals respect length limits"""
-        # Valid: under 80 characters
-        valid_goal = "I will listen, read, speak, and write about the water cycle."
-        assert len(valid_goal) <= 80
+        # Valid: under 120 characters
+        valid_goal = "I will listen, read, speak, and write about the water cycle (listening, reading, speaking, writing)."
+        assert len(valid_goal) <= 120
         
         obj = ObjectiveData(
             content_objective="Students will learn about the water cycle.",
@@ -392,15 +392,70 @@ class TestStudentGoalRequirements:
         )
         assert obj.student_goal == valid_goal
         
-        # Invalid: over 80 characters
-        invalid_goal = "I will " + "do many things " * 10 + "about the topic."
-        assert len(invalid_goal) > 80
+        # Invalid: over 120 characters
+        invalid_goal = "I will " + "listen and speak about the topic " * 5 + "(listening, speaking)."
+        assert len(invalid_goal) > 120
         
-        with pytest.raises(ValueError, match="80 characters"):
+        with pytest.raises(ValueError, match="120 characters"):
             ObjectiveData(
                 content_objective="Students will learn about the topic.",
                 student_goal=invalid_goal,
                 wida_objective="Students will test through writing paragraphs using supports appropriate for WIDA levels 2-4 (ELD-TS.1-2.Test.Writing).",
+            )
+
+    def test_student_goal_requires_domain_reference(self):
+        """Test that student goals must mention at least one language domain"""
+        goal = "I will learn about the water cycle."
+
+        with pytest.raises(ValueError, match="language domain"):
+            ObjectiveData(
+                content_objective="Students will learn about the water cycle.",
+                student_goal=goal,
+                wida_objective="Students will test through writing paragraphs using supports appropriate for WIDA levels 2-4 (ELD-TS.1-2.Test.Writing).",
+            )
+
+    def test_student_goal_requires_domain_parenthetical(self):
+        """Test that student goals must end with parentheses listing domains"""
+        goal = "I will read the story and speak with my group about it"
+
+        with pytest.raises(ValueError, match="must end with parentheses"):
+            ObjectiveData(
+                content_objective="Students will learn about the story.",
+                student_goal=goal,
+                wida_objective="Students will test through reading and speaking using supports appropriate for WIDA levels 2-4 (ELD-TS.1-2.Test.Reading/Speaking).",
+            )
+
+    def test_student_goal_parenthetical_requires_valid_domains(self):
+        """Test that only allowed domain labels are accepted in parentheses"""
+        goal = "I will read the story and speak with my group (reading, discussion)."
+
+        with pytest.raises(ValueError, match="may only include"):
+            ObjectiveData(
+                content_objective="Students will learn about the story.",
+                student_goal=goal,
+                wida_objective="Students will test through reading and speaking using supports appropriate for WIDA levels 2-4 (ELD-TS.1-2.Test.Reading/Speaking).",
+            )
+
+    def test_student_goal_parenthetical_disallows_duplicates(self):
+        """Test that duplicate domain labels are rejected"""
+        goal = "I will read the story and write notes (reading, reading)."
+
+        with pytest.raises(ValueError, match="must not repeat"):
+            ObjectiveData(
+                content_objective="Students will learn about the story.",
+                student_goal=goal,
+                wida_objective="Students will test through reading and writing using supports appropriate for WIDA levels 2-4 (ELD-TS.1-2.Test.Reading/Writing).",
+            )
+
+    def test_student_goal_requires_terminal_period(self):
+        """Test that student goals must end with a period after the domain tag"""
+        goal = "I will read the story and speak with my group (reading, speaking)"
+
+        with pytest.raises(ValueError, match=r"end with '\)\.'"):
+            ObjectiveData(
+                content_objective="Students will learn about the story.",
+                student_goal=goal,
+                wida_objective="Students will test through reading and speaking using supports appropriate for WIDA levels 2-4 (ELD-TS.1-2.Test.Reading/Speaking).",
             )
 
 

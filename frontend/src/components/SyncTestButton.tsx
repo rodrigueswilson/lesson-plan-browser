@@ -31,7 +31,12 @@ export function SyncTestButton() {
         }`
       );
     } catch (err: any) {
-      setError(err.message || 'Sync failed');
+      const msg = err.message || 'Sync failed';
+      setError(
+        msg.includes('Supabase not configured')
+          ? 'Supabase is not configured. Sync requires SUPABASE_URL and SUPABASE_KEY in .env. You can use the app with local data only.'
+          : msg
+      );
       console.error('Sync error:', err);
     } finally {
       setSyncing(false);

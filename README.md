@@ -83,6 +83,7 @@ Bilingual Weekly Plan Builder/
 ## Documentation
 
 ### User Guides
+- **[Using This Repository](docs/guides/USING_THIS_REPOSITORY.md)** - Git workflow and how to run the app for lesson plans
 - **[Quick Start Guide](docs/guides/QUICK_START_GUIDE.md)** - Get started in 5 minutes
 - **[User Training Guide](docs/training/USER_TRAINING_GUIDE.md)** - Complete user manual
 - **[Troubleshooting Guide](docs/guides/TROUBLESHOOTING_QUICK_REFERENCE.md)** - Common issues and solutions
@@ -90,7 +91,9 @@ Bilingual Weekly Plan Builder/
 ### Developer Documentation
 - **[Architecture Overview](docs/ARCHITECTURE_MULTI_USER.md)** - System design and data flow
 - **[Unified Frontend Implementation Guide](docs/implementation/UNIFIED_FRONTEND_IMPLEMENTATION_GUIDE.md)** - Guide for unified PC/tablet frontend (platform detection)
-- **[Implementation Status](docs/IMPLEMENTATION_STATUS.md)** - Current feature status
+- **[Implementation Status](docs/IMPLEMENTATION_STATUS.md)** - Current feature status (what is implemented)
+- **[Roadmap](docs/roadmap/README.md)** - Planned modules and features; detailed design under [docs/roadmap/design/](docs/roadmap/design/)
+- **[Documentation Policy](docs/DOCUMENTATION_POLICY.md)** - How docs are organized (current vs roadmap vs archive)
 - **[Testing Guide](docs/guides/TESTING_GUIDE.md)** - Test suite and procedures
 - **[Contributing Guide](docs/CONTRIBUTING.md)** - Development setup and guidelines
 - **[Tech Stack ADR](docs/decisions/ADR-001-tech-stack.md)** - Technology decisions

@@ -4,7 +4,7 @@ from contextlib import contextmanager
 from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional, Tuple
 
-from sqlalchemy import func
+from sqlalchemy import func, case, or_
 from sqlmodel import Session, SQLModel, create_engine, delete, desc, select
 
 from backend.config import settings
@@ -13,6 +13,7 @@ from backend.schema import (
     ClassSlot,
     LessonModeSession,
     LessonStep,
+    OriginalLessonPlan,
     PerformanceMetric,
     ScheduleEntry,
     User,
@@ -29,14 +30,15 @@ class SQLiteDatabase(DatabaseInterface):
     def __init__(self, use_ipc: bool = False):
         """
         Initialize database.
-        
+
         Args:
             use_ipc: If True, route SQL through Rust IPC (for Android sidecar mode)
         """
         self.use_ipc = use_ipc
-        
+
         if use_ipc:
             from backend.ipc_database import IPCDatabaseAdapter
+
             self._adapter = IPCDatabaseAdapter()
         else:
             # Existing SQLAlchemy setup
@@ -138,11 +140,10 @@ class SQLiteDatabase(DatabaseInterface):
     def get_user(self, user_id: str) -> Optional[User]:
         """Get user by ID - works in both modes."""
         if self.use_ipc:
-            row = self._adapter.query_one(
-                "SELECT * FROM users WHERE id = ?", [user_id]
-            )
+            row = self._adapter.query_one("SELECT * FROM users WHERE id = ?", [user_id])
             if not row:
                 return None
+
             # Convert dict to User object
             # Parse datetime strings if needed
             def parse_datetime(dt_value):
@@ -150,11 +151,11 @@ class SQLiteDatabase(DatabaseInterface):
                     return dt_value
                 if isinstance(dt_value, str):
                     try:
-                        return datetime.fromisoformat(dt_value.replace('Z', '+00:00'))
+                        return datetime.fromisoformat(dt_value.replace("Z", "+00:00"))
                     except (ValueError, AttributeError):
                         return datetime.utcnow()
                 return datetime.utcnow()
-            
+
             return User(
                 id=row["id"],
                 email=row.get("email"),
@@ -337,39 +338,47 @@ class SQLiteDatabase(DatabaseInterface):
         """Get all class slots for a user - works in both modes."""
         if self.use_ipc:
             rows = self._adapter.query(
-                "SELECT * FROM class_slots WHERE user_id = ? ORDER BY slot_number", [user_id]
+                "SELECT * FROM class_slots WHERE user_id = ? ORDER BY slot_number",
+                [user_id],
             )
             slots = []
+
             # Helper to parse datetime
             def parse_datetime(dt_value):
                 if isinstance(dt_value, datetime):
                     return dt_value
                 if isinstance(dt_value, str):
                     try:
-                        return datetime.fromisoformat(dt_value.replace('Z', '+00:00'))
+                        return datetime.fromisoformat(dt_value.replace("Z", "+00:00"))
                     except (ValueError, AttributeError):
                         return datetime.utcnow()
                 return datetime.utcnow()
-            
+
             for row in rows:
-                slots.append(ClassSlot(
-                    id=row["id"],
-                    user_id=row["user_id"],
-                    slot_number=row["slot_number"],
-                    subject=row["subject"],
-                    grade=row["grade"],
-                    homeroom=row.get("homeroom"),
-                    plan_group_label=row.get("plan_group_label"),
-                    proficiency_levels=row.get("proficiency_levels"),
-                    primary_teacher_file=row.get("primary_teacher_file"),
-                    primary_teacher_name=row.get("primary_teacher_name"),
-                    primary_teacher_first_name=row.get("primary_teacher_first_name"),
-                    primary_teacher_last_name=row.get("primary_teacher_last_name"),
-                    primary_teacher_file_pattern=row.get("primary_teacher_file_pattern"),
-                    display_order=row.get("display_order", 0),
-                    created_at=parse_datetime(row.get("created_at")),
-                    updated_at=parse_datetime(row.get("updated_at")),
-                ))
+                slots.append(
+                    ClassSlot(
+                        id=row["id"],
+                        user_id=row["user_id"],
+                        slot_number=row["slot_number"],
+                        subject=row["subject"],
+                        grade=row["grade"],
+                        homeroom=row.get("homeroom"),
+                        plan_group_label=row.get("plan_group_label"),
+                        proficiency_levels=row.get("proficiency_levels"),
+                        primary_teacher_file=row.get("primary_teacher_file"),
+                        primary_teacher_name=row.get("primary_teacher_name"),
+                        primary_teacher_first_name=row.get(
+                            "primary_teacher_first_name"
+                        ),
+                        primary_teacher_last_name=row.get("primary_teacher_last_name"),
+                        primary_teacher_file_pattern=row.get(
+                            "primary_teacher_file_pattern"
+                        ),
+                        display_order=row.get("display_order", 0),
+                        created_at=parse_datetime(row.get("created_at")),
+                        updated_at=parse_datetime(row.get("updated_at")),
+                    )
+                )
             return slots
         else:
             with Session(self.engine) as session:
@@ -456,7 +465,7 @@ class SQLiteDatabase(DatabaseInterface):
     ) -> str:
         """Create a new weekly plan record - works in both modes."""
         plan_id = f"plan_{datetime.now().strftime('%Y%m%d%H%M%S')}"
-        
+
         if self.use_ipc:
             try:
                 self._adapter.execute(
@@ -472,8 +481,8 @@ class SQLiteDatabase(DatabaseInterface):
                         1 if consolidated else 0,
                         total_slots,
                         "pending",
-                        datetime.utcnow().isoformat()
-                    ]
+                        datetime.utcnow().isoformat(),
+                    ],
                 )
                 return plan_id
             except Exception as e:
@@ -511,7 +520,7 @@ class SQLiteDatabase(DatabaseInterface):
             )
             if not row:
                 return None
-            
+
             # Parse lesson_json if it's a string
             lesson_json = row.get("lesson_json")
             if isinstance(lesson_json, str):
@@ -520,18 +529,18 @@ class SQLiteDatabase(DatabaseInterface):
                 except (json.JSONDecodeError, TypeError):
                     logger.warning(f"Failed to parse lesson_json for plan {plan_id}")
                     lesson_json = None
-            
+
             # Helper to parse datetime
             def parse_datetime(dt_value):
                 if isinstance(dt_value, datetime):
                     return dt_value
                 if isinstance(dt_value, str):
                     try:
-                        return datetime.fromisoformat(dt_value.replace('Z', '+00:00'))
+                        return datetime.fromisoformat(dt_value.replace("Z", "+00:00"))
                     except (ValueError, AttributeError):
                         return datetime.utcnow()
                 return datetime.utcnow()
-            
+
             return WeeklyPlan(
                 id=row["id"],
                 user_id=row["user_id"],
@@ -557,7 +566,9 @@ class SQLiteDatabase(DatabaseInterface):
                     try:
                         plan.lesson_json = json.loads(plan.lesson_json)
                     except (json.JSONDecodeError, TypeError):
-                        logger.warning(f"Failed to parse lesson_json for plan {plan_id}")
+                        logger.warning(
+                            f"Failed to parse lesson_json for plan {plan_id}"
+                        )
                         plan.lesson_json = None
                 return plan
 
@@ -593,10 +604,11 @@ class SQLiteDatabase(DatabaseInterface):
         output_file: Optional[str] = None,
         error_message: Optional[str] = None,
         lesson_json: Optional[Dict[str, Any]] = None,
+        total_slots: Optional[int] = None,
     ) -> bool:
         """
         Update weekly plan status or lesson_json.
-        
+
         NOTE: When updating lesson_json, ensure vocabulary_cognates and sentence_frames
         are properly populated under days[day]["slots"][slot_number]. If these are
         missing or empty, vocabulary/frames steps will not be created during step
@@ -618,6 +630,8 @@ class SQLiteDatabase(DatabaseInterface):
                 if lesson_json is not None:
                     normalize_objectives_in_lesson(lesson_json)
                     plan.lesson_json = lesson_json
+                if total_slots is not None:
+                    plan.total_slots = total_slots
 
                 session.add(plan)
                 session.commit()
@@ -625,6 +639,137 @@ class SQLiteDatabase(DatabaseInterface):
         except Exception as e:
             logger.error(f"Error updating weekly plan: {e}")
             return False
+
+    # Original Lesson Plan operations (Persistent extraction cache)
+    def create_original_lesson_plan(self, plan_data: Dict[str, Any]) -> str:
+        """Create a new original lesson plan record (extraction cache)."""
+        try:
+            # Ensure proper typing for JSON fields if they are strings
+            for field in [
+                "content_json",
+                "monday_content",
+                "tuesday_content",
+                "wednesday_content",
+                "thursday_content",
+                "friday_content",
+                "available_days",
+            ]:
+                if field in plan_data:
+                    plan_data[field] = self._coerce_json_field(plan_data[field])
+
+            plan = OriginalLessonPlan(**plan_data)
+            with Session(self.engine) as session:
+                # Use merge for UPSERT behavior
+                session.merge(plan)
+                session.commit()
+                # session.refresh(plan) # merge doesn't necessarily refresh the same way, but it's fine
+                return plan.id
+        except Exception as e:
+            logger.error(f"Error creating original lesson plan: {e}")
+            raise
+
+    def get_original_lesson_plan(
+        self, user_id: str, week_of: str, slot_number: int
+    ) -> Optional[OriginalLessonPlan]:
+        """Get original lesson plan content for a specific slot."""
+        with Session(self.engine) as session:
+            statement = select(OriginalLessonPlan).where(
+                OriginalLessonPlan.user_id == user_id,
+                OriginalLessonPlan.week_of == week_of,
+                OriginalLessonPlan.slot_number == slot_number,
+            )
+            plan = session.exec(statement).first()
+
+            if plan:
+                # Hydrate JSON fields
+                for field in [
+                    "content_json",
+                    "monday_content",
+                    "tuesday_content",
+                    "wednesday_content",
+                    "thursday_content",
+                    "friday_content",
+                    "available_days",
+                ]:
+                    setattr(plan, field, self._coerce_json_field(getattr(plan, field)))
+
+            return plan
+
+    def get_original_lesson_plans_for_week(
+        self, user_id: str, week_of: str
+    ) -> List[OriginalLessonPlan]:
+        """Get all original lesson plans for a week."""
+        with Session(self.engine) as session:
+            statement = select(OriginalLessonPlan).where(
+                OriginalLessonPlan.user_id == user_id,
+                OriginalLessonPlan.week_of == week_of,
+            )
+            plans = list(session.exec(statement).all())
+
+            for plan in plans:
+                # Hydrate JSON fields
+                for field in [
+                    "content_json",
+                    "monday_content",
+                    "tuesday_content",
+                    "wednesday_content",
+                    "thursday_content",
+                    "friday_content",
+                    "available_days",
+                ]:
+                    setattr(plan, field, self._coerce_json_field(getattr(plan, field)))
+
+            return plans
+
+    def get_original_lesson_plans_for_file(
+        self, user_id: str, week_of: str, file_path: str
+    ) -> List[OriginalLessonPlan]:
+        """Get all original lesson plans associated with a specific file."""
+        with Session(self.engine) as session:
+            statement = select(OriginalLessonPlan).where(
+                OriginalLessonPlan.user_id == user_id,
+                OriginalLessonPlan.week_of == week_of,
+                OriginalLessonPlan.source_file_path == file_path,
+            )
+            plans = list(session.exec(statement).all())
+            return plans
+
+    def update_original_lesson_plan_status(
+        self, plan_id: str, status: str, error_message: Optional[str] = None
+    ) -> bool:
+        """Update original lesson plan status."""
+        try:
+            with Session(self.engine) as session:
+                plan = session.get(OriginalLessonPlan, plan_id)
+                if not plan:
+                    return False
+
+                plan.status = status
+                if error_message is not None:
+                    plan.error_message = error_message
+
+                plan.updated_at = datetime.utcnow()
+                session.add(plan)
+                session.commit()
+                return True
+        except Exception as e:
+            logger.error(f"Error updating original lesson plan status: {e}")
+            return False
+
+    def delete_original_lesson_plans(self, user_id: str, week_of: str) -> int:
+        """Delete all original lesson plans for a user and week (useful for cache clearing)."""
+        try:
+            with Session(self.engine) as session:
+                statement = delete(OriginalLessonPlan).where(
+                    OriginalLessonPlan.user_id == user_id,
+                    OriginalLessonPlan.week_of == week_of,
+                )
+                result = session.exec(statement)
+                session.commit()
+                return result.rowcount
+        except Exception as e:
+            logger.error(f"Error deleting original lesson plans: {e}")
+            return 0
 
     # Performance metrics operations
     def save_performance_metric(
@@ -644,6 +789,13 @@ class SQLiteDatabase(DatabaseInterface):
         error_message: Optional[str],
         slot_number: Optional[int] = None,
         day_number: Optional[int] = None,
+        is_parallel: Optional[bool] = None,
+        parallel_slot_count: Optional[int] = None,
+        sequential_time_ms: Optional[float] = None,
+        rate_limit_errors: Optional[int] = None,
+        concurrency_level: Optional[int] = None,
+        tpm_usage: Optional[int] = None,
+        rpm_usage: Optional[int] = None,
     ) -> None:
         """Save a performance metric."""
         try:
@@ -663,6 +815,13 @@ class SQLiteDatabase(DatabaseInterface):
                 error_message=error_message,
                 slot_number=slot_number,
                 day_number=day_number,
+                is_parallel=is_parallel,
+                parallel_slot_count=parallel_slot_count,
+                sequential_time_ms=sequential_time_ms,
+                rate_limit_errors=rate_limit_errors or 0,
+                concurrency_level=concurrency_level,
+                tpm_usage=tpm_usage,
+                rpm_usage=rpm_usage,
             )
             with Session(self.engine) as session:
                 session.add(metric)
@@ -757,15 +916,20 @@ class SQLiteDatabase(DatabaseInterface):
             with Session(self.engine) as session:
                 # Base query for metrics
                 query = select(
-                    func.count(PerformanceMetric.id).label("total_requests"),
+                    func.count(PerformanceMetric.id).label("total_operations"),
                     func.sum(PerformanceMetric.tokens_total).label("total_tokens"),
+                    func.sum(PerformanceMetric.tokens_input).label("total_tokens_input"),
+                    func.sum(PerformanceMetric.tokens_output).label("total_tokens_output"),
                     func.sum(PerformanceMetric.cost_usd).label("total_cost"),
                     func.avg(PerformanceMetric.duration_ms).label("avg_latency"),
                 ).where(PerformanceMetric.started_at >= start_date)
 
                 if user_id:
                     # Join with WeeklyPlan to filter by user_id
-                    query = query.join(WeeklyPlan).where(WeeklyPlan.user_id == user_id)
+                    # Explicit ON clause to resolve join ambiguity
+                    query = query.join(
+                        WeeklyPlan, PerformanceMetric.plan_id == WeeklyPlan.id
+                    ).where(WeeklyPlan.user_id == user_id)
 
                 metrics = session.exec(query).first()
 
@@ -778,12 +942,74 @@ class SQLiteDatabase(DatabaseInterface):
 
                 total_plans = session.exec(plan_query).one()
 
+                # Calculate average plan duration and cost
+                plan_stats_query = select(
+                    func.avg(WeeklyPlan.processing_time_ms).label("avg_duration"),
+                    func.avg(WeeklyPlan.total_cost_usd).label("avg_cost"),
+                ).where(WeeklyPlan.generated_at >= start_date)
+                if user_id:
+                    plan_stats_query = plan_stats_query.where(WeeklyPlan.user_id == user_id)
+                
+                plan_stats = session.exec(plan_stats_query).first()
+
+                # Get model distribution
+                model_query = select(
+                    PerformanceMetric.llm_model,
+                    func.count(PerformanceMetric.id).label("count"),
+                    func.sum(PerformanceMetric.cost_usd).label("cost"),
+                ).where(PerformanceMetric.started_at >= start_date)
+                
+                if user_id:
+                    model_query = model_query.join(
+                        WeeklyPlan, PerformanceMetric.plan_id == WeeklyPlan.id
+                    ).where(WeeklyPlan.user_id == user_id)
+                
+                model_query = model_query.group_by(PerformanceMetric.llm_model)
+                model_results = session.exec(model_query).all()
+                model_distribution = [
+                    {
+                        "llm_model": row.llm_model or "Unknown",
+                        "count": row.count or 0,
+                        "cost": float(row.cost or 0),
+                    }
+                    for row in model_results
+                ]
+
+                # Get operation breakdown
+                operation_query = select(
+                    PerformanceMetric.operation_type,
+                    func.avg(PerformanceMetric.duration_ms).label("avg_duration"),
+                    func.count(PerformanceMetric.id).label("count"),
+                ).where(PerformanceMetric.started_at >= start_date)
+                
+                if user_id:
+                    operation_query = operation_query.join(
+                        WeeklyPlan, PerformanceMetric.plan_id == WeeklyPlan.id
+                    ).where(WeeklyPlan.user_id == user_id)
+                
+                operation_query = operation_query.group_by(PerformanceMetric.operation_type)
+                operation_results = session.exec(operation_query).all()
+                operation_breakdown = [
+                    {
+                        "operation_type": row.operation_type,
+                        "avg_duration_ms": float(row.avg_duration or 0),
+                        "count": row.count or 0,
+                    }
+                    for row in operation_results
+                ]
+
                 return {
-                    "total_requests": metrics.total_requests or 0,
+                    "total_operations": metrics.total_operations or 0,
                     "total_tokens": metrics.total_tokens or 0,
+                    "total_tokens_input": metrics.total_tokens_input or 0,
+                    "total_tokens_output": metrics.total_tokens_output or 0,
                     "total_cost_usd": metrics.total_cost or 0,
+                    "avg_cost_usd": float(plan_stats.avg_cost or 0) if plan_stats else 0,
                     "avg_latency_ms": metrics.avg_latency or 0,
                     "total_plans": total_plans or 0,
+                    "avg_duration_per_plan_ms": float(plan_stats.avg_duration or 0) if plan_stats else 0,
+                    "model_distribution": model_distribution,
+                    "operation_breakdown": operation_breakdown,
                 }
         except Exception as e:
             logger.error(f"Error getting aggregate stats: {e}")
@@ -797,32 +1023,69 @@ class SQLiteDatabase(DatabaseInterface):
             start_date = datetime.utcnow() - timedelta(days=days)
 
             with Session(self.engine) as session:
-                # Group by date
-                query = (
+                # Get daily metrics breakdown
+                metrics_query = (
                     select(
                         func.date(PerformanceMetric.started_at).label("date"),
-                        func.count(PerformanceMetric.id).label("requests"),
-                        func.sum(PerformanceMetric.tokens_total).label("tokens"),
-                        func.sum(PerformanceMetric.cost_usd).label("cost"),
+                        func.count(PerformanceMetric.id).label("operations"),
+                        func.sum(PerformanceMetric.cost_usd).label("cost_usd"),
                     )
                     .where(PerformanceMetric.started_at >= start_date)
                     .group_by(func.date(PerformanceMetric.started_at))
                 )
 
                 if user_id:
-                    query = query.join(WeeklyPlan).where(WeeklyPlan.user_id == user_id)
+                    metrics_query = metrics_query.join(
+                        WeeklyPlan, PerformanceMetric.plan_id == WeeklyPlan.id
+                    ).where(WeeklyPlan.user_id == user_id)
 
-                results = session.exec(query).all()
+                metrics_results = session.exec(metrics_query).all()
 
-                return [
-                    {
-                        "date": row.date,
-                        "requests": row.requests,
-                        "tokens": row.tokens,
-                        "cost": row.cost,
-                    }
-                    for row in results
-                ]
+                # Get daily plans count
+                plans_query = (
+                    select(
+                        func.date(WeeklyPlan.generated_at).label("date"),
+                        func.count(WeeklyPlan.id).label("plans"),
+                    )
+                    .where(WeeklyPlan.generated_at >= start_date)
+                    .group_by(func.date(WeeklyPlan.generated_at))
+                )
+                if user_id:
+                    plans_query = plans_query.where(WeeklyPlan.user_id == user_id)
+
+                plans_results = session.exec(plans_query).all()
+
+                # Combine metrics and plans by date
+                daily_dict = {}
+                for row in metrics_results:
+                    # func.date() returns a date string, ensure it's in ISO format
+                    date_str = str(row.date)
+                    if date_str not in daily_dict:
+                        # Ensure date is in ISO format (YYYY-MM-DD) for frontend
+                        if isinstance(row.date, datetime):
+                            date_iso = row.date.date().isoformat()
+                        elif isinstance(row.date, str):
+                            date_iso = row.date
+                        else:
+                            date_iso = str(row.date)
+                        daily_dict[date_str] = {"date": date_iso, "operations": 0, "cost_usd": 0, "plans": 0}
+                    daily_dict[date_str]["operations"] = row.operations or 0
+                    daily_dict[date_str]["cost_usd"] = float(row.cost_usd or 0)
+
+                for row in plans_results:
+                    date_str = str(row.date)
+                    if date_str not in daily_dict:
+                        # Ensure date is in ISO format (YYYY-MM-DD) for frontend
+                        if isinstance(row.date, datetime):
+                            date_iso = row.date.date().isoformat()
+                        elif isinstance(row.date, str):
+                            date_iso = row.date
+                        else:
+                            date_iso = str(row.date)
+                        daily_dict[date_str] = {"date": date_iso, "operations": 0, "cost_usd": 0, "plans": 0}
+                    daily_dict[date_str]["plans"] = row.plans or 0
+
+                return list(daily_dict.values())
         except Exception as e:
             logger.error(f"Error getting daily breakdown: {e}")
             return []
@@ -858,6 +1121,205 @@ class SQLiteDatabase(DatabaseInterface):
         except Exception as e:
             logger.error(f"Error getting session breakdown: {e}")
             return []
+
+    def get_operation_stats(
+        self, days: int = 30, user_id: Optional[str] = None
+    ) -> List[Dict[str, Any]]:
+        """Get time breakdown by operation type."""
+        try:
+            start_date = datetime.utcnow() - timedelta(days=days)
+
+            with Session(self.engine) as session:
+                query = (
+                    select(
+                        PerformanceMetric.operation_type,
+                        func.avg(PerformanceMetric.duration_ms).label("avg_duration"),
+                        func.count(PerformanceMetric.id).label("count"),
+                    )
+                    .where(PerformanceMetric.started_at >= start_date)
+                    .group_by(PerformanceMetric.operation_type)
+                )
+
+                if user_id:
+                    query = query.join(
+                        WeeklyPlan, PerformanceMetric.plan_id == WeeklyPlan.id
+                    ).where(WeeklyPlan.user_id == user_id)
+
+                results = session.exec(query).all()
+
+                return [
+                    {
+                        "operation_type": row.operation_type,
+                        "avg_duration_ms": row.avg_duration,
+                        "count": row.count,
+                    }
+                    for row in results
+                ]
+        except Exception as e:
+            logger.error(f"Error getting operation stats: {e}")
+            return []
+
+    def get_error_stats(
+        self, days: int = 30, user_id: Optional[str] = None
+    ) -> Dict[str, Any]:
+        """Get success vs failure stats with error distribution."""
+        try:
+            start_date = datetime.utcnow() - timedelta(days=days)
+
+            with Session(self.engine) as session:
+                # 1. Total Success vs Failure
+                query_total = select(
+                    PerformanceMetric.id, PerformanceMetric.error_message
+                ).where(PerformanceMetric.started_at >= start_date)
+
+                if user_id:
+                    query_total = query_total.join(
+                        WeeklyPlan, PerformanceMetric.plan_id == WeeklyPlan.id
+                    ).where(WeeklyPlan.user_id == user_id)
+
+                all_metrics = session.exec(query_total).all()
+
+                total_count = len(all_metrics)
+                failure_count = sum(1 for m in all_metrics if m.error_message)
+                success_count = total_count - failure_count
+
+                # 2. Error Breakdown
+                error_distribution = {}
+                for m in all_metrics:
+                    if m.error_message:
+                        # Simple categorization based on message content
+                        err_msg = m.error_message.lower()
+                        category = "unknown"
+                        if "json" in err_msg or "parse" in err_msg:
+                            category = "json_parse_error"
+                        elif "timeout" in err_msg or "timed out" in err_msg:
+                            category = "timeout"
+                        elif "validation" in err_msg:
+                            category = "validation_error"
+                        elif "rate limit" in err_msg or "429" in err_msg:
+                            category = "rate_limit"
+                        else:
+                            category = "other"
+
+                        error_distribution[category] = (
+                            error_distribution.get(category, 0) + 1
+                        )
+
+                return {
+                    "total": total_count,
+                    "success": success_count,
+                    "failure": failure_count,
+                    "success_rate": (success_count / total_count * 100)
+                    if total_count > 0
+                    else 100.0,
+                    "error_breakdown": error_distribution,
+                }
+        except Exception as e:
+            logger.error(f"Error getting error stats: {e}")
+            return {
+                "total": 0,
+                "success": 0,
+                "failure": 0,
+                "success_rate": 0,
+                "error_breakdown": {},
+            }
+
+    def get_parallel_processing_stats(
+        self, days: int = 30, user_id: Optional[str] = None
+    ) -> Dict[str, Any]:
+        """Get parallel processing statistics."""
+        try:
+            start_date = datetime.utcnow() - timedelta(days=days)
+
+            with Session(self.engine) as session:
+                # Base query for parallel processing metrics
+                # Note: SQLite stores booleans as integers (0/1), so we handle NULL values explicitly
+                query = select(
+                    func.count(PerformanceMetric.id).label("total_operations"),
+                    func.sum(
+                        case(
+                            (PerformanceMetric.is_parallel == True, 1),
+                            else_=0
+                        )
+                    ).label("parallel_count"),
+                    func.avg(PerformanceMetric.duration_ms).label("avg_duration"),
+                    func.avg(
+                        case(
+                            (PerformanceMetric.is_parallel == True, PerformanceMetric.duration_ms),
+                            else_=None
+                        )
+                    ).label("avg_parallel_duration"),
+                    func.avg(
+                        case(
+                            (or_(PerformanceMetric.is_parallel == False, PerformanceMetric.is_parallel.is_(None)), PerformanceMetric.duration_ms),
+                            else_=None
+                        )
+                    ).label("avg_sequential_duration"),
+                    func.avg(PerformanceMetric.parallel_slot_count).label("avg_parallel_slot_count"),
+                    func.avg(PerformanceMetric.sequential_time_ms).label("avg_sequential_time"),
+                    func.sum(PerformanceMetric.rate_limit_errors).label("total_rate_limit_errors"),
+                    func.avg(PerformanceMetric.concurrency_level).label("avg_concurrency_level"),
+                    func.avg(PerformanceMetric.tpm_usage).label("avg_tpm_usage"),
+                    func.avg(PerformanceMetric.rpm_usage).label("avg_rpm_usage"),
+                ).where(PerformanceMetric.started_at >= start_date)
+
+                if user_id:
+                    query = query.join(
+                        WeeklyPlan, PerformanceMetric.plan_id == WeeklyPlan.id
+                    ).where(WeeklyPlan.user_id == user_id)
+
+                stats = session.exec(query).first()
+
+                # Calculate time savings
+                parallel_count = stats.parallel_count or 0
+                total_ops = stats.total_operations or 0
+                avg_parallel = stats.avg_parallel_duration or 0
+                avg_sequential = stats.avg_sequential_duration or 0
+                avg_sequential_time = stats.avg_sequential_time or 0
+
+                # Time savings calculation
+                time_savings_ms = 0
+                time_savings_percent = 0
+                if avg_parallel > 0 and avg_sequential_time > 0:
+                    time_savings_ms = avg_sequential_time - avg_parallel
+                    time_savings_percent = (time_savings_ms / avg_sequential_time * 100) if avg_sequential_time > 0 else 0
+
+                return {
+                    "total_operations": total_ops,
+                    "parallel_operations": parallel_count,
+                    "sequential_operations": total_ops - parallel_count,
+                    "parallel_percentage": (parallel_count / total_ops * 100) if total_ops > 0 else 0,
+                    "avg_duration_ms": stats.avg_duration or 0,
+                    "avg_parallel_duration_ms": avg_parallel,
+                    "avg_sequential_duration_ms": avg_sequential,
+                    "avg_parallel_slot_count": stats.avg_parallel_slot_count or 0,
+                    "avg_sequential_time_ms": avg_sequential_time,
+                    "time_savings_ms": time_savings_ms,
+                    "time_savings_percent": time_savings_percent,
+                    "total_rate_limit_errors": stats.total_rate_limit_errors or 0,
+                    "avg_concurrency_level": stats.avg_concurrency_level or 0,
+                    "avg_tpm_usage": stats.avg_tpm_usage or 0,
+                    "avg_rpm_usage": stats.avg_rpm_usage or 0,
+                }
+        except Exception as e:
+            logger.error(f"Error getting parallel processing stats: {e}")
+            return {
+                "total_operations": 0,
+                "parallel_operations": 0,
+                "sequential_operations": 0,
+                "parallel_percentage": 0,
+                "avg_duration_ms": 0,
+                "avg_parallel_duration_ms": 0,
+                "avg_sequential_duration_ms": 0,
+                "avg_parallel_slot_count": 0,
+                "avg_sequential_time_ms": 0,
+                "time_savings_ms": 0,
+                "time_savings_percent": 0,
+                "total_rate_limit_errors": 0,
+                "avg_concurrency_level": 0,
+                "avg_tpm_usage": 0,
+                "avg_rpm_usage": 0,
+            }
 
     # Schedule operations
     def create_schedule_entry(self, entry_data: Dict[str, Any]) -> str:
@@ -999,36 +1461,44 @@ class SQLiteDatabase(DatabaseInterface):
         try:
             payload = step_data.copy()
             payload["day_of_week"] = self._normalize_day(payload.get("day_of_week"))
-            
+
             # DEBUG: Log vocabulary_cognates before creating LessonStep
             vocab_in_payload = payload.get("vocabulary_cognates")
-            print(f"[DEBUG] create_lesson_step: vocabulary_cognates in payload: type={type(vocab_in_payload)}, value={vocab_in_payload}, length={len(vocab_in_payload) if isinstance(vocab_in_payload, list) else 'N/A'}")
+            print(
+                f"[DEBUG] create_lesson_step: vocabulary_cognates in payload: type={type(vocab_in_payload)}, value={vocab_in_payload}, length={len(vocab_in_payload) if isinstance(vocab_in_payload, list) else 'N/A'}"
+            )
             logger.info(
                 "create_lesson_step_vocab_check",
                 extra={
                     "step_name": payload.get("step_name"),
                     "vocab_type": str(type(vocab_in_payload)),
                     "vocab_is_list": isinstance(vocab_in_payload, list),
-                    "vocab_length": len(vocab_in_payload) if isinstance(vocab_in_payload, list) else 0,
+                    "vocab_length": len(vocab_in_payload)
+                    if isinstance(vocab_in_payload, list)
+                    else 0,
                     "vocab_is_none": vocab_in_payload is None,
                 },
             )
-            
+
             step = LessonStep(**payload)
-            
+
             # DEBUG: Log after creating LessonStep object
             vocab_in_step = getattr(step, "vocabulary_cognates", None)
-            print(f"[DEBUG] create_lesson_step: vocabulary_cognates in step object: type={type(vocab_in_step)}, value={vocab_in_step}, length={len(vocab_in_step) if isinstance(vocab_in_step, list) else 'N/A'}")
-            
+            print(
+                f"[DEBUG] create_lesson_step: vocabulary_cognates in step object: type={type(vocab_in_step)}, value={vocab_in_step}, length={len(vocab_in_step) if isinstance(vocab_in_step, list) else 'N/A'}"
+            )
+
             with Session(self.engine) as session:
                 session.add(step)
                 session.commit()
                 session.refresh(step)
-                
+
                 # DEBUG: Log after saving to database
                 vocab_after_save = getattr(step, "vocabulary_cognates", None)
-                print(f"[DEBUG] create_lesson_step: vocabulary_cognates after save: type={type(vocab_after_save)}, value={vocab_after_save}, length={len(vocab_after_save) if isinstance(vocab_after_save, list) else 'N/A'}")
-                
+                print(
+                    f"[DEBUG] create_lesson_step: vocabulary_cognates after save: type={type(vocab_after_save)}, value={vocab_after_save}, length={len(vocab_after_save) if isinstance(vocab_after_save, list) else 'N/A'}"
+                )
+
                 return step.id
         except Exception as e:
             logger.error(f"Error creating lesson step: {e}")
@@ -1090,6 +1560,24 @@ class SQLiteDatabase(DatabaseInterface):
                 payload["adjusted_durations"] = json.dumps(
                     payload["adjusted_durations"]
                 )
+            
+            # Convert ISO format datetime strings back to datetime objects
+            # This is needed because session_data comes from model_dump(mode="json")
+            datetime_fields = ["timer_start_time", "session_start_time", "last_updated", "ended_at"]
+            for field in datetime_fields:
+                if field in payload and payload[field] is not None:
+                    if isinstance(payload[field], str):
+                        try:
+                            payload[field] = datetime.fromisoformat(
+                                payload[field].replace("Z", "+00:00")
+                            )
+                        except (ValueError, AttributeError) as e:
+                            logger.warning(f"Failed to parse {field} as datetime: {e}")
+                            # If parsing fails, set to None or use current time based on field
+                            if field in ["session_start_time", "last_updated"]:
+                                payload[field] = datetime.utcnow()
+                            else:
+                                payload[field] = None
 
             session_obj = LessonModeSession(**payload)
             with Session(self.engine) as session:
@@ -1190,6 +1678,30 @@ class SQLiteDatabase(DatabaseInterface):
                         updates["adjusted_durations"]
                     )
 
+                # Convert ISO format datetime strings back to datetime objects
+                datetime_fields = ["timer_start_time", "session_start_time", "last_updated", "ended_at"]
+                fields_to_remove = []
+                for field in datetime_fields:
+                    if field in updates and updates[field] is not None:
+                        if isinstance(updates[field], str):
+                            try:
+                                updates[field] = datetime.fromisoformat(
+                                    updates[field].replace("Z", "+00:00")
+                                )
+                            except (ValueError, AttributeError) as e:
+                                logger.warning(f"Failed to parse {field} as datetime: {e}")
+                                if field == "last_updated":
+                                    updates[field] = datetime.utcnow()
+                                elif field == "session_start_time":
+                                    # Don't change session_start_time if parsing fails, skip the update
+                                    fields_to_remove.append(field)
+                                else:
+                                    updates[field] = None
+                
+                # Remove fields that failed to parse and shouldn't be updated
+                for field in fields_to_remove:
+                    updates.pop(field, None)
+
                 # Update fields
                 for key, value in updates.items():
                     if hasattr(session_obj, key):
@@ -1239,8 +1751,14 @@ def get_db(user_id: Optional[str] = None, **kwargs) -> DatabaseInterface:
     """
     global _db_instance, _user_db_cache
 
+    # Check if Supabase sync is enabled in user settings
+    # If disabled, force SQLite even if USE_SUPABASE is True
+    from backend.settings_store import get_supabase_sync_enabled
+
+    use_supabase = settings.USE_SUPABASE and get_supabase_sync_enabled()
+
     # If using Supabase and user_id is provided, try to find user-specific database
-    if settings.USE_SUPABASE and user_id:
+    if use_supabase and user_id:
         # Check cache first
         if user_id in _user_db_cache:
             return _user_db_cache[user_id]
@@ -1293,7 +1811,11 @@ def get_db(user_id: Optional[str] = None, **kwargs) -> DatabaseInterface:
     # Default singleton behavior (SQLite or default Supabase)
     if _db_instance is None:
         # Initialize based on settings
-        if settings.USE_SUPABASE:
+        # Check if Supabase sync is enabled in user settings
+        from backend.settings_store import get_supabase_sync_enabled
+
+        use_supabase = settings.USE_SUPABASE and get_supabase_sync_enabled()
+        if use_supabase:
             # For now, we only have SQLite implementation in this file
             # Ideally we would import Supabase implementation here
             logger.info(

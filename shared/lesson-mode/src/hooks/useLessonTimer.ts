@@ -53,6 +53,10 @@ export function useLessonTimer({
   const originalStepDurations = useRef<Map<number, number>>(new Map());
   const stepsRef = useRef<LessonStep[]>(steps);
   const remainingTimeRef = useRef<number>(0);
+  const soundTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const soundActiveRef = useRef<boolean>(false);
+  const isRunningRef = useRef<boolean>(false);
+  const initializationPhaseRef = useRef<boolean>(true); // Track initialization phase to prevent step 1 bug
   // Use refs for callbacks to prevent effect re-runs
   const onStepCompleteRef = useRef(onStepComplete);
   const onLessonCompleteRef = useRef(onLessonComplete);
@@ -68,6 +72,11 @@ export function useLessonTimer({
   useEffect(() => {
     remainingTimeRef.current = timerState.remainingTime;
   }, [timerState.remainingTime]);
+
+  // Keep isRunningRef in sync with timerState.isRunning
+  useEffect(() => {
+    isRunningRef.current = timerState.isRunning;
+  }, [timerState.isRunning]);
 
   // Keep callback refs in sync
   useEffect(() => {
@@ -175,16 +184,92 @@ export function useLessonTimer({
   /**
    * Determines the schedule status (past, current, or future) based on current time.
    */
+  // Helper function to get Monday of a given week number
+  const getMondayOfWeek = (weekNumber: number, year: number): Date => {
+    const jan1 = new Date(year, 0, 1);
+    const dayOfWeek = jan1.getDay();
+    const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+    const mondayOfWeek1 = new Date(jan1);
+    mondayOfWeek1.setDate(jan1.getDate() - daysToMonday);
+    const mondayOfTargetWeek = new Date(mondayOfWeek1);
+    mondayOfTargetWeek.setDate(mondayOfWeek1.getDate() + (weekNumber - 1) * 7);
+    return mondayOfTargetWeek;
+  };
+
+  // Calculate the actual lesson date from week_of and day_of_week
+  const calculateLessonDate = useCallback((entry: ScheduleEntry, now: Date): Date | null => {
+    if (!entry.week_of || !entry.day_of_week) {
+      // If no date info, return null to fall back to time-only comparison
+      return null;
+    }
+
+    try {
+      let mondayDate: Date;
+      const weekOf = entry.week_of;
+      const dayOfWeek = entry.day_of_week;
+
+      // Check if weekOf is in "W47" format (week number)
+      if (weekOf.startsWith('W') || weekOf.startsWith('w')) {
+        const weekNumber = parseInt(weekOf.substring(1), 10);
+        if (isNaN(weekNumber) || weekNumber < 1 || weekNumber > 53) {
+          return null;
+        }
+        const year = now.getFullYear();
+        mondayDate = getMondayOfWeek(weekNumber, year);
+        if (isNaN(mondayDate.getTime())) {
+          return null;
+        }
+      } else {
+        // weekOf format is "MM-DD-MM-DD" (Monday to Friday)
+        const parts = weekOf.split('-');
+        if (parts.length < 2) {
+          return null;
+        }
+        const [startMonth, startDay] = parts.slice(0, 2).map(Number);
+        if (isNaN(startMonth) || isNaN(startDay) || startMonth < 1 || startMonth > 12 || startDay < 1 || startDay > 31) {
+          return null;
+        }
+        const year = now.getFullYear();
+        mondayDate = new Date(year, startMonth - 1, startDay);
+        if (isNaN(mondayDate.getTime())) {
+          return null;
+        }
+      }
+
+      const dayIndex = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'].indexOf(dayOfWeek.toLowerCase());
+      if (dayIndex === -1) {
+        return null;
+      }
+
+      const lessonDate = new Date(mondayDate);
+      lessonDate.setDate(mondayDate.getDate() + dayIndex);
+      if (isNaN(lessonDate.getTime())) {
+        return null;
+      }
+
+      return lessonDate;
+    } catch (error) {
+      console.error('[useLessonTimer] Error calculating lesson date:', error);
+      return null;
+    }
+  }, []);
+
   const getScheduleStatus = useCallback((entry: ScheduleEntry | null, now: Date): ScheduleStatus => {
     if (!entry) return 'future';
 
     const [startHours, startMinutes] = entry.start_time.split(':').map(Number);
     const [endHours, endMinutes] = entry.end_time.split(':').map(Number);
 
-    const startTime = new Date(now);
+    // Try to calculate the actual lesson date
+    const lessonDate = calculateLessonDate(entry, now);
+    
+    // Use lesson date if available, otherwise fall back to today's date
+    const baseDate = lessonDate || now;
+
+    const startTime = new Date(baseDate);
     startTime.setHours(startHours, startMinutes, 0, 0);
 
-    const endTime = new Date(now);
+    const endTime = new Date(baseDate);
     endTime.setHours(endHours, endMinutes, 0, 0);
 
     if (now < startTime) {
@@ -194,7 +279,7 @@ export function useLessonTimer({
     } else {
       return 'past'; // Class has already ended
     }
-  }, []);
+  }, [calculateLessonDate]);
 
   const advanceToStep = useCallback(
     (prev: TimerState, nextIndex: number): TimerState => {
@@ -243,9 +328,11 @@ export function useLessonTimer({
       });
       
       // Initialize timer state
-      // In Preview Mode (isLiveMode=false), always start at step 0
+      // Always start at step 0 when entering lesson mode
+      // Sync will be applied later if autoSync is enabled
       const shouldSync = autoSync && isLiveMode && scheduleEntry !== null;
-      const initialStepIndex = calculateCurrentStepIndex(steps, scheduleEntry, shouldSync);
+      // Always start at the first step (index 0) when initializing
+      const initialStepIndex = 0;
       const remaining = calculateRemainingTimeForStep(
         steps,
         initialStepIndex,
@@ -256,13 +343,47 @@ export function useLessonTimer({
       const now = new Date();
       const status = getScheduleStatus(scheduleEntry, now);
 
-      setTimerState(prev => ({
-        ...prev,
-        currentStepIndex: initialStepIndex,
-        remainingTime: remaining,
-        isSynced: shouldSync,
-        scheduleStatus: status,
-      }));
+      console.log('[useLessonTimer] Initializing timer state:', {
+        initialStepIndex,
+        remaining,
+        shouldSync,
+        isLiveMode,
+        autoSync,
+        hasScheduleEntry: !!scheduleEntry,
+        stepsLength: steps.length,
+        firstStepName: steps[0]?.step_name,
+      });
+
+      setTimerState(prev => {
+        // CRITICAL: Always start at step 0 when initializing, regardless of previous state
+        // This ensures we never start on step 1 or any other step when entering lesson mode
+        const newState = {
+          ...prev,
+          currentStepIndex: initialStepIndex, // Always 0
+          remainingTime: remaining,
+          isSynced: shouldSync,
+          scheduleStatus: status,
+        };
+        
+        if (prev.currentStepIndex !== initialStepIndex) {
+          console.warn('[useLessonTimer] Correcting step index from', prev.currentStepIndex, 'to', initialStepIndex, {
+            prevStepName: steps[prev.currentStepIndex]?.step_name,
+            newStepName: steps[initialStepIndex]?.step_name,
+            stepsLength: steps.length,
+          });
+        }
+        
+        // Double-check: if somehow we're not at step 0, force it
+        if (newState.currentStepIndex !== 0) {
+          console.error('[useLessonTimer] ERROR: Step index is not 0 after initialization! Forcing to 0.', {
+            currentStepIndex: newState.currentStepIndex,
+            initialStepIndex,
+          });
+          newState.currentStepIndex = 0;
+        }
+        
+        return newState;
+      });
     } else {
       // Reset timer state when steps are empty
       const now = new Date();
@@ -382,31 +503,92 @@ export function useLessonTimer({
     }));
   }, [steps, timerState.currentStepIndex]);
 
+  // Track initialization phase to prevent step 1 bug
+  useEffect(() => {
+    // After 3 seconds, allow normal step changes
+    const timeout = setTimeout(() => {
+      initializationPhaseRef.current = false;
+      console.log('[useLessonTimer] Initialization phase complete');
+    }, 3000);
+    return () => clearTimeout(timeout);
+  }, []);
+
   /**
    * Changes to a different step.
    */
   const changeStep = useCallback((newIndex: number) => {
-    if (newIndex < 0 || newIndex >= steps.length) return;
+    if (newIndex < 0 || newIndex >= steps.length) {
+      console.warn('[useLessonTimer] changeStep called with invalid index:', {
+        newIndex,
+        stepsLength: steps.length,
+      });
+      return;
+    }
 
     const newStep = steps[newIndex];
-    const duration = newStep.duration_minutes * 60;
+    if (!newStep) {
+      console.error('[useLessonTimer] changeStep: step not found at index:', newIndex);
+      return;
+    }
+
+    // CRITICAL FIX: Prevent changing to step 1 during initialization phase
+    if (initializationPhaseRef.current && newIndex === 1) {
+      console.error('[useLessonTimer] BLOCKED: Attempted to change to step 1 during initialization! Forcing to step 0.', {
+        fromIndex: timerState.currentStepIndex,
+        attemptedIndex: newIndex,
+        firstStepName: steps[0]?.step_name,
+        secondStepName: steps[1]?.step_name,
+        stackTrace: new Error().stack,
+      });
+      // Force to step 0 instead
+      newIndex = 0;
+      const step0 = steps[0];
+      if (!step0) {
+        console.error('[useLessonTimer] No step 0 available!');
+        return;
+      }
+    }
+
+    const duration = (newIndex === 0 && initializationPhaseRef.current) 
+      ? steps[0].duration_minutes * 60 
+      : newStep.duration_minutes * 60;
 
     const now = new Date();
     const status = getScheduleStatus(scheduleEntry, now);
     
-    setTimerState(prev => ({
-      ...prev,
-      currentStepIndex: newIndex,
-      remainingTime: duration,
-      isRunning: false,
-      isPaused: false,
-      timerStartTime: null,
-      performanceStartTime: null,
-      pausedAt: null,
-      isSynced: false, // Manual step change loses sync
-      scheduleStatus: status,
-    }));
-  }, [steps]);
+    console.log('[useLessonTimer] changeStep called:', {
+      fromIndex: timerState.currentStepIndex,
+      toIndex: newIndex,
+      stepName: steps[newIndex]?.step_name,
+      duration,
+      inInitializationPhase: initializationPhaseRef.current,
+      stackTrace: new Error().stack,
+    });
+    
+    setTimerState(prev => {
+      // Safety check: if we're trying to change to step 1 during initialization, log it
+      if (newIndex === 1 && prev.currentStepIndex === 0 && steps.length > 0) {
+        console.warn('[useLessonTimer] WARNING: Changing from step 0 to step 1 - this might be the bug!', {
+          fromStep: steps[0]?.step_name,
+          toStep: steps[1]?.step_name,
+          callStack: new Error().stack,
+        });
+      }
+      
+      return {
+        ...prev,
+        currentStepIndex: newIndex,
+        remainingTime: duration,
+        isRunning: false,
+        isPaused: false,
+        timerStartTime: null,
+        performanceStartTime: null,
+        pausedAt: null,
+        isSynced: false, // Manual step change loses sync
+        scheduleStatus: status,
+      };
+    });
+  }, [steps, scheduleEntry, getScheduleStatus, timerState.currentStepIndex]);
 
   /**
    * Syncs timer with actual time.
@@ -508,7 +690,7 @@ export function useLessonTimer({
                 intervalId: intervalRef.current,
               });
               
-              // Play warning sounds
+              // Play early warning sounds (outside 10-0 range)
               const currentStep = stepsRef.current[prev.currentStepIndex];
               const stepTotalDuration = currentStep ? currentStep.duration_minutes * 60 : 0;
               
@@ -522,11 +704,8 @@ export function useLessonTimer({
                 playEarlyWarningSound();
               } else if (newRemaining === 15) {
                 playEarlyWarningSound();
-              } else if (newRemaining <= 5 && newRemaining > 0) {
-                playWarningDoubleSound();
-              } else if (newRemaining <= 10 && newRemaining > 5) {
-                playWarningSound();
               }
+              // Note: Sounds from 10 to 0 are handled by accelerating sound effect below
 
               // Check if step is complete
               if (newRemaining === 0 && prev.remainingTime > 0) {
@@ -696,6 +875,65 @@ export function useLessonTimer({
 
     return () => clearInterval(statusInterval);
   }, [scheduleEntry, getScheduleStatus]);
+
+  // Accelerating sound effect from 10 to 0 seconds
+  useEffect(() => {
+    // Clear any existing sound timeout
+    if (soundTimeoutRef.current) {
+      clearTimeout(soundTimeoutRef.current);
+      soundTimeoutRef.current = null;
+    }
+    soundActiveRef.current = false;
+
+    // Start accelerating sounds when 10 seconds or less remaining
+    if (timerState.isRunning && timerState.remainingTime <= 10 && timerState.remainingTime > 0) {
+      // Calculate interval with constant acceleration
+      // At 10 seconds: 500ms interval, at 0 seconds: 100ms interval
+      // Linear acceleration: interval = 100 + 40 * remainingTime
+      const calculateInterval = (remaining: number): number => {
+        const clampedRemaining = Math.max(0, Math.min(10, remaining));
+        return 100 + 40 * clampedRemaining; // 100ms to 500ms
+      };
+
+      // Recursive function to schedule next sound with accelerating interval
+      const scheduleNextSound = () => {
+        const currentTime = remainingTimeRef.current;
+        const currentlyRunning = isRunningRef.current;
+        
+        // Check if we should still be playing sounds
+        if (!currentlyRunning || currentTime <= 0 || currentTime > 10) {
+          soundActiveRef.current = false;
+          return;
+        }
+
+        // Play warning sound
+        playWarningSound();
+
+        // Calculate interval based on current remaining time
+        const interval = calculateInterval(currentTime);
+
+        // Schedule next sound with updated interval
+        soundTimeoutRef.current = setTimeout(() => {
+          scheduleNextSound();
+        }, interval);
+      };
+
+      // Start the accelerating sound sequence
+      soundActiveRef.current = true;
+      scheduleNextSound();
+    } else {
+      // Stop sounds when timer stops or goes above 10 seconds
+      soundActiveRef.current = false;
+    }
+
+    return () => {
+      if (soundTimeoutRef.current) {
+        clearTimeout(soundTimeoutRef.current);
+        soundTimeoutRef.current = null;
+      }
+      soundActiveRef.current = false;
+    };
+  }, [timerState.isRunning, timerState.remainingTime]);
 
   return {
     timerState,

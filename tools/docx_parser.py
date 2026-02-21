@@ -364,13 +364,22 @@ class DOCXParser:
                 return True
         
         # If day text is very short and matches a pattern, it's likely "No School"
-        # But require at least one of the core patterns
+        # Include development/workday/planning/conference patterns (same as document-level)
+        # but only for short text to avoid false positives in long lesson content
         if len(day_text.strip()) < 30:  # Very short content
             core_patterns = [
                 r"no\s+school",
                 r"no\s*-\s*school",
                 r"school\s+closed",
                 r"^holiday$",
+                r"staff\s+development",
+                r"professional\s+development",
+                r"pd\s+day",
+                r"planning\s+day",
+                r"teacher\s+workday",
+                r"prep\s+day",
+                r"conference\s+day",
+                r"in[-\s]?service",
             ]
             for pattern in core_patterns:
                 if re.search(pattern, day_text_lower, re.IGNORECASE):
@@ -527,11 +536,51 @@ class DOCXParser:
                 if day not in content:
                     content[day] = {}
 
-                cell_text = row.cells[i + 1].text.strip()
+                cell = row.cells[i + 1]
+                cell_text = self._get_cell_text_with_hyperlinks(cell)
                 if cell_text:
                     content[day][row_label] = cell_text
 
         return content
+
+    def _get_cell_text_with_hyperlinks(self, cell) -> str:
+        """Extract text from a cell, injecting markdown hyperlinks where they exist."""
+        from docx.oxml.ns import qn
+        
+        full_text = []
+        for paragraph in cell.paragraphs:
+            para_parts = []
+            
+            # Use XPath to find all runs and hyperlinks in order
+            for child in paragraph._element:
+                if child.tag == qn("w:r"):
+                    # Regular text run
+                    text = "".join(node.text for node in child.xpath(".//w:t") if node.text)
+                    if text:
+                        para_parts.append(text)
+                elif child.tag == qn("w:hyperlink"):
+                    # Hyperlink - Convert to Markdown [text](url)
+                    try:
+                        r_id = child.get(qn("r:id"))
+                        if r_id and r_id in paragraph.part.rels:
+                            url = paragraph.part.rels[r_id].target_ref
+                            text = "".join(node.text for node in child.xpath(".//w:t") if node.text)
+                            if text and url:
+                                # Inject as markdown right in the text stream
+                                para_parts.append(f"[{text}]({url})")
+                            elif text:
+                                para_parts.append(text)
+                    except Exception:
+                        # Fallback to plain text if link resolution fails
+                        text = "".join(node.text for node in child.xpath(".//w:t") if node.text)
+                        if text:
+                            para_parts.append(text)
+            
+            para_text = "".join(para_parts).strip()
+            if para_text:
+                full_text.append(para_text)
+                
+        return "\n".join(full_text).strip()
 
     def extract_subject_content(
         self, subject: str, strip_urls: bool = True
@@ -582,13 +631,25 @@ class DOCXParser:
                     no_school_days = []
 
                     for day, day_content in table_content.items():
-                        # Check if this day is "No School"
+                        # Check if this day is "No School" - but preserve all content regardless
                         day_text = " ".join(day_content.values())
-                        if self.is_day_no_school(day_text):
+                        is_no_school = self.is_day_no_school(day_text)
+                        
+                        if is_no_school:
                             no_school_days.append(day)
-                            # Add minimal marker for No School day
+                            # Mark as "No School" but still include all content from DOCX
+                            # This allows LLM to preserve tailored_instruction and other fields
                             full_text_parts.append(f"\n{day.upper()}")
-                            full_text_parts.append("No School")
+                            full_text_parts.append("Unit/Lesson: No School")
+                            # Include all other content from DOCX
+                            for label, text in day_content.items():
+                                # Skip unit/lesson field if it's "No School" to avoid duplication
+                                label_lower = label.lower()
+                                if "unit" not in label_lower and "lesson" not in label_lower:
+                                    full_text_parts.append(f"{label} {text}")
+                                elif text.strip() and text.strip().lower() != "no school":
+                                    # If unit/lesson has actual content (not just "No School"), include it
+                                    full_text_parts.append(f"{label} {text}")
                         else:
                             # Include full content for regular days
                             full_text_parts.append(f"\n{day.upper()}")
@@ -868,6 +929,7 @@ class DOCXParser:
                             "section_hint": context_info.get("section"),
                             "day_hint": context_info.get("day"),
                             "row_label": context_info.get("row_label"),
+                            "row_idx": context_info.get("row_idx"),
                             "cell_index": context_info.get("cell_index"),
                             "table_idx": context_info.get(
                                 "table_idx"
@@ -1130,6 +1192,7 @@ class DOCXParser:
         )
 
         hyperlinks = []
+        seen_links = set()  # To de-duplicate hyperlinks in this slot
 
         # Extract ONLY from slot's tables (no paragraphs!)
         for table_idx in range(table_start, table_end + 1):
@@ -1149,6 +1212,40 @@ class DOCXParser:
                     )
                     day_hint = self._extract_day_from_header(col_header)
 
+                    # Normalize day hint
+                    if day_hint:
+                        day_hint = self._normalize_day_hint(day_hint)
+                    elif cell_idx > 0:
+                        # Check if this is a metadata column (not expected to have day hints)
+                        # Common metadata headers: Grade, Homeroom, Subject, Week of
+                        col_header_lower = col_header.lower() if col_header else ""
+                        is_metadata_column = any(
+                            pattern in col_header_lower
+                            for pattern in [
+                                "grade:",
+                                "homeroom:",
+                                "subject:",
+                                "week of:",
+                                "week:",
+                            ]
+                        )
+                        
+                        # Only log warning if this isn't a metadata column
+                        # Metadata columns are expected to not have day hints
+                        if not is_metadata_column:
+                            # Log warning if day hint is missing for non-label, non-metadata column
+                            # This helps identify why some links become "orphans"
+                            logger.warning(
+                                "hyperlink_extraction_missing_day_hint",
+                                extra={
+                                    "slot": slot_number,
+                                    "table_idx": table_idx,
+                                    "row": row_idx,
+                                    "col": cell_idx,
+                                    "header": col_header[:50] if col_header else "empty"
+                                }
+                            )
+
                     for paragraph in cell.paragraphs:
                         for hyperlink in paragraph._element.xpath(".//w:hyperlink"):
                             try:
@@ -1162,11 +1259,22 @@ class DOCXParser:
                                     )
 
                                     if text and url:
+                                        # Normalize text/url for de-duplication
+                                        text_clean = text.strip()
+                                        url_clean = url.strip()
+                                        
+                                        # De-duplicate by text, url, and location
+                                        # This prevents identical links in the same cell from being extracted multiple times
+                                        link_key = (text_clean, url_clean, table_idx, row_idx, cell_idx)
+                                        if link_key in seen_links:
+                                            continue
+                                        seen_links.add(link_key)
+
                                         hyperlinks.append(
                                             {
                                                 "schema_version": "2.0",
-                                                "text": text,
-                                                "url": url,
+                                                "text": text_clean,
+                                                "url": url_clean,
                                                 "context_snippet": self._get_context_snippet(
                                                     paragraph, text
                                                 ),
@@ -1187,6 +1295,11 @@ class DOCXParser:
                                     "hyperlink_extraction_failed",
                                     extra={"error": str(e), "table_idx": table_idx},
                                 )
+
+        # Final de-duplication: if multiple identical links exist in the same slot but 
+        # in different cells, we keep them for placement attempts. 
+        # But if they end up in Referenced Links, they will be de-duplicated there later or here.
+        # For now, we keep them if coordinates differ.
 
         logger.info(
             "slot_hyperlinks_extracted",
@@ -1239,13 +1352,23 @@ class DOCXParser:
         # Extract all images (with table_idx now populated)
         all_images = self.extract_images()
 
-        # Filter to slot's tables only
-        slot_images = [
-            img
-            for img in all_images
-            if img.get("table_idx") is not None
-            and table_start <= img["table_idx"] <= table_end
-        ]
+        # Filter to slot's tables only and de-duplicate
+        slot_images = []
+        seen_images = set()  # To de-duplicate images in this slot
+
+        for img in all_images:
+            if img.get("table_idx") is not None and table_start <= img["table_idx"] <= table_end:
+                # De-duplicate by data (hashed) and location
+                # This prevents identical images in the same cell from being extracted multiple times
+                import hashlib
+                data_hash = hashlib.md5(img["data"].encode()).hexdigest()
+                # Use .get() so images from older code paths or paragraph context don't raise KeyError
+                img_key = (data_hash, img["table_idx"], img.get("row_idx", -1), img.get("cell_index", -1))
+                
+                if img_key in seen_images:
+                    continue
+                seen_images.add(img_key)
+                slot_images.append(img)
 
         logger.info(
             "slot_images_extracted",
@@ -1260,7 +1383,7 @@ class DOCXParser:
 
         return slot_images
 
-    def find_slot_by_subject(self, subject: str, teacher_name: str = None) -> int:
+    def find_slot_by_subject(self, subject: str, teacher_name: str = None, homeroom: str = None, grade: str = None) -> int:
         """
         Find which slot contains the given subject by scanning metadata tables.
 
@@ -1271,6 +1394,8 @@ class DOCXParser:
         Args:
             subject: Subject name to find (e.g., "ELA/SS", "Math", "Science")
             teacher_name: Optional teacher name to disambiguate duplicate subjects
+            homeroom: Optional homeroom to disambiguate duplicate subjects (e.g., "T5")
+            grade: Optional grade to disambiguate duplicate subjects (e.g., "3")
 
         Returns:
             Slot number (1-indexed) containing the subject
@@ -1344,6 +1469,10 @@ class DOCXParser:
 
         # Normalize teacher name if provided
         teacher_normalized = normalize_text(teacher_name) if teacher_name else None
+        
+        # Normalize homeroom and grade if provided
+        homeroom_normalized = normalize_text(homeroom) if homeroom else None
+        grade_normalized = normalize_text(grade) if grade else None
 
         # Scan each slot's metadata table
         total_tables = len(self.doc.tables)
@@ -1375,6 +1504,7 @@ class DOCXParser:
                 slot_subject = None
                 slot_teacher = None
                 slot_homeroom = None
+                slot_grade = None
 
                 for row in meta_table.rows:
                     for cell in row.cells:
@@ -1392,6 +1522,10 @@ class DOCXParser:
                         # Extract homeroom
                         if "homeroom:" in cell_lower:
                             slot_homeroom = cell_text.split(":", 1)[-1].strip()
+                        
+                        # Extract grade
+                        if "grade:" in cell_lower:
+                            slot_grade = cell_text.split(":", 1)[-1].strip()
 
                 if not slot_subject:
                     continue
@@ -1445,6 +1579,7 @@ class DOCXParser:
                             "subject": slot_subject,
                             "teacher": slot_teacher,
                             "homeroom": slot_homeroom,
+                            "grade": slot_grade,
                             "matched_alias": matched_alias,
                         }
                     )
@@ -1474,6 +1609,7 @@ class DOCXParser:
                     slot_subject = None
                     slot_teacher = None
                     slot_homeroom = None
+                    slot_grade = None
                     for row in meta_table.rows:
                         for cell in row.cells:
                             cell_text = cell.text.strip()
@@ -1485,6 +1621,8 @@ class DOCXParser:
                                 slot_teacher = cell_text.split(":", 1)[-1].strip()
                             if "homeroom:" in cell_lower:
                                 slot_homeroom = cell_text.split(":", 1)[-1].strip()
+                            if "grade:" in cell_lower:
+                                slot_grade = cell_text.split(":", 1)[-1].strip()
 
                     if slot_subject:
                         subject_value_normalized = normalize_text(slot_subject)
@@ -1506,6 +1644,7 @@ class DOCXParser:
                                         "subject": slot_subject,
                                         "teacher": slot_teacher,
                                         "homeroom": slot_homeroom,
+                                        "grade": slot_grade,
                                         "matched_alias": f"flexible_token_{token}",
                                     }
                                 )
@@ -1536,7 +1675,7 @@ class DOCXParser:
             )
             return match["slot_num"]
 
-        # Multiple matches - disambiguate by teacher
+        # Multiple matches - disambiguate by teacher, then homeroom, then grade
         if teacher_normalized:
             for match in matches:
                 if match["teacher"] and teacher_normalized in normalize_text(
@@ -1554,7 +1693,71 @@ class DOCXParser:
                         },
                     )
                     return match["slot_num"]
-
+        
+        # If teacher disambiguation failed or not provided, try homeroom
+        if homeroom_normalized:
+            homeroom_matches = []
+            for match in matches:
+                if match["homeroom"] and homeroom_normalized == normalize_text(
+                    match["homeroom"]
+                ):
+                    homeroom_matches.append(match)
+            
+            if len(homeroom_matches) == 1:
+                match = homeroom_matches[0]
+                logger.info(
+                    "subject_slot_found_via_homeroom",
+                    extra={
+                        "requested_subject": subject,
+                        "requested_homeroom": homeroom,
+                        "found_in_slot": match["slot_num"],
+                        "metadata_subject": match["subject"],
+                        "metadata_homeroom": match["homeroom"],
+                        "total_matches": len(matches),
+                    },
+                )
+                return match["slot_num"]
+            elif len(homeroom_matches) > 1:
+                # Multiple matches with same homeroom - try grade if available
+                if grade_normalized:
+                    grade_matches = []
+                    for match in homeroom_matches:
+                        if match["grade"] and grade_normalized == normalize_text(
+                            match["grade"]
+                        ):
+                            grade_matches.append(match)
+                    
+                    if len(grade_matches) == 1:
+                        match = grade_matches[0]
+                        logger.info(
+                            "subject_slot_found_via_homeroom_grade",
+                            extra={
+                                "requested_subject": subject,
+                                "requested_homeroom": homeroom,
+                                "requested_grade": grade,
+                                "found_in_slot": match["slot_num"],
+                                "metadata_subject": match["subject"],
+                                "metadata_homeroom": match["homeroom"],
+                                "metadata_grade": match["grade"],
+                                "total_matches": len(matches),
+                            },
+                        )
+                        return match["slot_num"]
+                    elif len(grade_matches) > 1:
+                        # Still multiple matches - return first one and warn
+                        match = grade_matches[0]
+                        logger.warning(
+                            "multiple_matches_after_homeroom_grade",
+                            extra={
+                                "requested_subject": subject,
+                                "requested_homeroom": homeroom,
+                                "requested_grade": grade,
+                                "total_matches": len(grade_matches),
+                                "selected_slot": match["slot_num"],
+                            },
+                        )
+                        return match["slot_num"]
+        
         # Multiple matches, can't disambiguate - return first and warn
         match = matches[0]
         logger.warning(
@@ -1562,9 +1765,16 @@ class DOCXParser:
             extra={
                 "requested_subject": subject,
                 "requested_teacher": teacher_name,
+                "requested_homeroom": homeroom,
+                "requested_grade": grade,
                 "total_matches": len(matches),
                 "matches": [
-                    {"slot": m["slot_num"], "teacher": m["teacher"]} for m in matches
+                    {
+                        "slot": m["slot_num"], 
+                        "teacher": m["teacher"],
+                        "homeroom": m["homeroom"],
+                        "grade": m.get("grade")
+                    } for m in matches
                 ],
                 "selected_slot": match["slot_num"],
                 "message": "Multiple slots match subject, returning first match",
@@ -1705,6 +1915,9 @@ class DOCXParser:
                     )
                     slot_number = actual_slot_number
             # If actual_slot_number == slot_number, no change needed
+            else:
+                print(f"DEBUG: DOCXParser - actual_slot_number matches requested slot_number {slot_number}")
+                pass
         except ValueError as e:
             # Subject not found, fall back to original slot number
             logger.warning(
@@ -1719,57 +1932,35 @@ class DOCXParser:
             )
 
         # Validate slot structure and get table indices
-        # Note: validate_slot_structure may pass even if table_end looks like metadata
-        # (for single-lesson documents), so we need to handle both cases
         try:
             table_start, table_end = validate_slot_structure(self.doc, slot_number)
         except ValueError as e:
-            # If validation fails due to table structure, check if this is a single-lesson document
-            # where table_end contains lesson metadata instead of daily plans
             total_tables = len(self.doc.tables)
             if total_tables >= 2:
-                # Try to calculate table indices manually
                 table_start = (slot_number - 1) * 2
                 table_end = table_start + 1
-                
-                # Check if table_end exists and has content
-                if table_end < total_tables and self.doc.tables[table_end].rows:
-                    # Check if it's metadata-like (single lesson format)
-                    first_row_text = " ".join(
-                        cell.text.strip() 
-                        for cell in self.doc.tables[table_end].rows[0].cells
-                    )
-                    first_row_clean = first_row_text.translate(
-                        str.maketrans("", "", string.punctuation)
-                    ).upper()
-                    
-                    metadata_indicators = ["UNIT", "LESSON", "MODULE", "SUBJECT", "OBJECTIVE"]
-                    has_metadata_indicator = any(
-                        indicator in first_row_clean for indicator in metadata_indicators
-                    )
-                    
-                    if has_metadata_indicator:
-                        # This is a single-lesson document - log and proceed
-                        logger.info(
-                            "single_lesson_document_detected",
-                            extra={
-                                "slot_number": slot_number,
-                                "table_end": table_end,
-                                "first_row": first_row_text[:200],
-                                "note": "Document appears to be single-lesson format. Will extract from both tables."
-                            }
-                        )
-                        # Use both tables for content extraction
-                    else:
-                        # Still doesn't match expected format - re-raise original error
-                        raise
-                else:
-                    raise
             else:
                 raise
 
+        # Extract metadata from table_start
+        meta_table = self.doc.tables[table_start]
+        meta_data = {}
+        for row in meta_table.rows:
+            for cell in row.cells:
+                text = cell.text.strip()
+                lower = text.lower()
+                if "subject:" in lower:
+                    meta_data["subject"] = text.split(":", 1)[-1].strip()
+                elif "name:" in lower or "teacher:" in lower:
+                    meta_data["primary_teacher_name"] = text.split(":", 1)[-1].strip()
+                elif "homeroom:" in lower:
+                    meta_data["homeroom"] = text.split(":", 1)[-1].strip()
+                elif "grade:" in lower:
+                    meta_data["grade"] = text.split(":", 1)[-1].strip()
+                elif "week of:" in lower:
+                    meta_data["week_of"] = text.split(":", 1)[-1].strip()
+
         # The daily plans table is at table_end
-        # For single-lesson documents, table_end might contain lesson metadata
         daily_table_idx = table_end
 
         logger.info(
@@ -1842,13 +2033,25 @@ class DOCXParser:
             no_school_days = []
 
             for day, day_content in table_content.items():
-                # Check if this day is "No School"
+                # Check if this day is "No School" - but preserve all content regardless
                 day_text = " ".join(day_content.values())
-                if self.is_day_no_school(day_text):
+                is_no_school = self.is_day_no_school(day_text)
+                
+                if is_no_school:
                     no_school_days.append(day)
-                    # Add minimal marker for No School day
+                    # Mark as "No School" but still include all content from DOCX
+                    # This allows LLM to preserve tailored_instruction and other fields
                     full_text_parts.append(f"\n{day.upper()}")
-                    full_text_parts.append("No School")
+                    full_text_parts.append("Unit/Lesson: No School")
+                    # Include all other content from DOCX
+                    for label, text in day_content.items():
+                        # Skip unit/lesson field if it's "No School" to avoid duplication
+                        label_lower = label.lower()
+                        if "unit" not in label_lower and "lesson" not in label_lower:
+                            full_text_parts.append(f"{label} {text}")
+                        elif text.strip() and text.strip().lower() != "no school":
+                            # If unit/lesson has actual content (not just "No School"), include it
+                            full_text_parts.append(f"{label} {text}")
                 else:
                     # Include full content for regular days
                     full_text_parts.append(f"\n{day.upper()}")
@@ -1874,6 +2077,7 @@ class DOCXParser:
             "format": "table",
             "slot_number": slot_number,
             "table_idx": daily_table_idx,
+            "metadata": meta_data if 'meta_data' in locals() else {}
         }
 
     def _get_context_snippet(
@@ -2167,8 +2371,9 @@ class DOCXParser:
                                         "section": section,
                                         "day": day_from_cell,
                                         "row_label": row_label,
+                                        "row_idx": row_idx,
                                         "cell_index": cell_idx,
-                                        "table_idx": table_idx,  # ADD THIS
+                                        "table_idx": table_idx,
                                     }
                             except:
                                 pass

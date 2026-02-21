@@ -18,6 +18,7 @@ from docx.oxml.ns import qn
 from docx.shared import Inches, Pt, RGBColor
 
 from backend.services.objectives_utils import normalize_objective_payload
+from backend.services.sorting_utils import sort_slots
 from backend.telemetry import logger
 
 
@@ -244,7 +245,10 @@ class ObjectivesPrinter:
             day_data = days[day_name]
             slots = day_data.get("slots", [])
 
-            for slot in slots:
+            # Sort slots by start_time (chronological) with slot_number as fallback
+            sorted_slots = sort_slots(slots)
+
+            for slot in sorted_slots:
                 slot_number = slot.get("slot_number", 0)
                 slot_subject = slot.get("subject", subject)
                 unit_lesson = slot.get("unit_lesson", "")

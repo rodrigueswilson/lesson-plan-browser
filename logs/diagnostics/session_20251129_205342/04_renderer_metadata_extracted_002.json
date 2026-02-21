@@ -1,0 +1,14 @@
+{
+  "timestamp": "2025-11-29T20:53:43.009225",
+  "stage": "04_renderer_metadata_extracted",
+  "data": {
+    "slot_number": 2,
+    "slot_number_type": "int",
+    "slot_number_is_none": false,
+    "subject": "ELA/SS",
+    "subject_is_none": false,
+    "hyperlink_count": 5,
+    "teacher": "Caitlin Davies / Wilson Rodrigues",
+    "filtering_will_activate": true
+  }
+}

@@ -6,6 +6,7 @@
   "build": {
     "beforeDevCommand": "npm run dev",
     "beforeBuildCommand": "npm run build:skip-check",
+    "devUrl": "http://localhost:1420",
     "frontendDist": "../dist"
   },
   "app": {
@@ -24,11 +25,7 @@
       "csp": null
     }
   },
-  "plugins": {
-    "shell": {
-      "open": true
-    }
-  },
+  "plugins": {},
   "bundle": {
     "active": false,
     "targets": "all"

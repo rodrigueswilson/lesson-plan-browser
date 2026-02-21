@@ -1,0 +1,94 @@
+{
+  "timestamp": "2026-02-20T18:01:50.113436",
+  "stage": "03_before_render_slot5",
+  "data": {
+    "slot_number": 5,
+    "subject": "Math",
+    "render_type": "multi_slot",
+    "metadata_slot_number": 5,
+    "metadata_subject": "Math",
+    "hyperlink_count": 21,
+    "all_hyperlinks_have_slot": true,
+    "all_hyperlinks_have_subject": true,
+    "hyperlink_slot_distribution": {
+      "5": 21
+    },
+    "sample_hyperlinks": [
+      {
+        "text": "How Close?",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Stage 5",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Stage 5",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Stage 6",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "3.4.16 Setting Up The Birthday",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "How Close?",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Stage 5",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Can You Draw It?",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Stage 2",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "3.4 Section D: Additional Practice Problems",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Stage 5",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Stage 6",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Stage 3",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "3.4.17 Looking at the Number",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Five in a Row: Mult. & Division",
+        "source_slot": 5,
+        "source_subject": "Math"
+      }
+    ]
+  }
+}

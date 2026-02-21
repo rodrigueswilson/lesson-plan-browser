@@ -1,0 +1,10 @@
+﻿sched_20251130121106_friday_1|friday|08:15|08:30|A.M. Routine|||1
+sched_20251130121106_friday_2|friday|08:30|09:15|ELA|3|T5|2
+sched_20251130121106_friday_3|friday|09:18|10:03|ELA/SS|2|209|3
+sched_20251130121106_friday_4|friday|10:06|10:51|ELA/SS|2|209|4
+sched_20251130121106_friday_5|friday|10:54|11:39|Lunch|||5
+sched_20251130121106_friday_6|friday|11:42|12:27|SCIENCE|2|209|6
+sched_20251130121106_friday_7|friday|12:30|13:15|MATH|3|T2|7
+sched_20251130121106_friday_8|friday|13:18|14:03|PREP|||8
+sched_20251130121106_friday_9|friday|14:06|15:00|MATH|2|209|9
+sched_20251130121106_friday_10|friday|15:00|15:05|Dismissal|||10

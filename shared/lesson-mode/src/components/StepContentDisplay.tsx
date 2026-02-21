@@ -1,6 +1,7 @@
 import { Card } from '@lesson-ui/Card';
 import type { LessonStep } from '@lesson-api';
-import { highlightVocabularyWords, getCognateBadgeClasses, getCognateBadgeLabel } from '../utils/vocabularyHighlight';
+import { getCognateBadgeClasses, getCognateBadgeLabel } from '../utils/vocabularyHighlight';
+import { parseMarkdown } from '../utils/markdownUtils';
 
 interface StepContentDisplayProps {
   step: LessonStep;
@@ -13,9 +14,9 @@ export function StepContentDisplay({ step, vocabularyWords = [] }: StepContentDi
       case 'objective':
         return (
           <div className="space-y-4">
-            <h3 className="text-2xl font-bold text-center">Learning Objective</h3>
+            <h3 className="text-2xl font-bold text-center">Objective</h3>
             <div className="text-lg text-center leading-relaxed">
-              {step.display_content}
+              {parseMarkdown(step.display_content, vocabularyWords)}
             </div>
           </div>
         );
@@ -56,7 +57,7 @@ export function StepContentDisplay({ step, vocabularyWords = [] }: StepContentDi
                             </div>
                             <div className="p-4 bg-muted rounded-lg">
                               <div className="text-sm text-muted-foreground mb-2">EN:</div>
-                              <div className="text-xl font-medium">{highlightVocabularyWords(frame.english, vocabularyWords)}</div>
+                              <div className="text-xl font-medium">{parseMarkdown(frame.english, vocabularyWords)}</div>
                               {frame.language_function && (
                                 <div className="mt-2 inline-flex items-center rounded-full border px-2 py-0.5 text-xs uppercase tracking-wide text-muted-foreground">
                                   {frame.language_function
@@ -74,7 +75,7 @@ export function StepContentDisplay({ step, vocabularyWords = [] }: StepContentDi
               </div>
             ) : (
               <div className="text-center text-muted-foreground">
-                {step.display_content}
+                {parseMarkdown(step.display_content, vocabularyWords)}
               </div>
             )}
           </div>
@@ -91,7 +92,9 @@ export function StepContentDisplay({ step, vocabularyWords = [] }: StepContentDi
                 ))}
               </ul>
             ) : (
-              <div className="text-muted-foreground">{step.display_content}</div>
+              <div className="text-muted-foreground">
+                {parseMarkdown(step.display_content, vocabularyWords)}
+              </div>
             )}
           </div>
         );
@@ -109,7 +112,12 @@ export function StepContentDisplay({ step, vocabularyWords = [] }: StepContentDi
                       <strong>{vocab.english || ''}</strong>
                       {' -> '}
                       <em>{vocab.portuguese || ''}</em>
-                      <span className={`ml-2 ${getCognateBadgeClasses(vocab.is_cognate, 'sm')}`}>
+                      <span
+                        className={`ml-2 ${getCognateBadgeClasses(vocab.is_cognate, 'sm')}`}
+                        style={{
+                          color: vocab.is_cognate ? '#15803d' : '#dc2626' // green-700 : red-700
+                        }}
+                      >
                         {getCognateBadgeLabel(vocab.is_cognate)}
                       </span>
                       {vocab.relevance_note && (
@@ -154,7 +162,7 @@ export function StepContentDisplay({ step, vocabularyWords = [] }: StepContentDi
                 </ul>
               ) : (
                 <div className="text-lg leading-relaxed whitespace-pre-wrap">
-                  {step.display_content}
+                  {parseMarkdown(step.display_content, vocabularyWords)}
                 </div>
               )}
             </div>
@@ -165,7 +173,7 @@ export function StepContentDisplay({ step, vocabularyWords = [] }: StepContentDi
           <div className="space-y-4">
             <h3 className="text-2xl font-bold">{step.step_name}</h3>
             <div className="text-lg leading-relaxed whitespace-pre-wrap">
-              {step.display_content}
+              {parseMarkdown(step.display_content, vocabularyWords)}
             </div>
           </div>
         );
@@ -173,9 +181,9 @@ export function StepContentDisplay({ step, vocabularyWords = [] }: StepContentDi
       case 'assessment':
         return (
           <div className="space-y-4">
-            <h3 className="text-2xl font-bold">Assessment</h3>
+            <h3 className="text-2xl font-bold text-center">Assessment</h3>
             <div className="text-lg leading-relaxed">
-              {step.display_content}
+              {parseMarkdown(step.display_content, vocabularyWords)}
             </div>
           </div>
         );
@@ -184,7 +192,9 @@ export function StepContentDisplay({ step, vocabularyWords = [] }: StepContentDi
         return (
           <div className="space-y-4">
             <h3 className="text-2xl font-bold">{step.step_name}</h3>
-            <div className="text-lg">{step.display_content}</div>
+            <div className="text-lg">
+              {parseMarkdown(step.display_content, vocabularyWords)}
+            </div>
           </div>
         );
     }

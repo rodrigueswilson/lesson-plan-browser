@@ -1,7 +1,8 @@
-import { ChevronLeft, ChevronRight, Home } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import type { LessonStep } from '@lesson-api';
 import { Card } from '@lesson-ui/Card';
 import { Button } from '@lesson-ui/Button';
+import { parseMarkdown } from '../utils/markdownUtils';
 
 interface CurrentStepInstructionsProps {
   step: LessonStep;
@@ -9,7 +10,6 @@ interface CurrentStepInstructionsProps {
   totalSteps: number;
   onPrevious: () => void;
   onNext: () => void;
-  onGoToBeginning: () => void;
   isCollapsed?: boolean;
   onToggleCollapse?: () => void;
   className?: string;
@@ -21,7 +21,6 @@ export function CurrentStepInstructions({
   totalSteps,
   onPrevious,
   onNext,
-  onGoToBeginning,
   isCollapsed = false,
   onToggleCollapse,
   className = '',
@@ -29,7 +28,7 @@ export function CurrentStepInstructions({
   // Extract the instructional text from display_content
   // For now, show the full display_content
   // Later, when we have structured fields, we'll show just the instruction part
-  
+
   const instructionText = step.display_content || 'No instructions available for this step.';
   const canGoBack = currentStepIndex > 0;
   const canGoForward = currentStepIndex < totalSteps - 1;
@@ -43,18 +42,6 @@ export function CurrentStepInstructions({
             Current Step Instructions
           </div>
           <div className="flex items-center gap-2">
-              {canGoBack && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={onGoToBeginning}
-                className="h-6 px-2 text-xs"
-                title="Go to beginning of lesson"
-              >
-                <Home className="w-3 h-3 mr-1" />
-                Beginning
-              </Button>
-            )}
             {onToggleCollapse && (
               <Button
                 variant="ghost"
@@ -70,7 +57,7 @@ export function CurrentStepInstructions({
         </div>
         <div className="flex-1 overflow-y-auto p-4">
           <div className="text-base leading-relaxed whitespace-pre-wrap">
-            {instructionText}
+            {parseMarkdown(instructionText)}
           </div>
         </div>
         {/* Navigation buttons at bottom */}

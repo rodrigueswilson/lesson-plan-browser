@@ -1,0 +1,50 @@
+{
+  "timestamp": "2025-12-29T17:39:44.465546",
+  "stage": "02_lesson_json_slot6",
+  "data": {
+    "slot_number": 6,
+    "subject": "Science",
+    "metadata_slot_number": null,
+    "metadata_subject": "Science",
+    "hyperlink_count": 5,
+    "hyperlinks_with_slot_metadata": 5,
+    "hyperlinks_with_subject_metadata": 5,
+    "sample_hyperlinks": [
+      {
+        "text": " 2nd Grade Science ",
+        "has_source_slot": true,
+        "source_slot": 6,
+        "has_source_subject": true,
+        "source_subject": "Science"
+      },
+      {
+        "text": " 2nd Grade Science ",
+        "has_source_slot": true,
+        "source_slot": 6,
+        "has_source_subject": true,
+        "source_subject": "Science"
+      },
+      {
+        "text": " 2nd Grade Science ",
+        "has_source_slot": true,
+        "source_slot": 6,
+        "has_source_subject": true,
+        "source_subject": "Science"
+      },
+      {
+        "text": " 2nd Grade Science ",
+        "has_source_slot": true,
+        "source_slot": 6,
+        "has_source_subject": true,
+        "source_subject": "Science"
+      },
+      {
+        "text": "https://catalog.mcgraw-hill.com/repository/private",
+        "has_source_slot": true,
+        "source_slot": 6,
+        "has_source_subject": true,
+        "source_subject": "Science"
+      }
+    ]
+  }
+}

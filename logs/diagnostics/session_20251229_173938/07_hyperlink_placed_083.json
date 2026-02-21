@@ -1,0 +1,11 @@
+{
+  "timestamp": "2025-12-29T17:39:52.175592",
+  "stage": "07_hyperlink_placed",
+  "data": {
+    "text": "Card Sort/Equal Groups",
+    "slot": null,
+    "subject": "Math",
+    "cell": "friday_instruction",
+    "confidence": 1.0
+  }
+}

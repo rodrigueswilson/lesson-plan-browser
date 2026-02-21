@@ -1,0 +1,29 @@
+{
+  "timestamp": "2026-01-24T13:18:31.005248",
+  "stage": "03_before_render_slot4",
+  "data": {
+    "slot_number": 4,
+    "subject": "Science",
+    "render_type": "multi_slot",
+    "metadata_slot_number": 4,
+    "metadata_subject": "Science",
+    "hyperlink_count": 2,
+    "all_hyperlinks_have_slot": true,
+    "all_hyperlinks_have_subject": true,
+    "hyperlink_slot_distribution": {
+      "4": 2
+    },
+    "sample_hyperlinks": [
+      {
+        "text": "2nd Grade Science",
+        "source_slot": 4,
+        "source_subject": "Science"
+      },
+      {
+        "text": "2nd Grade Science",
+        "source_slot": 4,
+        "source_subject": "Science"
+      }
+    ]
+  }
+}

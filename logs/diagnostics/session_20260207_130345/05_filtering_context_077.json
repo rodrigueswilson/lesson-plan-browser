@@ -1,0 +1,13 @@
+{
+  "timestamp": "2026-02-07T13:03:46.496719",
+  "stage": "05_filtering_context",
+  "data": {
+    "current_slot_number": 4,
+    "current_slot_number_is_none": false,
+    "current_subject": "Math",
+    "current_subject_is_none": false,
+    "pending_hyperlinks_count": 2,
+    "cell": "wednesday_objective",
+    "filtering_active": true
+  }
+}

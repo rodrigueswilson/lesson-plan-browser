@@ -1,0 +1,14 @@
+{
+  "timestamp": "2025-12-29T22:05:15.058490",
+  "stage": "04_renderer_metadata_extracted",
+  "data": {
+    "slot_number": 5,
+    "slot_number_type": "int",
+    "slot_number_is_none": false,
+    "subject": "Math",
+    "subject_is_none": false,
+    "hyperlink_count": 0,
+    "teacher": "Davies",
+    "filtering_will_activate": true
+  }
+}

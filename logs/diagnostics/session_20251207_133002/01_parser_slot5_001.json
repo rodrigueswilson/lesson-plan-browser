@@ -1,0 +1,68 @@
+{
+  "timestamp": "2025-12-07T13:45:22.926206",
+  "stage": "01_parser_slot5",
+  "data": {
+    "slot_number": 5,
+    "subject": "Math",
+    "source_file": "F:\\rodri\\Documents\\OneDrive\\AS\\Daniela LP\\25 W50\\Morais 12_8 - 12_12.docx",
+    "hyperlink_count": 7,
+    "hyperlinks": [
+      {
+        "text": "2.4.1 Teacher Guide",
+        "url": "https://drive.google.com/file/d/1TmY3Ay_64_ZmB1uact8Oz1YcYRGiVHMR/view?usp=drive_link",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "Unit 4: Addition and Subtraction on the Number Line",
+        "url": "https://docs.google.com/document/d/1x8ll9eW0ZVYdBOKIdDfEPk1X_79X3dyOtq_zyByvpe4/edit?tab=t.0",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "2.3.14 Cool Down",
+        "url": "https://drive.google.com/file/d/1gzHds5tjFjqKcZ9N5nafJv-AbgImnYye/view?usp=drive_link",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "2.3.15 Cool Down",
+        "url": "https://drive.google.com/file/d/1YJ_TD3eXtb5laIdm_qB3gKLk47ztC_UO/view?usp=drive_link",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "2.3.16 Cool Down",
+        "url": "https://drive.google.com/file/d/1gMXjzT6Dfro502wDExh17cQrJvXhviwq/view?usp=drive_link",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "2.4.1 Cool Down",
+        "url": "https://drive.google.com/file/d/1fsmxYqaGuLlTBsUunm_Q1sNY46uYvey4/view?usp=share_link",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      },
+      {
+        "text": "U4 L1 Math hw.pdf",
+        "url": "https://drive.google.com/file/d/1VoqodhYIYhg840kNZV43WNuq8MewiMiN/view?usp=drive_link",
+        "has_source_slot": false,
+        "has_source_subject": false,
+        "source_slot": null,
+        "source_subject": null
+      }
+    ]
+  }
+}

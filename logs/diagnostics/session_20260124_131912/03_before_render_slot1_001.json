@@ -1,0 +1,29 @@
+{
+  "timestamp": "2026-01-24T13:34:34.350831",
+  "stage": "03_before_render_slot1",
+  "data": {
+    "slot_number": 1,
+    "subject": "ELA",
+    "render_type": "multi_slot",
+    "metadata_slot_number": 1,
+    "metadata_subject": "ELA",
+    "hyperlink_count": 2,
+    "all_hyperlinks_have_slot": true,
+    "all_hyperlinks_have_subject": true,
+    "hyperlink_slot_distribution": {
+      "1": 2
+    },
+    "sample_hyperlinks": [
+      {
+        "text": "Figurative Language Scavenger Hunt Sheet",
+        "source_slot": 1,
+        "source_subject": "ELA"
+      },
+      {
+        "text": "Figurative Language in Thunder Rose",
+        "source_slot": 1,
+        "source_subject": "ELA"
+      }
+    ]
+  }
+}

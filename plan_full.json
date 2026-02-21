@@ -1,0 +1,11 @@
+﻿Total Plans: 56
+Plans with Processing Time: 24
+Plans with 0 Processing Time: 0
+Average calc from populated: 1445605.3334583326
+
+Top 5 Plans by Duration:
+  plan_20251227172034: 9891938.279999997 ms
+  plan_20251228152714: 8180160.341000001 ms
+  plan_20251229135832: 8028367.1039999835 ms
+  plan_20251227153847: 2377299.8210000014 ms
+  plan_20251227141902: 2121670.1580000008 ms

@@ -1,0 +1,14 @@
+{
+  "timestamp": "2025-12-29T22:58:32.794987",
+  "stage": "04_renderer_metadata_extracted",
+  "data": {
+    "slot_number": null,
+    "slot_number_type": "NoneType",
+    "slot_number_is_none": true,
+    "subject": "Test",
+    "subject_is_none": false,
+    "hyperlink_count": 4,
+    "teacher": "Test",
+    "filtering_will_activate": false
+  }
+}

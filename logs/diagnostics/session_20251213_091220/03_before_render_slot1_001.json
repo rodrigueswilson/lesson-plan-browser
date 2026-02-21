@@ -1,0 +1,79 @@
+{
+  "timestamp": "2025-12-13T09:32:04.411246",
+  "stage": "03_before_render_slot1",
+  "data": {
+    "slot_number": 1,
+    "subject": "ELA/SS",
+    "render_type": "multi_slot",
+    "metadata_slot_number": 1,
+    "metadata_subject": "ELA/SS",
+    "hyperlink_count": 12,
+    "all_hyperlinks_have_slot": true,
+    "all_hyperlinks_have_subject": true,
+    "hyperlink_slot_distribution": {
+      "1": 12
+    },
+    "sample_hyperlinks": [
+      {
+        "text": "02 - Second Grade Unit Description and Summary of ",
+        "source_slot": 1,
+        "source_subject": "ELA/SS"
+      },
+      {
+        "text": "Preview Chart",
+        "source_slot": 1,
+        "source_subject": "ELA/SS"
+      },
+      {
+        "text": "Let's Talk about Race, Book",
+        "source_slot": 1,
+        "source_subject": "ELA/SS"
+      },
+      {
+        "text": "Let's Talk About Race: Check for Understanding Car",
+        "source_slot": 1,
+        "source_subject": "ELA/SS"
+      },
+      {
+        "text": "Vocabulary Boxes",
+        "source_slot": 1,
+        "source_subject": "ELA/SS"
+      },
+      {
+        "text": "Sulwe's Character Traits",
+        "source_slot": 1,
+        "source_subject": "ELA/SS"
+      },
+      {
+        "text": "Sulwe: Culminating Task Rubric",
+        "source_slot": 1,
+        "source_subject": "ELA/SS"
+      },
+      {
+        "text": "Single Paragraph Outline.docx",
+        "source_slot": 1,
+        "source_subject": "ELA/SS"
+      },
+      {
+        "text": "Let's Talk About Race Lesson 9 Rubric",
+        "source_slot": 1,
+        "source_subject": "ELA/SS"
+      },
+      {
+        "text": "Let's Talk About Race Lesson 9 Rubric",
+        "source_slot": 1,
+        "source_subject": "ELA/SS"
+      },
+      {
+        "text": "Let's Talk About Race: Lesson 10 Rubric",
+        "source_slot": 1,
+        "source_subject": "ELA/SS"
+      },
+      {
+        "text": "What is Colorism: Lesson 11 Rubr",
+        "source_slot": 1,
+        "source_subject": "ELA/SS"
+      }
+    ]
+  }
+}

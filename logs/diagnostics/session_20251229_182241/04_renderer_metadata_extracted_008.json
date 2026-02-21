@@ -1,0 +1,14 @@
+{
+  "timestamp": "2025-12-29T18:22:42.140038",
+  "stage": "04_renderer_metadata_extracted",
+  "data": {
+    "slot_number": 4,
+    "slot_number_type": "int",
+    "slot_number_is_none": false,
+    "subject": "Math",
+    "subject_is_none": false,
+    "hyperlink_count": 10,
+    "teacher": "Kelsey Lang / Wilson Rodrigues",
+    "filtering_will_activate": true
+  }
+}

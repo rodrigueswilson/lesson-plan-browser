@@ -4,7 +4,7 @@ Returns valid lesson plan JSON without calling real LLM API
 """
 
 import json
-from typing import Dict, Any, Optional, Tuple
+from typing import Callable, Dict, Any, Optional, Tuple
 from pathlib import Path
 
 
@@ -46,7 +46,10 @@ class MockLLMService:
         subject: str,
         week_of: str,
         teacher_name: Optional[str] = None,
-        homeroom: Optional[str] = None
+        homeroom: Optional[str] = None,
+        plan_id: Optional[str] = None,
+        available_days: Optional[list[str]] = None,
+        progress_callback: Optional[Callable[[str, int, str], None]] = None,
     ) -> Tuple[bool, Optional[Dict[str, Any]], Optional[str]]:
         """
         Mock transformation - returns valid test data
@@ -58,6 +61,8 @@ class MockLLMService:
             week_of: Week date range
             teacher_name: Teacher name (optional)
             homeroom: Homeroom (optional)
+            plan_id: Plan ID for performance tracking (optional)
+            available_days: List of days that have content (optional)
         
         Returns:
             Tuple of (success, lesson_json, error_message)

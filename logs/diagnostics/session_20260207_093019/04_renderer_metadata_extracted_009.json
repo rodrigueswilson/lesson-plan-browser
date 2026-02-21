@@ -1,0 +1,14 @@
+{
+  "timestamp": "2026-02-07T09:32:41.638057",
+  "stage": "04_renderer_metadata_extracted",
+  "data": {
+    "slot_number": 4,
+    "slot_number_type": "int",
+    "slot_number_is_none": false,
+    "subject": "Science",
+    "subject_is_none": false,
+    "hyperlink_count": 0,
+    "teacher": "Catarina Morais",
+    "filtering_will_activate": true
+  }
+}

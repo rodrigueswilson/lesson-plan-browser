@@ -72,9 +72,6 @@ const resolveNetworkApiBaseUrl = (): string => {
   if (networkBaseOverride) {
     return networkBaseOverride;
   }
-  if (cachedNetworkBaseUrl) {
-    return cachedNetworkBaseUrl;
-  }
 
   const envAndroidUrl = stringOrNull(importMetaEnv.VITE_ANDROID_API_BASE_URL);
   const envDefaultUrl = stringOrNull(importMetaEnv.VITE_API_BASE_URL);
@@ -87,12 +84,31 @@ const resolveNetworkApiBaseUrl = (): string => {
     return cachedNetworkBaseUrl;
   }
 
+  // Check if we're in a Tauri environment
+  const isTauri = typeof window !== 'undefined' && ('__TAURI_INTERNALS__' in window || '__TAURI__' in window);
+
+  // For Tauri environments, we can use cached value if available (stable environment)
+  if (isTauri && cachedNetworkBaseUrl) {
+    return cachedNetworkBaseUrl;
+  }
+
+  // For web browsers, always recalculate (don't use cache)
+  // Check if we're in a Tauri Android environment
   const userAgent = typeof navigator !== 'undefined' ? navigator.userAgent || '' : '';
+  const isAndroidTauri = isTauri && (userAgent.includes('Android') || /Android/i.test(userAgent));
+
   const defaultAndroidUrl = 'http://10.0.2.2:8000/api';
   const defaultDesktopUrl = 'http://localhost:8000/api';
 
-  cachedNetworkBaseUrl = userAgent.includes('Android') ? defaultAndroidUrl : defaultDesktopUrl;
-  return cachedNetworkBaseUrl;
+  // Only use Android URL if we're actually in Android Tauri, otherwise use localhost
+  const resolvedUrl = isAndroidTauri ? defaultAndroidUrl : defaultDesktopUrl;
+
+  // Cache for Tauri environments (stable), but not for web browsers (recalculate each time)
+  if (isTauri) {
+    cachedNetworkBaseUrl = resolvedUrl;
+  }
+
+  return resolvedUrl;
 };
 
 const isStandaloneMode = (): boolean => {
@@ -180,90 +196,9 @@ async function getLessonPlanDirectory(userId: string): Promise<string> {
   return dir;
 }
 
-async function listStoredLessonPlanFiles(userId: string): Promise<string[]> {
-  if (!isStandaloneMode()) {
-    return [];
-  }
-  try {
-    const tauriApi = await import('@tauri-apps/api/core');
-    const basePath = await getLessonPlanDirectory(userId);
-    const files = await tauriApi.invoke<string[]>('list_json_files', { basePath });
-    return files;
-  } catch (error) {
-    console.warn('[API] listStoredLessonPlanFiles failed:', error);
-    return [];
-  }
-}
-
-async function getLessonPlanFilePath(userId: string, fileName: string): Promise<string> {
-  const basePath = await getLessonPlanDirectory(userId);
-  const { join } = await getPathModule();
-  return join(basePath, fileName);
-}
-
-async function readLessonPlanFile(userId: string, fileName: string): Promise<any | null> {
-  if (!isStandaloneMode()) {
-    return null;
-  }
-  try {
-    const tauriApi = await import('@tauri-apps/api/core');
-    const path = await getLessonPlanFilePath(userId, fileName);
-    const content = await tauriApi.invoke<string>('read_json_file', { path });
-    if (!content) {
-      return null;
-    }
-    try {
-      return JSON.parse(content);
-    } catch {
-      return content;
-    }
-  } catch (error) {
-    console.warn('[API] Failed to read local lesson plan file:', error);
-    return null;
-  }
-}
-
-async function writeLessonPlanFile(userId: string, fileName: string, data: unknown): Promise<void> {
-  if (!isStandaloneMode()) {
-    return;
-  }
-  try {
-    const tauriApi = await import('@tauri-apps/api/core');
-    const path = await getLessonPlanFilePath(userId, fileName);
-    const serialized =
-      typeof data === 'string'
-        ? data
-        : (() => {
-            try {
-              return JSON.stringify(data ?? null, null, 2);
-            } catch {
-              return '';
-            }
-          })();
-    await tauriApi.invoke('write_json_file', { path, content: serialized });
-  } catch (error) {
-    console.warn('[API] Failed to write local lesson plan file:', error);
-  }
-}
-
-function buildLessonPlanFileName(weekOf: string | undefined, planId: string): string {
-  const weekToken = encodeFilenameToken(weekOf && weekOf.trim().length > 0 ? weekOf : 'week');
-  const planToken = encodeFilenameToken(planId);
-  return `${weekToken}__${planToken}.json`;
-}
-
-function parseLessonPlanFileName(
-  fileName: string
-): { week_of: string; plan_id: string } | null {
-  const match = /^(.+?)__([^/\\]+)\.json$/i.exec(fileName);
-  if (!match) {
-    return null;
-  }
-  return {
-    week_of: decodeFilenameToken(match[1]),
-    plan_id: decodeFilenameToken(match[2]),
-  };
-}
+// JSON file operations removed - using database lesson_json column as single source of truth
+// Functions removed: listStoredLessonPlanFiles, readLessonPlanFile, writeLessonPlanFile,
+// buildLessonPlanFileName, parseLessonPlanFileName
 
 const stringifyJsonValue = (value: any): string | null => {
   if (value === undefined) {
@@ -412,7 +347,7 @@ function rowToSlot(row: Record<string, any>): ClassSlot {
     subject: row.subject || '',
     grade: row.grade || '',
     homeroom: row.homeroom ?? null,
-    plan_slot_group_id: row.plan_group_label ?? null,
+    plan_group_label: row.plan_group_label ?? null,
     proficiency_levels: row.proficiency_levels ?? undefined,
     primary_teacher_name: row.primary_teacher_name ?? undefined,
     primary_teacher_first_name: row.primary_teacher_first_name ?? undefined,
@@ -463,15 +398,43 @@ const WEEK_DISPLAY_FORMATTER = new Intl.DateTimeFormat('en-US', {
 
 function formatWeekDisplayLabel(weekOf: string): string {
   if (!weekOf) {
-    return 'Week';
+    return 'Unknown Week';
   }
 
-  const parsed = new Date(`${weekOf}T00:00:00Z`);
+  // Remove any existing "Week of" prefix to process just the date part
+  const cleanWeekOf = weekOf.replace(/^week of\s+/i, '').trim();
+
+  // Try to match "MM-DD-MM-DD" or "MM/DD-MM/DD" patterns
+  // Matches: 01-05-01-09, 09/15-09/19, 12-01-12-05, etc.
+  const rangeMatch = cleanWeekOf.match(/^(\d{1,2})[-/](\d{1,2})[-/](\d{1,2})[-/](\d{1,2})$/);
+
+  if (rangeMatch) {
+    const [_, m1, d1, m2, d2] = rangeMatch;
+    // Format as "MM/DD - MM/DD"
+    return `${m1}/${d1} - ${m2}/${d2}`;
+  }
+
+  // Try single date format (YYYY-MM-DD)
+  const dateMatch = cleanWeekOf.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (dateMatch) {
+    const [_, y, m, d] = dateMatch;
+    return `${m}/${d}/${y}`;
+  }
+
+  // Fallback: If it is a valid date string that Date() can parse
+  const parsed = new Date(`${cleanWeekOf}T00:00:00Z`);
   if (!Number.isNaN(parsed.getTime())) {
-    return `Week of ${WEEK_DISPLAY_FORMATTER.format(parsed)}`;
+    // If it was a single iso date, format it simply
+    const weekFormatter = new Intl.DateTimeFormat('en-US', {
+      month: '2-digit',
+      day: '2-digit',
+      year: 'numeric'
+    });
+    return weekFormatter.format(parsed);
   }
 
-  return /^week of/i.test(weekOf) ? weekOf : `Week of ${weekOf}`;
+  // If no specific pattern matched, return the cleaned string
+  return cleanWeekOf;
 }
 
 export interface User {
@@ -491,44 +454,10 @@ export interface RecentWeek {
   week_of: string;
   display: string;
   folder_name: string;
+  latest_created_at?: string;
 }
 
-async function getRecentWeeksFromLocalFiles(userId: string, limit: number): Promise<RecentWeek[]> {
-  if (!isStandaloneMode()) {
-    return [];
-  }
-  try {
-    const files = await listStoredLessonPlanFiles(userId);
-    if (files.length === 0) {
-      return [];
-    }
-    const seen = new Set<string>();
-    const weeks: RecentWeek[] = [];
-    for (const fileName of files) {
-      const parsed = parseLessonPlanFileName(fileName);
-      if (!parsed) {
-        continue;
-      }
-      const key = parsed.week_of?.toLowerCase() || fileName.toLowerCase();
-      if (seen.has(key)) {
-        continue;
-      }
-      seen.add(key);
-      weeks.push({
-        week_of: parsed.week_of,
-        display: formatWeekDisplayLabel(parsed.week_of),
-        folder_name: parsed.week_of,
-      });
-      if (weeks.length >= limit) {
-        break;
-      }
-    }
-    return weeks;
-  } catch (error) {
-    console.warn('[API] Failed to read local week list:', error);
-    return [];
-  }
-}
+// getRecentWeeksFromLocalFiles removed - using database lesson_json column as single source of truth
 
 export interface ClassSlot {
   id: string;
@@ -556,6 +485,7 @@ export interface WeeklyPlan {
   output_file?: string;
   status: 'pending' | 'processing' | 'completed' | 'failed';
   error_message?: string;
+  total_slots?: number;
 }
 
 export interface ScheduleEntry {
@@ -705,6 +635,7 @@ export interface AnalyticsSummary {
   total_requests?: number;
   total_duration_ms?: number;
   avg_duration_ms?: number;
+  avg_duration_per_plan_ms?: number;
   total_tokens: number;
   total_tokens_input?: number;
   total_tokens_output?: number;
@@ -741,6 +672,32 @@ export interface SessionAnalytics {
   models_used?: string[];
 }
 
+export interface AnalyticsErrorStats {
+  total: number;
+  success: number;
+  failure: number;
+  success_rate: number;
+  error_breakdown: Record<string, number>;
+}
+
+export interface ParallelProcessingStats {
+  total_operations: number;
+  parallel_operations: number;
+  sequential_operations: number;
+  parallel_percentage: number;
+  avg_duration_ms: number;
+  avg_parallel_duration_ms: number;
+  avg_sequential_duration_ms: number;
+  avg_parallel_slot_count: number;
+  avg_sequential_time_ms: number;
+  time_savings_ms: number;
+  time_savings_percent: number;
+  total_rate_limit_errors: number;
+  avg_concurrency_level: number;
+  avg_tpm_usage: number;
+  avg_rpm_usage: number;
+}
+
 export const analyticsApi = {
   getSummary: (days: number, userId?: string) => {
     const params = new URLSearchParams({ days: String(days) });
@@ -758,6 +715,24 @@ export const analyticsApi = {
     const params = new URLSearchParams({ days: String(days) });
     if (userId) params.append('user_id', userId);
     return request<SessionAnalytics[]>('GET', `${API_BASE_URL}/analytics/sessions?${params.toString()}`);
+  },
+
+  getOperations: (days: number, userId?: string) => {
+    const params = new URLSearchParams({ days: String(days) });
+    if (userId) params.append('user_id', userId);
+    return request<AnalyticsOperationBreakdown[]>('GET', `${API_BASE_URL}/analytics/operations?${params.toString()}`);
+  },
+
+  getErrors: (days: number, userId?: string) => {
+    const params = new URLSearchParams({ days: String(days) });
+    if (userId) params.append('user_id', userId);
+    return request<AnalyticsErrorStats>('GET', `${API_BASE_URL}/analytics/errors?${params.toString()}`);
+  },
+
+  getParallel: (days: number, userId?: string) => {
+    const params = new URLSearchParams({ days: String(days) });
+    if (userId) params.append('user_id', userId);
+    return request<ParallelProcessingStats>('GET', `${API_BASE_URL}/analytics/parallel?${params.toString()}`);
   },
 
   exportCsv: async (days: number, userId?: string) => {
@@ -813,7 +788,23 @@ export const userApi = {
     } else {
       console.log('[API] Using HTTP API (desktop/web mode)');
     }
-    return request<User[]>('GET', `${API_BASE_URL}/users`);
+
+    try {
+      const response = await request<User[]>('GET', `${API_BASE_URL}/users`);
+      console.log('[API] userApi.list() HTTP success:', {
+        userCount: response.data?.length || 0,
+        apiBaseUrl: API_BASE_URL
+      });
+      return response;
+    } catch (error: any) {
+      console.error('[API] userApi.list() HTTP failed:', {
+        error: error.message || String(error),
+        apiBaseUrl: API_BASE_URL,
+        status: error.response?.status,
+        detail: error.response?.data?.detail
+      });
+      throw error;
+    }
   },
 
   get: async (userId: string, currentUserId?: string) => {
@@ -885,34 +876,33 @@ export const userApi = {
     if (canUseLocalDb) {
       try {
         const rows = await queryLocalDatabase<Record<string, any>>(
-          `SELECT DISTINCT week_of
+          `SELECT week_of, MAX(generated_at) as latest_created_at
            FROM weekly_plans
            WHERE user_id = ?
              AND week_of IS NOT NULL
-           ORDER BY week_of DESC
+           GROUP BY week_of
+           ORDER BY MAX(generated_at) DESC
            LIMIT ?`,
           [userId, limit]
         );
 
-        rows
-          .map((row) => (typeof row.week_of === 'string' ? row.week_of.trim() : ''))
-          .filter((weekOf): weekOf is string => Boolean(weekOf))
-          .forEach((weekOf) =>
-            pushWeek({
+        return {
+          data: rows.map((row) => {
+            const weekOf = row.week_of as string;
+            return {
               week_of: weekOf,
               display: formatWeekDisplayLabel(weekOf),
-              folder_name: weekOf,
-            })
-          );
+              folder_name: getLessonPlanDirectory(weekOf),
+              latest_created_at: row.latest_created_at as string
+            };
+          }),
+        };
       } catch (error: any) {
         console.error('[API] Local recent weeks query failed, falling back to HTTP:', error.message || error);
       }
     }
 
-    if (isStandaloneMode()) {
-      const fileWeeks = await getRecentWeeksFromLocalFiles(userId, limit);
-      fileWeeks.forEach(pushWeek);
-    }
+    // JSON file fallback removed - using database lesson_json column as single source of truth
 
     if (combinedWeeks.length > 0) {
       return { data: combinedWeeks.slice(0, limit) };
@@ -971,11 +961,19 @@ export const planApi = {
           `SELECT id, user_id, week_of, status, output_file, generated_at, error_message
            FROM weekly_plans
            WHERE user_id = ?
-           ORDER BY week_of DESC
+           ORDER BY generated_at DESC
            LIMIT ?`,
           [userId, limit]
         );
-        return { data: rows.map(rowToPlan) };
+        const plans = rows.map(rowToPlan);
+        console.log('[API] planApi.list (local):', {
+          userId,
+          limit,
+          planCount: plans.length,
+          weekOfValues: plans.map(p => p.week_of),
+          firstPlanWeekOf: plans[0]?.week_of
+        });
+        return { data: plans };
       } catch (error: any) {
         console.error('[API] Local plan query failed, falling back to HTTP:', error.message || error);
       }
@@ -986,6 +984,15 @@ export const planApi = {
       undefined,
       currentUserId || userId
     );
+
+    console.log('[API] planApi.list (HTTP):', {
+      userId,
+      limit,
+      planCount: response.data?.length || 0,
+      weekOfValues: response.data?.map(p => p.week_of) || [],
+      firstPlanWeekOf: response.data?.[0]?.week_of
+    });
+
     if (canUseLocalDb) {
       try {
         await cacheWeeklyPlanSummaries(response.data ?? []);
@@ -994,6 +1001,52 @@ export const planApi = {
       }
     }
     return response;
+  },
+  process: async (
+    userId: string,
+    weekOf: string,
+    provider: string = 'openai',
+    slotIds?: string[],
+    partial: boolean = false,
+    missingOnly: boolean = false,
+    forceSlots: number[] = [],
+    currentUserId?: string
+  ) => {
+    const body = {
+      user_id: userId,
+      week_of: weekOf,
+      provider: provider,
+      slot_ids: slotIds || undefined,
+      partial: partial,
+      missing_only: missingOnly,
+      force_slots: forceSlots,
+    };
+    return request<{
+      success: boolean;
+      plan_id: string;
+      output_file?: string;
+      processed_slots: number;
+      failed_slots: number;
+      errors?: Array<{ slot: number; subject: string; error: string }>;
+    }>(
+      'POST',
+      `${API_BASE_URL}/process-week`,
+      body,
+      currentUserId || userId
+    );
+  },
+
+  getWeekStatus: async (userId: string, weekOf: string, currentUserId?: string) => {
+    // Local DB support removed for brevity, prioritizing HTTP for this new feature
+    return request<{
+      week_of: string;
+      status: string | null;
+      plan_id: string | null;
+      done_slots: number[];
+      missing_slots: number[];
+      total_slots: number;
+      generated_at: string | null;
+    }>('GET', `${API_BASE_URL}/plans/status/${userId}/${weekOf}`, undefined, currentUserId || userId);
   },
 };
 
@@ -1006,9 +1059,29 @@ export interface SyncResult {
 }
 
 export async function triggerSync(userId: string): Promise<SyncResult> {
+  // Check if we're in a web browser (not Tauri)
+  const isWeb = typeof window !== 'undefined' &&
+    !('__TAURI_INTERNALS__' in window) &&
+    !('__TAURI__' in window);
+
+  if (isWeb) {
+    console.log('[API] Sync not available in web browser. Tauri sync is only available in the desktop/mobile app.');
+    return {
+      pulled: 0,
+      pushed: 0,
+      conflicts: [],
+    };
+  }
+
   try {
     console.log('[API] Attempting sync via Tauri command...');
     const tauriApi = await import('@tauri-apps/api/core');
+
+    // Check if invoke is available
+    if (!tauriApi || typeof tauriApi.invoke !== 'function') {
+      throw new Error('Tauri invoke method not available');
+    }
+
     console.log('[API] Tauri API imported successfully');
 
     console.log('[API] Invoking trigger_sync with userId:', userId);
@@ -1023,17 +1096,19 @@ export async function triggerSync(userId: string): Promise<SyncResult> {
       stack: error.stack,
     });
 
-    if (errorMsg.includes('Cannot find module') || errorMsg.includes('Failed to fetch')) {
-      throw new Error(
-        'Tauri API not available. Make sure you are running the app via "npm run tauri:dev" and not opening it in a regular browser. Error: ' +
-          errorMsg
-      );
+    if (errorMsg.includes('Cannot find module') || errorMsg.includes('Failed to fetch') || errorMsg.includes('Cannot read properties')) {
+      console.warn('[API] Tauri API not available - running in web browser mode');
+      return {
+        pulled: 0,
+        pushed: 0,
+        conflicts: [],
+      };
     }
 
     if (errorMsg.includes('not found') || errorMsg.includes('command')) {
       throw new Error(
         'Tauri command "trigger_sync" not found. Make sure the Rust backend is compiled and the command is registered. Error: ' +
-          errorMsg
+        errorMsg
       );
     }
 
@@ -1275,6 +1350,7 @@ async function cacheLessonPlanDetailLocally(plan: LessonPlanDetail): Promise<voi
   if (!isStandaloneMode() || !STANDALONE_DB_ENABLED) {
     return;
   }
+  // Save to database only - JSON file writing removed
   await upsertWeeklyPlanRecord({
     id: plan.id,
     user_id: plan.user_id,
@@ -1284,39 +1360,10 @@ async function cacheLessonPlanDetailLocally(plan: LessonPlanDetail): Promise<voi
     generated_at: plan.generated_at,
     lesson_json: stringifyJsonValue(plan.lesson_json),
   });
-  const fileName = buildLessonPlanFileName(plan.week_of, plan.id);
-  await writeLessonPlanFile(plan.user_id, fileName, plan.lesson_json ?? null);
+  // JSON file writing removed - using database lesson_json column as single source of truth
 }
 
-async function readLessonPlanFromStorage(
-  userId: string,
-  weekOf: string | undefined,
-  planId: string
-): Promise<any | null> {
-  if (!isStandaloneMode()) {
-    return null;
-  }
-  const fileName = buildLessonPlanFileName(weekOf, planId);
-  const cached = await readLessonPlanFile(userId, fileName);
-  if (cached) {
-    return cached;
-  }
-
-  if (planId !== 'auto') {
-    const fallbackFileName = buildLessonPlanFileName(weekOf, 'auto');
-    const fallback = await readLessonPlanFile(userId, fallbackFileName);
-    if (fallback) {
-      try {
-        await writeLessonPlanFile(userId, fileName, fallback);
-      } catch (error) {
-        console.warn('[API] Failed to persist fallback lesson JSON under plan-specific name:', error);
-      }
-      return fallback;
-    }
-  }
-
-  return null;
-}
+// readLessonPlanFromStorage removed - using database lesson_json column as single source of truth
 
 export const lessonApi = {
   getPlanDetail: async (planId: string, currentUserId?: string) => {
@@ -1340,29 +1387,44 @@ export const lessonApi = {
               // leave as-is if parsing fails
             }
           }
+          // JSON file fallback removed - using database lesson_json column as single source of truth
+          // If lesson_json is null, return empty object (or could throw error)
           if (!lessonJson) {
-            const storedLesson = await readLessonPlanFromStorage(row.user_id, row.week_of, row.id);
-            if (storedLesson) {
-              lessonJson = storedLesson;
-            }
+            console.warn(`[API] Plan ${row.id} has null lesson_json - returning empty object`);
+            lessonJson = {};
           }
-          return {
-            data: {
-              id: row.id,
-              user_id: row.user_id,
-              week_of: row.week_of,
-              lesson_json: lessonJson,
-              status: row.status || 'completed',
-              generated_at: row.generated_at || row.created_at || row.updated_at || '',
-              output_file: row.output_file ?? undefined,
-            },
+          const planDetail = {
+            id: row.id,
+            user_id: row.user_id,
+            week_of: row.week_of,
+            lesson_json: lessonJson,
+            status: row.status || 'completed',
+            generated_at: row.generated_at || row.created_at || row.updated_at || '',
+            output_file: row.output_file ?? undefined,
           };
+
+          console.log('[API] planApi.getPlanDetail (local):', {
+            planId,
+            week_of: row.week_of,
+            hasLessonJson: !!lessonJson,
+            lessonJsonType: typeof lessonJson
+          });
+
+          return { data: planDetail };
         }
       } catch (error: any) {
         console.error('[API] Local plan detail query failed, falling back to HTTP:', error.message || error);
       }
     }
     const response = await request<LessonPlanDetail>('GET', `${API_BASE_URL}/plans/${planId}`, undefined, currentUserId);
+
+    console.log('[API] planApi.getPlanDetail (HTTP):', {
+      planId,
+      week_of: response.data?.week_of,
+      hasLessonJson: !!response.data?.lesson_json,
+      lessonJsonType: typeof response.data?.lesson_json
+    });
+
     if (canUseLocalDb && response.data) {
       try {
         await cacheLessonPlanDetailLocally(response.data);
@@ -1694,6 +1756,52 @@ export const lessonModeSessionApi = {
       currentUserId
     );
   },
+};
+
+export const settingsApi = {
+  getSupabaseSync: async (): Promise<{ data: { enable_supabase_sync: boolean } }> => {
+    return request<{ enable_supabase_sync: boolean }>(
+      'GET',
+      `${API_BASE_URL}/settings/supabase-sync`
+    );
+  },
+
+  setSupabaseSync: async (enabled: boolean): Promise<{ data: { enable_supabase_sync: boolean; message: string } }> => {
+    return request<{ enable_supabase_sync: boolean; message: string }>(
+      'PUT',
+      `${API_BASE_URL}/settings/supabase-sync`,
+      { enabled }
+    );
+  },
+};
+
+// Tablet API (PC-only UI helpers)
+
+export interface TabletExportDbCounts {
+  users: number;
+  class_slots: number;
+  weekly_plans: number;
+  schedules: number;
+  lesson_steps: number;
+  lesson_mode_sessions: number;
+}
+
+export interface TabletExportDbResponse {
+  user_id: string;
+  output_path: string;
+  output_bytes: number;
+  created_at: string;
+  counts: TabletExportDbCounts;
+}
+
+export const tabletApi = {
+  exportDb: (userId: string, currentUserId?: string) =>
+    request<TabletExportDbResponse>(
+      'POST',
+      `${API_BASE_URL}/tablet/export-db`,
+      { user_id: userId },
+      currentUserId || userId
+    ),
 };
 
 export { API_BASE_URL, NETWORK_API_BASE_URL };

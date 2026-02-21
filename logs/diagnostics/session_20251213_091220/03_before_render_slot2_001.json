@@ -1,0 +1,74 @@
+{
+  "timestamp": "2025-12-13T09:32:04.672679",
+  "stage": "03_before_render_slot2",
+  "data": {
+    "slot_number": 2,
+    "subject": "Social Studies",
+    "render_type": "multi_slot",
+    "metadata_slot_number": 2,
+    "metadata_subject": "Social Studies",
+    "hyperlink_count": 11,
+    "all_hyperlinks_have_slot": true,
+    "all_hyperlinks_have_subject": true,
+    "hyperlink_slot_distribution": {
+      "2": 11
+    },
+    "sample_hyperlinks": [
+      {
+        "text": "The Mummification Project Reading",
+        "source_slot": 2,
+        "source_subject": "Social Studies"
+      },
+      {
+        "text": "The Mummy Project Assignment Sheet",
+        "source_slot": 2,
+        "source_subject": "Social Studies"
+      },
+      {
+        "text": "The Mummification Project Reading",
+        "source_slot": 2,
+        "source_subject": "Social Studies"
+      },
+      {
+        "text": "The Mummy Project Assignment Sheet",
+        "source_slot": 2,
+        "source_subject": "Social Studies"
+      },
+      {
+        "text": "The Mummification Project Reading",
+        "source_slot": 2,
+        "source_subject": "Social Studies"
+      },
+      {
+        "text": "The Mummy Project Assignment Sheet",
+        "source_slot": 2,
+        "source_subject": "Social Studies"
+      },
+      {
+        "text": "The Mummification Project Reading",
+        "source_slot": 2,
+        "source_subject": "Social Studies"
+      },
+      {
+        "text": "The Mummy Project Assignment Sheet",
+        "source_slot": 2,
+        "source_subject": "Social Studies"
+      },
+      {
+        "text": "Rubric",
+        "source_slot": 2,
+        "source_subject": "Social Studies"
+      },
+      {
+        "text": "The Mummification Project Reading",
+        "source_slot": 2,
+        "source_subject": "Social Studies"
+      },
+      {
+        "text": "The Mummy Project Assignment Sheet",
+        "source_slot": 2,
+        "source_subject": "Social Studies"
+      }
+    ]
+  }
+}

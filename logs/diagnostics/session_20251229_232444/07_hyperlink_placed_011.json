@@ -1,0 +1,11 @@
+{
+  "timestamp": "2025-12-29T23:24:45.950162",
+  "stage": "07_hyperlink_placed",
+  "data": {
+    "text": "Target Numbers ",
+    "slot": 5,
+    "subject": "Math",
+    "cell": "monday_instruction",
+    "confidence": 0.6833333333333332
+  }
+}

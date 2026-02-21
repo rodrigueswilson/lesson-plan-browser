@@ -1,0 +1,64 @@
+{
+  "timestamp": "2025-11-30T20:17:02.067333",
+  "stage": "03_before_render_slot5",
+  "data": {
+    "slot_number": 5,
+    "subject": "Math",
+    "render_type": "multi_slot",
+    "metadata_slot_number": 5,
+    "metadata_subject": "Math",
+    "hyperlink_count": 9,
+    "all_hyperlinks_have_slot": true,
+    "all_hyperlinks_have_subject": true,
+    "hyperlink_slot_distribution": {
+      "5": 9
+    },
+    "sample_hyperlinks": [
+      {
+        "text": "2.3.9 Teacher Guide",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "2.3.10 Teacher Guide",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Unit 3: Measuring Length",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "Unit 3: Measuring Length",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "2.3.9 Cool-down",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "2.3.10 Cool-down",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "2.3.11 Cool Down",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "2.3.12 Cool Down",
+        "source_slot": 5,
+        "source_subject": "Math"
+      },
+      {
+        "text": "2.3.14 Cool Down",
+        "source_slot": 5,
+        "source_subject": "Math"
+      }
+    ]
+  }
+}
