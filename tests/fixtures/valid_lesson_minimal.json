@@ -2,20 +2,40 @@
   "metadata": {
     "week_of": "10/6-10/10",
     "grade": "7",
-    "subject": "Social Studies"
+    "subject": "Social Studies",
+    "homeroom": "301",
+    "teacher_name": "Test Teacher"
   },
   "days": {
     "monday": {
       "unit_lesson": "Unit One Lesson Seven",
       "objective": {
         "content_objective": "Students will be able to explain how systems of law and banking enabled growth in trade, wealth, and peace",
-        "student_goal": "I will explain Roman systems using evidence and a graphic organizer",
+        "student_goal": "I will explain Roman systems using evidence and write on a graphic organizer (writing).",
         "wida_objective": "Students will use language to explain how Roman law, banking, and Pax Romana enabled economic growth (ELD-SS.6-8.Explain.Reading/Writing) by using cognate awareness and graphic organizers with Portuguese-English vocabulary bridges appropriate for WIDA levels 2-5, producing a written explanation that demonstrates understanding of cause-effect relationships in historical systems."
       },
       "anticipatory_set": {
         "original_content": "Students will respond to an everybody writes.",
         "bilingual_bridge": "Preview key Portuguese-English cognates on board: lei/law, banco/bank, comércio/trade, paz/peace. Quick L1 connection: 'Como as leis ajudam o comércio?' (How do laws help trade?)"
       },
+      "vocabulary_cognates": [
+        {"english": "law", "portuguese": "lei", "is_cognate": false, "relevance_note": "Core concept for understanding Roman legal systems"},
+        {"english": "system", "portuguese": "sistema", "is_cognate": true, "relevance_note": "Essential for describing how Roman institutions worked"},
+        {"english": "banking", "portuguese": "banco", "is_cognate": false, "relevance_note": "Key economic institution enabling trade growth"},
+        {"english": "economy", "portuguese": "economia", "is_cognate": true, "relevance_note": "Central to understanding economic growth concepts"},
+        {"english": "trade", "portuguese": "comércio", "is_cognate": false, "relevance_note": "Fundamental concept for lesson on economic systems"},
+        {"english": "peace", "portuguese": "paz", "is_cognate": false, "relevance_note": "Important outcome of effective legal and economic systems"}
+      ],
+      "sentence_frames": [
+        {"proficiency_level": "levels_1_2", "english": "This is ___", "portuguese": "Isto é ___", "language_function": "identify", "frame_type": "frame"},
+        {"proficiency_level": "levels_1_2", "english": "I see ___", "portuguese": "Eu vejo ___", "language_function": "describe", "frame_type": "frame"},
+        {"proficiency_level": "levels_1_2", "english": "It has ___", "portuguese": "Tem ___", "language_function": "describe", "frame_type": "frame"},
+        {"proficiency_level": "levels_3_4", "english": "First ___, then ___", "portuguese": "Primeiro ___, depois ___", "language_function": "sequence", "frame_type": "frame"},
+        {"proficiency_level": "levels_3_4", "english": "This shows ___ because ___", "portuguese": "Isso mostra ___ porque ___", "language_function": "explain", "frame_type": "frame"},
+        {"proficiency_level": "levels_3_4", "english": "I think ___ because ___", "portuguese": "Eu acho ___ porque ___", "language_function": "justify", "frame_type": "frame"},
+        {"proficiency_level": "levels_5_6", "english": "Evidence suggests that ___", "portuguese": "As evidências sugerem que ___", "language_function": "argue", "frame_type": "stem"},
+        {"proficiency_level": "levels_5_6", "english": "How does ___ relate to ___?", "portuguese": "Como ___ se relaciona com ___?", "language_function": "analyze", "frame_type": "open_question"}
+      ],
       "tailored_instruction": {
         "original_content": "Engage / Introduction: Briefly introduce the key systems that helped Rome grow: Roman law, banking, and the Pax Romana.",
         "co_teaching_model": {
@@ -27,7 +47,8 @@
               "phase_name": "Warmup",
               "minutes": 5,
               "bilingual_teacher_role": "Introduce stations and preview vocabulary in L1",
-              "primary_teacher_role": "Explain content objective and station expectations"
+              "primary_teacher_role": "Explain content objective and station expectations",
+              "details": "Whole-group intro; students at desks."
             },
             {
               "phase_name": "Practice",
@@ -40,13 +61,15 @@
               "phase_name": "Closure",
               "minutes": 10,
               "bilingual_teacher_role": "Whole-group debrief and exit ticket check",
-              "primary_teacher_role": "Whole-group debrief and exit ticket check"
+              "primary_teacher_role": "Whole-group debrief and exit ticket check",
+              "details": "Whole-group debrief; collect exit tickets."
             }
           ],
           "implementation_notes": [
             "Prepare 3 station signs, rotation chart, visual timer",
             "Station 1 materials: Cognate cards, bilingual vocabulary chart"
-          ]
+          ],
+          "warnings": []
         },
         "ell_support": [
           {
@@ -108,13 +131,31 @@
       "unit_lesson": "Unit One Lesson Eight",
       "objective": {
         "content_objective": "Students will analyze Roman engineering achievements",
-        "student_goal": "I will describe Roman buildings using evidence",
+        "student_goal": "I will describe Roman buildings using evidence and write notes (writing).",
         "wida_objective": "Students will use language to describe Roman engineering (ELD-SS.6-8.Inform.Speaking/Writing) using visual aids and sentence frames appropriate for WIDA levels 2-5."
       },
       "anticipatory_set": {
         "original_content": "Show images of Roman architecture.",
         "bilingual_bridge": "Preview cognates: aqueduto/aqueduct, coliseu/coliseum, ponte/bridge. Ask: 'Que construções romanas você conhece?'"
       },
+      "vocabulary_cognates": [
+        {"english": "law", "portuguese": "lei", "is_cognate": false, "relevance_note": "Core concept for understanding Roman legal systems"},
+        {"english": "system", "portuguese": "sistema", "is_cognate": true, "relevance_note": "Essential for describing how Roman institutions worked"},
+        {"english": "banking", "portuguese": "banco", "is_cognate": false, "relevance_note": "Key economic institution enabling trade growth"},
+        {"english": "economy", "portuguese": "economia", "is_cognate": true, "relevance_note": "Central to understanding economic growth concepts"},
+        {"english": "trade", "portuguese": "comércio", "is_cognate": false, "relevance_note": "Fundamental concept for lesson on economic systems"},
+        {"english": "peace", "portuguese": "paz", "is_cognate": false, "relevance_note": "Important outcome of effective legal and economic systems"}
+      ],
+      "sentence_frames": [
+        {"proficiency_level": "levels_1_2", "english": "This is ___", "portuguese": "Isto é ___", "language_function": "identify", "frame_type": "frame"},
+        {"proficiency_level": "levels_1_2", "english": "I see ___", "portuguese": "Eu vejo ___", "language_function": "describe", "frame_type": "frame"},
+        {"proficiency_level": "levels_1_2", "english": "It has ___", "portuguese": "Tem ___", "language_function": "describe", "frame_type": "frame"},
+        {"proficiency_level": "levels_3_4", "english": "First ___, then ___", "portuguese": "Primeiro ___, depois ___", "language_function": "sequence", "frame_type": "frame"},
+        {"proficiency_level": "levels_3_4", "english": "This shows ___ because ___", "portuguese": "Isso mostra ___ porque ___", "language_function": "explain", "frame_type": "frame"},
+        {"proficiency_level": "levels_3_4", "english": "I think ___ because ___", "portuguese": "Eu acho ___ porque ___", "language_function": "justify", "frame_type": "frame"},
+        {"proficiency_level": "levels_5_6", "english": "Evidence suggests that ___", "portuguese": "As evidências sugerem que ___", "language_function": "argue", "frame_type": "stem"},
+        {"proficiency_level": "levels_5_6", "english": "How does ___ relate to ___?", "portuguese": "Como ___ se relaciona com ___?", "language_function": "analyze", "frame_type": "open_question"}
+      ],
       "tailored_instruction": {
         "original_content": "Discuss Roman engineering innovations.",
         "co_teaching_model": {
@@ -126,25 +167,29 @@
               "phase_name": "Input",
               "minutes": 15,
               "bilingual_teacher_role": "Group A: Content delivery with L1 support and visuals",
-              "primary_teacher_role": "Group B: Content delivery with academic language focus"
+              "primary_teacher_role": "Group B: Content delivery with academic language focus",
+              "details": "Parallel groups; switch after 15 minutes."
             },
             {
               "phase_name": "Practice",
               "minutes": 25,
               "bilingual_teacher_role": "Group A: Guided practice with bilingual materials",
-              "primary_teacher_role": "Group B: Independent practice with scaffolds"
+              "primary_teacher_role": "Group B: Independent practice with scaffolds",
+              "details": "Parallel practice; bilingual teacher supports Group A."
             },
             {
               "phase_name": "Closure",
               "minutes": 5,
               "bilingual_teacher_role": "Whole-group synthesis",
-              "primary_teacher_role": "Whole-group synthesis"
+              "primary_teacher_role": "Whole-group synthesis",
+              "details": "Whole-group share-out and wrap-up."
             }
           ],
           "implementation_notes": [
             "Divide class into two balanced groups by proficiency",
             "Both groups cover same content with different scaffolding"
-          ]
+          ],
+          "warnings": []
         },
         "ell_support": [
           {
@@ -206,13 +251,31 @@
       "unit_lesson": "Unit One Lesson Nine",
       "objective": {
         "content_objective": "Students will compare Roman and modern government systems",
-        "student_goal": "I will compare governments using a Venn diagram",
+        "student_goal": "I will compare governments using a Venn diagram and speak with a partner (speaking).",
         "wida_objective": "Students will use language to compare government systems (ELD-SS.6-8.Argue.Writing) using graphic organizers and contrastive analysis appropriate for WIDA levels 3-5."
       },
       "anticipatory_set": {
         "original_content": "Brainstorm: What is government?",
         "bilingual_bridge": "Preview: governo/government, democracia/democracy, república/republic. Connect to Brazil's government structure."
       },
+      "vocabulary_cognates": [
+        {"english": "law", "portuguese": "lei", "is_cognate": false, "relevance_note": "Core concept for understanding Roman legal systems"},
+        {"english": "system", "portuguese": "sistema", "is_cognate": true, "relevance_note": "Essential for describing how Roman institutions worked"},
+        {"english": "banking", "portuguese": "banco", "is_cognate": false, "relevance_note": "Key economic institution enabling trade growth"},
+        {"english": "economy", "portuguese": "economia", "is_cognate": true, "relevance_note": "Central to understanding economic growth concepts"},
+        {"english": "trade", "portuguese": "comércio", "is_cognate": false, "relevance_note": "Fundamental concept for lesson on economic systems"},
+        {"english": "peace", "portuguese": "paz", "is_cognate": false, "relevance_note": "Important outcome of effective legal and economic systems"}
+      ],
+      "sentence_frames": [
+        {"proficiency_level": "levels_1_2", "english": "This is ___", "portuguese": "Isto é ___", "language_function": "identify", "frame_type": "frame"},
+        {"proficiency_level": "levels_1_2", "english": "I see ___", "portuguese": "Eu vejo ___", "language_function": "describe", "frame_type": "frame"},
+        {"proficiency_level": "levels_1_2", "english": "It has ___", "portuguese": "Tem ___", "language_function": "describe", "frame_type": "frame"},
+        {"proficiency_level": "levels_3_4", "english": "First ___, then ___", "portuguese": "Primeiro ___, depois ___", "language_function": "sequence", "frame_type": "frame"},
+        {"proficiency_level": "levels_3_4", "english": "This shows ___ because ___", "portuguese": "Isso mostra ___ porque ___", "language_function": "explain", "frame_type": "frame"},
+        {"proficiency_level": "levels_3_4", "english": "I think ___ because ___", "portuguese": "Eu acho ___ porque ___", "language_function": "justify", "frame_type": "frame"},
+        {"proficiency_level": "levels_5_6", "english": "Evidence suggests that ___", "portuguese": "As evidências sugerem que ___", "language_function": "argue", "frame_type": "stem"},
+        {"proficiency_level": "levels_5_6", "english": "How does ___ relate to ___?", "portuguese": "Como ___ se relaciona com ___?", "language_function": "analyze", "frame_type": "open_question"}
+      ],
       "tailored_instruction": {
         "original_content": "Compare Roman Republic to modern democracy.",
         "co_teaching_model": {
@@ -231,19 +294,22 @@
               "phase_name": "Practice",
               "minutes": 20,
               "bilingual_teacher_role": "Circulate supporting Venn diagram completion",
-              "primary_teacher_role": "Circulate supporting Venn diagram completion"
+              "primary_teacher_role": "Circulate supporting Venn diagram completion",
+              "details": "Students complete Venn in pairs; teachers circulate."
             },
             {
               "phase_name": "Closure",
               "minutes": 5,
               "bilingual_teacher_role": "Co-facilitate whole-group sharing",
-              "primary_teacher_role": "Co-facilitate whole-group sharing"
+              "primary_teacher_role": "Co-facilitate whole-group sharing",
+              "details": "Whole-group share Venn comparisons."
             }
           ],
           "implementation_notes": [
             "Plan transitions and who speaks when",
             "Bilingual teacher clarifies complex terms in L1 as needed"
-          ]
+          ],
+          "warnings": []
         },
         "ell_support": [
           {
@@ -305,13 +371,31 @@
       "unit_lesson": "Unit One Lesson Ten",
       "objective": {
         "content_objective": "Students will evaluate the legacy of Roman civilization",
-        "student_goal": "I will explain Roman influence on today using examples",
+        "student_goal": "I will explain Roman influence on today using examples and write a paragraph (writing).",
         "wida_objective": "Students will use language to explain Roman legacy (ELD-SS.6-8.Explain.Speaking/Writing) using evidence and academic vocabulary appropriate for WIDA levels 3-5."
       },
       "anticipatory_set": {
         "original_content": "Quick write: What do we still use from Rome?",
         "bilingual_bridge": "Brainstorm in pairs (Portuguese OK): 'O que usamos hoje que vem dos romanos?' Share out in English with bilingual teacher support."
       },
+      "vocabulary_cognates": [
+        {"english": "law", "portuguese": "lei", "is_cognate": false, "relevance_note": "Core concept for understanding Roman legal systems"},
+        {"english": "system", "portuguese": "sistema", "is_cognate": true, "relevance_note": "Essential for describing how Roman institutions worked"},
+        {"english": "banking", "portuguese": "banco", "is_cognate": false, "relevance_note": "Key economic institution enabling trade growth"},
+        {"english": "economy", "portuguese": "economia", "is_cognate": true, "relevance_note": "Central to understanding economic growth concepts"},
+        {"english": "trade", "portuguese": "comércio", "is_cognate": false, "relevance_note": "Fundamental concept for lesson on economic systems"},
+        {"english": "peace", "portuguese": "paz", "is_cognate": false, "relevance_note": "Important outcome of effective legal and economic systems"}
+      ],
+      "sentence_frames": [
+        {"proficiency_level": "levels_1_2", "english": "This is ___", "portuguese": "Isto é ___", "language_function": "identify", "frame_type": "frame"},
+        {"proficiency_level": "levels_1_2", "english": "I see ___", "portuguese": "Eu vejo ___", "language_function": "describe", "frame_type": "frame"},
+        {"proficiency_level": "levels_1_2", "english": "It has ___", "portuguese": "Tem ___", "language_function": "describe", "frame_type": "frame"},
+        {"proficiency_level": "levels_3_4", "english": "First ___, then ___", "portuguese": "Primeiro ___, depois ___", "language_function": "sequence", "frame_type": "frame"},
+        {"proficiency_level": "levels_3_4", "english": "This shows ___ because ___", "portuguese": "Isso mostra ___ porque ___", "language_function": "explain", "frame_type": "frame"},
+        {"proficiency_level": "levels_3_4", "english": "I think ___ because ___", "portuguese": "Eu acho ___ porque ___", "language_function": "justify", "frame_type": "frame"},
+        {"proficiency_level": "levels_5_6", "english": "Evidence suggests that ___", "portuguese": "As evidências sugerem que ___", "language_function": "argue", "frame_type": "stem"},
+        {"proficiency_level": "levels_5_6", "english": "How does ___ relate to ___?", "portuguese": "Como ___ se relaciona com ___?", "language_function": "analyze", "frame_type": "open_question"}
+      ],
       "tailored_instruction": {
         "original_content": "Discuss Roman contributions to modern society: language, law, architecture, engineering.",
         "co_teaching_model": {
@@ -323,25 +407,29 @@
               "phase_name": "Input",
               "minutes": 15,
               "bilingual_teacher_role": "Small group (Levels 3): Pre-teach key vocabulary and concepts with L1 support",
-              "primary_teacher_role": "Large group (Levels 4-5): Introduction to Roman legacy"
+              "primary_teacher_role": "Large group (Levels 4-5): Introduction to Roman legacy",
+              "details": "Split then rejoin for practice and closure."
             },
             {
               "phase_name": "Practice",
               "minutes": 25,
               "bilingual_teacher_role": "Small group rejoins; provide additional scaffolding during practice",
-              "primary_teacher_role": "Lead whole-group practice activity"
+              "primary_teacher_role": "Lead whole-group practice activity",
+              "details": "Whole-group practice; small group gets extra support."
             },
             {
               "phase_name": "Closure",
               "minutes": 5,
               "bilingual_teacher_role": "Check understanding with small group",
-              "primary_teacher_role": "Whole-group synthesis"
+              "primary_teacher_role": "Whole-group synthesis",
+              "details": "Whole-group synthesis and exit check."
             }
           ],
           "implementation_notes": [
             "Identify 5-6 students for small group ahead of time",
             "Pre-teach vocabulary: legacy/legado, influence/influência, contribution/contribuição"
-          ]
+          ],
+          "warnings": []
         },
         "ell_support": [
           {
@@ -403,13 +491,31 @@
       "unit_lesson": "Unit One Review",
       "objective": {
         "content_objective": "Students will synthesize learning about Roman civilization",
-        "student_goal": "I will review Roman systems, engineering, and government",
+        "student_goal": "I will review Roman systems, engineering, and government by reading and writing (reading, writing).",
         "wida_objective": "Students will use language to synthesize understanding of Roman civilization (ELD-SS.6-8.Inform.Speaking/Writing) using multiple modalities appropriate for WIDA levels 2-5."
       },
       "anticipatory_set": {
         "original_content": "Gallery walk of student work from the week",
         "bilingual_bridge": "Students add sticky notes in Portuguese or English: 'O que aprendi/What I learned' and 'Perguntas/Questions'"
       },
+      "vocabulary_cognates": [
+        {"english": "law", "portuguese": "lei", "is_cognate": false, "relevance_note": "Core concept for understanding Roman legal systems"},
+        {"english": "system", "portuguese": "sistema", "is_cognate": true, "relevance_note": "Essential for describing how Roman institutions worked"},
+        {"english": "banking", "portuguese": "banco", "is_cognate": false, "relevance_note": "Key economic institution enabling trade growth"},
+        {"english": "economy", "portuguese": "economia", "is_cognate": true, "relevance_note": "Central to understanding economic growth concepts"},
+        {"english": "trade", "portuguese": "comércio", "is_cognate": false, "relevance_note": "Fundamental concept for lesson on economic systems"},
+        {"english": "peace", "portuguese": "paz", "is_cognate": false, "relevance_note": "Important outcome of effective legal and economic systems"}
+      ],
+      "sentence_frames": [
+        {"proficiency_level": "levels_1_2", "english": "This is ___", "portuguese": "Isto é ___", "language_function": "identify", "frame_type": "frame"},
+        {"proficiency_level": "levels_1_2", "english": "I see ___", "portuguese": "Eu vejo ___", "language_function": "describe", "frame_type": "frame"},
+        {"proficiency_level": "levels_1_2", "english": "It has ___", "portuguese": "Tem ___", "language_function": "describe", "frame_type": "frame"},
+        {"proficiency_level": "levels_3_4", "english": "First ___, then ___", "portuguese": "Primeiro ___, depois ___", "language_function": "sequence", "frame_type": "frame"},
+        {"proficiency_level": "levels_3_4", "english": "This shows ___ because ___", "portuguese": "Isso mostra ___ porque ___", "language_function": "explain", "frame_type": "frame"},
+        {"proficiency_level": "levels_3_4", "english": "I think ___ because ___", "portuguese": "Eu acho ___ porque ___", "language_function": "justify", "frame_type": "frame"},
+        {"proficiency_level": "levels_5_6", "english": "Evidence suggests that ___", "portuguese": "As evidências sugerem que ___", "language_function": "argue", "frame_type": "stem"},
+        {"proficiency_level": "levels_5_6", "english": "How does ___ relate to ___?", "portuguese": "Como ___ se relaciona com ___?", "language_function": "analyze", "frame_type": "open_question"}
+      ],
       "tailored_instruction": {
         "original_content": "Review key concepts from Unit One through games and activities.",
         "co_teaching_model": {
@@ -421,7 +527,8 @@
               "phase_name": "Warmup",
               "minutes": 5,
               "bilingual_teacher_role": "Introduce review stations and expectations",
-              "primary_teacher_role": "Explain rotation schedule and assessment preview"
+              "primary_teacher_role": "Explain rotation schedule and assessment preview",
+              "details": "Whole-group intro; students at stations."
             },
             {
               "phase_name": "Review Stations",
@@ -434,14 +541,16 @@
               "phase_name": "Closure",
               "minutes": 10,
               "bilingual_teacher_role": "Preview next week's unit assessment in L1 and L2",
-              "primary_teacher_role": "Preview next week's unit assessment"
+              "primary_teacher_role": "Preview next week's unit assessment",
+              "details": "Preview assessment format and expectations."
             }
           ],
           "implementation_notes": [
             "Station 1: Vocabulary matching game, cognate bingo, flashcards",
             "Station 2: Practice questions similar to assessment format",
             "Station 3: Self-paced review packet with bilingual glossary"
-          ]
+          ],
+          "warnings": []
         },
         "ell_support": [
           {

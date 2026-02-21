@@ -8,33 +8,25 @@ Provides REST API endpoints for:
 - Health checks
 """
 
-import json
 import sys
+import time
+from pathlib import Path
+from typing import Any, Dict, Optional
 
 # FORCE UTF-8 ENCODING FOR STDOUT/STDERR (Windows Fix)
 if sys.platform == "win32":
     sys.stdout.reconfigure(encoding="utf-8")
     sys.stderr.reconfigure(encoding="utf-8")
 
-import asyncio
-import time
-from datetime import datetime
-from pathlib import Path
-from typing import Any, Dict, List, Optional
-
-from fastapi import BackgroundTasks, Body, Depends, FastAPI, HTTPException, Request
+from fastapi import BackgroundTasks, Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, Response
+from fastapi.responses import FileResponse
 from sse_starlette.sse import EventSourceResponse
 
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from backend.authorization import (
-    get_current_user_id,
-    verify_slot_ownership,
-    verify_user_access,
-)
+from backend.authorization import get_current_user_id, verify_user_access
 from backend.config import settings
 from backend.database import get_db
 from backend.errors import (
@@ -46,46 +38,20 @@ from backend.errors import (
     validation_error_handler,
 )
 from backend.llm_service import get_llm_service
-from backend.mock_llm_service import get_mock_llm_service
 from backend.models import (
-    BatchProcessRequest,
-    BatchProcessResponse,
-    ClassSlotCreate,
-    ClassSlotResponse,
-    ClassSlotUpdate,
-    HealthResponse,
-    LessonModeSessionCreate,
-    LessonModeSessionResponse,
-    LessonPlanDetailResponse,
-    LessonStepResponse,
     RenderRequest,
     RenderResponse,
-    ScheduleBulkCreateRequest,
-    ScheduleBulkCreateResponse,
-    ScheduleEntryCreate,
-    ScheduleEntryResponse,
-    ScheduleEntryUpdate,
     TabletExportDbCounts,
     TabletExportDbRequest,
     TabletExportDbResponse,
     TransformRequest,
     TransformResponse,
-    UserCreate,
-    UserResponse,
-    UserUpdate,
     ValidationRequest,
     ValidationResponse,
-    WeeklyPlanResponse,
-    WeekStatusResponse,
 )
 from backend.models import ValidationError as ValidationErrorModel
 from backend.progress import simulate_render_progress, stream_render_progress
-from backend.rate_limiter import (
-    rate_limit_auth,
-    rate_limit_batch,
-    rate_limit_general,
-    setup_rate_limiting,
-)
+from backend.rate_limiter import setup_rate_limiting
 from backend.routers.analytics import router as analytics_router
 from backend.routers.health import router as health_router
 from backend.routers.settings import router as settings_router
@@ -96,9 +62,6 @@ from backend.services.objectives_utils import normalize_objectives_in_lesson
 from backend.services.sorting_utils import sort_slots
 from backend.tablet_db_export import TabletDbExportError, export_user_tablet_db
 from backend.telemetry import logger
-from backend.utils.schedule_utils import prepare_schedule_entry
-from backend.week_detector import detect_weeks_from_folder, format_week_display
-from tools.batch_processor import BatchProcessor
 from tools.docx_renderer import DOCXRenderer
 from tools.json_repair import repair_json
 from tools.validate_schema import load_schema
@@ -892,11 +855,7 @@ async def transform_lesson(request: TransformRequest):
                 # Enrich with schedule times
                 enrich_lesson_json_with_times(
                     lesson_json,
-                    request.user_id
-                    if hasattr(request, "user_id")
-                    else currentUser.id
-                    if "currentUser" in locals()
-                    else "",
+                    getattr(request, "user_id", ""),
                 )
             return TransformResponse(
                 success=True,
