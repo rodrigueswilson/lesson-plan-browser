@@ -60,20 +60,52 @@ Always pull before a work session so you have the latest shared version.
   git commit -m "Short description"
   git push origin master
   ```
-- **For big changes (e.g. refactoring BatchProcessor):** create a branch, work there, then merge when ready:
+- **For big changes (e.g. refactoring BatchProcessor):** work on branch `refactor/batch-processor`, then merge when ready (see section 5).
+
+---
+
+## 4. Returning to the Stable Main Version
+
+The **stable main version** (working state before refactors) is saved in two ways:
+
+- **Branch:** `master` – the main line; keep it stable for lesson-plan work.
+- **Tag:** `main-stable` – exact commit you can always check out:
   ```powershell
-  git checkout -b refactor/batch-processor
-  # ... do work ...
-  git add .
-  git commit -m "Refactor batch processor"
+  git checkout main-stable   # detached HEAD at that commit
+  # or create a branch from it:
+  git checkout -b recovery main-stable
+  ```
+  To get back to `master`:
+  ```powershell
   git checkout master
-  git merge refactor/batch-processor
-  git push origin master
   ```
 
 ---
 
-## 4. Pushing the Main Version (One-Time Setup)
+## 5. Refactoring on a Branch (e.g. batch_processor)
+
+The branch **refactor/batch-processor** is for incremental refactor work. You are on it after setup.
+
+**Switch between branches:**
+
+- **Master to refactor branch:** `git checkout refactor/batch-processor`
+- **Refactor branch to master:** `git checkout master`
+- **See which branch you're on:** `git branch` — the current branch has an asterisk next to it.
+
+- **Work on the refactor:** stay on `refactor/batch-processor`, edit `tools/batch_processor.py` (and related files), commit often.
+- **Switch back to stable main:** use `git checkout master` for normal lesson-plan work. Tip: if you usually use the app for lesson plans, stay on `master` day to day and only switch to this branch when refactoring; then you never need to checkout master just to open the app.
+- **When refactor is done:** merge into master and push:
+  ```powershell
+  git checkout master
+  git merge refactor/batch-processor
+  git push origin master
+  ```
+- **Update the stable tag (optional):** after merging, move the tag to the new tip of master:  
+  `git tag -f -a main-stable -m "Stable after batch_processor refactor"` then `git push origin main-stable --force`.
+
+---
+
+## 6. Pushing the Main Version (One-Time Setup)
 
 Your current **main version** is the latest commit on `master`. To make sure it is the one on GitHub:
 

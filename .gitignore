@@ -57,6 +57,7 @@ output/*.json
 **/.vite/
 **/target/
 **/gen/
+**/jniLibs/
 *.apk
 *.aab
 
@@ -104,7 +105,7 @@ test_content_images.py
 test_image_row_detection.py
 debug_extraction.py
 
-# Large binaries to exclude
+# Large binaries to exclude (do not add exceptions for gen/android or jniLibs)
 backend/dist/python-sync-processor.exe
 frontend/src-tauri/binaries/python-sync-processor-linux
 frontend/src-tauri/binaries/python-sync-processor-x86_64-pc-windows-msvc.exe

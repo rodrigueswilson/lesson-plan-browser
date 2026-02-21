@@ -110,13 +110,13 @@ class TestLessonJSONConversion:
 
     def test_convert_pydantic_lesson_json_to_dict(self):
         """Test that Pydantic lesson_json is converted to dictionary."""
-        # Create a mock lesson_json Pydantic object
+        # Create a mock lesson_json Pydantic object (set _hyperlinks after init so model_dump includes it)
         mock_lesson_json = MockLessonJSON(
             days={"monday": {"unit_lesson": "Unit 1"}},
             metadata={"subject": "Math"},
-            _hyperlinks=[{"text": "Link 1", "url": "http://example.com"}],
             _images=[],
         )
+        mock_lesson_json._hyperlinks = [{"text": "Link 1", "url": "http://example.com"}]
 
         # Test conversion logic (simulating what batch_processor does)
         if not isinstance(mock_lesson_json, dict):
@@ -375,7 +375,7 @@ class TestBatchProcessorIntegration:
     """Integration tests for batch processor with mocked dependencies."""
 
     @patch('tools.batch_processor.get_db')
-    @patch('tools.batch_processor.LLMService')
+    @patch('tools.batch_processor_pkg.orchestrator.LLMService')
     async def test_process_slot_with_modelprivateattr_fix(self, mock_llm_service_class, mock_get_db):
         """Test that process_slot handles ModelPrivateAttr correctly."""
         # Mock LLM service to return a Pydantic-like object
@@ -388,8 +388,8 @@ class TestBatchProcessorIntegration:
             metadata={"subject": "Math"},
         )
 
-        # Mock transform_lesson to return the Pydantic object
-        mock_llm_instance.transform_lesson = AsyncMock(
+        # Mock transform_lesson (sync - called via asyncio.to_thread) to return the Pydantic object
+        mock_llm_instance.transform_lesson = Mock(
             return_value=(True, mock_lesson_json_obj, None)
         )
 
@@ -400,8 +400,9 @@ class TestBatchProcessorIntegration:
         mock_db.get_user_schedule = Mock(return_value=[])
         mock_db.get_user = Mock(return_value=Mock(name="Test User"))
 
-        # Create batch processor
+        # Create batch processor and set attributes used by _process_slot / persistence
         processor = BatchProcessor(mock_llm_instance)
+        processor._current_user_id = "test_user"
 
         # Mock slot as dictionary (already converted)
         slot = {
@@ -411,20 +412,28 @@ class TestBatchProcessorIntegration:
             "grade": "5th",
         }
 
-        # Mock content extraction
-        with patch.object(processor, '_extract_content', new_callable=AsyncMock) as mock_extract:
-            mock_extract.return_value = {
-                "full_text": "Sample lesson content",
-                "table_content": {},
-                "no_school_days": [],
+        # Mock file resolution and DOCX open so _process_slot reaches LLM (mocked) and dict conversion
+        with patch.object(processor, '_resolve_primary_file', return_value='/tmp/test_plan.docx'), \
+             patch.object(processor, '_open_docx_with_retry', new_callable=AsyncMock) as mock_open_docx:
+            content_return = {
+                'full_text': 'Sample lesson content',
+                'table_content': {'monday': {'Unit': 'Unit 1'}},
+                'no_school_days': [],
             }
+            mock_table = Mock(rows=[Mock(cells=[Mock(text='')])], columns=[Mock()])
+            mock_parser = Mock()
+            mock_parser.doc = Mock(tables=[mock_table, mock_table])
+            mock_parser.find_slot_by_subject = Mock(return_value=1)
+            mock_parser.extract_hyperlinks_for_slot = Mock(return_value=[])
+            mock_parser.extract_images_for_slot = Mock(return_value=[])
+            mock_parser.is_no_school_day = Mock(return_value=False)
+            mock_parser.get_content_for_slot = Mock(return_value=content_return)
+            mock_parser.extract_subject_content_for_slot = Mock(return_value=content_return)
+            mock_open_docx.return_value = mock_parser
 
-            # Mock file manager and parser
+            # Mock file manager and parser (orchestrator imports DOCXParser from package)
             with patch('tools.batch_processor.get_file_manager') as mock_file_mgr, \
-                 patch('tools.batch_processor.DOCXParser') as mock_parser_class:
-
-                mock_parser = Mock()
-                mock_parser.extract_hyperlinks_for_slot = Mock(return_value=[])
+                 patch('tools.batch_processor_pkg.orchestrator.DOCXParser') as mock_parser_class:
                 mock_parser_class.return_value = mock_parser
 
                 # This should not raise ModelPrivateAttr error

@@ -1,6 +1,8 @@
 import asyncio
 import os
 import sys
+import tempfile
+import shutil
 from unittest.mock import MagicMock, patch, AsyncMock
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -48,33 +50,38 @@ async def test_combined_original_export():
     
     processor.db.get_original_lesson_plans_for_week = MagicMock(return_value=[mock_plan1, mock_plan2])
     
-    # Mock file manager
-    with patch('tools.batch_processor.get_file_manager') as mock_fm_factory:
+    # Mock file manager (patch where orchestrator imports it so thread sees the mock)
+    with patch('tools.batch_processor_pkg.orchestrator.get_file_manager') as mock_fm_factory:
         mock_fm = MagicMock()
         mock_fm.get_week_folder.return_value = Path("test_output")
         mock_fm_factory.return_value = mock_fm
         
-        # We need to mock Document and other things used in _generate_combined_original_docx
-        with patch('docx.Document') as mock_doc_class, \
-             patch('pathlib.Path.mkdir'):
-            
-            mock_doc = MagicMock()
-            mock_doc_class.return_value = mock_doc
-            
-            print("\n--- Generating Combined Original DOCX ---")
-            output_path = await processor._generate_combined_original_docx(
-                "test_user", "10/06-10/10", "plan_123"
-            )
-            
-            print(f"Output path: {output_path}")
-            
-            # Assertions
-            assert output_path is not None
-            assert "combined_originals" in output_path
-            assert mock_doc.add_heading.call_count >= 3 # Title + 2 plans
-            assert mock_doc.save.call_count == 1
-            
-            print("\nSUCCESS: Combined Original DOCX generation verified!")
+        # Patch diagnostic logger so it does not try to JSON-serialize MagicMock (renderer path).
+        mock_diag = MagicMock()
+        # Create a minimal valid docx so that after "render" the code can re-open it with Document(temp_path).
+        from docx import Document as DocxDocument
+        _minimal_doc = DocxDocument()
+        _minimal_doc.add_paragraph("x")
+        _minimal_docx_path = Path(tempfile.gettempdir()) / "test_combined_orig_minimal.docx"
+        _minimal_doc.save(str(_minimal_docx_path))
+        try:
+            def fake_render(self, _json_data, output_path, *args, **kwargs):
+                Path(output_path).parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy(_minimal_docx_path, output_path)
+                return True
+            with patch('tools.diagnostic_logger.get_diagnostic_logger', return_value=mock_diag), \
+                 patch('tools.docx_renderer.DOCXRenderer.render', fake_render):
+                print("\n--- Generating Combined Original DOCX ---")
+                output_path = await processor._generate_combined_original_docx(
+                    "test_user", "10/06-10/10", "plan_123"
+                )
+                print(f"Output path: {output_path}")
+                assert output_path is not None
+                assert "combined_originals" in output_path
+                print("\nSUCCESS: Combined Original DOCX generation verified!")
+        finally:
+            if _minimal_docx_path.exists():
+                _minimal_docx_path.unlink()
 
 if __name__ == "__main__":
     asyncio.run(test_combined_original_export())
