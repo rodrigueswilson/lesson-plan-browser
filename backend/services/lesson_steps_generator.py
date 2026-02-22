@@ -115,7 +115,6 @@ def generate_lesson_steps(
     )
 
     if generated_steps:
-        print(f"[DEBUG] Returning {len(generated_steps)} in-memory steps")
         logger.info(
             "lesson_steps_generated_in_memory",
             extra={
