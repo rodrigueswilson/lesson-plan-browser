@@ -17,6 +17,7 @@ from tools.batch_processor_pkg import (
     week_flow_existing,
     week_flow_load,
     week_flow_parallel,
+    week_flow_sequential,
 )
 from tools.json_merger import merge_lesson_jsons
 
@@ -144,218 +145,17 @@ async def run_process_user_week(
             user_id,
         )
     else:
-        # Sequential processing (fallback or single slot)
-        print(
-            "DEBUG: Using sequential processing (parallel disabled or single slot)"
+        lessons, errors = await week_flow_sequential.run_sequential_path(
+            processor,
+            slots,
+            week_of,
+            provider,
+            week_folder_path,
+            plan_id,
+            existing_lesson_json,
+            force_slots,
+            processing_weight,
         )
-
-        for i, slot in enumerate(slots, 1):
-            # Ensure slot is a dictionary with safe access
-            slot_num = (
-                slot.get("slot_number")
-                if isinstance(slot, dict)
-                else getattr(slot, "slot_number", i)
-            )
-            slot_subject = (
-                slot.get("subject")
-                if isinstance(slot, dict)
-                else getattr(slot, "subject", "Unknown")
-            )
-
-            print(
-                f"\nDEBUG: === Starting slot {i}/{len(slots)} (slot_number={slot_num}): {slot_subject} ==="
-            )
-            try:
-                # CRITICAL: Sanitize slot immediately before ANY access
-                # This handles Pydantic/SQLModel PrivateAttr issues at the source
-                try:
-                    slot = processor._sanitize_slot(slot)
-                except Exception as sanitize_err:
-                    print(f"ERROR: _sanitize_slot failed: {sanitize_err}")
-                    # Fallback to dict conversion
-                    if hasattr(slot, "model_dump"):
-                        slot = slot.model_dump()
-                    elif hasattr(slot, "dict"):
-                        slot = slot.dict()
-                    else:
-                        slot = dict(slot)
-
-                # Ensure slot is fully a dictionary for safe access
-                if not isinstance(slot, dict):
-                    if hasattr(slot, "model_dump"):
-                        slot = slot.model_dump()
-                    elif hasattr(slot, "dict"):
-                        slot = slot.dict()
-                    else:
-                        # Convert to dict manually
-                        slot = {
-                            "id": getattr(slot, "id", None),
-                            "slot_number": getattr(slot, "slot_number", i),
-                            "subject": getattr(slot, "subject", "Unknown"),
-                            "grade": getattr(slot, "grade", None),
-                            "homeroom": getattr(slot, "homeroom", None),
-                            "primary_teacher_name": getattr(
-                                slot, "primary_teacher_name", None
-                            ),
-                            "primary_teacher_first_name": getattr(
-                                slot, "primary_teacher_first_name", None
-                            ),
-                            "primary_teacher_last_name": getattr(
-                                slot, "primary_teacher_last_name", None
-                            ),
-                            "primary_teacher_file": getattr(
-                                slot, "primary_teacher_file", None
-                            ),
-                            "primary_teacher_file_pattern": getattr(
-                                slot, "primary_teacher_file_pattern", None
-                            ),
-                        }
-
-                # RE-SANITIZE just in case conversion re-introduced issues
-                slot = processor._sanitize_slot(slot)
-
-                # Update slot in list to use dictionary version
-                slots[i - 1] = slot
-
-                # Update progress: processing slot
-                progress_pct = int((i - 1) / len(slots) * processing_weight * 100)
-                print(
-                    f"DEBUG: Updating progress tracker for slot {i} (slot_number={slot.get('slot_number')})"
-                )
-                progress_tracker.update(
-                    plan_id,
-                    "processing",
-                    progress_pct,
-                    f"Processing slot {i}/{len(slots)}: {slot.get('subject', 'Unknown')} ({slot.get('primary_teacher_name', 'No teacher')})",
-                )
-                print(f"DEBUG: Progress tracker updated for slot {i}")
-
-                logger.info(
-                    "batch_slot_processing",
-                    extra={
-                        "plan_id": plan_id,
-                        "slot_index": i,
-                        "total_slots": len(slots),
-                        "subject": slot.get("subject", "Unknown"),
-                        "teacher": slot.get("primary_teacher_name"),
-                    },
-                )
-                print(
-                    f"DEBUG: About to call _process_slot for slot {i} (slot_number={slot.get('slot_number')}, subject={slot.get('subject')})"
-                )
-                lesson_json = await processor._process_slot(
-                    slot,
-                    week_of,
-                    provider,
-                    week_folder_path,
-                    processor._user_base_path,
-                    plan_id,
-                    i,
-                    len(slots),
-                    processing_weight,
-                    existing_lesson_json=existing_lesson_json,
-                    force_ai=slot.get("slot_number") in (force_slots or []),
-                )
-                print(f"[DEBUG] _process_slot (SEQUENTIAL) completed for slot {i}")
-                # LOGGING: Verify hyperlinks are present before collecting
-                hyperlinks_in_json = lesson_json.get("_hyperlinks", [])
-                print(
-                    f"[DEBUG] Collecting sequential result: Slot {slot.get('slot_number')}, "
-                    f"Subject {slot.get('subject')}, "
-                    f"Hyperlinks in lesson_json: {len(hyperlinks_in_json)}"
-                )
-                logger.info(
-                    "sequential_result_collection",
-                    extra={
-                        "slot": slot.get("slot_number"),
-                        "subject": slot.get("subject"),
-                        "hyperlinks_count": len(hyperlinks_in_json),
-                        "has_hyperlinks_key": "_hyperlinks" in lesson_json,
-                    },
-                )
-                # Include original slot data for primary teacher fields
-                # slot is already a dict with primary teacher fields from database
-                slot_data = slot.copy() if isinstance(slot, dict) else {
-                    "slot_number": getattr(slot, "slot_number", i),
-                    "subject": getattr(slot, "subject", "Unknown"),
-                    "primary_teacher_name": getattr(slot, "primary_teacher_name", None),
-                    "primary_teacher_first_name": getattr(slot, "primary_teacher_first_name", None),
-                    "primary_teacher_last_name": getattr(slot, "primary_teacher_last_name", None),
-                }
-                # Debug: Verify primary teacher fields are present
-                if isinstance(slot_data, dict):
-                    print(f"[DEBUG] BATCH_PROCESSOR: Slot {slot_data.get('slot_number')} slot_data has primary_teacher_name: {slot_data.get('primary_teacher_name')}")
-                lessons.append(
-                    {
-                        "slot_number": slot_data.get("slot_number") if isinstance(slot_data, dict) else getattr(slot, "slot_number", i),
-                        "subject": slot_data.get("subject") if isinstance(slot_data, dict) else getattr(slot, "subject", "Unknown"),
-                        "lesson_json": lesson_json,
-                        "slot_data": slot_data,  # Include original slot data for teacher fields
-                    }
-                )
-                print(f"[DEBUG] Lesson appended for slot {i}")
-                logger.info(
-                    "batch_slot_completed",
-                    extra={
-                        "plan_id": plan_id,
-                        "slot_index": i,
-                        "total_slots": len(slots),
-                        "subject": slot.get("subject", "Unknown"),
-                    },
-                )
-                print(f"DEBUG: === Completed slot {i}/{len(slots)} ===")
-
-                # Update progress: slot completed
-                progress_pct = int(i / len(slots) * processing_weight * 100)
-                progress_tracker.update(
-                    plan_id,
-                    "processing",
-                    progress_pct,
-                    f"Completed slot {i}/{len(slots)}: {slot.get('subject', 'Unknown')}",
-                )
-            except Exception as e:
-                print(
-                    f"ERROR: Exception in process_weekly_plan loop for slot {i}: {e}"
-                )
-                traceback.print_exc()
-                # Use safe access for error message
-                slot_num = (
-                    slot.get("slot_number")
-                    if isinstance(slot, dict)
-                    else getattr(slot, "slot_number", i)
-                )
-                slot_subject = (
-                    slot.get("subject")
-                    if isinstance(slot, dict)
-                    else getattr(slot, "subject", "Unknown")
-                )
-                # Safely format error message, handling encoding errors
-                try:
-                    error_str = str(e)
-                except UnicodeEncodeError:
-                    error_str = repr(e).encode("ascii", "replace").decode("ascii")
-                error_msg = f"Slot {slot_num} ({slot_subject}): {error_str}"
-                errors.append(error_msg)
-                logger.error(
-                    "batch_slot_error",
-                    extra={
-                        "plan_id": plan_id,
-                        "slot_index": i,
-                        "total_slots": len(slots),
-                        "subject": slot.get("subject", "Unknown"),
-                        "error": error_msg,
-                    },
-                )
-
-                # Update progress: slot failed
-                progress_tracker.update(
-                    plan_id,
-                    "error",
-                    int(i / len(slots) * processing_weight * 100),
-                    f"Failed slot {i}/{len(slots)}: {error_msg}",
-                )
-
-    # Sequential extraction/transformation loop ends here
 
     # AUTO-GENERATE ORIGINALS AUDIT DOCX (Sequential/Fallback Path)
     # ONLY if not already generated in parallel path
