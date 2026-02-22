@@ -5,12 +5,16 @@ This module provides an alternative to DOCX generation for objectives,
 offering pixel-perfect control over text positioning and page layout.
 """
 
-from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 from backend.config import settings
 from backend.file_manager import get_file_manager
+from backend.services.objectives_pdf_resolve import (
+    resolve_html_path as resolve_html_path_fn,
+    resolve_output_directory as resolve_output_directory_fn,
+    resolve_pdf_and_html_paths as resolve_pdf_and_html_paths_fn,
+)
 from backend.services.objectives_utils import normalize_objective_payload
 from backend.services.sorting_utils import sort_slots
 from backend.telemetry import logger
@@ -168,38 +172,9 @@ class ObjectivesPDFGenerator:
         self._default_output_dir = Path(self.file_manager.base_path)
 
     def _resolve_output_directory(self, lesson_json: Dict[str, Any]) -> Path:
-        metadata = lesson_json.get("metadata", {})
-        week_of = metadata.get("week_of")
-        if week_of:
-            try:
-                week_folder = Path(self.file_manager.get_week_folder(week_of))
-                week_folder.mkdir(parents=True, exist_ok=True)
-                return week_folder
-            except Exception as exc:
-                logger.warning(
-                    "objectives_week_folder_resolution_failed",
-                    extra={"week_of": week_of, "error": str(exc)},
-                )
-
-        self._default_output_dir.mkdir(parents=True, exist_ok=True)
-        return self._default_output_dir
-
-    def _sanitize_for_filename(self, value: str, fallback: str) -> str:
-        import re
-
-        clean = re.sub(r"[^A-Za-z0-9]+", "_", (value or "")).strip("_")
-        return clean or fallback
-
-    def _build_default_basename(
-        self, lesson_json: Dict[str, Any], user_name: Optional[str]
-    ) -> str:
-        metadata = lesson_json.get("metadata", {})
-        teacher = get_teacher_name(metadata, user_name=user_name) or "Teacher"
-        week_label = metadata.get("week_of") or datetime.now().strftime("%m-%d")
-        teacher_slug = self._sanitize_for_filename(teacher, "Teacher")
-        week_slug = self._sanitize_for_filename(week_label.replace("/", "-"), "Week")
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        return f"{teacher_slug}_Objectives_{week_slug}_{timestamp}"
+        return resolve_output_directory_fn(
+            self.file_manager, lesson_json, self._default_output_dir
+        )
 
     def _resolve_html_path(
         self,
@@ -207,16 +182,13 @@ class ObjectivesPDFGenerator:
         user_name: Optional[str],
         output_path: Optional[str],
     ) -> Path:
-        if output_path:
-            target = Path(output_path)
-            target.parent.mkdir(parents=True, exist_ok=True)
-            return target
-
-        directory = self._resolve_output_directory(lesson_json)
-        base_name = self._build_default_basename(lesson_json, user_name)
-        target = directory / f"{base_name}.html"
-        target.parent.mkdir(parents=True, exist_ok=True)
-        return target
+        return resolve_html_path_fn(
+            self.file_manager,
+            self._default_output_dir,
+            lesson_json,
+            user_name,
+            output_path,
+        )
 
     def _resolve_pdf_and_html_paths(
         self,
@@ -224,19 +196,13 @@ class ObjectivesPDFGenerator:
         user_name: Optional[str],
         pdf_path: Optional[str],
     ) -> Tuple[Path, Path]:
-        if pdf_path:
-            pdf_file = Path(pdf_path)
-            html_file = pdf_file.with_suffix(".html")
-            pdf_file.parent.mkdir(parents=True, exist_ok=True)
-            html_file.parent.mkdir(parents=True, exist_ok=True)
-            return html_file, pdf_file
-
-        directory = self._resolve_output_directory(lesson_json)
-        base_name = self._build_default_basename(lesson_json, user_name)
-        html_file = directory / f"{base_name}.html"
-        pdf_file = directory / f"{base_name}.pdf"
-        html_file.parent.mkdir(parents=True, exist_ok=True)
-        return html_file, pdf_file
+        return resolve_pdf_and_html_paths_fn(
+            self.file_manager,
+            self._default_output_dir,
+            lesson_json,
+            user_name,
+            pdf_path,
+        )
 
     def _get_css_template(self) -> str:
         """Return CSS for precise layout control."""
