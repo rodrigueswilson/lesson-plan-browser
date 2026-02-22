@@ -31,6 +31,7 @@ from backend.utils.metadata_utils import get_teacher_name
 from tools.table_structure import TableStructureDetector
 
 from . import get_indices as _get_indices_module
+from . import inject_inline as _inject_inline_module
 from . import style as _style_module
 from . import hyperlink_placement as _hyperlink_module
 from . import table_cell
@@ -539,38 +540,11 @@ class DOCXRenderer:
 
     def _inject_hyperlink_inline(self, cell, hyperlink: Dict, row_idx: int = None):
         """Inject hyperlink into cell on its own line."""
-        _hyperlink_module.inject_hyperlink_inline(self, cell, hyperlink, row_idx=row_idx)
+        _inject_inline_module.inject_hyperlink_inline(self, cell, hyperlink, row_idx=row_idx)
 
     def _inject_image_inline(self, cell, image: Dict, max_width: float):
-        """Inject image into cell with width constraints.
-
-        Args:
-            cell: Cell object
-            image: Image dictionary with base64 data
-            max_width: Maximum width in inches
-        """
-        try:
-            image_data = base64.b64decode(image["data"])
-            image_stream = BytesIO(image_data)
-
-            # Add to new paragraph
-            para = cell.add_paragraph()
-            run = para.add_run()
-            run.add_picture(
-                image_stream, width=Inches(max_width * 0.9)
-            )  # 90% of column width
-
-            # Optional: tiny caption
-            caption = cell.add_paragraph()
-            caption_run = caption.add_run(f"[{image.get('filename', 'image')}]")
-            caption_run.font.size = Pt(7)
-            caption_run.italic = True
-
-        except Exception as e:
-            logger.warning(
-                "inline_image_failed",
-                extra={"filename": image.get("filename"), "error": str(e)},
-            )
+        """Inject image into cell with width constraints."""
+        _inject_inline_module.inject_image_inline(self, cell, image, max_width)
 
     def _append_unmatched_media(
         self, doc: Document, hyperlinks: List[Dict], images: List[Dict]
