@@ -178,11 +178,11 @@ class TestValidateSlotStructure:
         assert table_end == 9
     
     def test_validate_slot_structure_missing_signature(self, tmp_path):
-        """Test validation fails without signature table."""
+        """Test validation succeeds without signature table (logs warning, proceeds with even table count)."""
         doc_path = tmp_path / "test_no_sig.docx"
         doc = Document()
         
-        # Add 4 slots but NO signature table
+        # Add 4 slots but NO signature table (8 tables total)
         for slot_num in range(1, 5):
             meta_table = doc.add_table(rows=3, cols=2)
             meta_table.rows[0].cells[0].text = f"Name: Teacher {slot_num}"
@@ -192,11 +192,11 @@ class TestValidateSlotStructure:
         
         doc.save(str(doc_path))
         
-        # Test validation
+        # Validation proceeds without signature table (original behavior: log warning, available_slots = table_count // 2)
         test_doc = Document(str(doc_path))
-        
-        with pytest.raises(ValueError, match="Missing signature table"):
-            validate_slot_structure(test_doc, 1)
+        table_start, table_end = validate_slot_structure(test_doc, 1)
+        assert table_start == 0
+        assert table_end == 1
     
     def test_validate_slot_structure_invalid_table_count(self, tmp_path):
         """Test validation fails for unexpected table count."""
