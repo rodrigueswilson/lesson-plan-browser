@@ -56,7 +56,9 @@ Implementation lives in `tools/batch_processor_pkg/` so that `tools/batch_proces
 - `tools/batch_processor_pkg/combine.py` — combine/merge lessons and DOCX
 - `tools/batch_processor_pkg/signatures.py` — signature/DOCX output
 - `tools/batch_processor_pkg/combined_original.py` — combined original DOCX
-- `tools/batch_processor_pkg/orchestrator.py` — BatchProcessor class and process_batch (full implementation; can be split into transform/combine/etc. in future increments)
+- `tools/batch_processor_pkg/orchestrator.py` — BatchProcessor class and process_batch (thin coordinator; delegates to week_flow and slot_flow)
+- `tools/batch_processor_pkg/week_flow.py` — week-level flow: load user/slots, enrich, parallel or sequential process, combine (Session 13)
+- `tools/batch_processor_pkg/slot_flow.py` — single-slot flow: resolve file, extract, transform, persist (Session 13)
 - `tools/batch_processor.py` — facade (imports from batch_processor_pkg, re-exports; also re-exports get_db, get_file_manager, get_tracker for test patching)
 
 ## Performance

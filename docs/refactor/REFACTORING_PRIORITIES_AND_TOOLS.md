@@ -6,7 +6,7 @@ This document lists **refactoring and fix priorities** for the codebase and give
 
 ## 0. Multi-session plan and progress (update this as you go)
 
-**Last updated:** 2026-02-22 (Session 12 root declutter on branch)
+**Last updated:** 2026-02-22 (Session 13 orchestrator split on branch)
 
 ### 0.1 Progress summary
 
@@ -14,8 +14,8 @@ This document lists **refactoring and fix priorities** for the codebase and give
 | Status          | Items                                                                                                                                                                                                                                                                     |
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Done**        | Batch processor package; Database alias and optional db_path (see 1.4). Session 1 (branch `fix/test-suite-collection`): test suite collection and fixes. Session 2 (branch `refactor/split-api`): split backend/api.py into routers (health, settings, users, plans, process-week, analytics); app mounts routers; duplicate analytics removed; API/smoke tests pass. Follow-up: core router (validate, render, progress, transform, repair, tablet export), FastAPI lifespan, enrich_lesson_json_with_times in backend.utils.lesson_times, plan download in plans router; call sites updated (combine.py, scripts). Session 3 (refactor llm_service): prompt_builder, validation, providers, schema, parse_llm_response, post_process, domain_analysis extracted to backend/llm/; llm_service.py 789 lines; merged to master. See **0.5** for line counts per file. Session 4 (branch `refactor/performance-tracker`): retention 30 days, cleanup on init, sampling + debug_mode (env DEBUG_PERFORMANCE_TRACKING), critical ops include llm_api_call; retention/sampling/debug_mode tests; SQLite WAL for file DBs. Session 5 (branches `refactor/docx-renderer`, `refactor/docx-renderer-table-cell`): DOCX renderer package with style.py, hyperlink_placement.py, renderer.py, table_cell package (fill, format, placement); merged to master. Session 6 (branch `refactor/docx-parser`): DOCX parser package with structure.py, no_school.py, table_extraction.py, content_sections.py, slot_extraction.py, images_metadata.py, parser.py, parse_docx; public API unchanged. Line counts in **0.5**. Session 7 (branch `refactor/database-split`): backend/database.py replaced by package backend/database/ (engine, users, slots, plans, metrics, schedule, lesson_steps, lesson_mode, sqlite_impl, get_db); single get_db() and DatabaseInterface preserved; DB/API tests pass. Line counts in **0.5**. Session 8 (branch `refactor/combined-original-styles`): post-merge style normalization for combined_originals DOCX; docProps replacement; docx_utils module logger; style tests; hyperlink Times New Roman 8pt in markdown; Supabase log-once. See **1.4**. Session 9 (branch `refactor/supabase-module`): backend/supabase_database.py replaced by package backend/supabase/ (auth, query_helpers, sync, client, database); facade supabase_database.py re-exports; get_project1_db/get_project2_db added; sync script uses backend.supabase.sync. See **1.4**. Session 10 (branch `refactor/frontend-analytics`): Analytics moved to Settings/Admin; Analytics split into useAnalytics hook and subcomponents; ErrorBreakdown copy clarified. See **1.4**. Session 11 (branch `refactor/batch-processor-tsx`): BatchProcessor.tsx refactor — useBatchProcessor hook and subcomponents; re-exports. See **1.4**. Session 12 (branch `refactor/root-declutter`): root declutter per ROOT_DECLUTTERING_PLAN; docs/scripts archived; links verified. See **1.4**. |
-| **In progress** | None. |
-| **Not started** | Priority 13 (optional). |
+| **In progress** | Session 13 (branch `refactor/orchestrator-split`): week_flow, slot_flow extracted; orchestrator thin coordinator. See **0.9**. |
+| **Not started** | None. |
 
 
 ### 0.2 Session plan: branches, commits, merges
@@ -113,6 +113,14 @@ Work in order when possible; fix test suite (Session 1) before large refactors s
 | 59 | `backend/database/lesson_steps.py` |
 | 14 | `backend/database/__init__.py` |
 
+**Orchestrator (Session 13, post split):**
+
+| Lines | File |
+| -----:| ------ |
+| 472 | `tools/batch_processor_pkg/orchestrator.py` |
+| 1031 | `tools/batch_processor_pkg/slot_flow.py` |
+| 940 | `tools/batch_processor_pkg/week_flow.py` |
+
 **Supabase database (Session 9b, post package split):**
 
 | Lines | File |
@@ -209,6 +217,25 @@ Work in order when possible; fix test suite (Session 1) before large refactors s
 - Frontend build passes (batch_processor code compiles; pre-existing TS errors in other packages may remain).
 - Batch UI smoke: open Batch view, choose week (manual + recent), select/deselect slots, open confirm dialog, run generate (or mock); no console errors or broken layout.
 - No regressions in main workflow (Home, Plans, Schedule, Browser, History).
+
+**Tools:** Manual edits; no refactoring library.
+
+### 0.9 Session 13 plan: Orchestrator split (Priority 13)
+
+**Branch:** `refactor/orchestrator-split`  
+**Reference:** This document, Session 13 (Priority 13).
+
+**Goal:** Split `tools/batch_processor_pkg/orchestrator.py` by phase so the batch pipeline stays testable and maintainable; public API unchanged.
+
+**Implemented (on branch):**
+- **slot_flow.py:** Single-slot orchestration extracted from `_process_slot` into `process_one_slot(processor, ...)` (resolve file, extract, transform, persist). Orchestrator `_process_slot` delegates to it.
+- **week_flow.py:** Week-level orchestration extracted from `process_user_week` into `run_process_user_week(processor, ...)` (load user/slots, enrich, parallel or sequential, combine, result dict). Orchestrator `process_user_week` delegates to it.
+- **orchestrator.py:** Thin coordinator; holds `BatchProcessor`, `process_batch`, and thin delegate methods; exposes `get_db`, `get_file_manager` on processor for flow modules. Line counts in **0.5**.
+
+**Success criteria (merge to master):**
+- Public API unchanged: `from tools.batch_processor import BatchProcessor, process_batch, SlotProcessingContext`.
+- Batch-processor and batch-pipeline tests pass (no new failures).
+- Orchestrator under ~600 lines; week_flow and slot_flow hold the extracted logic.
 
 **Tools:** Manual edits; no refactoring library.
 
