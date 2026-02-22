@@ -30,12 +30,15 @@ from backend.llm.providers import (
     call_anthropic_messages,
     call_instructor_chat_completion,
     call_openai_chat_completion,
+    check_for_enums,
+    convert_enums_to_strings,
 )
 from backend.llm.validation import (
     parse_llm_response,
     parse_validation_errors,
     validate_structure,
 )
+from backend.llm.api_key import get_llm_api_key
 from backend.llm.post_process import normalize_sentence_frame_punctuation
 from backend.performance_tracker import get_tracker
 from backend.telemetry import logger
@@ -56,7 +59,7 @@ class LLMService:
             api_key: API key (if None, reads from environment)
         """
         self.provider = provider
-        self.api_key = api_key or self._get_api_key()
+        self.api_key = api_key or get_llm_api_key(provider)
 
         if not self.api_key:
             raise ValueError(
@@ -132,117 +135,17 @@ class LLMService:
             },
         )
 
-    def _get_api_key(self) -> Optional[str]:
-        """Get API key from environment or file"""
-        # Try environment first
-        if self.provider == "openai":
-            # Check for GPT-5 specific API key first
-            model = os.getenv("LLM_MODEL", "")
-            if "gpt-5" in model.lower():
-                key = (
-                    os.getenv("GPT5_API_KEY")
-                    or os.getenv("OPENAI_API_KEY")
-                    or os.getenv("LLM_API_KEY")
-                )
-                if not key:
-                    warning_msg = "⚠ LLM Service: No API key found in environment variables for OpenAI. Checked: GPT5_API_KEY, OPENAI_API_KEY, LLM_API_KEY"
-                    print(warning_msg)
-                    logger.warning(
-                        "openai_api_key_not_found",
-                        extra={
-                            "provider": "openai",
-                            "model": model,
-                            "checked_keys": [
-                                "GPT5_API_KEY",
-                                "OPENAI_API_KEY",
-                                "LLM_API_KEY",
-                            ],
-                            "message": "No API key found in environment variables",
-                        },
-                    )
-            else:
-                key = os.getenv("OPENAI_API_KEY") or os.getenv("LLM_API_KEY")
-                if not key:
-                    warning_msg = "⚠ LLM Service: No API key found in environment variables for OpenAI. Checked: OPENAI_API_KEY, LLM_API_KEY"
-                    print(warning_msg)
-                    logger.warning(
-                        "openai_api_key_not_found",
-                        extra={
-                            "provider": "openai",
-                            "model": model or "default",
-                            "checked_keys": ["OPENAI_API_KEY", "LLM_API_KEY"],
-                            "message": "No API key found in environment variables",
-                        },
-                    )
-        elif self.provider == "anthropic":
-            key = os.getenv("ANTHROPIC_API_KEY") or os.getenv("LLM_API_KEY")
-            if not key:
-                warning_msg = "⚠ LLM Service: No API key found in environment variables for Anthropic. Checked: ANTHROPIC_API_KEY, LLM_API_KEY"
-                print(warning_msg)
-                logger.warning(
-                    "anthropic_api_key_not_found",
-                    extra={
-                        "provider": "anthropic",
-                        "checked_keys": ["ANTHROPIC_API_KEY", "LLM_API_KEY"],
-                        "message": "No API key found in environment variables",
-                    },
-                )
-        else:
-            logger.warning(
-                "unknown_llm_provider",
-                extra={
-                    "provider": self.provider,
-                    "message": f"Unknown LLM provider: {self.provider}",
-                },
-            )
-            return None
+    def _convert_enums_to_strings(self, data: Any) -> Any:
+        """Convert enum objects to strings (delegates to backend.llm.providers)."""
+        return convert_enums_to_strings(data)
 
-        # If not in environment, try file
-        if not key:
-            try:
-                with open("api_key.txt", "r") as f:
-                    key = f.read().strip()
-                if key:
-                    info_msg = f"OK LLM Service: API key loaded from api_key.txt file for {self.provider}"
-                    print(info_msg)
-                    logger.info(
-                        "api_key_found_in_file",
-                        extra={
-                            "provider": self.provider,
-                            "source": "api_key.txt",
-                            "message": "API key loaded from api_key.txt file",
-                        },
-                    )
-            except (FileNotFoundError, IOError):
-                logger.debug(
-                    "api_key_file_not_found",
-                    extra={
-                        "provider": self.provider,
-                        "file": "api_key.txt",
-                        "message": "api_key.txt file not found, checking environment only",
-                    },
-                )
+    def _check_for_enums(self, data: Any) -> bool:
+        """Return True if data contains any enum objects (delegates to backend.llm.providers)."""
+        return check_for_enums(data)
 
-        if not key:
-            error_msg = f"✗ LLM Service: No API key found for {self.provider}. Checked environment variables and api_key.txt file. Service will fail to initialize."
-            print(error_msg)
-            logger.error(
-                "api_key_not_found_anywhere",
-                extra={
-                    "provider": self.provider,
-                    "checked_env_vars": [
-                        "OPENAI_API_KEY",
-                        "ANTHROPIC_API_KEY",
-                        "LLM_API_KEY",
-                    ]
-                    if self.provider == "openai"
-                    else ["ANTHROPIC_API_KEY", "LLM_API_KEY"],
-                    "checked_file": "api_key.txt",
-                    "message": f"No API key found for {self.provider} in environment variables or api_key.txt file",
-                },
-            )
-
-        return key
+    def _parse_validation_errors(self, validation_error: str) -> Dict[str, Any]:
+        """Parse validation error message (delegates to backend.llm.validation)."""
+        return parse_validation_errors(validation_error)
 
     def _determine_max_completion_tokens(self) -> int:
         """
