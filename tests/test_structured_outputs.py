@@ -209,7 +209,7 @@ def test_gpt5_mini_specific():
     
     # Test 2: Token limit
     token_limit = service._model_token_limit()
-    assert token_limit == 16384, f"GPT-5 Mini should have 16384 token limit, got {token_limit}"
+    assert token_limit == 32768, f"GPT-5 Mini should have 32768 token limit, got {token_limit}"
     print(f"[OK] GPT-5 Mini token limit: {token_limit}")
     
     # Test 3: Response format (gpt-5-mini uses strict=False for compatibility)

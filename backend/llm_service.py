@@ -40,6 +40,7 @@ from backend.llm.validation import (
 )
 from backend.llm.api_key import get_llm_api_key
 from backend.llm.post_process import normalize_sentence_frame_punctuation
+from backend.llm.token_limits import get_max_completion_tokens, get_model_token_limit
 from backend.performance_tracker import get_tracker
 from backend.telemetry import logger
 
@@ -122,7 +123,7 @@ class LLMService:
         )
 
         # Determine max completion tokens based on model and config
-        self.max_completion_tokens = self._determine_max_completion_tokens()
+        self.max_completion_tokens = get_max_completion_tokens(provider, self.model)
 
         init_msg = f"OK LLM Service: Fully initialized - Provider: {provider}, Model: {self.model}, Max tokens: {self.max_completion_tokens}"
         print(init_msg)
@@ -147,82 +148,9 @@ class LLMService:
         """Parse validation error message (delegates to backend.llm.validation)."""
         return parse_validation_errors(validation_error)
 
-    def _determine_max_completion_tokens(self) -> int:
-        """
-        Determine max completion tokens based on model limits and configuration.
-
-        Priority:
-        1. LLM_MAX_COMPLETION_TOKENS environment variable
-        2. Model-specific limit (if known)
-        3. Default safe value (4000)
-
-        Returns:
-            Maximum completion tokens to request
-        """
-        # Check for explicit override
-        env_value = os.getenv("LLM_MAX_COMPLETION_TOKENS")
-        if env_value:
-            try:
-                override = int(env_value)
-                logger.info("using_env_max_tokens", extra={"value": override})
-                return override
-            except ValueError:
-                logger.warning(
-                    "invalid_max_completion_tokens_env", extra={"value": env_value}
-                )
-
-        # Get model-specific limit
-        model_limit = self._model_token_limit()
-
-        # Default base limit - use model limit if available, otherwise use config default
-        # For full 5-day multi-slot lesson plans, we need higher limits
-        if model_limit:
-            return model_limit
-
-        # Fallback to config setting (default 16000) instead of hardcoded 4000
-        from backend.config import settings
-
-        return settings.MAX_COMPLETION_TOKENS
-
     def _model_token_limit(self) -> Optional[int]:
-        """
-        Get the maximum completion token limit for the current model.
-
-        Returns:
-            Token limit if known, None otherwise
-        """
-        # Known model limits (completion tokens only)
-        # Updated limits to support full 5-day multi-slot lesson plans
-        limits = {
-            "gpt-4-turbo-preview": 16384,  # Increased for multi-slot lesson plans
-            "gpt-4-turbo": 16384,  # Increased for multi-slot lesson plans
-            "gpt-4o": 16384,  # GPT-4o has higher limit
-            "gpt-4o-mini": 16384,
-            "gpt-4": 16384,  # Increased for multi-slot lesson plans
-            "gpt-3.5-turbo": 4096,  # Keep lower for older models
-            "gpt-5": 16384,  # GPT-5 flagship has larger output capacity
-            "gpt-5-mini": 32768,  # GPT-5-mini - increased for full 5-day lesson plans
-            "gpt-5-nano": 8192,  # GPT-5-nano (smaller/faster)
-            "o1-preview": 32768,  # O1 models have very high limits
-            "o1-mini": 65536,
-            "claude-3-opus": 4096,
-            "claude-3-sonnet": 4096,
-            "claude-3-haiku": 4096,
-        }
-
-        model_name = (self.model or "").lower()
-
-        # Check for exact or partial match
-        for key, limit in limits.items():
-            if key in model_name:
-                logger.info(
-                    "model_token_limit_found",
-                    extra={"model": self.model, "limit": limit},
-                )
-                return limit
-
-        logger.warning("model_token_limit_unknown", extra={"model": self.model})
-        return None
+        """Get model completion token limit (delegates to backend.llm.token_limits)."""
+        return get_model_token_limit(self.model)
 
     def _call_openai_chat_completion(
         self,
