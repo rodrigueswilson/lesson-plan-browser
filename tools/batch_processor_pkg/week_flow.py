@@ -4,8 +4,6 @@ Extracted from orchestrator.process_user_week for Session 13.
 """
 
 import asyncio
-import json
-import traceback
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 
@@ -16,6 +14,7 @@ from backend.telemetry import logger
 from tools.batch_processor_pkg import (
     week_flow_existing,
     week_flow_load,
+    week_flow_merge_render,
     week_flow_parallel,
     week_flow_sequential,
 )
@@ -171,87 +170,20 @@ async def run_process_user_week(
                 extra={"error": str(e)},
             )
 
-    # Handle merging with existing lessons if partial is requested
-    all_lessons_for_rendering = lessons.copy()
-    if (partial or missing_only) and existing_lesson_json:
-        print("DEBUG: Reconstructing existing slots for merge...")
-        existing_slots_by_number = processor._reconstruct_slots_from_json(
-            existing_lesson_json
-        )
-
-        # Combine: new lessons override existing ones
-        combined_lessons_by_number = existing_slots_by_number
-        for lesson in lessons:
-            combined_lessons_by_number[lesson["slot_number"]] = lesson
-
-        all_lessons_for_rendering = list(combined_lessons_by_number.values())
-        # Sort by slot number for consistent rendering
-        all_lessons_for_rendering.sort(key=lambda x: x.get("slot_number", 0))
-        print(
-            f"DEBUG: Combined to {len(all_lessons_for_rendering)} total slots for rendering"
-        )
-
-    # Generate combined DOCX if we have any successful lessons
-    print(
-        f"\nDEBUG: Finished processing all slots, {len(all_lessons_for_rendering)} total for rendering"
+    output_file = await week_flow_merge_render.merge_and_render(
+        processor,
+        user,
+        lessons,
+        existing_lesson_json,
+        partial,
+        missing_only,
+        week_of,
+        start_time,
+        plan_id,
+        processing_weight,
+        rendering_weight,
+        errors,
     )
-    output_file = None
-    if all_lessons_for_rendering:
-        try:
-            print(
-                f"DEBUG: About to render {len(all_lessons_for_rendering)} lessons"
-            )
-            # Update progress: rendering
-            rendering_progress = int(
-                processing_weight * 100 + rendering_weight * 50
-            )
-            print("DEBUG: Updating progress tracker for rendering")
-            progress_tracker.update(
-                plan_id,
-                "rendering",
-                rendering_progress,
-                f"Rendering {len(all_lessons_for_rendering)} lessons to DOCX...",
-            )
-            print("DEBUG: Progress tracker updated for rendering")
-
-            print("DEBUG: Calling _combine_lessons (wrapped in asyncio.to_thread)")
-            output_file = await asyncio.to_thread(
-                processor._combine_lessons,
-                user,
-                all_lessons_for_rendering,
-                week_of,
-                start_time,
-                plan_id,
-            )
-            print(f"DEBUG: _combine_lessons returned: {output_file}")
-
-            # Note: Objectives and Sentence Frames PDFs are already generated in _combine_lessons_impl
-            # with correct enrichment and proper filenames. Removing duplicate generation that was
-            # creating incorrect files with _Objectives_ and _SentenceFrames_ patterns.
-
-            # Update progress: complete
-            print(
-                f"DEBUG: Updating progress tracker to complete (plan_id={plan_id})"
-            )
-            progress_tracker.update(
-                plan_id,
-                "complete",
-                100,
-                f"Successfully created lesson plan with {len(all_lessons_for_rendering)} slots",
-            )
-            print("DEBUG: Progress tracker updated to complete")
-
-            # Also mark as complete using the tracker's complete method
-            progress_tracker.complete(plan_id)
-            print("DEBUG: Progress tracker marked complete via complete() method")
-        except Exception as e:
-            error_msg = f"Failed to combine lessons: {str(e)}"
-            print(f"ERROR: Exception in _combine_lessons: {error_msg}")
-            traceback.print_exc()
-            errors.append(error_msg)
-            progress_tracker.update(
-                plan_id, "error", rendering_progress, f"Failed to render: {str(e)}"
-            )
 
     # Update plan status
     total_time = (datetime.now() - start_time).total_seconds() * 1000
