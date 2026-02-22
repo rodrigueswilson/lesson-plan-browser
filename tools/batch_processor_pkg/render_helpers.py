@@ -1,11 +1,48 @@
 """
-Helpers for batch render (signature path, etc.). Used by combine_render.
+Helpers for batch render (signature path, lesson JSON normalization). Used by combine_render.
 """
 
 from pathlib import Path
 from typing import Any, Dict, Optional
 
 from backend.telemetry import logger
+
+
+def normalize_lesson_json_for_render(
+    lesson_json: Any,
+    slot_num: Any,
+    subject: str,
+) -> Dict[str, Any]:
+    """
+    Ensure lesson_json is a dict with metadata and _source_slot/_source_subject on media.
+    Mutates and returns the same dict.
+    """
+    if not isinstance(lesson_json, dict):
+        if hasattr(lesson_json, "model_dump"):
+            lesson_json = lesson_json.model_dump()
+        elif hasattr(lesson_json, "dict"):
+            lesson_json = lesson_json.dict()
+        else:
+            lesson_json = dict(lesson_json) if lesson_json else {}
+
+    if "metadata" not in lesson_json:
+        lesson_json["metadata"] = {}
+    lesson_json["metadata"]["slot_number"] = slot_num
+    lesson_json["metadata"]["subject"] = subject
+
+    if "_hyperlinks" in lesson_json:
+        for link in lesson_json.get("_hyperlinks", []):
+            if isinstance(link, dict):
+                link["_source_slot"] = slot_num
+                link["_source_subject"] = subject
+
+    if "_images" in lesson_json:
+        for image in lesson_json.get("_images", []):
+            if isinstance(image, dict):
+                image["_source_slot"] = slot_num
+                image["_source_subject"] = subject
+
+    return lesson_json
 
 
 def resolve_signature_image_path(user: Dict[str, Any]) -> Optional[str]:
