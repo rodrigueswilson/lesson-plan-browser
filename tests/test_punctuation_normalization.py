@@ -7,16 +7,10 @@ from typing import Dict, Any
 project_root = Path(__file__).parent.parent
 sys.path.append(str(project_root))
 
-from backend.llm_service import LLMService
+from backend.llm.post_process import normalize_sentence_frame_punctuation
+
 
 def test_normalization():
-    # Initialize service (we don't need a real API key for this internal method)
-    # We'll mock the __init__ to avoid API key requirements if possible, 
-    # but LLMService.__init__ is quite complex.
-    # Let's just create a dummy instance or wrap the function.
-    
-    service = LLMService(provider="openai", api_key="sk-dummy")
-    
     test_json = {
         "days": {
             "monday": {
@@ -56,7 +50,7 @@ def test_normalization():
         }
     }
     
-    normalized = service._normalize_sentence_frame_punctuation(test_json)
+    normalized = normalize_sentence_frame_punctuation(test_json)
     
     frames = normalized["days"]["monday"]["sentence_frames"]
     

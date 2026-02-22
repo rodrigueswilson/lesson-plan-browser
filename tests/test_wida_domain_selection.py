@@ -6,17 +6,16 @@ Tests the flexible domain selection feature that allows objectives to include
 """
 
 import pytest
+from backend.llm.domain_analysis import analyze_domains_from_activities
 from backend.llm_service import LLMService
 from backend.models_slot import ObjectiveData
 
 
 class TestDomainAnalysis:
-    """Test the _analyze_domains_from_activities() helper method"""
+    """Test the analyze_domains_from_activities() helper function"""
 
     def test_think_pair_share_detects_listening_speaking(self):
         """Test that Think-Pair-Share strategy detects Listening + Speaking"""
-        service = LLMService(provider="openai")
-        
         ell_support = [
             {
                 "strategy_id": "think_pair_share",
@@ -26,7 +25,7 @@ class TestDomainAnalysis:
             }
         ]
         
-        domains = service._analyze_domains_from_activities(ell_support=ell_support)
+        domains = analyze_domains_from_activities(ell_support=ell_support)
         
         assert domains["listening"] is True, "Think-Pair-Share should detect listening"
         assert domains["speaking"] is True, "Think-Pair-Share should detect speaking"
@@ -35,8 +34,6 @@ class TestDomainAnalysis:
 
     def test_collaborative_learning_detects_listening_speaking(self):
         """Test that Collaborative Learning strategy detects Listening + Speaking"""
-        service = LLMService(provider="openai")
-        
         ell_support = [
             {
                 "strategy_id": "collaborative_learning",
@@ -45,7 +42,7 @@ class TestDomainAnalysis:
             }
         ]
         
-        domains = service._analyze_domains_from_activities(ell_support=ell_support)
+        domains = analyze_domains_from_activities(ell_support=ell_support)
         
         assert domains["listening"] is True
         assert domains["speaking"] is True
@@ -54,8 +51,6 @@ class TestDomainAnalysis:
 
     def test_sentence_frames_detects_speaking_writing(self):
         """Test that Sentence Frames strategy detects Speaking + Writing"""
-        service = LLMService(provider="openai")
-        
         ell_support = [
             {
                 "strategy_id": "sentence_frames",
@@ -64,7 +59,7 @@ class TestDomainAnalysis:
             }
         ]
         
-        domains = service._analyze_domains_from_activities(ell_support=ell_support)
+        domains = analyze_domains_from_activities(ell_support=ell_support)
         
         assert domains["speaking"] is True
         assert domains["writing"] is True
@@ -73,8 +68,6 @@ class TestDomainAnalysis:
 
     def test_literature_circles_detects_three_domains(self):
         """Test that Literature Circles detects Reading + Speaking + Listening"""
-        service = LLMService(provider="openai")
-        
         ell_support = [
             {
                 "strategy_id": "literature_circles",
@@ -83,7 +76,7 @@ class TestDomainAnalysis:
             }
         ]
         
-        domains = service._analyze_domains_from_activities(ell_support=ell_support)
+        domains = analyze_domains_from_activities(ell_support=ell_support)
         
         assert domains["reading"] is True
         assert domains["speaking"] is True
@@ -92,8 +85,6 @@ class TestDomainAnalysis:
 
     def test_phase_plan_keyword_detection(self):
         """Test that phase plan activities are analyzed via keywords"""
-        service = LLMService(provider="openai")
-        
         phase_plan = [
             {
                 "phase_name": "Reading Activity",
@@ -103,7 +94,7 @@ class TestDomainAnalysis:
             }
         ]
         
-        domains = service._analyze_domains_from_activities(phase_plan=phase_plan)
+        domains = analyze_domains_from_activities(phase_plan=phase_plan)
         
         assert domains["reading"] is True, "Should detect reading from keywords"
         assert domains["writing"] is True, "Should detect writing from keywords"
@@ -112,11 +103,9 @@ class TestDomainAnalysis:
 
     def test_content_objective_hints(self):
         """Test that content objective provides domain hints"""
-        service = LLMService(provider="openai")
-        
         content_objective = "Students will read informational texts and write summaries"
         
-        domains = service._analyze_domains_from_activities(
+        domains = analyze_domains_from_activities(
             content_objective=content_objective
         )
         
@@ -127,8 +116,6 @@ class TestDomainAnalysis:
 
     def test_combined_analysis(self):
         """Test that all sources (strategies, phase_plan, content_objective) are combined"""
-        service = LLMService(provider="openai")
-        
         ell_support = [
             {
                 "strategy_id": "think_pair_share",
@@ -148,7 +135,7 @@ class TestDomainAnalysis:
         
         content_objective = "Students will read the story"
         
-        domains = service._analyze_domains_from_activities(
+        domains = analyze_domains_from_activities(
             ell_support=ell_support,
             phase_plan=phase_plan,
             content_objective=content_objective,
@@ -162,9 +149,7 @@ class TestDomainAnalysis:
 
     def test_no_activities_returns_all_false(self):
         """Test that with no activities, all domains are False"""
-        service = LLMService(provider="openai")
-        
-        domains = service._analyze_domains_from_activities()
+        domains = analyze_domains_from_activities()
         
         assert domains["listening"] is False
         assert domains["reading"] is False

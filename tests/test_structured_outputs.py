@@ -12,6 +12,11 @@ from pathlib import Path
 import pytest
 from dotenv import load_dotenv
 
+from backend.llm.schema import (
+    model_supports_json_mode,
+    model_supports_structured_outputs,
+    structured_response_format,
+)
 from backend.llm_service import LLMService, get_llm_service
 
 load_dotenv()
@@ -57,7 +62,7 @@ def test_model_support_detection():
     for model in supported_models:
         service = LLMService(provider="openai")
         service.model = model
-        assert service._model_supports_structured_outputs(), f"{model} should support structured outputs"
+        assert model_supports_structured_outputs(model), f"{model} should support structured outputs"
         print(f"[OK] {model}: Structured outputs supported")
     
     # Test unsupported models (should fall back to JSON mode)
@@ -69,7 +74,7 @@ def test_model_support_detection():
     for model in unsupported_models:
         service = LLMService(provider="openai")
         service.model = model
-        json_mode_supported = service._model_supports_json_mode()
+        json_mode_supported = model_supports_json_mode(model)
         assert json_mode_supported, f"{model} should support JSON mode"
         print(f"[OK] {model}: JSON mode supported (structured outputs not available)")
     
@@ -114,8 +119,11 @@ def test_response_format_building():
     print("=" * 60)
     
     service = LLMService(provider="openai")
+    service.model = "gpt-4-turbo-preview"
     
-    response_format = service._structured_response_format()
+    response_format = structured_response_format(
+        service.openai_structured_schema, service.model
+    )
     
     assert response_format is not None, "Response format should be built"
     assert response_format["type"] == "json_schema", "Should use json_schema type"
@@ -123,7 +131,7 @@ def test_response_format_building():
     
     json_schema = response_format["json_schema"]
     assert json_schema["name"] == "bilingual_lesson_plan", "Should have correct name"
-    assert json_schema["strict"] is True, "Should use strict mode"
+    assert json_schema["strict"] is True, "Should use strict mode for non-gpt-5-mini"
     assert "schema" in json_schema, "Should include schema"
     
     print("[OK] Response format structure correct")
@@ -195,8 +203,8 @@ def test_gpt5_mini_specific():
     service.model = "gpt-5-mini"
     
     # Test 1: Model detection
-    assert service._model_supports_structured_outputs(), "GPT-5 Mini should support structured outputs"
-    assert service._model_supports_json_mode(), "GPT-5 Mini should support JSON mode"
+    assert model_supports_structured_outputs(service.model), "GPT-5 Mini should support structured outputs"
+    assert model_supports_json_mode(service.model), "GPT-5 Mini should support JSON mode"
     print("[OK] GPT-5 Mini detected as supporting structured outputs and JSON mode")
     
     # Test 2: Token limit
@@ -204,11 +212,13 @@ def test_gpt5_mini_specific():
     assert token_limit == 16384, f"GPT-5 Mini should have 16384 token limit, got {token_limit}"
     print(f"[OK] GPT-5 Mini token limit: {token_limit}")
     
-    # Test 3: Response format
-    response_format = service._structured_response_format()
+    # Test 3: Response format (gpt-5-mini uses strict=False for compatibility)
+    response_format = structured_response_format(
+        service.openai_structured_schema, service.model
+    )
     assert response_format is not None, "GPT-5 Mini should generate response format"
     assert response_format["type"] == "json_schema", "Should use json_schema type"
-    assert response_format["json_schema"]["strict"] is True, "Should use strict mode"
+    assert response_format["json_schema"]["strict"] is False, "GPT-5 Mini uses non-strict mode"
     print("[OK] GPT-5 Mini response format configured correctly")
     
     # Test 4: Prompt optimization (GPT-5 Mini specific)
@@ -260,7 +270,7 @@ def test_integration_with_real_api():
             service.model = model
             
             print(f"   Testing with model: {model}")
-            print(f"   Using structured outputs: {service._model_supports_structured_outputs()}")
+            print(f"   Using structured outputs: {model_supports_structured_outputs(model)}")
             print(f"   Token limit: {service._model_token_limit()}")
             print()
             print("   Calling LLM API...")
