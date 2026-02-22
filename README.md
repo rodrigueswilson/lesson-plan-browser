@@ -37,13 +37,29 @@ Bilingual Weekly Plan Builder/
 │   ├── api.py            # REST API app; mounts routers with prefix /api
 │   ├── routers/          # API by domain (users, slots, schedule, plans, lesson_mode, lesson_steps, etc.)
 │   ├── database/         # SQLite multi-user storage (engine, users, plans, metrics, etc.)
-│   ├── llm_service.py    # LLM orchestration (789 lines)
+│   ├── services/        # Business logic (lesson step generation, etc.)
+│   │   ├── lesson_steps_generator.py  # Facade; public API: generate_lesson_steps
+│   │   └── lesson_steps/ # plan_resolve, slot_data, phase_steps, vocab_frames_steps
+│   ├── llm_service.py    # LLM orchestration
 │   ├── llm/              # Schema, validation, prompts, providers, post-process
 │   └── file_manager.py   # Week folder organization
 ├── tools/                 # Core processing pipeline
 │   ├── docx_parser/       # Multi-format DOCX parsing (package)
-│   ├── docx_renderer/    # Template-based DOCX generation (package)
-│   ├── batch_processor.py # 5-slot weekly processing
+│   ├── docx_renderer/     # Template-based DOCX generation (package)
+│   │   ├── renderer.py    # DOCXRenderer facade; render()
+│   │   ├── get_indices.py # Row/col index helpers (structure metadata)
+│   │   ├── inject_inline.py # Hyperlink/image injection into cells
+│   │   ├── style.py, hyperlink_placement.py
+│   │   └── table_cell/    # fill, format, placement
+│   ├── batch_processor_pkg/  # 5-slot weekly processing (orchestrator, week_flow, slot_flow)
+│   │   ├── orchestrator.py   # BatchProcessor; delegates to week_flow
+│   │   ├── week_flow.py      # Week-level flow (slim); run_process_user_week
+│   │   ├── week_flow_load.py # User/slots/schedule load and enrich
+│   │   ├── week_flow_existing.py
+│   │   ├── week_flow_parallel.py
+│   │   ├── week_flow_sequential.py
+│   │   ├── week_flow_merge_render.py
+│   │   └── slot_flow*.py     # Slot-level extract/transform
 │   └── json_merger.py    # Weekly plan consolidation
 ├── templates/             # Jinja2 rendering templates
 ├── strategies_pack_v2/    # 33 bilingual strategies (6 categories)
