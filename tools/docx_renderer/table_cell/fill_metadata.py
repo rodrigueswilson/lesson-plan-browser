@@ -46,13 +46,13 @@ def fill_metadata(renderer, doc, json_data: Dict) -> None:
     cell.text = ""
     para = cell.paragraphs[0]
     run1 = para.add_run(sanitize_xml_text("Name: "))
-    renderer._force_font_arial10(run1, is_bold=True)
+    _style_module.force_font_arial10(run1, is_bold=True)
     run2 = para.add_run(
         sanitize_xml_text(
             teacher_name if teacher_name and teacher_name != "Unknown" else "Unknown"
         )
     )
-    renderer._force_font_arial10(run2, is_bold=False)
+    _style_module.force_font_arial10(run2, is_bold=False)
 
     grade = None
     if representative_slot:
@@ -64,9 +64,9 @@ def fill_metadata(renderer, doc, json_data: Dict) -> None:
         cell.text = ""
         para = cell.paragraphs[0]
         run1 = para.add_run(sanitize_xml_text("Grade: "))
-        renderer._force_font_arial10(run1, is_bold=True)
+        _style_module.force_font_arial10(run1, is_bold=True)
         run2 = para.add_run(sanitize_xml_text(grade))
-        renderer._force_font_arial10(run2, is_bold=False)
+        _style_module.force_font_arial10(run2, is_bold=False)
 
     homeroom = get_homeroom(metadata, slot=representative_slot)
     if homeroom and homeroom != "Unknown":
@@ -74,9 +74,9 @@ def fill_metadata(renderer, doc, json_data: Dict) -> None:
         cell.text = ""
         para = cell.paragraphs[0]
         run1 = para.add_run(sanitize_xml_text("Homeroom: "))
-        renderer._force_font_arial10(run1, is_bold=True)
+        _style_module.force_font_arial10(run1, is_bold=True)
         run2 = para.add_run(sanitize_xml_text(homeroom))
-        renderer._force_font_arial10(run2, is_bold=False)
+        _style_module.force_font_arial10(run2, is_bold=False)
 
     subject = get_subject(metadata, slot=representative_slot)
     if subject and subject != "Unknown":
@@ -84,9 +84,9 @@ def fill_metadata(renderer, doc, json_data: Dict) -> None:
         cell.text = ""
         para = cell.paragraphs[0]
         run1 = para.add_run(sanitize_xml_text("Subject: "))
-        renderer._force_font_arial10(run1, is_bold=True)
+        _style_module.force_font_arial10(run1, is_bold=True)
         run2 = para.add_run(sanitize_xml_text(subject))
-        renderer._force_font_arial10(run2, is_bold=False)
+        _style_module.force_font_arial10(run2, is_bold=False)
 
     week_of = metadata.get("week_of", "Unknown")
     if week_of and week_of != "Unknown":
@@ -94,9 +94,9 @@ def fill_metadata(renderer, doc, json_data: Dict) -> None:
         cell.text = ""
         para = cell.paragraphs[0]
         run1 = para.add_run(sanitize_xml_text("Week of: "))
-        renderer._force_font_arial10(run1, is_bold=True)
+        _style_module.force_font_arial10(run1, is_bold=True)
         run2 = para.add_run(sanitize_xml_text(week_of))
-        renderer._force_font_arial10(run2, is_bold=False)
+        _style_module.force_font_arial10(run2, is_bold=False)
 
     if len(row.cells) > 5:
         room = None
@@ -113,6 +113,6 @@ def fill_metadata(renderer, doc, json_data: Dict) -> None:
             cell.text = ""
             para = cell.paragraphs[0]
             run1 = para.add_run(sanitize_xml_text("Room: "))
-            renderer._force_font_arial10(run1, is_bold=True)
+            _style_module.force_font_arial10(run1, is_bold=True)
             run2 = para.add_run(sanitize_xml_text(room))
-            renderer._force_font_arial10(run2, is_bold=False)
+            _style_module.force_font_arial10(run2, is_bold=False)

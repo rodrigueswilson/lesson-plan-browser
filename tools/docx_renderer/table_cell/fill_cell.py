@@ -11,6 +11,7 @@ from docx.shared import Pt
 from docx.text.run import Run
 
 from .. import logger
+from .. import style as style_module
 from . import placement as placement_module
 
 try:
@@ -324,7 +325,7 @@ def fill_cell(
             para.paragraph_format.space_before = Pt(0)
             para.paragraph_format.line_spacing_rule = WD_LINE_SPACING.SINGLE
             for run in para.runs:
-                renderer._force_font_tnr8(
+                style_module.force_font_tnr8(
                     run, is_bold=(row_idx == renderer.UNIT_LESSON_ROW)
                 )
             for hl in para._p.findall(qn("w:hyperlink")):
@@ -333,7 +334,7 @@ def fill_cell(
                     is_hl_bold = (
                         row_idx == renderer.UNIT_LESSON_ROW or hl_run.font.bold
                     )
-                    renderer._force_font_tnr8(
+                    style_module.force_font_tnr8(
                         hl_run, is_bold=is_hl_bold, is_hyperlink=True
                     )
 

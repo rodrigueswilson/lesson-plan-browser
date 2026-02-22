@@ -710,14 +710,6 @@ class DOCXRenderer:
         """Restore hyperlinks by adding them at the end of the document."""
         _hyperlink_module.restore_hyperlinks(self, doc, hyperlinks)
 
-    def _force_font_tnr8(self, run, is_bold: bool = False, is_hyperlink: bool = False):
-        """Force Times New Roman 8pt on a Run object."""
-        _style_module.force_font_tnr8(run, is_bold=is_bold, is_hyperlink=is_hyperlink)
-
-    def _force_font_arial10(self, run, is_bold: bool = False):
-        """Force Arial 10pt on a Run object. Used for metadata table formatting."""
-        _style_module.force_font_arial10(run, is_bold=is_bold)
-
     def _add_hyperlink(self, paragraph, text: str, url: str, bold: bool = False, insert_at: int = None):
         """Add a hyperlink to a paragraph."""
         _hyperlink_module.add_hyperlink(self, paragraph, text, url, bold=bold, insert_at=insert_at)
