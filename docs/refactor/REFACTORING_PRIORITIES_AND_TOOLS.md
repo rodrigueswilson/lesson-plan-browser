@@ -13,9 +13,9 @@ This document lists **refactoring and fix priorities** for the codebase and give
 
 | Status          | Items                                                                                                                                                                                                                                                                     |
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Done**        | Batch processor package; Database alias and optional db_path (see 1.4). Session 1 (branch `fix/test-suite-collection`): test suite collection and fixes. Session 2 (branch `refactor/split-api`): split backend/api.py into routers (health, settings, users, plans, process-week, analytics); app mounts routers; duplicate analytics removed; API/smoke tests pass. Follow-up: core router (validate, render, progress, transform, repair, tablet export), FastAPI lifespan, enrich_lesson_json_with_times in backend.utils.lesson_times, plan download in plans router; call sites updated (combine.py, scripts). |
-| **In progress** | —                                                                                                                                                                                                                                                                         |
-| **Not started** | Priorities 2–3 (high), 5–9 (medium), 10–13 (lower). Proceed to Session 3 (refactor llm_service) from updated master per Section 0.2.                                                                                                                                                                                                     |
+| **Done**        | Batch processor package; Database alias and optional db_path (see 1.4). Session 1 (branch `fix/test-suite-collection`): test suite collection and fixes. Session 2 (branch `refactor/split-api`): split backend/api.py into routers (health, settings, users, plans, process-week, analytics); app mounts routers; duplicate analytics removed; API/smoke tests pass. Follow-up: core router (validate, render, progress, transform, repair, tablet export), FastAPI lifespan, enrich_lesson_json_with_times in backend.utils.lesson_times, plan download in plans router; call sites updated (combine.py, scripts). Session 3 (refactor llm_service): prompt_builder, validation, providers, schema, parse_llm_response, post_process, domain_analysis extracted to backend/llm/; llm_service.py 789 lines; merged to master. See **0.5** for line counts per file. Session 4 (branch `refactor/performance-tracker`): retention 30 days, cleanup on init, sampling + debug_mode (env DEBUG_PERFORMANCE_TRACKING), critical ops include llm_api_call; retention/sampling/debug_mode tests; SQLite WAL for file DBs. |
+| **In progress** | None.                                                                                                                                                                                                                                                                                                                                     |
+| **Not started** | Priorities 5–9 (medium), 10–13 (lower). Proceed to Session 5.                                                                                                                                                                                                                                                                                                                                           |
 
 
 ### 0.2 Session plan: branches, commits, merges
@@ -58,6 +58,19 @@ Work in order when possible; fix test suite (Session 1) before large refactors s
 - **Section 1.4 (Done):** Add a one-line bullet per completed refactor (branch name and what was done), e.g. `- **Split backend/api.py** — Branch refactor/split-api; routers by domain (see session 2).`
 - **Last updated:** Set to the date when you last edited this file.
 
+### 0.5 Line counts (backend LLM, post–Session 3)
+
+| Lines | File |
+| -----:| ------ |
+| 789 | `backend/llm_service.py` |
+| 674 | `backend/llm/prompt_builder.py` |
+| 673 | `backend/llm/validation.py` |
+| 290 | `backend/llm/providers.py` |
+| 141 | `backend/llm/schema.py` |
+| 112 | `backend/llm/domain_analysis.py` |
+| 45 | `backend/llm/post_process.py` |
+| 36 | `backend/llm/__init__.py` |
+
 ---
 
 ## 1. Refactoring and fix priorities
@@ -70,8 +83,8 @@ Priorities are ordered by impact and risk. Do high-priority items on a branch; r
 | Priority | Item                                                 | Location / reference                                                         | Notes                                                                                                                                                                        |
 | -------- | ---------------------------------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1        | **Split `backend/api.py`** (~4,200 lines)            | `backend/api.py`                                                             | Single FastAPI app with all routes. Split into routers by domain: users, plans, process-week, analytics, settings, health. Reduces merge conflicts and clarifies ownership.  |
-| 2        | **Refactor `backend/llm_service.py`** (~2,850 lines) | `backend/llm_service.py`                                                     | Extract: prompt building, retry/validation logic, provider adapters. Improves testability and future provider additions.                                                     |
-| 3        | **PerformanceTracker simplification**                | `docs/planning/CRITICAL_REVIEW_AND_CORRECTIONS.md`                           | Add retention (e.g. 30 days), optional sampling / debug-only granular tracking. Reduces SQLite growth and locking risk.                                                      |
+| 2        | **Refactor `backend/llm_service.py`** (done; 789 lines) | `backend/llm_service.py`, `backend/llm/`                                     | Done: prompt_builder, validation, providers, schema, parse_llm_response, post_process, domain_analysis in `backend/llm/`. See **0.5** for line counts per file. |
+| 3        | **PerformanceTracker simplification** (done)         | `docs/planning/CRITICAL_REVIEW_AND_CORRECTIONS.md`                           | Done: retention 30 days, cleanup on init, sampling + debug_mode (DEBUG_PERFORMANCE_TRACKING), critical ops (batch_process, plan_generation, llm_call, llm_api_call); retention/sampling/debug_mode tests; SQLite WAL for file DBs. |
 | 4        | **Fix remaining test suite collection errors**       | `docs/fix/DATABASE_PROBLEMS.md` (done); TestClient, test_api_endpoints, etc. | Database import fixed. Still to fix: TestClient API, test_api_endpoints module-level code, test_week_calculation first_date format, DOCX paths, backend_connection sys.exit. |
 
 
@@ -105,6 +118,8 @@ Priorities are ordered by impact and risk. Do high-priority items on a branch; r
 - **Test suite collection (Session 1)** — Branch `fix/test-suite-collection`: conftest `client` fixture and isolated DB fixture; httpx<0.28; script-style tests converted; DB tests use Session/engine APIs; DOCXRenderer row constants and None guards. Pytest collects 654+ tests with 0 collection errors.
 - **Split backend/api.py (Session 2)** — Branch `refactor/split-api`; routers by domain: health, settings, users, plans, process-week, analytics; app mounts all six routers; duplicate analytics routes removed; API/smoke tests pass (same pre-existing failures as baseline).
 - **api.py core router and lifespan** — Pipeline routes moved to `backend/routers/core.py` (validate, render, progress, transform, repair, tablet export); FastAPI lifespan context manager replaces on_event startup/shutdown; `enrich_lesson_json_with_times` in `backend/utils/lesson_times.py`; GET plan download in plans router; `tools/batch_processor_pkg/combine.py` and scripts import from `backend.utils.lesson_times`.
+- **Refactor llm_service (Session 3)** — Branch `refactor/llm-service` (merged); extracted to `backend/llm/`: prompt_builder, validation, providers, schema, parse_llm_response (validation), post_process, domain_analysis; `llm_service.py` 789 lines (was ~1,247). Line counts: see **0.5**. LLM tests updated and pass.
+- **PerformanceTracker simplification (Session 4)** — Branch `refactor/performance-tracker`; retention 30 days, cleanup on init, sampling + debug_mode (env DEBUG_PERFORMANCE_TRACKING), critical ops include llm_api_call; retention/sampling/debug_mode tests in test_performance_tracker.py; SQLite WAL for file-based DBs in database.py.
 
 *(New refactors: track branches, commits, and merges in **Section 0** above; add a one-line bullet here when each is merged to master.)*
 

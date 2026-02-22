@@ -25,6 +25,7 @@ class PerformanceTracker:
         enabled: Optional[bool] = None,
         retention_days: int = 30,
         sampling_rate: float = 1.0,
+        debug_mode: bool = False,
     ):
         """
         Initialize performance tracker.
@@ -32,7 +33,11 @@ class PerformanceTracker:
         Args:
             enabled: Override environment variable (for testing)
             retention_days: Number of days to keep metrics (default 30)
-            sampling_rate: Probability of tracking an operation (0.0 to 1.0)
+            sampling_rate: Probability of tracking an operation (0.0 to 1.0).
+                Only applies to non-critical operations when debug_mode is False.
+            debug_mode: If True, track all operations (ignore sampling for
+                granular ops). If False, only critical ops are always tracked;
+                others are subject to sampling_rate.
         """
         if enabled is None:
             enabled = os.getenv("ENABLE_PERFORMANCE_TRACKING", "true").lower() == "true"
@@ -40,6 +45,7 @@ class PerformanceTracker:
         self.enabled = enabled
         self.retention_days = retention_days
         self.sampling_rate = sampling_rate
+        self.debug_mode = debug_mode
         self.db = get_db()
         self._active_operations: Dict[str, Dict[str, Any]] = {}
 
@@ -53,6 +59,7 @@ class PerformanceTracker:
                 "enabled": self.enabled,
                 "retention_days": self.retention_days,
                 "sampling_rate": self.sampling_rate,
+                "debug_mode": self.debug_mode,
             },
         )
 
@@ -88,16 +95,16 @@ class PerformanceTracker:
         if not self.enabled:
             return ""
 
-        # Apply sampling rate (always track plan-level operations, sample granular ones)
-        # We consider 'process_slot' and 'process_day' as granular enough to sample if needed,
-        # but 'generate_plan' should probably always be tracked.
-        # For now, we apply sampling to everything unless it's a critical operation.
-        # Let's say 'plan_generation' or 'batch_process' are critical.
-        
+        # Critical operations are always stored regardless of sampling_rate.
+        # All other operations (parse_*, render_*, etc.) are subject to sampling
+        # unless debug_mode is True.
         import random
-        is_critical = operation_type in ["batch_process", "plan_generation", "llm_call"]
-        
-        if not is_critical and random.random() > self.sampling_rate:
+        _CRITICAL_OPERATIONS = frozenset([
+            "batch_process", "plan_generation", "llm_call", "llm_api_call"
+        ])
+        is_critical = operation_type in _CRITICAL_OPERATIONS
+
+        if not is_critical and not self.debug_mode and random.random() > self.sampling_rate:
             return ""
 
         operation_id = str(uuid.uuid4())
@@ -495,7 +502,7 @@ class PerformanceTracker:
         return output.getvalue()
 
 
-# Global tracker instance
+# Global tracker instance (env vars are read only at first creation)
 _tracker_instance: Optional[PerformanceTracker] = None
 
 
@@ -503,10 +510,17 @@ def get_tracker() -> PerformanceTracker:
     """
     Get or create global performance tracker instance.
 
+    Environment variables (read only when the singleton is first created):
+    - ENABLE_PERFORMANCE_TRACKING: enable/disable tracking (default "true")
+    - DEBUG_PERFORMANCE_TRACKING: if "true", enable granular tracking for all
+      operations (default "false"). Changing this after first call has no effect
+      until process restart.
+
     Returns:
         PerformanceTracker instance
     """
     global _tracker_instance
     if _tracker_instance is None:
-        _tracker_instance = PerformanceTracker()
+        debug = os.getenv("DEBUG_PERFORMANCE_TRACKING", "false").lower() == "true"
+        _tracker_instance = PerformanceTracker(debug_mode=debug)
     return _tracker_instance

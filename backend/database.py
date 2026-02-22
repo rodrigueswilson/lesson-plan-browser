@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 from pathlib import Path as PathType
 from typing import Any, Dict, List, Optional, Tuple, Union
 
-from sqlalchemy import func, case, or_
+from sqlalchemy import func, case, or_, text
 from sqlmodel import Session, SQLModel, create_engine, delete, desc, select
 
 from backend.config import settings
@@ -68,6 +68,11 @@ class SQLiteDatabase(DatabaseInterface):
             self.engine = create_engine(
                 sqlite_url, connect_args={"check_same_thread": False}
             )
+            if ":memory:" not in sqlite_url:
+                with self.engine.connect() as conn:
+                    conn.execute(text("PRAGMA journal_mode=WAL"))
+                    conn.commit()
+                logger.debug("SQLite WAL mode enabled (reduces locking risk)")
 
     @staticmethod
     def _normalize_day(day: Optional[str]) -> Optional[str]:

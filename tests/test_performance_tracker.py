@@ -4,6 +4,7 @@ Tests for performance tracker module.
 
 import tempfile
 import time
+from datetime import datetime, timedelta
 from pathlib import Path
 
 import pytest
@@ -297,3 +298,84 @@ def test_cost_calculation_integration(tracker, test_plan):
     # (1000/1000 * 0.01) + (500/1000 * 0.03) = 0.01 + 0.015 = 0.025
     expected_cost = 0.025
     assert abs(metrics[0]["cost_usd"] - expected_cost) < 0.0001
+
+
+def test_cleanup_old_metrics_removes_old_rows(test_db, test_plan, monkeypatch):
+    """Cleanup removes metrics older than retention_days."""
+    monkeypatch.setattr("backend.performance_tracker.get_db", lambda: test_db)
+    old_date = datetime.utcnow() - timedelta(days=31)
+    test_db.save_performance_metric(
+        operation_id="old-op-1",
+        plan_id=test_plan,
+        operation_type="test",
+        started_at=old_date,
+        completed_at=old_date,
+        duration_ms=100.0,
+        tokens_input=0,
+        tokens_output=0,
+        tokens_total=0,
+        llm_provider="",
+        llm_model="",
+        cost_usd=0.0,
+        error_message=None,
+    )
+    assert len(test_db.get_plan_metrics(test_plan)) == 1
+    tracker = PerformanceTracker(enabled=True, retention_days=30)
+    assert len(tracker.get_plan_metrics(test_plan)) == 0
+
+
+def test_cleanup_old_metrics_keeps_recent(test_db, test_plan, monkeypatch):
+    """Cleanup does not remove metrics within retention window."""
+    monkeypatch.setattr("backend.performance_tracker.get_db", lambda: test_db)
+    tracker = PerformanceTracker(enabled=True, retention_days=30)
+    op_id = tracker.start_operation(
+        plan_id=test_plan, operation_type="test_operation"
+    )
+    tracker.end_operation(
+        op_id,
+        result={
+            "tokens_input": 100,
+            "tokens_output": 50,
+            "llm_model": "gpt-4",
+            "llm_provider": "openai",
+        },
+    )
+    assert len(tracker.get_plan_metrics(test_plan)) == 1
+    tracker.cleanup_old_metrics()
+    assert len(tracker.get_plan_metrics(test_plan)) == 1
+
+
+def test_retention_days_parameter(monkeypatch):
+    """Tracker stores and uses retention_days; cleanup is called with it."""
+    from unittest.mock import MagicMock
+    mock_db = MagicMock()
+    mock_db.delete_old_metrics.return_value = 0
+    monkeypatch.setattr("backend.performance_tracker.get_db", lambda: mock_db)
+    tracker = PerformanceTracker(enabled=True, retention_days=7)
+    assert tracker.retention_days == 7
+    mock_db.delete_old_metrics.assert_called_with(7)
+
+
+def test_sampling_rate_zero_skips_non_critical(test_db, test_plan, monkeypatch):
+    """With sampling_rate=0.0 and debug_mode=False, non-critical ops are skipped."""
+    monkeypatch.setattr("backend.performance_tracker.get_db", lambda: test_db)
+    tracker = PerformanceTracker(
+        enabled=True, sampling_rate=0.0, debug_mode=False
+    )
+    for _ in range(20):
+        op_id = tracker.start_operation(
+            test_plan, "parse_open_docx"
+        )
+        assert op_id == ""
+    op_id = tracker.start_operation(test_plan, "batch_process")
+    assert op_id != ""
+
+
+def test_debug_mode_tracks_all(test_db, test_plan, monkeypatch):
+    """With debug_mode=True, all operations are tracked regardless of sampling."""
+    monkeypatch.setattr("backend.performance_tracker.get_db", lambda: test_db)
+    tracker = PerformanceTracker(
+        enabled=True, sampling_rate=0.0, debug_mode=True
+    )
+    op_id = tracker.start_operation(test_plan, "parse_open_docx")
+    assert op_id != ""
