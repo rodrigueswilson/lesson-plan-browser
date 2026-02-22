@@ -30,6 +30,7 @@ from . import logger
 from backend.utils.metadata_utils import get_teacher_name
 from tools.table_structure import TableStructureDetector
 
+from . import get_indices as _get_indices_module
 from . import style as _style_module
 from . import hyperlink_placement as _hyperlink_module
 from . import table_cell
@@ -144,19 +145,11 @@ class DOCXRenderer:
 
     def _get_row_index(self, label: str) -> int:
         """Get row index for a given label using structure metadata."""
-        if self.structure_metadata:
-            idx = self.structure_metadata.get_row_index(label)
-            if idx is not None:
-                # Apply offset if needed (e.g. for day row)
-                return idx + self.structure_metadata.row_offset
-        return -1
+        return _get_indices_module.get_row_index(self, label)
 
     def _get_col_index(self, day: str) -> int:
         """Get column index for a given day using structure metadata."""
-        if self.structure_metadata:
-            idx = self.structure_metadata.get_col_index(day)
-            return idx if idx is not None else -1
-        return -1
+        return _get_indices_module.get_col_index(self, day)
 
     def render(
         self,
