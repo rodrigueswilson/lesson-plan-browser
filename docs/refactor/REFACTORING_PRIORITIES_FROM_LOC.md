@@ -92,11 +92,19 @@ This document analyzes the top files from `python tools/refactor/count_loc.py` a
 
 ---
 
-### 1.7 `tools/batch_processor_pkg/slot_flow.py` (918) and `week_flow.py` (862)
+### 1.7 `tools/batch_processor_pkg/slot_flow.py` (918) — **Done (Session 20)**
 
-**Current shape:** Already split in Session 13 (orchestrator split). These hold the extracted flow logic.
+**Current shape (post-split):** slot_flow.py (slim orchestrator, ~343 lines); slot_flow_resolve.py (resolve_primary_file, raise_no_primary_file_error, open_parser_for_slot); slot_flow_extract.py (find_slot_number, extract_media_for_slot, extract_content_for_slot, no_school builders, content helpers); slot_flow_transform.py (run_llm_transform, finalize_lesson_json). Public API unchanged: process_one_slot.
 
-**Refactor strategy:** Lower priority unless adding features. If needed: **manual** extraction of sub-steps (e.g. slot_flow: resolve file, extract, transform, persist as separate helpers). No need for Bowler/LibCST unless you have a repeatable pattern across the package.
+**Refactor strategy (applied):** Manual extraction of sub-steps (resolve, extract, transform); Cursor for design and extraction; Rope for renames/imports. Branch `refactor/slot-flow-split`.
+
+---
+
+### 1.8 `tools/batch_processor_pkg/week_flow.py` (862)
+
+**Current shape:** Already split in Session 13 (orchestrator split). Holds week-level flow logic.
+
+**Refactor strategy:** Lower priority unless adding features. If needed: **manual** extraction of sub-steps (e.g. load/enrich slots, existing plan, parallel/sequential). No need for Bowler/LibCST unless you have a repeatable pattern across the package.
 
 ---
 
