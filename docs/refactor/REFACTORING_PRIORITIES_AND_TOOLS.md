@@ -6,14 +6,14 @@ This document lists **refactoring and fix priorities** for the codebase and give
 
 ## 0. Multi-session plan and progress (update this as you go)
 
-**Last updated:** 2026-02-21
+**Last updated:** 2026-02-22
 
 ### 0.1 Progress summary
 
 
 | Status          | Items                                                                                                                                                                                                                                                                     |
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Done**        | Batch processor package; Database alias and optional db_path (see 1.4). Session 1 (branch `fix/test-suite-collection`): test suite collection and fixes. Session 2 (branch `refactor/split-api`): split backend/api.py into routers (health, settings, users, plans, process-week, analytics); app mounts routers; duplicate analytics removed; API/smoke tests pass (same pre-existing failures as baseline). |
+| **Done**        | Batch processor package; Database alias and optional db_path (see 1.4). Session 1 (branch `fix/test-suite-collection`): test suite collection and fixes. Session 2 (branch `refactor/split-api`): split backend/api.py into routers (health, settings, users, plans, process-week, analytics); app mounts routers; duplicate analytics removed; API/smoke tests pass. Follow-up: core router (validate, render, progress, transform, repair, tablet export), FastAPI lifespan, enrich_lesson_json_with_times in backend.utils.lesson_times, plan download in plans router; call sites updated (combine.py, scripts). |
 | **In progress** | —                                                                                                                                                                                                                                                                         |
 | **Not started** | Priorities 2–3 (high), 5–9 (medium), 10–13 (lower). Proceed to Session 3 (refactor llm_service) from updated master per Section 0.2.                                                                                                                                                                                                     |
 
@@ -104,6 +104,7 @@ Priorities are ordered by impact and risk. Do high-priority items on a branch; r
 - **Database alias and optional db_path** — `Database = SQLiteDatabase`, `SQLiteDatabase(db_path=...)` for tests/migrations (see `docs/fix/DATABASE_PROBLEMS.md`).
 - **Test suite collection (Session 1)** — Branch `fix/test-suite-collection`: conftest `client` fixture and isolated DB fixture; httpx<0.28; script-style tests converted; DB tests use Session/engine APIs; DOCXRenderer row constants and None guards. Pytest collects 654+ tests with 0 collection errors.
 - **Split backend/api.py (Session 2)** — Branch `refactor/split-api`; routers by domain: health, settings, users, plans, process-week, analytics; app mounts all six routers; duplicate analytics routes removed; API/smoke tests pass (same pre-existing failures as baseline).
+- **api.py core router and lifespan** — Pipeline routes moved to `backend/routers/core.py` (validate, render, progress, transform, repair, tablet export); FastAPI lifespan context manager replaces on_event startup/shutdown; `enrich_lesson_json_with_times` in `backend/utils/lesson_times.py`; GET plan download in plans router; `tools/batch_processor_pkg/combine.py` and scripts import from `backend.utils.lesson_times`.
 
 *(New refactors: track branches, commits, and merges in **Section 0** above; add a one-line bullet here when each is merged to master.)*
 

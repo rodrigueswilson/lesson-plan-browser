@@ -2,12 +2,11 @@
 Plans, lesson steps, lesson mode, and week status API endpoints.
 """
 import asyncio
-import copy
 import json
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from fastapi import APIRouter, Depends, File, HTTPException, Request, UploadFile
+from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import FileResponse
 
 from backend.authorization import get_current_user_id, verify_user_access
@@ -18,13 +17,11 @@ from backend.models import (
     LessonModeSessionResponse,
     LessonPlanDetailResponse,
     LessonStepResponse,
-    ScheduleEntryResponse,
     WeeklyPlanResponse,
     WeekStatusResponse,
 )
 from backend.rate_limiter import rate_limit_auth, rate_limit_general
 from backend.telemetry import logger
-from backend.utils.lesson_json_enricher import enrich_lesson_json_from_steps
 
 router = APIRouter()
 
@@ -250,6 +247,56 @@ async def get_plan_detail(
         logger.error("plan_detail_failed", extra={"error": str(e)})
         raise HTTPException(
             status_code=500, detail=f"Failed to get plan detail: {str(e)}"
+        )
+
+
+@router.get("/plans/{plan_id}/download", tags=["Weekly Plans"])
+async def download_plan_file(
+    plan_id: str,
+    current_user_id: Optional[str] = Depends(get_current_user_id),
+):
+    """
+    Download a weekly plan file by plan ID.
+
+    Uses the stored output_file path from the database, with proper authorization checks.
+    """
+    logger.info("plan_download_requested", extra={"plan_id": plan_id})
+
+    try:
+        db = get_db()
+        plan = db.get_weekly_plan(plan_id)
+
+        if not plan:
+            raise HTTPException(status_code=404, detail=f"Plan not found: {plan_id}")
+
+        verify_user_access(plan.user_id, current_user_id, allow_if_none=True)
+
+        output_file = plan.output_file
+        if not output_file:
+            raise HTTPException(status_code=404, detail="Plan has no output file")
+
+        file_path = Path(output_file)
+        if not file_path.exists():
+            logger.warning(
+                "plan_file_not_found", extra={"plan_id": plan_id, "path": output_file}
+            )
+            raise HTTPException(status_code=404, detail="File not found on server")
+
+        filename = file_path.name
+        logger.info(
+            "plan_file_download", extra={"plan_id": plan_id, "filename": filename}
+        )
+        return FileResponse(
+            path=str(file_path),
+            filename=filename,
+            media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error("plan_download_error", extra={"plan_id": plan_id, "error": str(e)})
+        raise HTTPException(
+            status_code=500, detail=f"Failed to download file: {str(e)}"
         )
 
 
@@ -502,7 +549,7 @@ async def get_lesson_steps(
                         import json
 
                         vocab = json.loads(vocab)
-                    except:
+                    except Exception:
                         vocab = []
 
                 step_responses.append(

@@ -5,7 +5,7 @@ Simulates what happens when enrichment runs.
 import json
 import sqlite3
 from pathlib import Path
-from backend.api import enrich_lesson_json_with_times
+from backend.utils.lesson_times import enrich_lesson_json_with_times
 
 DB_PATH = Path("d:/LP/data/lesson_planner.db")
 

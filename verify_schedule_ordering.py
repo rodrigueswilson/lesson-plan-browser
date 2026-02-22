@@ -43,7 +43,7 @@ def get_latest_plan(db: sqlite3.Connection) -> Optional[Dict[str, Any]]:
         # CRITICAL: Apply enrichment (same as PDF generation) to verify it works
         # The database may contain unenriched JSON, but PDF generation enriches it
         try:
-            from backend.api import enrich_lesson_json_with_times
+            from backend.utils.lesson_times import enrich_lesson_json_with_times
 
             enrich_lesson_json_with_times(lesson_json, user_id)
             print("[INFO] Applied enrichment to lesson JSON")

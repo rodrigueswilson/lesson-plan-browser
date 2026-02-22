@@ -380,7 +380,7 @@ def combine_lessons_impl(
         "batch_merge_summary", extra={"summary": get_merge_summary(merged_json)}
     )
 
-    from backend.api import enrich_lesson_json_with_times
+    from backend.utils.lesson_times import enrich_lesson_json_with_times
 
     user_id = user.get("id") or user.get("user_id")
     if user_id:
@@ -685,7 +685,7 @@ def _render_single_slot(
         objectives_pdf_path = Path(output_path).with_name(
             Path(output_path).stem + "_objectives.pdf"
         )
-        from backend.api import enrich_lesson_json_with_times
+        from backend.utils.lesson_times import enrich_lesson_json_with_times
 
         user_id = user.get("id") or user.get("user_id")
         if user_id:
