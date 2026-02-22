@@ -8,19 +8,22 @@ offering pixel-perfect control over text positioning and page layout.
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
-from backend.config import settings
 from backend.file_manager import get_file_manager
 from backend.services.objectives_pdf_resolve import (
     resolve_html_path as resolve_html_path_fn,
     resolve_output_directory as resolve_output_directory_fn,
     resolve_pdf_and_html_paths as resolve_pdf_and_html_paths_fn,
 )
+from backend.services.objectives_pdf_templates import (
+    get_css_template as get_css_template_fn,
+    get_day_date_for_objectives,
+    get_html_template as get_html_template_fn,
+)
 from backend.services.objectives_utils import normalize_objective_payload
 from backend.services.sorting_utils import sort_slots
 from backend.telemetry import logger
 from backend.utils.metadata_utils import (
     build_document_header,
-    get_day_date,
     get_homeroom,
     get_subject,
     get_teacher_name,
@@ -166,8 +169,8 @@ class ObjectivesPDFGenerator:
 
     def __init__(self):
         """Initialize the PDF generator."""
-        self.css_template = self._get_css_template()
-        self.html_template = self._get_html_template()
+        self.css_template = get_css_template_fn()
+        self.html_template = get_html_template_fn()
         self.file_manager = get_file_manager()
         self._default_output_dir = Path(self.file_manager.base_path)
 
@@ -204,122 +207,9 @@ class ObjectivesPDFGenerator:
             pdf_path,
         )
 
-    def _get_css_template(self) -> str:
-        """Return CSS for precise layout control."""
-        return """
-        @import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600&display=swap');
-
-        @page {
-            size: 11in 8.5in;  /* Landscape US Letter */
-            margin: 0.5in;
-        }
-        
-        * {
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Source Sans Pro', 'Inter', 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
-            background: white;
-        }
-        
-        .objectives-page {
-            width: 10in;  /* 11" - 0.5" margins */
-            height: 7.5in;  /* 8.5" - 0.5" margins */
-            display: flex;
-            flex-direction: column;
-            page-break-after: always;
-        }
-        
-        .header {
-            height: 0.3in;
-            font-size: 10pt;
-            color: #333;
-            display: flex;
-            align-items: center;
-            margin-bottom: 0.05in;
-        }
-        
-        .student-goal-section {
-            flex: 3;  /* 75% of remaining space */
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            min-height: 0;
-        }
-        
-        .student-goal {
-            font-family: 'Source Sans Pro', 'Inter', sans-serif;
-            font-weight: 600;
-            color: #000;
-            line-height: 1.35;
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-        }
-        
-        .separator {
-            height: 0.15in;
-            margin: 0.1in 0;
-            border-bottom: 1px solid #808080;
-        }
-        
-        .wida-section {
-            flex: 1;  /* 25% of remaining space */
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            min-height: 0;
-            padding-top: 0.05in;
-        }
-        
-        .wida-label {
-            font-size: 11pt;
-            font-weight: bold;
-            color: #808080;
-            margin-bottom: 0.05in;
-        }
-        
-        .wida-objective {
-            /* font-size set dynamically via inline style */
-            color: #808080;
-            line-height: 1.3;
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-            max-height: 100%;
-            overflow: visible;
-        }
-        
-        /* Print-specific styles */
-        @media print {
-            .objectives-page {
-                page-break-after: always;
-            }
-            
-            .objectives-page:last-child {
-                page-break-after: auto;
-            }
-        }
-        """
-
-    def _get_html_template(self) -> str:
-        """Return HTML template for objectives pages."""
-        return """
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <meta charset="utf-8">
-            <title>Lesson Plan Objectives - Week of {week_of}</title>
-            <style>
-                {css}
-            </style>
-        </head>
-        <body>
-            {pages}
-        </body>
-        </html>
-        """
+    def _get_day_date(self, week_of: str, day_name: str) -> str:
+        """Get the date for a specific day of the week using standardized utility."""
+        return get_day_date_for_objectives(week_of, day_name)
 
     def _calculate_font_size(
         self,
@@ -576,18 +466,6 @@ class ObjectivesPDFGenerator:
                 "wida_objective": objective_data.get("wida_objective", ""),
             }
         )
-
-    def _get_day_date(self, week_of: str, day_name: str) -> str:
-        """Get the date for a specific day of the week using standardized utility."""
-        # Get school year from config if available
-        config_school_year = None
-        if settings.SCHOOL_YEAR_START_YEAR and settings.SCHOOL_YEAR_END_YEAR:
-            config_school_year = (
-                settings.SCHOOL_YEAR_START_YEAR,
-                settings.SCHOOL_YEAR_END_YEAR,
-            )
-
-        return get_day_date(week_of, day_name, config_school_year=config_school_year)
 
     def generate_html(
         self,
