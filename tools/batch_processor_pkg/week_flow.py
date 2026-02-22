@@ -13,9 +13,8 @@ from typing import Any, Dict, List, Optional
 from backend.config import settings
 from backend.progress import progress_tracker
 from backend.telemetry import logger
-from backend.utils.lesson_json_enricher import enrich_lesson_json_from_steps
 
-from tools.batch_processor_pkg import week_flow_load
+from tools.batch_processor_pkg import week_flow_existing, week_flow_load
 from tools.json_merger import merge_lesson_jsons
 
 
@@ -51,95 +50,14 @@ async def run_process_user_week(
         return load_result
     user, slots, db = load_result
 
-    # Always check for existing plan for this week (Optimization cache)
-    existing_lesson_json = None
-    print("DEBUG: Checking for existing plan for week process optimization")
-    # Try to get existing plan for this week
-    existing_plans = await asyncio.to_thread(db.get_user_plans, user_id, limit=5)
-    # Find the first one with the same week_of
-    existing_plan = next(
-        (p for p in existing_plans if p.week_of == week_of), None
+    (
+        existing_lesson_json,
+        plan_id,
+        slots,
+        partial,
+    ) = await week_flow_existing.load_existing_plan(
+        db, user_id, week_of, plan_id, slots, missing_only, partial
     )
-
-    if existing_plan:
-        print(f"DEBUG: Found existing plan {existing_plan.id} for week {week_of}")
-        # Use current plan_id if not provided
-        if not plan_id:
-            plan_id = existing_plan.id
-
-        # Load existing lesson_json
-        existing_lesson_json = existing_plan.lesson_json
-        if isinstance(existing_lesson_json, str):
-            try:
-                existing_lesson_json = json.loads(existing_lesson_json)
-            except Exception:
-                existing_lesson_json = None
-
-        if existing_lesson_json:
-            # Enrich from steps if needed (api.py logic)
-            existing_lesson_json = enrich_lesson_json_from_steps(
-                existing_lesson_json, existing_plan.id, db
-            )
-            print(
-                f"DEBUG: Loaded and enriched existing lesson_json for plan {existing_plan.id}"
-            )
-            logger.info(
-                "skip_logic_plan_found",
-                extra={
-                    "plan_id": existing_plan.id,
-                    "status": "valid_json_loaded",
-                    "week_of": week_of
-                }
-            )
-
-            if missing_only:
-                print("DEBUG: Identifying missing slots...")
-                # Extract existing slot IDs or slot numbers from existing_lesson_json
-                existing_slots_data = []
-                for day in existing_lesson_json.get("days", {}).values():
-                    existing_slots_data.extend(day.get("slots", []))
-
-                existing_slot_numbers = {
-                    s.get("slot_number")
-                    for s in existing_slots_data
-                    if s.get("slot_number") is not None
-                }
-                print(f"DEBUG: Existing slot numbers: {existing_slot_numbers}")
-
-                # Filter current slots to only those NOT in existing_slots_data
-                # We use slot_number as the primary identifier for "missing"
-                original_count = len(slots)
-                slots = [
-                    s
-                    for s in slots
-                    if s.get("slot_number") not in existing_slot_numbers
-                ]
-                print(
-                    f"DEBUG: Filtered from {original_count} to {len(slots)} missing slots"
-                )
-        else:
-            logger.info(
-                "skip_logic_plan_invalid",
-                extra={
-                    "plan_id": existing_plan.id,
-                    "status": "json_empty_or_invalid",
-                    "week_of": week_of
-                }
-            )
-    else:
-        print(
-            f"DEBUG: No existing plan found for week {week_of}, proceeding with generation"
-        )
-        logger.info(
-            "skip_logic_no_plan",
-            extra={
-                "status": "plan_not_found_in_db",
-                "week_of": week_of
-            }
-        )
-        # If no existing plan, we can't do "partial" merge at the end
-        partial = False
-        missing_only = False
 
     # Store user's metadata for file resolution and rendering
     processor._current_user_id = user_id
