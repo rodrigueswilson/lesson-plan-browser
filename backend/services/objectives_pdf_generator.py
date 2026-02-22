@@ -9,6 +9,10 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 from backend.file_manager import get_file_manager
+from backend.services.objectives_pdf_extraction import (
+    extract_from_day as extract_from_day_fn,
+    extract_from_slot as extract_from_slot_fn,
+)
 from backend.services.objectives_pdf_resolve import (
     resolve_html_path as resolve_html_path_fn,
     resolve_output_directory as resolve_output_directory_fn,
@@ -22,12 +26,7 @@ from backend.services.objectives_pdf_templates import (
 from backend.services.objectives_utils import normalize_objective_payload
 from backend.services.sorting_utils import sort_slots
 from backend.telemetry import logger
-from backend.utils.metadata_utils import (
-    build_document_header,
-    get_homeroom,
-    get_subject,
-    get_teacher_name,
-)
+from backend.utils.metadata_utils import build_document_header, get_teacher_name
 
 
 def extract_subject_from_unit_lesson(unit_lesson: str) -> str:
@@ -294,7 +293,7 @@ class ObjectivesPDFGenerator:
                     logger.debug(
                         f"Processing slot {slot_num} ({day_name}) for objectives extraction"
                     )
-                    self._extract_from_slot(
+                    extract_from_slot_fn(
                         slot,
                         day_name,
                         week_of,
@@ -306,8 +305,7 @@ class ObjectivesPDFGenerator:
                         metadata,
                     )
             else:
-                # Single-slot: extract directly from day
-                self._extract_from_day(
+                extract_from_day_fn(
                     day_data,
                     day_name,
                     week_of,
@@ -320,152 +318,6 @@ class ObjectivesPDFGenerator:
                 )
 
         return objectives
-
-    def _extract_from_slot(
-        self,
-        slot: Dict[str, Any],
-        day_name: str,
-        week_of: str,
-        grade: str,
-        homeroom: str,
-        room: str,
-        teacher_name: str,
-        objectives: List[Dict[str, Any]],
-        metadata: Dict[str, Any],
-    ):
-        """Extract objectives from a slot (multi-slot structure).
-
-        Prioritizes slot-specific metadata over merged metadata.
-        """
-        unit_lesson = slot.get("unit_lesson", "")
-        slot_teacher = get_teacher_name(metadata, slot=slot)
-
-        # Extract slot-specific metadata (prioritize over merged metadata)
-        slot_grade = slot.get("grade", grade)
-        # Use standardized helper to prevent homeroom leakage
-        slot_homeroom = get_homeroom(metadata, slot=slot)
-        slot_room = slot.get("room", room)
-        slot_time = slot.get("time", "")
-
-        # Get subject using standardized helper (metadata only, no text detection)
-        detected_subject = get_subject(metadata, slot=slot)
-
-        # Check if slot has objectives - if not, still include it with empty objectives
-        # This ensures slots that appear in DOCX also appear in objectives output
-        slot_num = slot.get("slot_number", 0)
-        objective_data = normalize_objective_payload(
-            slot.get("objective", {}),
-            {
-                "day": day_name,
-                "slot_number": slot_num,
-                "subject": detected_subject,
-            },
-        )
-        # If no objective data, create empty structure to include the slot
-        if not objective_data:
-            logger.debug(
-                f"Slot {slot_num} ({day_name}) has no objective data - including with empty objectives"
-            )
-            objective_data = {
-                "content_objective": "",
-                "student_goal": "",
-                "wida_objective": "",
-            }
-
-        # Skip "No School" entries
-        if unit_lesson and unit_lesson.strip().lower() == "no school":
-            return
-
-        # Check if all objective fields are "No School"
-        content_obj = objective_data.get("content_objective", "").strip().lower()
-        student_goal = objective_data.get("student_goal", "").strip().lower()
-        wida_obj = objective_data.get("wida_objective", "").strip().lower()
-
-        if (
-            content_obj == "no school"
-            and student_goal == "no school"
-            and wida_obj == "no school"
-        ):
-            return
-
-        objectives.append(
-            {
-                "week_of": week_of,
-                "day": day_name.capitalize(),
-                "subject": detected_subject,  # Use detected subject
-                "grade": slot_grade if slot_grade and slot_grade != "N/A" else grade,
-                "homeroom": slot_homeroom,  # Already uses get_homeroom helper with proper fallback
-                "room": slot_room if slot_room and slot_room != "N/A" else room,
-                "time": slot_time if slot_time and slot_time != "N/A" else "",
-                "teacher_name": slot_teacher,
-                "slot_number": slot.get("slot_number", 0),
-                "unit_lesson": unit_lesson,
-                "content_objective": objective_data.get("content_objective", ""),
-                "student_goal": objective_data.get("student_goal", ""),
-                "wida_objective": objective_data.get("wida_objective", ""),
-            }
-        )
-
-    def _extract_from_day(
-        self,
-        day_data: Dict[str, Any],
-        day_name: str,
-        week_of: str,
-        grade: str,
-        homeroom: str,
-        room: str,
-        metadata: Dict[str, Any],
-        subject: str,
-        objectives: List[Dict[str, Any]],
-    ):
-        """Extract objectives from a day (single-slot structure)."""
-        # Skip if no objective
-        objective_data = normalize_objective_payload(
-            day_data.get("objective", {}),
-            {
-                "day": day_name,
-                "subject": subject,
-            },
-        )
-        if not objective_data:
-            return
-
-        unit_lesson = day_data.get("unit_lesson", "")
-
-        # Skip "No School" entries
-        if unit_lesson and unit_lesson.strip().lower() == "no school":
-            return
-
-        # Check if all objective fields are "No School"
-        content_obj = objective_data.get("content_objective", "").strip().lower()
-        student_goal = objective_data.get("student_goal", "").strip().lower()
-        wida_obj = objective_data.get("wida_objective", "").strip().lower()
-
-        if (
-            content_obj == "no school"
-            and student_goal == "no school"
-            and wida_obj == "no school"
-        ):
-            return
-
-        # Get subject using standardized helper (metadata only, no text detection)
-        detected_subject = get_subject(metadata)
-
-        objectives.append(
-            {
-                "week_of": week_of,
-                "day": day_name.capitalize(),
-                "subject": detected_subject,  # Use detected subject instead of metadata
-                "grade": grade,
-                "homeroom": get_homeroom(metadata),  # Use standardized helper
-                "room": room if room and room != "N/A" else "",
-                "teacher_name": get_teacher_name(metadata),
-                "unit_lesson": unit_lesson,
-                "content_objective": objective_data.get("content_objective", ""),
-                "student_goal": objective_data.get("student_goal", ""),
-                "wida_objective": objective_data.get("wida_objective", ""),
-            }
-        )
 
     def generate_html(
         self,
