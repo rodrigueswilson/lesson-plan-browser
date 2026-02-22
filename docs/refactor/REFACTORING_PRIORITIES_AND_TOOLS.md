@@ -74,19 +74,25 @@ Work in order when possible; fix test suite (Session 1) before large refactors s
 | 45 | `backend/llm/post_process.py` |
 | 36 | `backend/llm/__init__.py` |
 
-**DOCX renderer (Session 5 + Session 24 slim, post table_cell extraction and renderer slim):**
+**DOCX renderer (Session 5 + Session 24 slim; pipeline, fallback_media, template_structure, CLI in __main__):**
 
 | Lines | File |
 | -----:| ------ |
-| 644 | `tools/docx_renderer/renderer.py` |
 | 504 | `tools/docx_renderer/table_cell/fill_cell.py` |
-| 358 | `tools/docx_renderer/table_cell/fill_day.py` |
+| 359 | `tools/docx_renderer/table_cell/fill_day.py` |
 | 273 | `tools/docx_renderer/hyperlink_placement.py` |
+| 240 | `tools/docx_renderer/render_pipeline.py` |
 | 214 | `tools/docx_renderer/table_cell/placement.py` |
 | 186 | `tools/docx_renderer/table_cell/format.py` |
+| 165 | `tools/docx_renderer/renderer.py` |
 | 155 | `tools/docx_renderer/style.py` |
+| 120 | `tools/docx_renderer/fallback_media.py` |
+| 48 | `tools/docx_renderer/template_structure.py` |
 | 48 | `tools/docx_renderer/table_cell/__init__.py` |
+| 35 | `tools/docx_renderer/inject_inline.py` |
+| 29 | `tools/docx_renderer/__main__.py` |
 | 15 | `tools/docx_renderer/table_cell/fill.py` |
+| 14 | `tools/docx_renderer/get_indices.py` |
 | 8 | `tools/docx_renderer/__init__.py` |
 
 **DOCX parser (Session 6, post package extraction):**
@@ -370,7 +376,7 @@ Priorities are ordered by impact and risk. Do high-priority items on a branch; r
 - **Refactor llm_service (Session 3)** — Branch `refactor/llm-service` (merged); extracted to `backend/llm/`: prompt_builder, validation, providers, schema, parse_llm_response (validation), post_process, domain_analysis; `llm_service.py` 789 lines (was ~1,247). Line counts: see **0.5**. LLM tests updated and pass.
 - **PerformanceTracker simplification (Session 4)** — Branch `refactor/performance-tracker`; retention 30 days, cleanup on init, sampling + debug_mode (env DEBUG_PERFORMANCE_TRACKING), critical ops include llm_api_call; retention/sampling/debug_mode tests in test_performance_tracker.py; SQLite WAL for file-based DBs in database.py.
 - **DOCX renderer package (Session 5)** — Branches `refactor/docx-renderer` and `refactor/docx-renderer-table-cell` merged to master. `tools/docx_renderer.py` replaced by package `tools/docx_renderer/` with style.py, hyperlink_placement.py, renderer.py, table_cell package (fill, format, placement, __init__.py); public API unchanged. Line counts in **0.5**.
-- **Slim docx_renderer/renderer.py (Session 24)** — Branch `refactor/slim-docx-renderer-renderer`. Removed or delegated format_*, fill_metadata/fill_single_slot_day/fill_multi_slot_day, try_*, extract_*, filter_*, force_*; table_cell uses style module directly for fonts. renderer.py 644 lines (was ~752). Line counts in **0.5**.
+- **Slim docx_renderer/renderer.py (Session 24)** — Branch `refactor/slim-docx-renderer-renderer`. Extracted get_* to get_indices.py; fallback_media.py (append_unmatched_media, insert_images); template_structure.py (initialize_structure); render_pipeline.py (run_render_pipeline); CLI moved to __main__.py. renderer.py ~165 lines (facade + delegates). Line counts in **0.5**.
 - **DOCX parser package (Session 6)** — Branch `refactor/docx-parser`. `tools/docx_parser.py` (2,146 lines) replaced by package `tools/docx_parser/` with structure.py, no_school.py, table_extraction.py, content_sections.py, slot_extraction.py, images_metadata.py, parser.py, parse_docx; public API (DOCXParser, parse_docx, validate_slot_structure) unchanged. Parser/slot/subject/no_school tests pass.
 - **Database package (Session 7)** — Branch `refactor/database-split`. `backend/database.py` (1,676 lines) replaced by package `backend/database/` with engine.py, users.py, slots.py, plans.py, metrics.py, schedule.py, lesson_steps.py, lesson_mode.py, sqlite_impl.py, get_db.py; single get_db() and DatabaseInterface preserved; DB/API/user_profiles/performance_tracker tests pass. Line counts in **0.5**.
 - **Combined-original styles (Session 8)** — Branch `refactor/combined-original-styles`. Post-merge style normalization in `combined_original.generate_combined_original_docx` (normalize_styles_via_file after merge); docProps/custom.xml and docProps/core.xml added to replacement in docx_utils; module logger `_log` in docx_utils; tests/test_docx_utils_styles.py and combined-original style check; hyperlink Times New Roman 8pt in markdown_to_docx._add_hyperlink; Supabase fallback log-once in users router; ERROR_ANALYSIS updated.
