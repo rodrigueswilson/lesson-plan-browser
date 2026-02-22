@@ -6,16 +6,16 @@ This document lists **refactoring and fix priorities** for the codebase and give
 
 ## 0. Multi-session plan and progress (update this as you go)
 
-**Last updated:** 2026-02-22 (Session 7 database-split done)
+**Last updated:** 2026-02-22 (Session 8 merged)
 
 ### 0.1 Progress summary
 
 
 | Status          | Items                                                                                                                                                                                                                                                                     |
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Done**        | Batch processor package; Database alias and optional db_path (see 1.4). Session 1 (branch `fix/test-suite-collection`): test suite collection and fixes. Session 2 (branch `refactor/split-api`): split backend/api.py into routers (health, settings, users, plans, process-week, analytics); app mounts routers; duplicate analytics removed; API/smoke tests pass. Follow-up: core router (validate, render, progress, transform, repair, tablet export), FastAPI lifespan, enrich_lesson_json_with_times in backend.utils.lesson_times, plan download in plans router; call sites updated (combine.py, scripts). Session 3 (refactor llm_service): prompt_builder, validation, providers, schema, parse_llm_response, post_process, domain_analysis extracted to backend/llm/; llm_service.py 789 lines; merged to master. See **0.5** for line counts per file. Session 4 (branch `refactor/performance-tracker`): retention 30 days, cleanup on init, sampling + debug_mode (env DEBUG_PERFORMANCE_TRACKING), critical ops include llm_api_call; retention/sampling/debug_mode tests; SQLite WAL for file DBs. Session 5 (branches `refactor/docx-renderer`, `refactor/docx-renderer-table-cell`): DOCX renderer package with style.py, hyperlink_placement.py, renderer.py, table_cell package (fill, format, placement); merged to master. Session 6 (branch `refactor/docx-parser`): DOCX parser package with structure.py, no_school.py, table_extraction.py, content_sections.py, slot_extraction.py, images_metadata.py, parser.py, parse_docx; public API unchanged. Line counts in **0.5**. Session 7 (branch `refactor/database-split`): backend/database.py replaced by package backend/database/ (engine, users, slots, plans, metrics, schedule, lesson_steps, lesson_mode, sqlite_impl, get_db); single get_db() and DatabaseInterface preserved; DB/API tests pass. Line counts in **0.5**. |
+| **Done**        | Batch processor package; Database alias and optional db_path (see 1.4). Session 1 (branch `fix/test-suite-collection`): test suite collection and fixes. Session 2 (branch `refactor/split-api`): split backend/api.py into routers (health, settings, users, plans, process-week, analytics); app mounts routers; duplicate analytics removed; API/smoke tests pass. Follow-up: core router (validate, render, progress, transform, repair, tablet export), FastAPI lifespan, enrich_lesson_json_with_times in backend.utils.lesson_times, plan download in plans router; call sites updated (combine.py, scripts). Session 3 (refactor llm_service): prompt_builder, validation, providers, schema, parse_llm_response, post_process, domain_analysis extracted to backend/llm/; llm_service.py 789 lines; merged to master. See **0.5** for line counts per file. Session 4 (branch `refactor/performance-tracker`): retention 30 days, cleanup on init, sampling + debug_mode (env DEBUG_PERFORMANCE_TRACKING), critical ops include llm_api_call; retention/sampling/debug_mode tests; SQLite WAL for file DBs. Session 5 (branches `refactor/docx-renderer`, `refactor/docx-renderer-table-cell`): DOCX renderer package with style.py, hyperlink_placement.py, renderer.py, table_cell package (fill, format, placement); merged to master. Session 6 (branch `refactor/docx-parser`): DOCX parser package with structure.py, no_school.py, table_extraction.py, content_sections.py, slot_extraction.py, images_metadata.py, parser.py, parse_docx; public API unchanged. Line counts in **0.5**. Session 7 (branch `refactor/database-split`): backend/database.py replaced by package backend/database/ (engine, users, slots, plans, metrics, schedule, lesson_steps, lesson_mode, sqlite_impl, get_db); single get_db() and DatabaseInterface preserved; DB/API tests pass. Line counts in **0.5**. Session 8 (branch `refactor/combined-original-styles`): post-merge style normalization for combined_originals DOCX; docProps replacement; docx_utils module logger; style tests; hyperlink Times New Roman 8pt in markdown; Supabase log-once. See **1.4**. |
 | **In progress** | None. |
-| **Not started** | Priorities 8–9 (medium), 10–13 (lower). |
+| **Not started** | Priorities 9 (medium), 10–13 (lower). |
 
 
 ### 0.2 Session plan: branches, commits, merges
@@ -113,6 +113,50 @@ Work in order when possible; fix test suite (Session 1) before large refactors s
 | 59 | `backend/database/lesson_steps.py` |
 | 14 | `backend/database/__init__.py` |
 
+### 0.6 Session 8 plan: Combined-original DOCX styles (Priority 8)
+
+**Branch:** `refactor/combined-original-styles`  
+**Reference:** `docs/ERROR_ANALYSIS_COMBINED_ORIGINAL_STYLES.md`
+
+**Goal:** Eliminate or reliably avoid the Word "Styles 1" / "unreadable content" error on `combined_originals_*.docx` by completing style conflict handling and validating output.
+
+**Current state:**
+- Combined original flow lives in `tools/batch_processor_pkg/combined_original.py` (`generate_combined_original_docx`) and `tools/batch_processor_pkg/combine.py` (`merge_docx_files`).
+- Per-sub-doc: strip (problematic elements, headers/footers, sections, custom styles), then `normalize_styles_from_master(style_master, sub_doc)`; reload from `_normalized_stream` when file-based fallback was used; save temp file.
+- Merge uses template-only master (template loaded, body cleared, then each temp file appended via docxcompose). **No post-merge style fix is applied to the final merged document.**
+- `tools/docx_utils.py`: `normalize_styles_from_master`, `normalize_styles_via_file`, `diagnose_style_conflicts` exist; ERROR_ANALYSIS notes logs still show ~15 style conflicts and normalization completion may not always run or persist into the final file.
+
+**Planned steps:**
+
+1. **Post-merge style normalization (final document)**  
+   After `merge_docx_files(..., master_template_path=template)` writes the output file, load the merged DOCX, replace its styles (and optionally numbering) with the template’s using the existing file-based path (`normalize_styles_via_file` or equivalent), then save over the output path. Implement either:
+   - in `combine.merge_docx_files`: optional post-save step when `master_template_path` is set (load output, normalize from template, save), or  
+   - in `combined_original.generate_combined_original_docx`: after `processor._merge_docx_files(...)`, load `output_path`, run normalization from template, save.  
+   Prefer a single place (SSOT) and minimal API surface; document the choice in ERROR_ANALYSIS.
+
+2. **Ensure normalization runs and is visible**  
+   - Confirm `normalize_styles_from_master` (and file-based fallback) runs for every sub-doc and that `_normalized_stream` reload is used when set.  
+   - Optionally call `diagnose_style_conflicts(style_master, sub_doc)` before normalizing a sub-doc (or once per run) and log at DEBUG/INFO so future debugging is easy.  
+   - Add or keep one WARNING/INFO log when the **final** post-merge style replacement runs (success/failure).
+
+3. **Style checks and tests**  
+   - Add or extend a test that builds a small combined_original DOCX (e.g. 2 plans, mocked or fixture data), then either: (a) opens it with python-docx and asserts style count or key style IDs match template, or (b) runs a small script that opens the file and checks for duplicate/broken style definitions.  
+   - Optionally add a test that calls `diagnose_style_conflicts` and `normalize_styles_via_file` on two in-memory documents and asserts conflict count drops or styles match after normalize.
+
+4. **One full combine pass**  
+   - Run the full batch pipeline (or the combined-original path only) for one real week; open the generated `combined_originals_*.docx` in Word and confirm no "Styles 1" / "unreadable content" dialog (or document any remaining edge case in ERROR_ANALYSIS).
+
+5. **Update ERROR_ANALYSIS**  
+   - Set "Implementation Status" to reflect post-merge fix and any remaining knowns.  
+   - Note where post-merge normalization is implemented (file and function).
+
+**Success criteria (merge to master):**
+- Post-merge style normalization is applied to the final combined document.
+- Style checks and one full combine pass pass; no (or documented) Word errors on the generated file.
+- No regressions in existing combined-original or merge tests (e.g. `test_combined_original_export.py`, any merge tests).
+
+**Tools:** Manual edits and existing `docx_utils` helpers; no new refactoring library required.
+
 ---
 
 ## 1. Refactoring and fix priorities
@@ -165,6 +209,7 @@ Priorities are ordered by impact and risk. Do high-priority items on a branch; r
 - **DOCX renderer package (Session 5)** — Branches `refactor/docx-renderer` and `refactor/docx-renderer-table-cell` merged to master. `tools/docx_renderer.py` replaced by package `tools/docx_renderer/` with style.py, hyperlink_placement.py, renderer.py, table_cell package (fill, format, placement, __init__.py); public API unchanged. Line counts in **0.5**.
 - **DOCX parser package (Session 6)** — Branch `refactor/docx-parser`. `tools/docx_parser.py` (2,146 lines) replaced by package `tools/docx_parser/` with structure.py, no_school.py, table_extraction.py, content_sections.py, slot_extraction.py, images_metadata.py, parser.py, parse_docx; public API (DOCXParser, parse_docx, validate_slot_structure) unchanged. Parser/slot/subject/no_school tests pass.
 - **Database package (Session 7)** — Branch `refactor/database-split`. `backend/database.py` (1,676 lines) replaced by package `backend/database/` with engine.py, users.py, slots.py, plans.py, metrics.py, schedule.py, lesson_steps.py, lesson_mode.py, sqlite_impl.py, get_db.py; single get_db() and DatabaseInterface preserved; DB/API/user_profiles/performance_tracker tests pass. Line counts in **0.5**.
+- **Combined-original styles (Session 8)** — Branch `refactor/combined-original-styles`. Post-merge style normalization in `combined_original.generate_combined_original_docx` (normalize_styles_via_file after merge); docProps/custom.xml and docProps/core.xml added to replacement in docx_utils; module logger `_log` in docx_utils; tests/test_docx_utils_styles.py and combined-original style check; hyperlink Times New Roman 8pt in markdown_to_docx._add_hyperlink; Supabase fallback log-once in users router; ERROR_ANALYSIS updated.
 
 *(New refactors: track branches, commits, and merges in **Section 0** above; add a one-line bullet here when each is merged to master.)*
 

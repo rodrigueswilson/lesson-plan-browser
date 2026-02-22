@@ -355,7 +355,11 @@ async def generate_combined_original_docx(
             from docx import Document
 
             from tools.docx_renderer import DOCXRenderer
-            from tools.docx_utils import normalize_styles_from_master
+            from tools.docx_utils import (
+                diagnose_style_conflicts,
+                normalize_styles_from_master,
+                normalize_styles_via_file,
+            )
 
             file_mgr = get_file_manager_fn(
                 base_path=getattr(processor, "_user_base_path", None)
@@ -445,6 +449,7 @@ async def generate_combined_original_docx(
                     },
                 )
 
+            diagnosed_style_conflicts_once = False
             for plan in deduplicated_plans:
                 temp_filename = f"_temp_orig_slot{plan.slot_number}_{plan.subject.replace('/', '_')}.docx"
                 temp_path = str(originals_dir / temp_filename)
@@ -512,6 +517,16 @@ async def generate_combined_original_docx(
                         remove_headers_footers(sub_doc)
                         strip_sections(sub_doc)
                         strip_custom_styles(sub_doc, style_master)
+
+                        if not diagnosed_style_conflicts_once:
+                            diagnosis = diagnose_style_conflicts(
+                                style_master, sub_doc
+                            )
+                            logger.debug(
+                                "combined_originals_style_diagnosis",
+                                extra=diagnosis,
+                            )
+                            diagnosed_style_conflicts_once = True
 
                         normalize_styles_from_master(style_master, sub_doc)
                         if hasattr(sub_doc, "_normalized_stream"):
@@ -648,6 +663,24 @@ async def generate_combined_original_docx(
                 str(output_path),
                 master_template_path=settings.DOCX_TEMPLATE_PATH,
             )
+
+            template_doc = Document(settings.DOCX_TEMPLATE_PATH)
+            merged_doc = Document(str(output_path))
+            normalized_stream = normalize_styles_via_file(template_doc, merged_doc)
+            if normalized_stream:
+                output_path.write_bytes(normalized_stream.getvalue())
+                logger.info(
+                    "combined_originals_post_merge_styles_applied",
+                    extra={"output_path": str(output_path.absolute())},
+                )
+            else:
+                logger.warning(
+                    "combined_originals_post_merge_styles_failed",
+                    extra={
+                        "output_path": str(output_path.absolute()),
+                        "note": "merged file unchanged; Word may show Styles 1 error",
+                    },
+                )
 
             try:
                 merged_doc = Document(str(output_path))

@@ -232,6 +232,12 @@ if "Hyperlink" not in doc.styles:
 
 **Status:** Implemented on 2025-12-29 to ensure style consistency from the very first merge.
 
+### ✅ Post-Merge Style Normalization on Final Document (IMPLEMENTED — Session 8, 2026-02)
+
+**Status:** Implemented so the **final** merged file (after all slots are merged) has its styles, numbering, font table, and **docProps** (custom.xml, core.xml) replaced with the template’s, eliminating "Styles 1" / "unreadable content" from the saved output. Replacing docProps avoids Word errors caused by merged or corrupt custom document properties.
+
+**Where it runs:** `tools/batch_processor_pkg/combined_original.py`, in `generate_combined_original_docx`, immediately after `processor._merge_docx_files(...)` returns. The function loads the merged document from the output path and the template, calls `normalize_styles_via_file(template_doc, merged_doc)` from `tools/docx_utils`, and if a `BytesIO` is returned, overwrites the output file with that content. `normalize_styles_via_file` replaces `word/styles.xml`, `word/numbering.xml`, `word/fontTable.xml`, and when present in the template `docProps/custom.xml` and `docProps/core.xml`. Log events: `combined_originals_post_merge_styles_applied` (success) or `combined_originals_post_merge_styles_failed` (warning).
+
 **Approach:** 
 Instead of making the first rendered slot the master document, we now:
 1. Load a **fresh copy of the template** as the master.
@@ -339,9 +345,10 @@ By stripping these elements BEFORE merging, we provide `docxcompose` with a much
 
 ## Related Files
 
-- `tools/batch_processor.py` - Lines 6085-6171 (`_generate_combined_original_docx`)
-- `tools/docx_renderer.py` - Lines 249-262 (Hyperlink style fix), Lines 450-479 (Cleanup mode)
-- `tools/docx_renderer.py` - Line 246 (Comment about docxcompose corruption)
+- `tools/batch_processor_pkg/combined_original.py` - `generate_combined_original_docx` (render loop, per-sub-doc strip/normalize, merge call, **post-merge style normalization** via `normalize_styles_via_file` and overwrite of output file)
+- `tools/batch_processor_pkg/combine.py` - `merge_docx_files` (template-only master, append with docxcompose)
+- `tools/docx_utils.py` - `normalize_styles_via_file`, `normalize_styles_from_master`, `diagnose_style_conflicts`; strip/cleanup helpers
+- `tools/docx_renderer/` - Hyperlink style fix, cleanup mode (`is_originals`)
 
 ---
 

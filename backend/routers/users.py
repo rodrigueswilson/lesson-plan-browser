@@ -28,6 +28,10 @@ from backend.week_detector import detect_weeks_from_folder, format_week_display
 
 router = APIRouter()
 
+# Log Supabase fallback warning once per process to avoid log noise
+_supabase_fallback_logged: set = set()
+
+
 # User Management Endpoints
 
 
@@ -101,10 +105,17 @@ async def list_users():
                         extra={"project": "project1", "count": len(users1)},
                     )
                 except Exception as e:
-                    logger.warning(
-                        "users_load_project1_failed",
-                        extra={"error": str(e), "note": _supabase_note},
-                    )
+                    if "project1" not in _supabase_fallback_logged:
+                        _supabase_fallback_logged.add("project1")
+                        logger.warning(
+                            "users_load_project1_failed",
+                            extra={"error": str(e), "note": _supabase_note},
+                        )
+                    else:
+                        logger.debug(
+                            "users_load_project1_failed",
+                            extra={"error": str(e), "note": _supabase_note},
+                        )
 
             # Query project2 if configured
             if settings.SUPABASE_URL_PROJECT2 and settings.SUPABASE_KEY_PROJECT2:
@@ -119,10 +130,17 @@ async def list_users():
                         extra={"project": "project2", "count": len(users2)},
                     )
                 except Exception as e:
-                    logger.warning(
-                        "users_load_project2_failed",
-                        extra={"error": str(e), "note": _supabase_note},
-                    )
+                    if "project2" not in _supabase_fallback_logged:
+                        _supabase_fallback_logged.add("project2")
+                        logger.warning(
+                            "users_load_project2_failed",
+                            extra={"error": str(e), "note": _supabase_note},
+                        )
+                    else:
+                        logger.debug(
+                            "users_load_project2_failed",
+                            extra={"error": str(e), "note": _supabase_note},
+                        )
 
             # Fallback to SQLite when Supabase is unreachable (e.g. getaddrinfo failed)
             if not all_users:

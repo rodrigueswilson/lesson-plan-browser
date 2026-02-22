@@ -3,6 +3,8 @@ Utility functions for DOCX manipulation.
 Follows DRY principle - reusable across modules.
 """
 
+import logging
+
 from docx import Document
 from docx.oxml.ns import qn
 from docx.shared import Inches
@@ -10,6 +12,12 @@ from docx.table import Table
 from docx.oxml import OxmlElement
 from typing import Optional, Dict, Any
 from io import BytesIO
+
+try:
+    import structlog
+    _log = structlog.get_logger(__name__)
+except ImportError:
+    _log = logging.getLogger(__name__)
 
 
 def normalize_table_column_widths(
@@ -192,13 +200,7 @@ def strip_problematic_elements(doc: Document) -> None:
     from docx.oxml.ns import qn
     
     # Use structlog if available
-    try:
-        from backend.telemetry import logger
-    except ImportError:
-        import logging
-        logger = logging.getLogger(__name__)
-        
-    logger.debug("stripping_problematic_elements_started")
+    _log.debug("stripping_problematic_elements_started")
     
     # 1. Remove all bookmarks (w:bookmarkStart, w:bookmarkEnd)
     # These often have duplicate IDs or names after merging
@@ -220,13 +222,13 @@ def strip_problematic_elements(doc: Document) -> None:
         count_proof += 1
 
     if count_bookmarks > 0 or count_comments > 0 or count_proof > 0:
-        logger.info("stripped_elements", extra={
+        _log.info("stripped_elements", extra={
             "bookmarks": count_bookmarks,
             "comments": count_comments,
             "proofing_errors": count_proof
         })
     else:
-        logger.debug("no_problematic_elements_found_to_strip")
+        _log.debug("no_problematic_elements_found_to_strip")
 
 def remove_headers_footers(doc: Document) -> None:
     """
@@ -289,8 +291,12 @@ def strip_sections(doc: Document) -> None:
 
 def normalize_styles_via_file(master_doc: Document, target_doc: Document) -> Optional[BytesIO]:
     """
-    Replace styles, numbering, and font table parts by using temporary files and zipfile.
+    Replace styles, numbering, font table, and docProps (custom.xml, core.xml) by using
+    temporary files and zipfile. Replacing docProps avoids "Word found unreadable content"
+    when merged DOCX have corrupt or conflicting custom properties.
+    
     This is the most reliable method as it directly replaces the XML files in the DOCX package.
+    Only parts present in the master are replaced; missing parts are left unchanged in target.
     
     Returns a BytesIO stream containing the normalized document, or None if failed.
     The caller should reload the document from this stream.
@@ -300,18 +306,11 @@ def normalize_styles_via_file(master_doc: Document, target_doc: Document) -> Opt
     from pathlib import Path
     from io import BytesIO
     
-    # Use structlog if available
-    try:
-        from backend.telemetry import logger
-    except ImportError:
-        import logging
-        logger = logging.getLogger(__name__)
-    
-    logger.warning("file_based_normalization_started")
+    _log.warning("file_based_normalization_started")
     
     try:
         # Save both documents to temporary files
-        logger.debug("saving_documents_to_temp_files")
+        _log.debug("saving_documents_to_temp_files")
         with tempfile.TemporaryDirectory() as temp_dir:
             master_path = Path(temp_dir) / "master.docx"
             target_path = Path(temp_dir) / "target.docx"
@@ -319,13 +318,15 @@ def normalize_styles_via_file(master_doc: Document, target_doc: Document) -> Opt
             
             master_doc.save(str(master_path))
             target_doc.save(str(target_path))
-            logger.debug("documents_saved_to_temp")
+            _log.debug("documents_saved_to_temp")
             
-            # Files to replace for consistency
+            # Files to replace for consistency (styles/numbering/font + docProps to avoid "unreadable content")
             files_to_replace = [
                 'word/styles.xml',
                 'word/numbering.xml',
-                'word/fontTable.xml'
+                'word/fontTable.xml',
+                'docProps/custom.xml',
+                'docProps/core.xml',
             ]
             
             replacement_data = {}
@@ -336,10 +337,16 @@ def normalize_styles_via_file(master_doc: Document, target_doc: Document) -> Opt
                 for xml_file in files_to_replace:
                     if xml_file in master_files:
                         replacement_data[xml_file] = master_zip.read(xml_file)
-                        logger.debug(f"extracted_{xml_file}_from_master")
+                        _log.debug("extracted_from_master", extra={"file": xml_file})
             
+            missing = [f for f in files_to_replace if f not in replacement_data]
+            if missing:
+                _log.debug(
+                    "replacement_files_not_in_master",
+                    extra={"missing": missing, "note": "only parts present in template are replaced"},
+                )
             if not replacement_data:
-                logger.warning("no_replacement_files_found_in_master")
+                _log.warning("no_replacement_files_found_in_master")
                 return None
             
             # Replace files in target
@@ -357,24 +364,24 @@ def normalize_styles_via_file(master_doc: Document, target_doc: Document) -> Opt
                     for filename, data in replacement_data.items():
                         output_zip.writestr(filename, data)
                     
-                    logger.debug("files_replaced_in_zip", extra={
+                    _log.debug("files_replaced_in_zip", extra={
                         "files_copied": files_copied,
-                        "files_replaced": list(replacement_data.keys())
+                        "files_replaced": list(replacement_data.keys()),
                     })
             
             # Read the normalized file into BytesIO
             with open(output_path, 'rb') as f:
                 normalized_data = BytesIO(f.read())
             
-            logger.warning("styles_and_numbering_replaced_via_file", extra={
+            _log.warning("styles_and_numbering_replaced_via_file", extra={
                 "replaced_files": list(replacement_data.keys()),
-                "success": True
+                "success": True,
             })
             
             return normalized_data
             
     except Exception as e:
-        logger.error("file_based_style_replacement_failed", extra={
+        _log.error("file_based_style_replacement_failed", extra={
             "error": str(e),
             "error_type": type(e).__name__
         }, exc_info=True)
@@ -400,21 +407,14 @@ def normalize_styles_from_master(master_doc: Document, target_doc: Document) -> 
         >>> normalize_styles_from_master(master, target)
         >>> # Now target can be safely merged with master
     """
-    # Use structlog if available, otherwise fall back to standard logging
-    try:
-        from backend.telemetry import logger
-    except ImportError:
-        import logging
-        logger = logging.getLogger(__name__)
-    
     # Log function entry immediately
-    logger.info("normalize_styles_from_master_called")
+    _log.info("normalize_styles_from_master_called")
     
     try:
         # Log initial state - use INFO level to ensure visibility
         master_style_count = len(master_doc.styles)
         target_style_count = len(target_doc.styles)
-        logger.info("style_normalization_start", extra={
+        _log.info("style_normalization_start", extra={
             "master_style_count": master_style_count,
             "target_style_count": target_style_count
         })
@@ -428,7 +428,7 @@ def normalize_styles_from_master(master_doc: Document, target_doc: Document) -> 
             master_styles_part = getattr(master_doc.part, '_styles_part', None)
             target_styles_part = getattr(target_doc.part, '_styles_part', None)
             if master_styles_part and target_styles_part:
-                logger.debug("styles_part_accessed", extra={"method": "direct_private_attribute"})
+                _log.debug("styles_part_accessed", extra={"method": "direct_private_attribute"})
         except Exception:
             pass
 
@@ -438,7 +438,7 @@ def normalize_styles_from_master(master_doc: Document, target_doc: Document) -> 
                 master_styles_part = getattr(master_doc.part, 'styles_part', None)
                 target_styles_part = getattr(target_doc.part, 'styles_part', None)
                 if master_styles_part and target_styles_part:
-                    logger.debug("styles_part_accessed", extra={"method": "direct_attribute"})
+                    _log.debug("styles_part_accessed", extra={"method": "direct_attribute"})
             except Exception:
                 pass
         
@@ -456,9 +456,9 @@ def normalize_styles_from_master(master_doc: Document, target_doc: Document) -> 
                     target_styles_part = target_rel.target_part
                     
                 if master_styles_part or target_styles_part:
-                    logger.debug("styles_part_accessed", extra={"method": "relationships"})
+                    _log.debug("styles_part_accessed", extra={"method": "relationships"})
             except Exception as rel_e:
-                logger.debug("styles_part_access_failed", extra={"method": "relationships", "error": str(rel_e)})
+                _log.debug("styles_part_access_failed", extra={"method": "relationships", "error": str(rel_e)})
         
         # Also try to access and replace numbering part if possible
         try:
@@ -473,21 +473,21 @@ def normalize_styles_from_master(master_doc: Document, target_doc: Document) -> 
                 if parent is not None:
                     parent.remove(target_num_xml)
                     parent.append(master_num_xml_copy)
-                    logger.debug("numbering_xml_replaced_in_memory")
+                    _log.debug("numbering_xml_replaced_in_memory")
         except Exception as num_e:
-            logger.debug("numbering_replacement_failed", extra={"error": str(num_e)})
+            _log.debug("numbering_replacement_failed", extra={"error": str(num_e)})
 
         if master_styles_part is None or target_styles_part is None:
             # styles_part is not accessible - use file-based method as primary fallback
             # This is more reliable than the API fallback since it directly replaces styles.xml
-            logger.warning("styles_part_not_accessible", extra={
+            _log.warning("styles_part_not_accessible", extra={
                 "master_styles_part_available": master_styles_part is not None,
                 "target_styles_part_available": target_styles_part is not None,
                 "fallback": "trying_file_based_method"
             })
             
             # Try file-based normalization first (most reliable)
-            logger.warning("attempting_file_based_normalization", extra={
+            _log.warning("attempting_file_based_normalization", extra={
                 "reason": "styles_part_not_accessible"
             })
             try:
@@ -496,27 +496,27 @@ def normalize_styles_from_master(master_doc: Document, target_doc: Document) -> 
                     # Store the stream in target_doc for caller to use
                     # The caller will reload the document from this stream
                     target_doc._normalized_stream = normalized_stream
-                    logger.warning("file_based_normalization_prepared", extra={
+                    _log.warning("file_based_normalization_prepared", extra={
                         "note": "caller_will_reload_document_from_stream",
                         "stream_size": len(normalized_stream.getvalue())
                     })
                     return
                 else:
-                    logger.warning("file_based_normalization_returned_none", extra={
+                    _log.warning("file_based_normalization_returned_none", extra={
                         "fallback": "using_document_styles_api"
                     })
             except Exception as file_e:
-                logger.error("file_based_normalization_exception", extra={
+                _log.error("file_based_normalization_exception", extra={
                     "error": str(file_e),
                     "error_type": type(file_e).__name__,
                     "fallback": "using_document_styles_api"
                 }, exc_info=True)
             
             # Final fallback: Copy styles using Document.styles API
-            logger.info("using_document_styles_api_fallback", extra={
+            _log.info("using_document_styles_api_fallback", extra={
                 "note": "api_fallback_has_limitations_may_not_prevent_styles_1_error"
             })
-            _normalize_styles_via_api(master_doc, target_doc, logger)
+            _normalize_styles_via_api(master_doc, target_doc, _log)
             return
         
         # Get the styles XML elements
@@ -526,7 +526,7 @@ def normalize_styles_from_master(master_doc: Document, target_doc: Document) -> 
         # Log style IDs before replacement
         master_style_ids = [style.get(qn('w:styleId')) for style in master_styles_xml.findall(qn('w:style'))]
         target_style_ids_before = [style.get(qn('w:styleId')) for style in target_styles_xml.findall(qn('w:style'))]
-        logger.debug("style_ids_before_normalization", extra={
+        _log.debug("style_ids_before_normalization", extra={
             "master_style_ids": master_style_ids[:20],  # Limit to first 20 for log size
             "target_style_ids_before": target_style_ids_before[:20]
         })
@@ -547,7 +547,7 @@ def normalize_styles_from_master(master_doc: Document, target_doc: Document) -> 
             parent.remove(target_styles_xml)
             # Insert the master's styles element
             parent.append(master_xml_copy)
-            logger.debug("styles_xml_replaced_via_parent")
+            _log.debug("styles_xml_replaced_via_parent")
         else:
             # Fallback: Clear and copy children if no parent
             target_styles_xml.clear()
@@ -557,11 +557,11 @@ def normalize_styles_from_master(master_doc: Document, target_doc: Document) -> 
             # Copy all attributes from master
             for attr_name, attr_value in master_styles_xml.attrib.items():
                 target_styles_xml.set(attr_name, attr_value)
-            logger.debug("styles_xml_replaced_via_children")
+            _log.debug("styles_xml_replaced_via_children")
         
         # Verify replacement
         target_style_ids_after = [style.get(qn('w:styleId')) for style in target_styles_xml.findall(qn('w:style'))]
-        logger.info("style_normalization_complete", extra={
+        _log.info("style_normalization_complete", extra={
             "target_style_count_before": len(target_style_ids_before),
             "target_style_count_after": len(target_style_ids_after),
             "method": "xml_replacement",
@@ -570,18 +570,18 @@ def normalize_styles_from_master(master_doc: Document, target_doc: Document) -> 
                     
     except AttributeError as e:
         # Handle case where styles_part attribute doesn't exist
-        logger.debug("styles_part_not_available", extra={"error": str(e), "action": "trying_api_fallback"})
+        _log.debug("styles_part_not_available", extra={"error": str(e), "action": "trying_api_fallback"})
         try:
-            _normalize_styles_via_api(master_doc, target_doc, logger)
+            _normalize_styles_via_api(master_doc, target_doc, _log)
         except Exception as api_e:
-            logger.warning("api_fallback_failed", extra={"error": str(api_e)})
+            _log.warning("api_fallback_failed", extra={"error": str(api_e)})
     except Exception as e:
         # If normalization fails, log but don't crash
         # The document might still be mergeable, just with potential style conflicts
-        logger.warning("style_normalization_failed", extra={"error": str(e)}, exc_info=True)
+        _log.warning("style_normalization_failed", extra={"error": str(e)}, exc_info=True)
 
 
-def _normalize_styles_via_api(master_doc: Document, target_doc: Document, logger) -> None:
+def _normalize_styles_via_api(master_doc: Document, target_doc: Document, log) -> None:
     """
     Fallback method to normalize styles using Document.styles API.
     This is used when direct styles_part access is not available.
@@ -593,14 +593,14 @@ def _normalize_styles_via_api(master_doc: Document, target_doc: Document, logger
     from docx.enum.style import WD_STYLE_TYPE
     from docx.shared import Pt, RGBColor
     
-    logger.info("using_document_styles_api_fallback", extra={"method": "fallback"})
+    log.info("using_document_styles_api_fallback", extra={"method": "fallback"})
     
     # Get all styles from master
     master_styles = {}
     for style in master_doc.styles:
         master_styles[style.name] = style
     
-    logger.info("api_fallback_processing_styles", extra={
+    log.info("api_fallback_processing_styles", extra={
         "master_style_count": len(master_styles),
         "target_style_count_before": len(target_doc.styles)
     })
@@ -633,7 +633,7 @@ def _normalize_styles_via_api(master_doc: Document, target_doc: Document, logger
                                 target_style.font.color.rgb = master_style.font.color.rgb
                     copied_count += 1
                 except Exception as prop_e:
-                    logger.debug("style_property_copy_failed", extra={
+                    log.debug("style_property_copy_failed", extra={
                         "style_name": style_name,
                         "error": str(prop_e)
                     })
@@ -653,19 +653,19 @@ def _normalize_styles_via_api(master_doc: Document, target_doc: Document, logger
                             new_style.font.italic = master_style.font.italic
                     added_count += 1
                 except Exception as add_e:
-                    logger.debug("style_add_failed", extra={
+                    log.debug("style_add_failed", extra={
                         "style_name": style_name,
                         "error": str(add_e)
                     })
                     failed_count += 1
         except Exception as e:
-            logger.debug("style_copy_exception", extra={
+            log.debug("style_copy_exception", extra={
                 "style_name": style_name,
                 "error": str(e)
             })
             failed_count += 1
     
-    logger.info("styles_normalized_via_api", extra={
+    log.info("styles_normalized_via_api", extra={
         "total_master_styles": len(master_styles),
         "copied_count": copied_count,
         "added_count": added_count,
@@ -693,13 +693,6 @@ def diagnose_style_conflicts(master_doc: Document, target_doc: Document) -> Dict
         - target_only: Styles only in target
         - styles_part_available: Whether styles_part is accessible
     """
-    # Use structlog if available, otherwise fall back to standard logging
-    try:
-        from backend.telemetry import logger
-    except ImportError:
-        import logging
-        logger = logging.getLogger(__name__)
-    
     diagnosis = {
         "style_counts": {
             "master": len(master_doc.styles),
@@ -739,7 +732,7 @@ def diagnose_style_conflicts(master_doc: Document, target_doc: Document) -> Dict
     diagnosis["master_only"] = list(master_style_names - target_style_names)
     diagnosis["target_only"] = list(target_style_names - master_style_names)
     
-    logger.info("style_diagnosis_complete", extra={
+    _log.info("style_diagnosis_complete", extra={
         "master_style_count": diagnosis['style_counts']['master'],
         "target_style_count": diagnosis['style_counts']['target'],
         "common_styles_count": len(diagnosis['conflicting_styles']),

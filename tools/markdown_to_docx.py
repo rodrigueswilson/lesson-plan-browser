@@ -347,6 +347,14 @@ class MarkdownToDocx:
         new_run = OxmlElement("w:r")
         rPr = OxmlElement("w:rPr")
 
+        # Times New Roman 8pt so links match the rest of the lesson plan (avoid Arial 11pt inheritance)
+        rFonts = OxmlElement("w:rFonts")
+        rFonts.set(qn("w:ascii"), "Times New Roman")
+        rFonts.set(qn("w:hAnsi"), "Times New Roman")
+        rFonts.set(qn("w:cs"), "Times New Roman")
+        rFonts.set(qn("w:eastAsia"), "Times New Roman")
+        rPr.append(rFonts)
+
         # Color and Underline (traditional link style)
         color = OxmlElement("w:color")
         color.set(qn("w:val"), "0000FF")
@@ -359,6 +367,13 @@ class MarkdownToDocx:
         if bold:
             b = OxmlElement("w:b")
             rPr.append(b)
+
+        sz = OxmlElement("w:sz")
+        sz.set(qn("w:val"), "16")
+        rPr.append(sz)
+        szCs = OxmlElement("w:szCs")
+        szCs.set(qn("w:val"), "16")
+        rPr.append(szCs)
 
         new_run.append(rPr)
         t = OxmlElement("w:t")
