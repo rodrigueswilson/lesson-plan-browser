@@ -58,7 +58,7 @@ This document analyzes the top files from `python tools/refactor/count_loc.py` a
 
 ---
 
-### 1.4 `backend/services/sentence_frames_pdf_generator.py` (1,088 lines) — **Done (Session 17)**
+### 1.4 `backend/services/sentence_frames_pdf_generator.py` (183 lines, post-split facade) — **Done (Session 17)**
 
 **Current shape (post-split):** Facade `sentence_frames_pdf_generator.py` + subpackage `backend/services/sentence_frames/` (extraction, html_builder, pdf_renderer, docx_renderer). Public API unchanged.
 
@@ -76,7 +76,7 @@ This document analyzes the top files from `python tools/refactor/count_loc.py` a
 
 ---
 
-### 1.5 `backend/services/objectives_printer.py` (1,056 lines) — **Done (Session 17)**
+### 1.5 `backend/services/objectives_printer.py` (158 lines, post-split facade) — **Done (Session 17)**
 
 **Current shape (post-split):** Facade `objectives_printer.py` + subpackage `backend/services/objectives/` (subject_parsing, extraction, formatting, printing, font_calculation, docx_renderer). Public API unchanged.
 
