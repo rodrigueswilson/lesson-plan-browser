@@ -6,16 +6,16 @@ This document lists **refactoring and fix priorities** for the codebase and give
 
 ## 0. Multi-session plan and progress (update this as you go)
 
-**Last updated:** 2026-02-22
+**Last updated:** 2026-02-22 (Session 7 database-split done)
 
 ### 0.1 Progress summary
 
 
 | Status          | Items                                                                                                                                                                                                                                                                     |
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Done**        | Batch processor package; Database alias and optional db_path (see 1.4). Session 1 (branch `fix/test-suite-collection`): test suite collection and fixes. Session 2 (branch `refactor/split-api`): split backend/api.py into routers (health, settings, users, plans, process-week, analytics); app mounts routers; duplicate analytics removed; API/smoke tests pass. Follow-up: core router (validate, render, progress, transform, repair, tablet export), FastAPI lifespan, enrich_lesson_json_with_times in backend.utils.lesson_times, plan download in plans router; call sites updated (combine.py, scripts). Session 3 (refactor llm_service): prompt_builder, validation, providers, schema, parse_llm_response, post_process, domain_analysis extracted to backend/llm/; llm_service.py 789 lines; merged to master. See **0.5** for line counts per file. Session 4 (branch `refactor/performance-tracker`): retention 30 days, cleanup on init, sampling + debug_mode (env DEBUG_PERFORMANCE_TRACKING), critical ops include llm_api_call; retention/sampling/debug_mode tests; SQLite WAL for file DBs. Session 5 (branches `refactor/docx-renderer`, `refactor/docx-renderer-table-cell`): DOCX renderer package with style.py, hyperlink_placement.py, renderer.py, table_cell package (fill, format, placement); merged to master. Session 6 (branch `refactor/docx-parser`): DOCX parser package with structure.py, no_school.py, table_extraction.py, content_sections.py, slot_extraction.py, images_metadata.py, parser.py, parse_docx; public API unchanged. Line counts in **0.5**. |
+| **Done**        | Batch processor package; Database alias and optional db_path (see 1.4). Session 1 (branch `fix/test-suite-collection`): test suite collection and fixes. Session 2 (branch `refactor/split-api`): split backend/api.py into routers (health, settings, users, plans, process-week, analytics); app mounts routers; duplicate analytics removed; API/smoke tests pass. Follow-up: core router (validate, render, progress, transform, repair, tablet export), FastAPI lifespan, enrich_lesson_json_with_times in backend.utils.lesson_times, plan download in plans router; call sites updated (combine.py, scripts). Session 3 (refactor llm_service): prompt_builder, validation, providers, schema, parse_llm_response, post_process, domain_analysis extracted to backend/llm/; llm_service.py 789 lines; merged to master. See **0.5** for line counts per file. Session 4 (branch `refactor/performance-tracker`): retention 30 days, cleanup on init, sampling + debug_mode (env DEBUG_PERFORMANCE_TRACKING), critical ops include llm_api_call; retention/sampling/debug_mode tests; SQLite WAL for file DBs. Session 5 (branches `refactor/docx-renderer`, `refactor/docx-renderer-table-cell`): DOCX renderer package with style.py, hyperlink_placement.py, renderer.py, table_cell package (fill, format, placement); merged to master. Session 6 (branch `refactor/docx-parser`): DOCX parser package with structure.py, no_school.py, table_extraction.py, content_sections.py, slot_extraction.py, images_metadata.py, parser.py, parse_docx; public API unchanged. Line counts in **0.5**. Session 7 (branch `refactor/database-split`): backend/database.py replaced by package backend/database/ (engine, users, slots, plans, metrics, schedule, lesson_steps, lesson_mode, sqlite_impl, get_db); single get_db() and DatabaseInterface preserved; DB/API tests pass. Line counts in **0.5**. |
 | **In progress** | None. |
-| **Not started** | Session 7 (database-split) next; then priorities 8–9 (medium), 10–13 (lower). |
+| **Not started** | Priorities 8–9 (medium), 10–13 (lower). |
 
 
 ### 0.2 Session plan: branches, commits, merges
@@ -97,6 +97,22 @@ Work in order when possible; fix test suite (Session 1) before large refactors s
 | 70 | `tools/docx_parser/table_extraction.py` |
 | 7 | `tools/docx_parser/__init__.py` |
 
+**Database (Session 7, post package extraction):**
+
+| Lines | File |
+| -----:| ------ |
+| 480 | `backend/database/metrics.py` |
+| 394 | `backend/database/sqlite_impl.py` |
+| 281 | `backend/database/plans.py` |
+| 166 | `backend/database/users.py` |
+| 164 | `backend/database/lesson_mode.py` |
+| 154 | `backend/database/slots.py` |
+| 125 | `backend/database/schedule.py` |
+| 87 | `backend/database/engine.py` |
+| 66 | `backend/database/get_db.py` |
+| 59 | `backend/database/lesson_steps.py` |
+| 14 | `backend/database/__init__.py` |
+
 ---
 
 ## 1. Refactoring and fix priorities
@@ -121,7 +137,7 @@ Priorities are ordered by impact and risk. Do high-priority items on a branch; r
 | -------- | ------------------------------------------------- | ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 5        | **Split `tools/docx_renderer`** (done)             | `tools/docx_renderer/`                            | Done: package with style.py, hyperlink_placement.py, renderer.py, table_cell package (fill, format, placement). Merged to master (Session 5). Line counts in **0.5**. |
 | 6        | **Split `tools/docx_parser.py`** (done; was ~2,146 lines) | `tools/docx_parser/`                            | Done: package with structure.py, no_school.py, table_extraction.py, content_sections.py, slot_extraction.py, images_metadata.py, parser.py, parse_docx; public API unchanged. Line counts in **0.5**. |
-| 7        | **Split `backend/database.py`** (~1,850 lines)    | `backend/database.py`                             | Split by domain: user CRUD, plans/slots, lesson steps, metrics, migrations. Keep single `get_db()` and interface.                                    |
+| 7        | **Split `backend/database.py`** (done)             | `backend/database/`                               | Done: package with engine, users, slots, plans, metrics, schedule, lesson_steps, lesson_mode, sqlite_impl, get_db; single get_db() and interface. Line counts in **0.5**. |
 | 8        | **Combined-original DOCX styles**                 | `docs/ERROR_ANALYSIS_COMBINED_ORIGINAL_STYLES.md` | Refactor rendering/merge so style conflicts are avoided or cleaned up post-merge.                                                                    |
 | 9        | **Supabase database module**                      | `backend/supabase_database.py` (~1,520 lines)     | Extract: auth, query helpers, sync logic.                                                                                                            |
 
@@ -148,6 +164,7 @@ Priorities are ordered by impact and risk. Do high-priority items on a branch; r
 - **PerformanceTracker simplification (Session 4)** — Branch `refactor/performance-tracker`; retention 30 days, cleanup on init, sampling + debug_mode (env DEBUG_PERFORMANCE_TRACKING), critical ops include llm_api_call; retention/sampling/debug_mode tests in test_performance_tracker.py; SQLite WAL for file-based DBs in database.py.
 - **DOCX renderer package (Session 5)** — Branches `refactor/docx-renderer` and `refactor/docx-renderer-table-cell` merged to master. `tools/docx_renderer.py` replaced by package `tools/docx_renderer/` with style.py, hyperlink_placement.py, renderer.py, table_cell package (fill, format, placement, __init__.py); public API unchanged. Line counts in **0.5**.
 - **DOCX parser package (Session 6)** — Branch `refactor/docx-parser`. `tools/docx_parser.py` (2,146 lines) replaced by package `tools/docx_parser/` with structure.py, no_school.py, table_extraction.py, content_sections.py, slot_extraction.py, images_metadata.py, parser.py, parse_docx; public API (DOCXParser, parse_docx, validate_slot_structure) unchanged. Parser/slot/subject/no_school tests pass.
+- **Database package (Session 7)** — Branch `refactor/database-split`. `backend/database.py` (1,676 lines) replaced by package `backend/database/` with engine.py, users.py, slots.py, plans.py, metrics.py, schedule.py, lesson_steps.py, lesson_mode.py, sqlite_impl.py, get_db.py; single get_db() and DatabaseInterface preserved; DB/API/user_profiles/performance_tracker tests pass. Line counts in **0.5**.
 
 *(New refactors: track branches, commits, and merges in **Section 0** above; add a one-line bullet here when each is merged to master.)*
 

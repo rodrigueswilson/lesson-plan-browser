@@ -35,12 +35,13 @@ Bilingual Weekly Plan Builder/
 ├── shared/                # Shared modules (lesson-api, lesson-browser, lesson-mode)
 ├── backend/               # Python FastAPI service
 │   ├── api.py            # REST API endpoints + SSE
-│   ├── database.py       # SQLite multi-user storage
-│   ├── llm_service.py    # OpenAI/Anthropic integration
+│   ├── database/         # SQLite multi-user storage (engine, users, plans, metrics, etc.)
+│   ├── llm_service.py    # LLM orchestration (789 lines)
+│   ├── llm/              # Schema, validation, prompts, providers, post-process
 │   └── file_manager.py   # Week folder organization
 ├── tools/                 # Core processing pipeline
-│   ├── docx_parser.py    # Multi-format DOCX parsing
-│   ├── docx_renderer.py  # Template-based DOCX generation
+│   ├── docx_parser/       # Multi-format DOCX parsing (package)
+│   ├── docx_renderer/    # Template-based DOCX generation (package)
 │   ├── batch_processor.py # 5-slot weekly processing
 │   └── json_merger.py    # Weekly plan consolidation
 ├── templates/             # Jinja2 rendering templates
