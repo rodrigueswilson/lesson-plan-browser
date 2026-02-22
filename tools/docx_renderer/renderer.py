@@ -584,12 +584,6 @@ class DOCXRenderer:
             append_mode=append_mode,
         )
 
-    def _format_objective(self, objective: Dict) -> str:
-        return table_cell.format_objective(self, objective)
-
-    def _format_anticipatory_set(self, anticipatory: Dict) -> str:
-        return table_cell.format_anticipatory_set(self, anticipatory)
-
     def _filter_valid_vocabulary_pairs(
         self, vocabulary_cognates: List[Dict]
     ) -> List[Dict]:
@@ -597,22 +591,6 @@ class DOCXRenderer:
 
     def _filter_valid_sentence_frames(self, sentence_frames: List[Dict]) -> List[Dict]:
         return table_cell.filter_valid_sentence_frames(self, sentence_frames)
-
-    def _format_tailored_instruction(
-        self,
-        instruction: Dict,
-        vocabulary_cognates: Optional[List[Dict]] = None,
-        sentence_frames: Optional[List[Dict]] = None,
-    ) -> str:
-        return table_cell.format_tailored_instruction(
-            self, instruction, vocabulary_cognates, sentence_frames
-        )
-
-    def _format_misconceptions(self, misconceptions: Dict) -> str:
-        return table_cell.format_misconceptions(self, misconceptions)
-
-    def _format_assessment(self, assessment: Dict) -> str:
-        return table_cell.format_assessment(self, assessment)
 
     def _try_structure_based_placement(
         self, image: Dict, day_name: str, section_name: str, col_idx: int
@@ -825,10 +803,6 @@ class DOCXRenderer:
     def _add_hyperlink(self, paragraph, text: str, url: str, bold: bool = False, insert_at: int = None):
         """Add a hyperlink to a paragraph."""
         _hyperlink_module.add_hyperlink(self, paragraph, text, url, bold=bold, insert_at=insert_at)
-
-    def _format_homework(self, homework: Dict) -> str:
-        return table_cell.format_homework(self, homework)
-
 
 def main():
     """CLI entry point."""
