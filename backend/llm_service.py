@@ -3,7 +3,6 @@ LLM Service for Bilingual Lesson Plan Transformation
 Integrates OpenAI/Anthropic APIs with prompt_v4.md framework
 """
 
-import json
 import os
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
@@ -33,15 +32,11 @@ from backend.llm.providers import (
     check_for_enums,
     convert_enums_to_strings,
 )
-from backend.llm.validation import (
-    parse_llm_response,
-    parse_validation_errors,
-    validate_structure,
-)
+from backend.llm.validation import parse_validation_errors
 from backend.llm.api_key import get_llm_api_key
 from backend.llm.post_process import normalize_sentence_frame_punctuation
 from backend.llm.token_limits import get_max_completion_tokens, get_model_token_limit
-from backend.performance_tracker import get_tracker
+from backend.llm.transform_runner import run_transform_lesson
 from backend.telemetry import logger
 
 # Load environment variables
@@ -198,7 +193,7 @@ class LLMService:
         progress_callback: Optional[Callable[[str, int, str], None]] = None,
     ) -> Tuple[bool, Optional[Dict[str, Any]], Optional[str]]:
         """
-        Transform primary teacher content to bilingual lesson plan
+        Transform primary teacher content to bilingual lesson plan.
 
         Args:
             primary_content: Primary teacher's lesson content
@@ -213,346 +208,18 @@ class LLMService:
         Returns:
             Tuple of (success, lesson_json, error_message)
         """
-        logger.info(
-            "llm_transform_started",
-            extra={
-                "grade": grade,
-                "subject": subject,
-                "week_of": week_of,
-                "available_days": available_days,
-            },
+        return run_transform_lesson(
+            self,
+            primary_content,
+            grade,
+            subject,
+            week_of,
+            teacher_name=teacher_name,
+            homeroom=homeroom,
+            plan_id=plan_id,
+            available_days=available_days,
+            progress_callback=progress_callback,
         )
-
-        # Update progress: Starting transformation
-        if progress_callback:
-            progress_callback(
-                "processing", 10, f"Preparing to transform {subject} lesson plan..."
-            )
-
-        tracker = get_tracker()
-
-        # Track original max_completion_tokens to restore after retries (must be before try block)
-        original_max_tokens = self.max_completion_tokens
-
-        try:
-            # Track prompt building
-            if progress_callback:
-                progress_callback(
-                    "processing", 15, "Building prompt for AI transformation..."
-                )
-
-            if plan_id:
-                with tracker.track_operation(plan_id, "llm_build_prompt"):
-                    full_prompt = self._build_prompt(
-                        primary_content,
-                        grade,
-                        subject,
-                        week_of,
-                        teacher_name,
-                        homeroom,
-                        available_days,
-                    )
-            else:
-                full_prompt = self._build_prompt(
-                    primary_content,
-                    grade,
-                    subject,
-                    week_of,
-                    teacher_name,
-                    homeroom,
-                    available_days,
-                )
-
-            if progress_callback:
-                progress_callback(
-                    "processing", 20, "Prompt built. Sending to AI service..."
-                )
-
-            # Retry logic: use config setting for max retries
-            # RATE_LIMIT_RETRY_ATTEMPTS means "number of retry attempts" (e.g., 3 retries = 4 total attempts)
-            max_retries = settings.RATE_LIMIT_RETRY_ATTEMPTS
-            retry_count = 0
-            lesson_json = None
-            validation_error = None
-            error_analysis = None  # Store error analysis for retry prompts
-
-            # Loop allows max_retries + 1 total attempts (1 initial + max_retries retries)
-            while retry_count <= max_retries:
-                # Update progress: About to call LLM API
-                if progress_callback:
-                    if retry_count > 0:
-                        progress_callback(
-                            "processing",
-                            25,
-                            f"Retrying AI transformation (attempt {retry_count + 1})...",
-                        )
-                    else:
-                        progress_callback(
-                            "processing",
-                            25,
-                            "Calling AI service to transform lesson plan...",
-                        )
-
-                # PHASE 5: Try Instructor Path for OpenAI
-                if self.provider == "openai" and self.instructor_client:
-                    try:
-                        if plan_id:
-                            with tracker.track_operation(
-                                plan_id, "llm_api_call_instructor"
-                            ) as op:
-                                # We let instructor handle retries for validation internally
-                                # But we still track tokens and outcomes
-                                lesson_json, usage = (
-                                    self._call_instructor_chat_completion(
-                                        full_prompt, max_retries=max_retries
-                                    )
-                                )
-                                op["llm_model"] = self.model
-                                op["llm_provider"] = "openai-instructor"
-                        else:
-                            lesson_json, usage = self._call_instructor_chat_completion(
-                                full_prompt, max_retries=max_retries
-                            )
-
-                        # If we got here, lesson_json is already a validated dict
-                        # We can skip the parse and validate structure steps
-                        is_valid = True
-                        validation_error = None
-                        response_text = json.dumps(
-                            lesson_json
-                        )  # For logging compatibility
-                        break  # Exit retry loop
-
-                    except Exception as e:
-                        logger.warning(
-                            "llm_instructor_failed_falling_back",
-                            extra={"error": str(e), "retry_count": retry_count},
-                        )
-                        # Fallback to legacy path if instructor fails repeatedly or has issues
-                        # (though instructor is usually more robust)
-                        # If it's a validation error instructor couldn't fix, we might want to retry with legacy?
-                        # For now, let's keep the legacy path as fallback inside the loop
-
-                # LEGACY PATH (Phase 1-3 fixes still apply here)
-                # Track LLM API call
-                if plan_id:
-                    with tracker.track_operation(plan_id, "llm_api_call") as op:
-                        if retry_count > 0:
-                            # Add feedback to prompt for retry
-                            feedback_prompt = self._build_retry_prompt(
-                                full_prompt,
-                                validation_error,
-                                retry_count,
-                                available_days,
-                                error_analysis,
-                            )
-                            response_text, usage = self._call_llm(feedback_prompt)
-                        else:
-                            response_text, usage = self._call_llm(full_prompt)
-                        # Store usage info for tracking
-                        op["tokens_input"] = usage.get("tokens_input", 0)
-                        op["tokens_output"] = usage.get("tokens_output", 0)
-                        op["llm_model"] = self.model
-                        op["llm_provider"] = self.provider
-                        op["retry_count"] = retry_count
-                else:
-                    if retry_count > 0:
-                        # Add feedback to prompt for retry
-                        feedback_prompt = self._build_retry_prompt(
-                            full_prompt,
-                            validation_error,
-                            retry_count,
-                            None,
-                            error_analysis,
-                        )
-                        response_text, usage = self._call_llm(feedback_prompt)
-                    else:
-                        response_text, usage = self._call_llm(full_prompt)
-
-                # Update progress: API call completed
-                if progress_callback:
-                    progress_callback(
-                        "processing", 60, "AI response received. Processing results..."
-                    )
-
-                # CRITICAL: Check if response was truncated (near token limit)
-                was_truncated = usage.get("tokens_output", 0) >= (
-                    self.max_completion_tokens * 0.95
-                )
-                if was_truncated:
-                    logger.warning(
-                        "llm_response_near_limit",
-                        extra={
-                            "tokens_output": usage.get("tokens_output", 0),
-                            "max_completion_tokens": self.max_completion_tokens,
-                            "model": self.model,
-                            "retry_count": retry_count,
-                        },
-                    )
-                    # Increase max tokens for retry (up to 2x original, but cap at model limit)
-                    if retry_count < max_retries:
-                        new_max_tokens = min(
-                            int(self.max_completion_tokens * 1.5),
-                            settings.MAX_COMPLETION_TOKENS * 2,  # Cap at 2x config max
-                            32000,  # Hard cap for most models
-                        )
-                        if new_max_tokens > self.max_completion_tokens:
-                            logger.info(
-                                "increasing_max_tokens_for_retry",
-                                extra={
-                                    "old_max": self.max_completion_tokens,
-                                    "new_max": new_max_tokens,
-                                    "retry_count": retry_count,
-                                },
-                            )
-                            self.max_completion_tokens = new_max_tokens
-
-                # Update progress: Parsing response
-                if progress_callback:
-                    progress_callback("processing", 70, "Parsing AI response...")
-
-                # Track JSON parsing with error handling for retry
-                try:
-                    if plan_id:
-                        with tracker.track_operation(plan_id, "llm_parse_response"):
-                            lesson_json = parse_llm_response(response_text)
-                    else:
-                        lesson_json = parse_llm_response(response_text)
-                except ValueError as json_error:
-                    # JSON parsing failed - retry if attempts remain
-                    json_error_msg = str(json_error)
-                    # Extract error_analysis if available
-                    error_analysis = getattr(json_error, "error_analysis", None)
-
-                    logger.warning(
-                        "json_parse_error_retry",
-                        extra={
-                            "retry_count": retry_count,
-                            "max_retries": max_retries,
-                            "error": json_error_msg,
-                            "response_length": len(response_text)
-                            if response_text
-                            else 0,
-                            "tokens_output": usage.get("tokens_output", 0),
-                            "was_truncated": was_truncated,
-                            "error_analysis": error_analysis,
-                        },
-                    )
-                    if retry_count < max_retries:
-                        retry_count += 1
-                        # Include JSON error in validation_error so retry prompt mentions it
-                        validation_error = f"JSON parsing failed: {json_error_msg}. Please ensure the response is complete, valid JSON without truncation."
-                        # Store error_analysis for use in retry prompt
-                        error_analysis = getattr(json_error, "error_analysis", None)
-                        # If truncated, max_tokens already increased above
-                        continue  # Retry the LLM call
-                    else:
-                        # Restore original max tokens before returning error
-                        self.max_completion_tokens = original_max_tokens
-                        # No more retries, return error
-                        return (
-                            False,
-                            None,
-                            f"Failed to parse JSON after {max_retries + 1} attempts: {json_error_msg}",
-                        )
-
-                # Update progress: Validating structure
-                if progress_callback:
-                    progress_callback(
-                        "processing", 80, "Validating lesson plan structure..."
-                    )
-
-                # Track validation
-                if plan_id:
-                    with tracker.track_operation(plan_id, "llm_validate_structure"):
-                        is_valid, validation_error = validate_structure(lesson_json)
-                else:
-                    is_valid, validation_error = validate_structure(lesson_json)
-
-                if progress_callback:
-                    if is_valid:
-                        progress_callback(
-                            "processing",
-                            90,
-                            "Validation passed. Finalizing lesson plan...",
-                        )
-                    else:
-                        progress_callback(
-                            "processing", 75, "Validation issue detected. Retrying..."
-                        )
-
-                if is_valid:
-                    # Validation passed, restore original max tokens and break out of retry loop
-                    self.max_completion_tokens = original_max_tokens
-                    break
-
-                # Validation failed - parse errors for structured feedback
-                parsed_validation_errors = None
-                if validation_error:
-                    parsed_validation_errors = parse_validation_errors(validation_error)
-                    # Merge parsed validation errors into error_analysis for retry prompt
-                    if error_analysis is None:
-                        error_analysis = {}
-                    error_analysis["validation_errors"] = parsed_validation_errors
-
-                # Validation failed - log and retry if attempts remain
-                logger.warning(
-                    "llm_validation_failed_retry",
-                    extra={
-                        "retry_count": retry_count,
-                        "max_retries": max_retries,
-                        "validation_error": validation_error,
-                        "parsed_errors": parsed_validation_errors,
-                    },
-                )
-
-                if retry_count < max_retries:
-                    retry_count += 1
-                    logger.info(
-                        "llm_retry_attempt",
-                        extra={
-                            "retry_count": retry_count,
-                            "validation_error": validation_error,
-                            "parsed_errors": parsed_validation_errors,
-                        },
-                    )
-                else:
-                    # No more retries, restore original max tokens and return error
-                    self.max_completion_tokens = original_max_tokens
-                    return (
-                        False,
-                        None,
-                        validation_error
-                        or "Generated JSON does not match required schema structure",
-                    )
-
-            # Add usage information to result
-            lesson_json["_usage"] = usage
-            lesson_json["_model"] = self.model
-            lesson_json["_provider"] = self.provider
-
-            logger.info(
-                "llm_transform_success",
-                extra={
-                    "response_length": len(response_text),
-                    "tokens_total": usage.get("tokens_total", 0),
-                },
-            )
-
-            # PHASE 6: Normalize sentence frame punctuation for consistency
-            lesson_json = normalize_sentence_frame_punctuation(lesson_json)
-
-            if plan_id:
-                tracker.update_plan_summary(plan_id)
-
-            return True, lesson_json, None
-
-        except Exception as e:
-            # Restore original max tokens in case of exception
-            self.max_completion_tokens = original_max_tokens
-            error_msg = f"LLM transformation failed: {str(e)}"
-            logger.error("llm_transform_error", extra={"error": str(e)})
-            return False, None, error_msg
 
     def _build_prompt(
         self,
