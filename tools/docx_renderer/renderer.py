@@ -485,12 +485,6 @@ class DOCXRenderer:
                 f"Renderer failed to create DOCX file '{output_path}': {str(e)}"
             ) from e
 
-    def _extract_unique_teachers(self, json_data: Dict) -> List[str]:
-        return table_cell.extract_unique_teachers(self, json_data)
-
-    def _extract_unique_subjects(self, json_data: Dict) -> List[str]:
-        return table_cell.extract_unique_subjects(self, json_data)
-
     def _abbreviate_content(
         self, content: str, num_slots: int, max_length: int = None
     ) -> str:
@@ -538,14 +532,6 @@ class DOCXRenderer:
             current_subject=current_subject,
             append_mode=append_mode,
         )
-
-    def _filter_valid_vocabulary_pairs(
-        self, vocabulary_cognates: List[Dict]
-    ) -> List[Dict]:
-        return table_cell.filter_valid_vocabulary_pairs(self, vocabulary_cognates)
-
-    def _filter_valid_sentence_frames(self, sentence_frames: List[Dict]) -> List[Dict]:
-        return table_cell.filter_valid_sentence_frames(self, sentence_frames)
 
     def _calculate_match_confidence(
         self,
