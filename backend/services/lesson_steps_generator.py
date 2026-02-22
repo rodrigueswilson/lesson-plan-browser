@@ -10,7 +10,7 @@ from fastapi import HTTPException
 
 from backend.config import settings
 from backend.schema import LessonStep
-from backend.services.lesson_steps import plan_resolve
+from backend.services.lesson_steps import plan_resolve, slot_data
 from backend.telemetry import logger
 
 
@@ -57,286 +57,11 @@ def generate_lesson_steps(
         },
     )
 
-    # Extract day data
-    days = lesson_json.get("days", {})
-    logger.info(
-        "extracting_day_data",
-        extra={
-            "plan_id": plan_id,
-            "day": day,
-            "available_days": list(days.keys()),
-            "day_lower": day.lower(),
-        },
-    )
-    day_data = days.get(day.lower())
-    if not day_data:
-        logger.error(
-            "day_not_found_in_plan",
-            extra={
-                "plan_id": plan_id,
-                "requested_day": day,
-                "available_days": list(days.keys()),
-            },
-        )
-        raise HTTPException(status_code=404, detail=f"Day {day} not found in plan")
+    extracted = slot_data.extract_slot_data(lesson_json, plan_id, day, slot)
+    if extracted is None:
+        return []
 
-    # Locate the correct slot data for this day/slot. Newer weekly JSON
-    # stores most instructional fields (tailored_instruction, vocabulary,
-    # sentence_frames) under days[day]["slots"][*]. For backwards
-    # compatibility, we fall back to day-level fields if slots are absent.
-
-    slot_data = day_data
-    slots_for_day = day_data.get("slots") or []
-
-    if isinstance(slots_for_day, list) and slots_for_day:
-        # Prefer the slot that matches the requested slot number.
-        matching = None
-        for s in slots_for_day:
-            if not isinstance(s, dict):
-                continue
-            s_num = s.get("slot_number", 0)
-            print(
-                f"[DEBUG] Checking slot: {s_num} (type: {type(s_num)}) against requested: {slot} (type: {type(slot)})"
-            )
-            if int(s_num) == int(slot):
-                matching = s
-                print(f"[DEBUG] Found matching slot: {s_num}")
-                break
-        if matching:
-            slot_data = matching
-            print(
-                f"[DEBUG] Using matched slot_data: slot_number={slot_data.get('slot_number')}"
-            )
-        else:
-            # No matching slot found - return 404 error instead of silently using wrong slot
-            available_slots = [
-                s.get("slot_number") for s in slots_for_day if isinstance(s, dict)
-            ]
-            logger.error(
-                "slot_not_found_in_plan",
-                extra={
-                    "plan_id": plan_id,
-                    "requested_slot": slot,
-                    "requested_day": day,
-                    "available_slots": available_slots,
-                },
-            )
-            raise HTTPException(
-                status_code=404,
-                detail=f"Slot {slot} not found in {day}. Available slots: {available_slots}",
-            )
-
-        print(
-            f"[DEBUG] Final slot_data: slot_number={slot_data.get('slot_number')}, has_vocabulary_cognates={bool(slot_data.get('vocabulary_cognates'))}"
-        )
-
-        # [NO SCHOOL FIX] Skip generation if this is a "No School" slot
-        unit_lesson = slot_data.get("unit_lesson", "")
-        if unit_lesson and "no school" in unit_lesson.lower():
-            logger.info(
-                "skipping_step_generation_for_no_school",
-                extra={
-                    "plan_id": plan_id,
-                    "day": day,
-                    "slot": slot,
-                    "unit_lesson": unit_lesson,
-                },
-            )
-            return []
-
-        print(f"[DEBUG] slot_data keys (first 20): {list(slot_data.keys())[:20]}")
-
-        # Check if vocabulary_cognates exists in slot_data
-        if slot_data.get("vocabulary_cognates"):
-            vocab_list = slot_data.get("vocabulary_cognates")
-            print(
-                f"[DEBUG] vocabulary_cognates in slot_data: {len(vocab_list)} items"
-            )
-            if isinstance(vocab_list, list) and len(vocab_list) > 0:
-                print(f"[DEBUG] vocabulary_cognates sample: {vocab_list[0]}")
-        else:
-            # Check for any vocabulary-related keys
-            vocab_keys = [k for k in slot_data.keys() if "vocab" in str(k).lower()]
-            if vocab_keys:
-                print(
-                    f"[DEBUG] WARNING: Found vocabulary-related keys but vocabulary_cognates missing: {vocab_keys}"
-                )
-            else:
-                # Log as info instead of warning - this is expected for older plans
-                logger.info(
-                    "vocabulary_cognates_not_found_in_slot",
-                    extra={
-                        "plan_id": plan_id,
-                        "day": day,
-                        "slot": slot,
-                        "message": "vocabulary_cognates not found in slot_data. This may mean the plan was generated before vocabulary_cognates was added to the schema. Consider regenerating the plan to include vocabulary data.",
-                    },
-                )
-                print(
-                    "[DEBUG] INFO: vocabulary_cognates not found in slot_data. "
-                    "This may mean the plan was generated before vocabulary_cognates was added to the schema. "
-                    "Consider regenerating the plan to include vocabulary data."
-                )
-
-        # Also check day_data as fallback
-        if day_data.get("vocabulary_cognates"):
-            print(
-                f"[DEBUG] vocabulary_cognates in day_data: {len(day_data.get('vocabulary_cognates'))} items"
-            )
-            # Use day_data vocabulary_cognates if slot_data doesn't have it
-            if not slot_data.get("vocabulary_cognates"):
-                print("[DEBUG] Using vocabulary_cognates from day_data as fallback")
-                slot_data["vocabulary_cognates"] = day_data.get(
-                    "vocabulary_cognates"
-                )
-
-    # Extract phase_plan from tailored_instruction (slot-level when present)
-    # Check multiple possible locations for phase_plan to handle different data structures
-    slot_tailored_instruction = slot_data.get("tailored_instruction", {})
-    day_tailored_instruction = day_data.get("tailored_instruction", {})
-
-    # Use slot-level tailored_instruction if available, otherwise fall back to day-level
-    # This ensures later code (like ell_support extraction) uses the best available data
-    tailored_instruction = (
-        slot_tailored_instruction
-        if slot_tailored_instruction
-        else day_tailored_instruction
-    )
-
-    logger.info(
-        "tailored_instruction_extracted",
-        extra={
-            "plan_id": plan_id,
-            "day": day,
-            "slot": slot,
-            "has_tailored_instruction": bool(tailored_instruction),
-            "tailored_instruction_keys": list(tailored_instruction.keys())
-            if tailored_instruction
-            else [],
-            "has_day_tailored_instruction": bool(day_tailored_instruction),
-            "day_tailored_instruction_keys": list(day_tailored_instruction.keys())
-            if day_tailored_instruction
-            else [],
-        },
-    )
-
-    # Try multiple locations for phase_plan:
-    # 1. slot_data.tailored_instruction.co_teaching_model.phase_plan (preferred)
-    # 2. slot_data.tailored_instruction.phase_plan (direct)
-    # 3. day_data.tailored_instruction.co_teaching_model.phase_plan (day-level fallback)
-    # 4. day_data.tailored_instruction.phase_plan (day-level direct)
-
-    phase_plan = None
-    co_teaching_model = slot_tailored_instruction.get("co_teaching_model", {})
-
-    # Check slot-level: tailored_instruction.co_teaching_model.phase_plan
-    if co_teaching_model:
-        phase_plan = co_teaching_model.get("phase_plan")
-        if phase_plan:
-            logger.info(
-                "phase_plan_found_in_slot_co_teaching_model",
-                extra={
-                    "plan_id": plan_id,
-                    "day": day,
-                    "slot": slot,
-                    "location": "slot_data.tailored_instruction.co_teaching_model.phase_plan",
-                    "phase_plan_count": len(phase_plan)
-                    if isinstance(phase_plan, list)
-                    else 0,
-                },
-            )
-
-    # Check slot-level: tailored_instruction.phase_plan (direct)
-    if not phase_plan:
-        phase_plan = slot_tailored_instruction.get("phase_plan")
-        if phase_plan:
-            logger.info(
-                "phase_plan_found_in_slot_direct",
-                extra={
-                    "plan_id": plan_id,
-                    "day": day,
-                    "slot": slot,
-                    "location": "slot_data.tailored_instruction.phase_plan",
-                    "phase_plan_count": len(phase_plan)
-                    if isinstance(phase_plan, list)
-                    else 0,
-                },
-            )
-
-    # Check day-level: day_data.tailored_instruction.co_teaching_model.phase_plan
-    if not phase_plan:
-        day_co_teaching_model = day_tailored_instruction.get(
-            "co_teaching_model", {}
-        )
-        if day_co_teaching_model:
-            phase_plan = day_co_teaching_model.get("phase_plan")
-            if phase_plan:
-                logger.info(
-                    "phase_plan_found_in_day_co_teaching_model",
-                    extra={
-                        "plan_id": plan_id,
-                        "day": day,
-                        "slot": slot,
-                        "location": "day_data.tailored_instruction.co_teaching_model.phase_plan",
-                        "phase_plan_count": len(phase_plan)
-                        if isinstance(phase_plan, list)
-                        else 0,
-                    },
-                )
-
-    # Check day-level: day_data.tailored_instruction.phase_plan (direct)
-    if not phase_plan:
-        phase_plan = day_tailored_instruction.get("phase_plan")
-        if phase_plan:
-            logger.info(
-                "phase_plan_found_in_day_direct",
-                extra={
-                    "plan_id": plan_id,
-                    "day": day,
-                    "slot": slot,
-                    "location": "day_data.tailored_instruction.phase_plan",
-                    "phase_plan_count": len(phase_plan)
-                    if isinstance(phase_plan, list)
-                    else 0,
-                },
-            )
-
-    # Normalize to empty list if None
-    if phase_plan is None:
-        phase_plan = []
-
-    logger.info(
-        "co_teaching_model_extracted",
-        extra={
-            "plan_id": plan_id,
-            "has_co_teaching_model": bool(co_teaching_model),
-            "co_teaching_model_keys": list(co_teaching_model.keys())
-            if co_teaching_model
-            else [],
-        },
-    )
-
-    logger.info(
-        "phase_plan_extracted",
-        extra={
-            "plan_id": plan_id,
-            "day": day,
-            "slot": slot,
-            "phase_plan_count": len(phase_plan) if phase_plan else 0,
-            "phase_plan_is_list": isinstance(phase_plan, list),
-            "phase_plan_is_none": phase_plan is None,
-        },
-    )
-    logger.info(
-        "phase_plan_extracted",
-        extra={
-            "plan_id": plan_id,
-            "day": day,
-            "slot": slot,
-            "phase_plan_count": len(phase_plan) if phase_plan else 0,
-            "phase_plan_is_list": isinstance(phase_plan, list),
-        },
-    )
+    day_data, slot_data_val, phase_plan, tailored_instruction = extracted
 
     # Delete existing steps for this lesson
     deleted_count = db_for_plan.delete_lesson_steps(
@@ -556,12 +281,12 @@ def generate_lesson_steps(
 
     # Get vocabulary and sentence frames from slot-level (preferred) or day-level (fallback)
     vocabulary_cognates = (
-        slot_data.get("vocabulary_cognates")
+        slot_data_val.get("vocabulary_cognates")
         or day_data.get("vocabulary_cognates")
         or []
     )
     day_sentence_frames = (
-        slot_data.get("sentence_frames") or day_data.get("sentence_frames") or []
+        slot_data_val.get("sentence_frames") or day_data.get("sentence_frames") or []
     )
 
     # Validate: Warn if vocabulary/frames are missing when they should be present
