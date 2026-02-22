@@ -6,7 +6,7 @@ This document lists **refactoring and fix priorities** for the codebase and give
 
 ## 0. Multi-session plan and progress (update this as you go)
 
-**Last updated:** 2026-02-22 (Session 10 merged to master)
+**Last updated:** 2026-02-22 (Session 11 in progress on branch refactor/batch-processor-tsx)
 
 ### 0.1 Progress summary
 
@@ -14,8 +14,8 @@ This document lists **refactoring and fix priorities** for the codebase and give
 | Status          | Items                                                                                                                                                                                                                                                                     |
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Done**        | Batch processor package; Database alias and optional db_path (see 1.4). Session 1 (branch `fix/test-suite-collection`): test suite collection and fixes. Session 2 (branch `refactor/split-api`): split backend/api.py into routers (health, settings, users, plans, process-week, analytics); app mounts routers; duplicate analytics removed; API/smoke tests pass. Follow-up: core router (validate, render, progress, transform, repair, tablet export), FastAPI lifespan, enrich_lesson_json_with_times in backend.utils.lesson_times, plan download in plans router; call sites updated (combine.py, scripts). Session 3 (refactor llm_service): prompt_builder, validation, providers, schema, parse_llm_response, post_process, domain_analysis extracted to backend/llm/; llm_service.py 789 lines; merged to master. See **0.5** for line counts per file. Session 4 (branch `refactor/performance-tracker`): retention 30 days, cleanup on init, sampling + debug_mode (env DEBUG_PERFORMANCE_TRACKING), critical ops include llm_api_call; retention/sampling/debug_mode tests; SQLite WAL for file DBs. Session 5 (branches `refactor/docx-renderer`, `refactor/docx-renderer-table-cell`): DOCX renderer package with style.py, hyperlink_placement.py, renderer.py, table_cell package (fill, format, placement); merged to master. Session 6 (branch `refactor/docx-parser`): DOCX parser package with structure.py, no_school.py, table_extraction.py, content_sections.py, slot_extraction.py, images_metadata.py, parser.py, parse_docx; public API unchanged. Line counts in **0.5**. Session 7 (branch `refactor/database-split`): backend/database.py replaced by package backend/database/ (engine, users, slots, plans, metrics, schedule, lesson_steps, lesson_mode, sqlite_impl, get_db); single get_db() and DatabaseInterface preserved; DB/API tests pass. Line counts in **0.5**. Session 8 (branch `refactor/combined-original-styles`): post-merge style normalization for combined_originals DOCX; docProps replacement; docx_utils module logger; style tests; hyperlink Times New Roman 8pt in markdown; Supabase log-once. See **1.4**. Session 9 (branch `refactor/supabase-module`): backend/supabase_database.py replaced by package backend/supabase/ (auth, query_helpers, sync, client, database); facade supabase_database.py re-exports; get_project1_db/get_project2_db added; sync script uses backend.supabase.sync. See **1.4**. Session 10 (branch `refactor/frontend-analytics`): Analytics moved to Settings/Admin; Analytics split into useAnalytics hook and subcomponents; ErrorBreakdown copy clarified. See **1.4**. |
-| **In progress** | None. |
-| **Not started** | Priorities 11–13 (lower). |
+| **In progress** | Session 11 (branch `refactor/batch-processor-tsx`): BatchProcessor.tsx refactor — useBatchProcessor hook and subcomponents (WeekSection, ProgressSection, BatchAlerts, SlotSection, ConfirmDialog); BatchProcessor.tsx re-exports. |
+| **Not started** | Priorities 12–13 (lower). |
 
 
 ### 0.2 Session plan: branches, commits, merges
@@ -187,6 +187,27 @@ Work in order when possible; fix test suite (Session 1) before large refactors s
 - Analytics reachable only via Settings > Analytics.
 - Frontend build passes (Analytics-related code compiles; pre-existing TS errors in other packages may remain).
 - Analytics smoke: open Settings, Analytics tab, select user, load data, change time range, export CSV.
+- No regressions in main workflow (Home, Plans, Schedule, Browser, History).
+
+**Tools:** Manual edits; no refactoring library.
+
+### 0.8 Session 11 plan: BatchProcessor.tsx refactor (Priority 11)
+
+**Branch:** `refactor/batch-processor-tsx`  
+**Reference:** This document, Session 11 (Priority 11).
+
+**Goal:** Extract week/slot selection, progress display, and error handling from `BatchProcessor.tsx` into a `useBatchProcessor` hook and subcomponents; keep `BatchProcessor.tsx` as a thin re-export so the batch UI is maintainable and testable.
+
+**Implemented (on branch):**
+- **Hook:** `frontend/src/components/batch_processor/useBatchProcessor.ts` — state, effects, handlers, derived values (`progressPercentage`, `sortedSlots`); types `ButtonState`, `WeekStatus`, `RecentWeek`, `ProcessResult`.
+- **Subcomponents:** `WeekSection.tsx` (week input, recent weeks, Generate button), `ProgressSection.tsx` (progress bar when processing), `BatchAlerts.tsx` (error, success, partial-failure alerts), `SlotSection.tsx` (slot list, Select All/Deselect All, done/force badges), `ConfirmDialog.tsx` (source folder, week, partial/missingOnly, slot count, Cancel/Proceed).
+- **Container:** `batch_processor/index.tsx` — `BatchProcessorView` composes hook + subcomponents; no-user and no-slots early returns in container.
+- **Re-export:** `frontend/src/components/BatchProcessor.tsx` re-exports `BatchProcessorView as BatchProcessor` from `./batch_processor` so existing imports unchanged.
+
+**Success criteria (merge to master):**
+- Week/slot selection, progress display, and error handling live in dedicated hook + subcomponents; `BatchProcessor.tsx` is a thin re-export.
+- Frontend build passes (batch_processor code compiles; pre-existing TS errors in other packages may remain).
+- Batch UI smoke: open Batch view, choose week (manual + recent), select/deselect slots, open confirm dialog, run generate (or mock); no console errors or broken layout.
 - No regressions in main workflow (Home, Plans, Schedule, Browser, History).
 
 **Tools:** Manual edits; no refactoring library.
