@@ -1,9 +1,11 @@
 """
-Tests for slot matching fixes in api.py
+Tests for slot matching fixes: lesson-steps API returns 404 for non-existent slot.
+
+Slot matching is exercised via TestClient against /api/lesson-steps/... in
+test_lesson_steps_api.py and integration tests. This module documents expected
+behavior and placeholder tests.
 """
 import pytest
-from fastapi import HTTPException
-from backend.api import generate_lesson_steps
 
 
 class TestSlotMatchingFixes:

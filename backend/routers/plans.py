@@ -23,7 +23,7 @@ from backend.telemetry import logger
 router = APIRouter()
 
 
-# Lesson Plan and Steps Endpoints
+# Plan detail, download, user plans, week status
 
 
 @router.get(
