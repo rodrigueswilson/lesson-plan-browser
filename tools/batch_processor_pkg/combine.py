@@ -4,7 +4,6 @@ Extracted from orchestrator for single responsibility and testability.
 """
 
 import re
-import traceback
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional
