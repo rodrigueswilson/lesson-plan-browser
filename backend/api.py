@@ -37,6 +37,7 @@ from backend.rate_limiter import setup_rate_limiting
 from backend.routers.analytics import router as analytics_router
 from backend.routers.core import router as core_router
 from backend.routers.health import router as health_router
+from backend.routers.lesson_mode import router as lesson_mode_router
 from backend.routers.plans import router as plans_router
 from backend.routers.process_week import router as process_week_router
 from backend.routers.settings import router as settings_router
@@ -90,6 +91,7 @@ app = FastAPI(
 app.include_router(health_router)
 app.include_router(settings_router, prefix="/api")
 app.include_router(users_router, prefix="/api")
+app.include_router(lesson_mode_router, prefix="/api")
 app.include_router(plans_router, prefix="/api")
 app.include_router(process_week_router, prefix="/api")
 app.include_router(analytics_router, prefix="/api")
