@@ -28,7 +28,7 @@ import json
 from backend.performance_tracker import get_tracker
 from . import logger
 from backend.utils.metadata_utils import get_teacher_name
-from tools.table_structure import StructureMetadata, TableStructureDetector
+from tools.table_structure import TableStructureDetector
 
 from . import style as _style_module
 from . import hyperlink_placement as _hyperlink_module
@@ -547,13 +547,6 @@ class DOCXRenderer:
     def _filter_valid_sentence_frames(self, sentence_frames: List[Dict]) -> List[Dict]:
         return table_cell.filter_valid_sentence_frames(self, sentence_frames)
 
-    def _try_structure_based_placement(
-        self, image: Dict, day_name: str, section_name: str, col_idx: int
-    ) -> bool:
-        return table_cell.try_structure_based_placement(
-            self, image, day_name, section_name, col_idx
-        )
-
     def _calculate_match_confidence(
         self,
         cell_text: str,
@@ -568,22 +561,6 @@ class DOCXRenderer:
     def _inject_hyperlink_inline(self, cell, hyperlink: Dict, row_idx: int = None):
         """Inject hyperlink into cell on its own line."""
         _hyperlink_module.inject_hyperlink_inline(self, cell, hyperlink, row_idx=row_idx)
-
-    def _place_hyperlink_hybrid(self, link: Dict, table, structure: StructureMetadata) -> str:
-        """Place hyperlink using hybrid strategy (v2.0). Returns strategy used."""
-        return _hyperlink_module.place_hyperlink_hybrid(self, link, table, structure)
-
-    def _try_coordinate_placement(self, link: Dict, table, structure: StructureMetadata) -> bool:
-        """Try to place link at exact coordinates."""
-        return _hyperlink_module.try_coordinate_placement(self, link, table, structure)
-
-    def _try_label_day_placement(self, link: Dict, table, structure: StructureMetadata) -> bool:
-        """Try to place link using row label + day matching."""
-        return _hyperlink_module.try_label_day_placement(self, link, table, structure)
-
-    def _try_fuzzy_placement(self, link: Dict, table, threshold=0.65) -> bool:
-        """Try to place link using fuzzy text matching."""
-        return _hyperlink_module.try_fuzzy_placement(self, link, table, threshold=threshold)
 
     def _inject_image_inline(self, cell, image: Dict, max_width: float):
         """Inject image into cell with width constraints.
