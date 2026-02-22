@@ -58,9 +58,9 @@ This document analyzes the top files from `python tools/refactor/count_loc.py` a
 
 ---
 
-### 1.4 `backend/services/sentence_frames_pdf_generator.py` (1,088 lines)
+### 1.4 `backend/services/sentence_frames_pdf_generator.py` (1,088 lines) — **Done (Session 17)**
 
-**Current shape:** One large class `SentenceFramesPDFGenerator` and a few module-level functions (`generate_sentence_frames_html`, `generate_sentence_frames_pdf`, `generate_sentence_frames_docx`).
+**Current shape (post-split):** Facade `sentence_frames_pdf_generator.py` + subpackage `backend/services/sentence_frames/` (extraction, html_builder, pdf_renderer, docx_renderer). Public API unchanged.
 
 **Refactor strategy:**
 
@@ -76,9 +76,9 @@ This document analyzes the top files from `python tools/refactor/count_loc.py` a
 
 ---
 
-### 1.5 `backend/services/objectives_printer.py` (1,056 lines)
+### 1.5 `backend/services/objectives_printer.py` (1,056 lines) — **Done (Session 17)**
 
-**Current shape:** `extract_subject_from_unit_lesson`, one large class `ObjectivesPrinter`, `print_objectives_from_file`, `print_objectives_from_plan`.
+**Current shape (post-split):** Facade `objectives_printer.py` + subpackage `backend/services/objectives/` (subject_parsing, extraction, formatting, printing, font_calculation, docx_renderer). Public API unchanged.
 
 **Refactor strategy:** Same as sentence_frames: **manual** split by phase/responsibility; **Cursor** for extraction; **Rope** for renames. Consider a small package `backend/services/objectives/` (parsing, formatting, printing) with a facade preserving `print_objectives_from_`*.
 
@@ -140,7 +140,7 @@ Not mandated by REFACTORING_PRIORITIES_AND_TOOLS 0.2; use as a draft:
 1. **plans router split** — **Done (Session 14).** High impact; clear subdomains (plans, lesson steps, lesson mode). Merged to master; pushed to origin.
 2. **users router split** — **Done (Session 15).** Same pattern; reduces merge conflicts and clarifies ownership.
 3. **combine.py split** — Batch processor package already exists; keeps combine maintainable.
-4. **sentence_frames_pdf_generator / objectives_printer** — Service-layer splits; can be done in one or two sessions.
+4. **sentence_frames_pdf_generator / objectives_printer** — **Done (Session 17).** Service-layer splits; branch `refactor/sentence-frames-objectives-split`; merged to master.
 5. **Frontend (ScheduleInput, SlotConfigurator)** — If desired; lower priority than backend routers and tools.
 
 Each session: create branch from `master`, make small commits, run tests, merge when done, update REFACTORING_PRIORITIES_AND_TOOLS 0.1 and 1.4 (and 0.5 if LOC changed).
