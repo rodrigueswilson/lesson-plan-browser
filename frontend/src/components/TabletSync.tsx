@@ -119,7 +119,9 @@ export const TabletSync: React.FC = () => {
     setPushStatus('Exporting database for build...');
     try {
       const exported = await ensureExport();
-      setPushStatus('Building APK (this may take several minutes)...');
+      setPushStatus(
+        'Building APK (this may take several minutes). The message will only update when the build finishes or fails. For live output, run .\\build-apk.ps1 in a terminal from the project root.'
+      );
       const { invoke } = await import('@tauri-apps/api/core');
       const res: any = await invoke('build_tablet_apk', {
         dbPath: exported.output_path,

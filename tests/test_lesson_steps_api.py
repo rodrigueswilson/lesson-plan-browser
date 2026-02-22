@@ -135,7 +135,12 @@ async def test_lesson_steps_round_trip():
             )
             assert response.status_code == 200
             generated = response.json()
-            assert len(generated) == 2
+            assert len(generated) == 4
+            step_names = [s["step_name"] for s in generated]
+            assert "Warmup" in step_names
+            assert "Guided Practice" in step_names
+            assert "Vocabulary / Cognate Awareness" in step_names
+            assert "Sentence Frames / Stems / Questions" in step_names
             assert generated[0]["step_name"] == "Warmup"
             assert isinstance(generated[0]["sentence_frames"], list)
             assert isinstance(generated[0]["sentence_frames"][0], dict)
@@ -145,7 +150,7 @@ async def test_lesson_steps_round_trip():
             fetch = await async_client.get(f"/api/lesson-steps/{plan_id}/monday/1")
             assert fetch.status_code == 200
             stored = fetch.json()
-            assert len(stored) == 2
+            assert len(stored) == 4
             assert stored[0]["step_name"] == "Warmup"
             assert stored[0]["sentence_frames"][0]["english"] == "Good morning"
             assert stored[0]["materials_needed"][0] == "Objective slide"
@@ -190,7 +195,7 @@ async def test_lesson_steps_round_trip():
             second_fetch = await async_client.get(f"/api/lesson-steps/{plan_id}/monday/1")
             assert second_fetch.status_code == 200
             stored_after = second_fetch.json()
-            assert len(stored_after) == 2
+            assert len(stored_after) == 4
             assert stored_after[0]["step_name"] == "Revised Warmup"
     finally:
         db.delete_user(user_id)
