@@ -4,7 +4,6 @@ Extracted from orchestrator.process_user_week for Session 13.
 """
 
 import asyncio
-import copy
 import json
 import traceback
 from datetime import datetime
@@ -14,7 +13,11 @@ from backend.config import settings
 from backend.progress import progress_tracker
 from backend.telemetry import logger
 
-from tools.batch_processor_pkg import week_flow_existing, week_flow_load
+from tools.batch_processor_pkg import (
+    week_flow_existing,
+    week_flow_load,
+    week_flow_parallel,
+)
 from tools.json_merger import merge_lesson_jsons
 
 
@@ -129,140 +132,17 @@ async def run_process_user_week(
     use_parallel = settings.PARALLEL_LLM_PROCESSING and len(slots) > 1
 
     if use_parallel:
-        # Two-phase processing: Extract sequentially, transform in parallel
-        print(f"DEBUG: Using parallel processing for {len(slots)} slots")
-
-        # Phase 1: Parallel Extraction with DB Caching and Grouping
-        contexts = await processor._extract_slots_parallel_db(
+        lessons, errors, originals_docx = await week_flow_parallel.run_parallel_path(
+            processor,
             slots,
             week_of,
-            week_folder_path,
-            processor._user_base_path,
-            plan_id,
-            progress_tracker,
-        )
-
-        # AUTO-GENERATE ORIGINALS AUDIT DOCX (Parallel Path)
-        try:
-            logger.info("batch_auto_generating_originals_docx_parallel")
-            originals_docx = await processor._generate_combined_original_docx(
-                user_id, week_of, plan_id, week_folder_path
-            )
-        except Exception as e:
-            logger.error(
-                "batch_auto_originals_generation_failed_parallel",
-                extra={"error": str(e)},
-            )
-
-        # Re-collect errors from contexts
-        for ctx in contexts:
-            if ctx.error:
-                errors.append(
-                    f"Failed slot {ctx.slot_index}/{ctx.total_slots}: {ctx.error}"
-                )
-
-        # NEW: Optimize Phase 2 - Avoid LLM calls for unchanged slots if we already have transformed versions
-        if existing_lesson_json:
-            print(
-                "DEBUG: Checking for slots to skip LLM transformation (already in DB and unchanged source)..."
-            )
-            existing_slot_plans = processor._reconstruct_slots_from_json(
-                existing_lesson_json
-            )
-
-            for ctx in contexts:
-                if ctx.cache_hit and not ctx.error:
-                    slot_num = ctx.slot.get("slot_number")
-                    if slot_num in existing_slot_plans and slot_num not in (
-                        force_slots or []
-                    ):
-                        print(
-                            f"[DEBUG] REUSING TRANSFORMED PLAN for slot {slot_num} ({ctx.slot['subject']}) - Source file unchanged."
-                        )
-                        # CRITICAL: Create a deep copy to prevent shared state in parallel processing
-                        # If multiple slots share the same lesson_json reference, mutations in one
-                        # parallel task could affect others, causing all slots to show the same teacher
-                        ctx.lesson_json = copy.deepcopy(existing_slot_plans[slot_num][
-                            "lesson_json"
-                        ])
-                    elif slot_num in existing_slot_plans and slot_num in (
-                        force_slots or []
-                    ):
-                        print(
-                            f"[DEBUG] FORCING AI transformation for slot {slot_num} ({ctx.slot['subject']}) as requested."
-                        )
-
-        # Phase 2: Transform with LLM in parallel
-        print(
-            f"DEBUG: Starting Phase 2: Parallel LLM transformation for {len(contexts)} slots"
-        )
-        transform_count = len(
-            [c for c in contexts if not c.error and not c.lesson_json]
-        )
-        progress_tracker.update(
-            plan_id,
-            "processing",
-            20,
-            f"Transforming {transform_count} slots with AI in parallel...",
-        )
-
-        contexts = await processor._process_slots_parallel_llm(
-            contexts,
-            week_of,
             provider,
+            week_folder_path,
             plan_id,
+            existing_lesson_json,
+            force_slots,
+            user_id,
         )
-
-        # Collect results
-        for context in contexts:
-            if context.error:
-                errors.append(
-                    f"Failed slot {context.slot_index}/{context.total_slots}: {context.error}"
-                )
-            elif context.lesson_json:
-                # LOGGING: Verify hyperlinks are present before collecting
-                hyperlinks_in_json = context.lesson_json.get("_hyperlinks", [])
-                print(
-                    f"[DEBUG] Collecting parallel result: Slot {context.slot.get('slot_number')}, "
-                    f"Subject {context.slot.get('subject')}, "
-                    f"Hyperlinks in lesson_json: {len(hyperlinks_in_json)}"
-                )
-                logger.info(
-                    "parallel_result_collection",
-                    extra={
-                        "slot": context.slot.get("slot_number"),
-                        "subject": context.slot.get("subject"),
-                        "has_lesson_json": context.lesson_json is not None,
-                        "hyperlinks_count": len(hyperlinks_in_json),
-                        "has_hyperlinks_key": "_hyperlinks" in context.lesson_json,
-                    },
-                )
-                # Include original slot data for primary teacher fields
-                # context.slot is already a dict with primary teacher fields from database
-                slot_data = context.slot.copy() if isinstance(context.slot, dict) else {
-                    "slot_number": getattr(context.slot, "slot_number", context.slot_index),
-                    "subject": getattr(context.slot, "subject", "Unknown"),
-                    "primary_teacher_name": getattr(context.slot, "primary_teacher_name", None),
-                    "primary_teacher_first_name": getattr(context.slot, "primary_teacher_first_name", None),
-                    "primary_teacher_last_name": getattr(context.slot, "primary_teacher_last_name", None),
-                }
-                # Debug: Verify primary teacher fields are present
-                if isinstance(slot_data, dict):
-                    print(f"[DEBUG] BATCH_PROCESSOR: Slot {slot_data.get('slot_number')} slot_data has primary_teacher_name: {slot_data.get('primary_teacher_name')}")
-                lessons.append(
-                    {
-                        "slot_number": slot_data.get("slot_number") if isinstance(slot_data, dict) else getattr(context.slot, "slot_number", context.slot_index),
-                        "subject": slot_data.get("subject") if isinstance(slot_data, dict) else getattr(context.slot, "subject", "Unknown"),
-                        "lesson_json": context.lesson_json,
-                        "slot_data": slot_data,  # Include original slot data for teacher fields
-                    }
-                )
-                # Track parallel processing metrics
-                if plan_id and context.is_parallel:
-                    # Store metrics in performance tracker result
-                    # This will be picked up by end_operation
-                    pass  # Metrics are already in context
-
     else:
         # Sequential processing (fallback or single slot)
         print(
