@@ -14,8 +14,8 @@ This document lists **refactoring and fix priorities** for the codebase and give
 | Status          | Items                                                                                                                                                                                                                                                                     |
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Done**        | Batch processor package; Database alias and optional db_path (see 1.4). Session 1 (branch `fix/test-suite-collection`): test suite collection and fixes. Session 2 (branch `refactor/split-api`): split backend/api.py into routers (health, settings, users, plans, process-week, analytics); app mounts routers; duplicate analytics removed; API/smoke tests pass. Follow-up: core router (validate, render, progress, transform, repair, tablet export), FastAPI lifespan, enrich_lesson_json_with_times in backend.utils.lesson_times, plan download in plans router; call sites updated (combine.py, scripts). Session 3 (refactor llm_service): prompt_builder, validation, providers, schema, parse_llm_response, post_process, domain_analysis extracted to backend/llm/; llm_service.py 789 lines; merged to master. See **0.5** for line counts per file. Session 4 (branch `refactor/performance-tracker`): retention 30 days, cleanup on init, sampling + debug_mode (env DEBUG_PERFORMANCE_TRACKING), critical ops include llm_api_call; retention/sampling/debug_mode tests; SQLite WAL for file DBs. |
-| **In progress** | None.                                                                                                                                                                                                                                                                                                                                     |
-| **Not started** | Priorities 5–9 (medium), 10–13 (lower). Proceed to Session 5.                                                                                                                                                                                                                                                                                                                                           |
+| **In progress** | Session 5 (branch `refactor/docx-renderer`): DOCX renderer split into package `tools/docx_renderer/` with style.py, hyperlink_placement.py, renderer.py, table_cell package (fill, format, placement, __init__.py); public API unchanged. Table/cell extraction (Option A+C) done on branch `refactor/docx-renderer-table-cell`. |
+| **Not started** | Priorities 5–9 (medium), 10–13 (lower).                                                                                                                                                                                                                                                                                                                                           |
 
 
 ### 0.2 Session plan: branches, commits, merges
@@ -58,7 +58,7 @@ Work in order when possible; fix test suite (Session 1) before large refactors s
 - **Section 1.4 (Done):** Add a one-line bullet per completed refactor (branch name and what was done), e.g. `- **Split backend/api.py** — Branch refactor/split-api; routers by domain (see session 2).`
 - **Last updated:** Set to the date when you last edited this file.
 
-### 0.5 Line counts (backend LLM, post–Session 3)
+### 0.5 Line counts (backend LLM, post–Session 3; docx_renderer post–Session 5)
 
 | Lines | File |
 | -----:| ------ |
@@ -70,6 +70,19 @@ Work in order when possible; fix test suite (Session 1) before large refactors s
 | 112 | `backend/llm/domain_analysis.py` |
 | 45 | `backend/llm/post_process.py` |
 | 36 | `backend/llm/__init__.py` |
+
+**DOCX renderer (Session 5, post table_cell extraction):**
+
+| Lines | File |
+| -----:| ------ |
+| ~752 | `tools/docx_renderer/renderer.py` |
+| ~285 | `tools/docx_renderer/style.py` |
+| ~320 | `tools/docx_renderer/hyperlink_placement.py` |
+| ~956 | `tools/docx_renderer/table_cell/fill.py` |
+| ~186 | `tools/docx_renderer/table_cell/format.py` |
+| ~214 | `tools/docx_renderer/table_cell/placement.py` |
+| ~48 | `tools/docx_renderer/table_cell/__init__.py` |
+| ~12 | `tools/docx_renderer/__init__.py` |
 
 ---
 
@@ -93,7 +106,7 @@ Priorities are ordered by impact and risk. Do high-priority items on a branch; r
 
 | Priority | Item                                              | Location                                          | Notes                                                                                                                                                |
 | -------- | ------------------------------------------------- | ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 5        | **Split `tools/docx_renderer.py`** (~2,760 lines) | `tools/docx_renderer.py`                          | Extract: table/cell filling, hyperlink placement, multi-slot flow, style handling. Align with combined-original style refactor (see ERROR_ANALYSIS). |
+| 5        | **Split `tools/docx_renderer`** (in progress)      | `tools/docx_renderer/`                            | Package created: style.py, hyperlink_placement.py, renderer.py, table_cell.py (placeholder). Table/cell extraction deferred. See Session 5. |
 | 6        | **Split `tools/docx_parser.py`** (~2,146 lines)   | `tools/docx_parser.py`                            | Extract: structure detection, slot extraction, table/paragraph handling.                                                                             |
 | 7        | **Split `backend/database.py`** (~1,850 lines)    | `backend/database.py`                             | Split by domain: user CRUD, plans/slots, lesson steps, metrics, migrations. Keep single `get_db()` and interface.                                    |
 | 8        | **Combined-original DOCX styles**                 | `docs/ERROR_ANALYSIS_COMBINED_ORIGINAL_STYLES.md` | Refactor rendering/merge so style conflicts are avoided or cleaned up post-merge.                                                                    |
@@ -120,6 +133,7 @@ Priorities are ordered by impact and risk. Do high-priority items on a branch; r
 - **api.py core router and lifespan** — Pipeline routes moved to `backend/routers/core.py` (validate, render, progress, transform, repair, tablet export); FastAPI lifespan context manager replaces on_event startup/shutdown; `enrich_lesson_json_with_times` in `backend/utils/lesson_times.py`; GET plan download in plans router; `tools/batch_processor_pkg/combine.py` and scripts import from `backend.utils.lesson_times`.
 - **Refactor llm_service (Session 3)** — Branch `refactor/llm-service` (merged); extracted to `backend/llm/`: prompt_builder, validation, providers, schema, parse_llm_response (validation), post_process, domain_analysis; `llm_service.py` 789 lines (was ~1,247). Line counts: see **0.5**. LLM tests updated and pass.
 - **PerformanceTracker simplification (Session 4)** — Branch `refactor/performance-tracker`; retention 30 days, cleanup on init, sampling + debug_mode (env DEBUG_PERFORMANCE_TRACKING), critical ops include llm_api_call; retention/sampling/debug_mode tests in test_performance_tracker.py; SQLite WAL for file-based DBs in database.py.
+- **DOCX renderer package (Session 5, in progress)** — Branch `refactor/docx-renderer`; `tools/docx_renderer.py` replaced by package `tools/docx_renderer/` with style.py, hyperlink_placement.py, renderer.py, table_cell.py (placeholder), __init__.py; `from tools.docx_renderer import DOCXRenderer` unchanged; section_hint None fix.
 
 *(New refactors: track branches, commits, and merges in **Section 0** above; add a one-line bullet here when each is merged to master.)*
 
