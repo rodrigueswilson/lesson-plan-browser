@@ -18,7 +18,6 @@ from tools.batch_processor_pkg import (
     week_flow_parallel,
     week_flow_sequential,
 )
-from tools.json_merger import merge_lesson_jsons
 
 
 async def run_process_user_week(
