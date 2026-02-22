@@ -217,9 +217,9 @@ class DOCXRenderer:
             # Track metadata filling
             if plan_id:
                 with tracker.track_operation(plan_id, "render_fill_metadata"):
-                    self._fill_metadata(doc, json_data)
+                    table_cell.fill_metadata(self, doc, json_data)
             else:
-                self._fill_metadata(doc, json_data)
+                table_cell.fill_metadata(self, doc, json_data)
 
             # Normalize metadata table immediately after filling to prevent Word auto-resizing
             from tools.docx_utils import normalize_table_column_widths
@@ -294,20 +294,16 @@ class DOCXRenderer:
 
                     # Check if this day has multiple slots
                     if "slots" in day_data:
-                        self._fill_multi_slot_day(
-                            table,
-                            col_idx,
-                            day_data["slots"],
+                        table_cell.fill_multi_slot_day(
+                            self, table, col_idx, day_data["slots"],
                             metadata=json_data.get("metadata", {}),
                             day_name=day_name,
                             pending_hyperlinks=pending_hyperlinks,
                             pending_images=pending_images,
                         )
                     else:
-                        self._fill_single_slot_day(
-                            table,
-                            col_idx,
-                            day_data,
+                        table_cell.fill_single_slot_day(
+                            self, table, col_idx, day_data,
                             day_name=day_name,
                             pending_hyperlinks=pending_hyperlinks,
                             pending_images=pending_images,
@@ -489,9 +485,6 @@ class DOCXRenderer:
                 f"Renderer failed to create DOCX file '{output_path}': {str(e)}"
             ) from e
 
-    def _fill_metadata(self, doc: Document, json_data: Dict):
-        table_cell.fill_metadata(self, doc, json_data)
-
     def _extract_unique_teachers(self, json_data: Dict) -> List[str]:
         return table_cell.extract_unique_teachers(self, json_data)
 
@@ -519,44 +512,6 @@ class DOCXRenderer:
             pending_images=pending_images,
             slot_number=slot_number,
             subject=subject,
-        )
-
-    def _fill_single_slot_day(
-        self,
-        table,
-        col_idx: int,
-        day_data: Dict,
-        day_name: str = None,
-        pending_hyperlinks: List[Dict] = None,
-        pending_images: List[Dict] = None,
-        slot_number: int = None,
-        subject: str = None,
-    ):
-        table_cell.fill_single_slot_day(
-            self, table, col_idx, day_data,
-            day_name=day_name,
-            pending_hyperlinks=pending_hyperlinks,
-            pending_images=pending_images,
-            slot_number=slot_number,
-            subject=subject,
-        )
-
-    def _fill_multi_slot_day(
-        self,
-        table,
-        col_idx: int,
-        slots: List[Dict],
-        metadata: Dict = None,
-        day_name: str = None,
-        pending_hyperlinks: List[Dict] = None,
-        pending_images: List[Dict] = None,
-    ):
-        table_cell.fill_multi_slot_day(
-            self, table, col_idx, slots,
-            metadata=metadata,
-            day_name=day_name,
-            pending_hyperlinks=pending_hyperlinks,
-            pending_images=pending_images,
         )
 
     def _fill_cell(
