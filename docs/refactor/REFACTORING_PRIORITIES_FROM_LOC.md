@@ -114,7 +114,7 @@ This document analyzes the top files from `python tools/refactor/count_loc.py` a
 
 ## 3. Frontend
 
-- **ScheduleInput.tsx (450), SlotConfigurator.tsx (423):** Below 500-line threshold but sizeable. Per REFACTORING_PRIORITIES_AND_TOOLS (BatchProcessor.tsx refactor pattern): extract subcomponents and hooks (e.g. useScheduleInput, useSlotConfigurator) and keep the main component as a thin composition. **Manual** edits; prefer IDE refactor (rename, extract) for TypeScript.
+- **ScheduleInput.tsx (450), SlotConfigurator.tsx (423):** **Done (Session 18).** Below 500-line threshold but sizeable. Per REFACTORING_PRIORITIES_AND_TOOLS (BatchProcessor.tsx refactor pattern): extract subcomponents and hooks (e.g. useScheduleInput, useSlotConfigurator) and keep the main component as a thin composition. Branch `refactor/schedule-slot-frontend`: schedule_input/ (useScheduleInput, ScheduleInputHeader, ScheduleInputTable, ScheduleColorLegend, NoUserSchedule), slot_configurator/ (useSlotConfigurator, SortableSlotItem); ScheduleInput.tsx and SlotConfigurator.tsx re-exports. Smoke-tested: schedule and slots tabs OK.
 
 ---
 
@@ -141,6 +141,6 @@ Not mandated by REFACTORING_PRIORITIES_AND_TOOLS 0.2; use as a draft:
 2. **users router split** — **Done (Session 15).** Same pattern; reduces merge conflicts and clarifies ownership.
 3. **combine.py split** — Batch processor package already exists; keeps combine maintainable.
 4. **sentence_frames_pdf_generator / objectives_printer** — **Done (Session 17).** Service-layer splits; branch `refactor/sentence-frames-objectives-split`; merged to master.
-5. **Frontend (ScheduleInput, SlotConfigurator)** — If desired; lower priority than backend routers and tools.
+5. **Frontend (ScheduleInput, SlotConfigurator)** — **Done (Session 18).** Branch `refactor/schedule-slot-frontend`; hook + subcomponents + re-exports.
 
 Each session: create branch from `master`, make small commits, run tests, merge when done, update REFACTORING_PRIORITIES_AND_TOOLS 0.1 and 1.4 (and 0.5 if LOC changed).
