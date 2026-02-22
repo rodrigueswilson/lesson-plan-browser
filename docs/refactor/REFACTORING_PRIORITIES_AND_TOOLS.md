@@ -6,16 +6,16 @@ This document lists **refactoring and fix priorities** for the codebase and give
 
 ## 0. Multi-session plan and progress (update this as you go)
 
-**Last updated:** 2026-02-22 (Session 9 implementation complete on branch)
+**Last updated:** 2026-02-22 (Session 10 merged to master)
 
 ### 0.1 Progress summary
 
 
 | Status          | Items                                                                                                                                                                                                                                                                     |
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Done**        | Batch processor package; Database alias and optional db_path (see 1.4). Session 1 (branch `fix/test-suite-collection`): test suite collection and fixes. Session 2 (branch `refactor/split-api`): split backend/api.py into routers (health, settings, users, plans, process-week, analytics); app mounts routers; duplicate analytics removed; API/smoke tests pass. Follow-up: core router (validate, render, progress, transform, repair, tablet export), FastAPI lifespan, enrich_lesson_json_with_times in backend.utils.lesson_times, plan download in plans router; call sites updated (combine.py, scripts). Session 3 (refactor llm_service): prompt_builder, validation, providers, schema, parse_llm_response, post_process, domain_analysis extracted to backend/llm/; llm_service.py 789 lines; merged to master. See **0.5** for line counts per file. Session 4 (branch `refactor/performance-tracker`): retention 30 days, cleanup on init, sampling + debug_mode (env DEBUG_PERFORMANCE_TRACKING), critical ops include llm_api_call; retention/sampling/debug_mode tests; SQLite WAL for file DBs. Session 5 (branches `refactor/docx-renderer`, `refactor/docx-renderer-table-cell`): DOCX renderer package with style.py, hyperlink_placement.py, renderer.py, table_cell package (fill, format, placement); merged to master. Session 6 (branch `refactor/docx-parser`): DOCX parser package with structure.py, no_school.py, table_extraction.py, content_sections.py, slot_extraction.py, images_metadata.py, parser.py, parse_docx; public API unchanged. Line counts in **0.5**. Session 7 (branch `refactor/database-split`): backend/database.py replaced by package backend/database/ (engine, users, slots, plans, metrics, schedule, lesson_steps, lesson_mode, sqlite_impl, get_db); single get_db() and DatabaseInterface preserved; DB/API tests pass. Line counts in **0.5**. Session 8 (branch `refactor/combined-original-styles`): post-merge style normalization for combined_originals DOCX; docProps replacement; docx_utils module logger; style tests; hyperlink Times New Roman 8pt in markdown; Supabase log-once. See **1.4**. Session 9 (branch `refactor/supabase-module`): backend/supabase_database.py replaced by package backend/supabase/ (auth, query_helpers, sync, client, database); facade supabase_database.py re-exports; get_project1_db/get_project2_db added; sync script uses backend.supabase.sync. See **1.4**. |
+| **Done**        | Batch processor package; Database alias and optional db_path (see 1.4). Session 1 (branch `fix/test-suite-collection`): test suite collection and fixes. Session 2 (branch `refactor/split-api`): split backend/api.py into routers (health, settings, users, plans, process-week, analytics); app mounts routers; duplicate analytics removed; API/smoke tests pass. Follow-up: core router (validate, render, progress, transform, repair, tablet export), FastAPI lifespan, enrich_lesson_json_with_times in backend.utils.lesson_times, plan download in plans router; call sites updated (combine.py, scripts). Session 3 (refactor llm_service): prompt_builder, validation, providers, schema, parse_llm_response, post_process, domain_analysis extracted to backend/llm/; llm_service.py 789 lines; merged to master. See **0.5** for line counts per file. Session 4 (branch `refactor/performance-tracker`): retention 30 days, cleanup on init, sampling + debug_mode (env DEBUG_PERFORMANCE_TRACKING), critical ops include llm_api_call; retention/sampling/debug_mode tests; SQLite WAL for file DBs. Session 5 (branches `refactor/docx-renderer`, `refactor/docx-renderer-table-cell`): DOCX renderer package with style.py, hyperlink_placement.py, renderer.py, table_cell package (fill, format, placement); merged to master. Session 6 (branch `refactor/docx-parser`): DOCX parser package with structure.py, no_school.py, table_extraction.py, content_sections.py, slot_extraction.py, images_metadata.py, parser.py, parse_docx; public API unchanged. Line counts in **0.5**. Session 7 (branch `refactor/database-split`): backend/database.py replaced by package backend/database/ (engine, users, slots, plans, metrics, schedule, lesson_steps, lesson_mode, sqlite_impl, get_db); single get_db() and DatabaseInterface preserved; DB/API tests pass. Line counts in **0.5**. Session 8 (branch `refactor/combined-original-styles`): post-merge style normalization for combined_originals DOCX; docProps replacement; docx_utils module logger; style tests; hyperlink Times New Roman 8pt in markdown; Supabase log-once. See **1.4**. Session 9 (branch `refactor/supabase-module`): backend/supabase_database.py replaced by package backend/supabase/ (auth, query_helpers, sync, client, database); facade supabase_database.py re-exports; get_project1_db/get_project2_db added; sync script uses backend.supabase.sync. See **1.4**. Session 10 (branch `refactor/frontend-analytics`): Analytics moved to Settings/Admin; Analytics split into useAnalytics hook and subcomponents; ErrorBreakdown copy clarified. See **1.4**. |
 | **In progress** | None. |
-| **Not started** | Priorities 10–13 (lower). |
+| **Not started** | Priorities 11–13 (lower). |
 
 
 ### 0.2 Session plan: branches, commits, merges
@@ -171,6 +171,26 @@ Work in order when possible; fix test suite (Session 1) before large refactors s
 
 **Tools:** Manual edits and existing `docx_utils` helpers; no new refactoring library required.
 
+### 0.7 Session 10 plan: Frontend Analytics (Priority 10)
+
+**Branch:** `refactor/frontend-analytics`  
+**Reference:** [docs/planning/CRITICAL_REVIEW_AND_CORRECTIONS.md](docs/planning/CRITICAL_REVIEW_AND_CORRECTIONS.md) (Hide Advanced Analytics)
+
+**Goal:** Move Analytics to Settings/Admin and split `frontend/src/components/Analytics.tsx` into subcomponents and a `useAnalytics` hook; keep main nav focused on workflow.
+
+**Implemented (on branch):**
+- **Settings/Admin view:** Top-level nav "Settings" (replaces Analytics and Database). Settings page has sub-tabs: User & Sync (SupabaseSyncToggle, SyncTestButton), Database (DatabaseSettings), Analytics (Analytics dashboard).
+- **Analytics package:** `frontend/src/components/analytics/` with `useAnalytics.ts` (state, fetch, export, formatters, derived chart data), `AnalyticsHeader.tsx`, `SummaryCards.tsx`, `ErrorBreakdown.tsx`, `ModelChart.tsx`, `WorkflowChart.tsx`, `DailyChart.tsx`, `OperationsTable.tsx`, `ParallelStats.tsx`, `SessionTable.tsx`, `index.tsx` (AnalyticsView container). `frontend/src/components/Analytics.tsx` re-exports from `./analytics/index` so existing lazy imports unchanged.
+- **Nav:** DesktopNav shows Settings (not Analytics or Database). Unified App `case 'settings'` with sub-tabs; `case 'analytics'` and `case 'database'` removed.
+
+**Success criteria (merge to master):**
+- Analytics reachable only via Settings > Analytics.
+- Frontend build passes (Analytics-related code compiles; pre-existing TS errors in other packages may remain).
+- Analytics smoke: open Settings, Analytics tab, select user, load data, change time range, export CSV.
+- No regressions in main workflow (Home, Plans, Schedule, Browser, History).
+
+**Tools:** Manual edits; no refactoring library.
+
 ---
 
 ## 1. Refactoring and fix priorities
@@ -226,6 +246,7 @@ Priorities are ordered by impact and risk. Do high-priority items on a branch; r
 - **Combined-original styles (Session 8)** — Branch `refactor/combined-original-styles`. Post-merge style normalization in `combined_original.generate_combined_original_docx` (normalize_styles_via_file after merge); docProps/custom.xml and docProps/core.xml added to replacement in docx_utils; module logger `_log` in docx_utils; tests/test_docx_utils_styles.py and combined-original style check; hyperlink Times New Roman 8pt in markdown_to_docx._add_hyperlink; Supabase fallback log-once in users router; ERROR_ANALYSIS updated.
 - **Supabase module (Session 9)** — Branch `refactor/supabase-module`. Package `backend/supabase/`: auth (create_supabase_client, verify_schema), query_helpers (normalize_day, serialize/hydrate lesson step and session payloads), sync (sync_users_to_supabase, get_target_projects, etc.), client (get_project1_db, get_project2_db), database (SupabaseDatabase, exceptions); `backend/supabase_database.py` facade re-exports; tools/sync_users_to_supabase.py uses backend.supabase.sync.
 - **Supabase database package split (Session 9b)** — Single file `backend/supabase/database.py` (1,306 lines) replaced by package `backend/supabase/database/` with mixins: users.py, slots.py, plans.py, metrics.py, schedule.py, lesson_steps.py, lesson_mode.py, exceptions.py; `SupabaseDatabase` in `__init__.py` inherits all mixins and `DatabaseInterface`; public API unchanged. Line counts in **0.5**.
+- **Frontend Analytics (Session 10)** — Branch `refactor/frontend-analytics`. Analytics moved to Settings/Admin (sub-tabs: User & Sync, Database, Analytics); top-level nav Analytics and Database replaced by Settings. Analytics split into `frontend/src/components/analytics/`: useAnalytics hook, AnalyticsHeader, SummaryCards, ErrorBreakdown, ModelChart, WorkflowChart, DailyChart, OperationsTable, ParallelStats, SessionTable; Analytics.tsx re-exports. ErrorBreakdown copy and failure-type labels clarified.
 
 *(New refactors: track branches, commits, and merges in **Section 0** above; add a one-line bullet here when each is merged to master.)*
 

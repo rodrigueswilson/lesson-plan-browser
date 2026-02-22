@@ -65,6 +65,7 @@ function App() {
 
   // PC state (full navigation)
   const [activeNavItem, setActiveNavItem] = useState<NavItem>('home');
+  const [settingsTab, setSettingsTab] = useState<'user-sync' | 'database' | 'analytics'>('user-sync');
   const [lessonModeEntry, setLessonModeEntry] = useState<{ scheduleEntry?: any; planId?: string; day?: string; slot?: number } | null>(null);
   const [shouldOpenLesson, setShouldOpenLesson] = useState(false);
 
@@ -399,14 +400,58 @@ function App() {
             </div>
           );
 
-        case 'database':
+        case 'settings':
           return (
             <div className="space-y-8">
               {userSelectorSection}
               <section>
-                <Suspense fallback={<div className="p-4">Loading...</div>}>
-                  <DatabaseSettings />
-                </Suspense>
+                <div className="border rounded-lg overflow-hidden">
+                  <div className="px-6 py-4 bg-card border-b flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setSettingsTab('user-sync')}
+                      className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${settingsTab === 'user-sync' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'}`}
+                    >
+                      User & Sync
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setSettingsTab('database')}
+                      className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${settingsTab === 'database' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'}`}
+                    >
+                      Database
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setSettingsTab('analytics')}
+                      className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${settingsTab === 'analytics' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'}`}
+                    >
+                      Analytics
+                    </button>
+                  </div>
+                  <div className="p-6">
+                    {settingsTab === 'user-sync' && (
+                      <div className="space-y-6">
+                        <Suspense fallback={<div className="p-4">Loading...</div>}>
+                          <SupabaseSyncToggle />
+                        </Suspense>
+                        <Suspense fallback={<div className="p-4">Loading...</div>}>
+                          <SyncTestButton />
+                        </Suspense>
+                      </div>
+                    )}
+                    {settingsTab === 'database' && (
+                      <Suspense fallback={<div className="p-4">Loading...</div>}>
+                        <DatabaseSettings />
+                      </Suspense>
+                    )}
+                    {settingsTab === 'analytics' && (
+                      <Suspense fallback={<div className="p-4">Loading...</div>}>
+                        <Analytics />
+                      </Suspense>
+                    )}
+                  </div>
+                </div>
               </section>
             </div>
           );
@@ -419,26 +464,6 @@ function App() {
                 <Suspense fallback={<div className="p-4">Loading...</div>}>
                   <TabletSync />
                 </Suspense>
-              </section>
-            </div>
-          );
-
-        case 'analytics':
-          return (
-            <div className="space-y-8">
-              {userSelectorSection}
-              <section>
-                <div className="border rounded-lg overflow-hidden">
-                  <div className="px-6 py-4 bg-card border-b">
-                    <h2 className="text-lg font-semibold">Analytics Dashboard</h2>
-                    <p className="text-sm text-muted-foreground">Performance metrics and usage statistics</p>
-                  </div>
-                  <div className="p-6">
-                    <Suspense fallback={<div className="p-4">Loading...</div>}>
-                      <Analytics />
-                    </Suspense>
-                  </div>
-                </div>
               </section>
             </div>
           );
