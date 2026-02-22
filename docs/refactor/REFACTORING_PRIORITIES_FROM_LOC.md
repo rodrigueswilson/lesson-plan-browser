@@ -84,11 +84,11 @@ This document analyzes the top files from `python tools/refactor/count_loc.py` a
 
 ---
 
-### 1.6 `tools/docx_renderer/table_cell/fill.py` (956 lines)
+### 1.6 `tools/docx_renderer/table_cell/fill.py` (956 lines) — **Done (Session 19)**
 
-**Current shape:** Part of the docx_renderer package (already refactored in Session 5). Still large.
+**Current shape (post-split):** Split into fill_metadata.py, fill_day.py, fill_cell.py; fill.py is a thin re-export. Public API unchanged (fill_metadata, fill_day, fill_single_slot_day, fill_multi_slot_day, fill_cell).
 
-**Refactor strategy:** **Manual** extraction of logical groups (e.g. by cell type or by step in the fill pipeline). **Cursor** to identify boundaries; **Rope** for renames. Optional: Bowler script only if you later do a project-wide pattern (e.g. logging style) across many files.
+**Refactor strategy:** **Manual** extraction of logical groups (e.g. by cell type or by step in the fill pipeline). **Cursor** to identify boundaries; **Rope** for renames. Branch `refactor/fill-py-split`; merged to master.
 
 ---
 
