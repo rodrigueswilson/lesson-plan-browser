@@ -4,6 +4,7 @@ Fill day and slot data for DOCX table rendering (single-slot and multi-slot).
 
 from typing import Any, Dict, List, Optional
 
+from .. import get_indices
 from .. import logger
 from backend.services.sorting_utils import sort_slots
 from backend.utils.metadata_utils import get_teacher_name
@@ -37,7 +38,7 @@ def fill_day(
         subject: Subject name for filtering (if rendering single slot)
     """
     table = doc.tables[renderer.DAILY_PLANS_TABLE_IDX]
-    col_idx = renderer._get_col_index(day_name)
+    col_idx = get_indices.get_col_index(renderer, day_name)
     if col_idx == -1:
         return
 
@@ -124,7 +125,7 @@ def fill_single_slot_day(
             "assessment",
             "homework",
         ]:
-            row_idx = renderer._get_row_index(row_label)
+            row_idx = get_indices.get_row_index(renderer, row_label)
             if row_idx != -1:
                 table.rows[row_idx].cells[col_idx].text = ""
         return
@@ -132,7 +133,7 @@ def fill_single_slot_day(
     fill_cell(
         renderer,
         table,
-        renderer._get_row_index("unit"),
+        get_indices.get_row_index(renderer, "unit"),
         col_idx,
         unit_lesson,
         day_name=day_name,
@@ -147,7 +148,7 @@ def fill_single_slot_day(
     fill_cell(
         renderer,
         table,
-        renderer._get_row_index("objective"),
+        get_indices.get_row_index(renderer, "objective"),
         col_idx,
         objective_text,
         day_name=day_name,
@@ -164,7 +165,7 @@ def fill_single_slot_day(
     fill_cell(
         renderer,
         table,
-        renderer._get_row_index("anticipatory"),
+        get_indices.get_row_index(renderer, "anticipatory"),
         col_idx,
         anticipatory_text,
         day_name=day_name,
@@ -184,7 +185,7 @@ def fill_single_slot_day(
     fill_cell(
         renderer,
         table,
-        renderer._get_row_index("instruction"),
+        get_indices.get_row_index(renderer, "instruction"),
         col_idx,
         instruction_text,
         day_name=day_name,
@@ -201,7 +202,7 @@ def fill_single_slot_day(
     fill_cell(
         renderer,
         table,
-        renderer._get_row_index("misconception"),
+        get_indices.get_row_index(renderer, "misconception"),
         col_idx,
         misconceptions_text,
         day_name=day_name,
@@ -218,7 +219,7 @@ def fill_single_slot_day(
     fill_cell(
         renderer,
         table,
-        renderer._get_row_index("assessment"),
+        get_indices.get_row_index(renderer, "assessment"),
         col_idx,
         assessment_text,
         day_name=day_name,
@@ -235,7 +236,7 @@ def fill_single_slot_day(
     fill_cell(
         renderer,
         table,
-        renderer._get_row_index("homework"),
+        get_indices.get_row_index(renderer, "homework"),
         col_idx,
         homework_text,
         day_name=day_name,
@@ -308,13 +309,13 @@ def fill_multi_slot_day(
         slots_have_content.append(has_content)
 
     rows_config = [
-        ("unit_lesson", renderer._get_row_index("unit"), "[No unit/lesson specified]", 100),
-        ("objective", renderer._get_row_index("objective"), "[No objective specified]", None),
-        ("anticipatory_set", renderer._get_row_index("anticipatory"), None, None),
-        ("tailored_instruction", renderer._get_row_index("instruction"), None, None),
-        ("misconceptions", renderer._get_row_index("misconception"), None, None),
-        ("assessment", renderer._get_row_index("assessment"), None, None),
-        ("homework", renderer._get_row_index("homework"), None, 100),
+        ("unit_lesson", get_indices.get_row_index(renderer, "unit"), "[No unit/lesson specified]", 100),
+        ("objective", get_indices.get_row_index(renderer, "objective"), "[No objective specified]", None),
+        ("anticipatory_set", get_indices.get_row_index(renderer, "anticipatory"), None, None),
+        ("tailored_instruction", get_indices.get_row_index(renderer, "instruction"), None, None),
+        ("misconceptions", get_indices.get_row_index(renderer, "misconception"), None, None),
+        ("assessment", get_indices.get_row_index(renderer, "assessment"), None, None),
+        ("homework", get_indices.get_row_index(renderer, "homework"), None, 100),
     ]
 
     if metadata is None:
