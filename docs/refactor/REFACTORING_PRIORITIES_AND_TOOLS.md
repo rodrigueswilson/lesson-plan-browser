@@ -6,15 +6,15 @@ This document lists **refactoring and fix priorities** for the codebase and give
 
 ## 0. Multi-session plan and progress (update this as you go)
 
-**Last updated:** 2026-02-22 (Session 13 orchestrator split on branch)
+**Last updated:** 2026-02-22 (Session 14 plans router split on branch refactor/plans-router-split)
 
 ### 0.1 Progress summary
 
 
 | Status          | Items                                                                                                                                                                                                                                                                     |
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Done**        | Batch processor package; Database alias and optional db_path (see 1.4). Session 1 (branch `fix/test-suite-collection`): test suite collection and fixes. Session 2 (branch `refactor/split-api`): split backend/api.py into routers (health, settings, users, plans, process-week, analytics); app mounts routers; duplicate analytics removed; API/smoke tests pass. Follow-up: core router (validate, render, progress, transform, repair, tablet export), FastAPI lifespan, enrich_lesson_json_with_times in backend.utils.lesson_times, plan download in plans router; call sites updated (combine.py, scripts). Session 3 (refactor llm_service): prompt_builder, validation, providers, schema, parse_llm_response, post_process, domain_analysis extracted to backend/llm/; llm_service.py 789 lines; merged to master. See **0.5** for line counts per file. Session 4 (branch `refactor/performance-tracker`): retention 30 days, cleanup on init, sampling + debug_mode (env DEBUG_PERFORMANCE_TRACKING), critical ops include llm_api_call; retention/sampling/debug_mode tests; SQLite WAL for file DBs. Session 5 (branches `refactor/docx-renderer`, `refactor/docx-renderer-table-cell`): DOCX renderer package with style.py, hyperlink_placement.py, renderer.py, table_cell package (fill, format, placement); merged to master. Session 6 (branch `refactor/docx-parser`): DOCX parser package with structure.py, no_school.py, table_extraction.py, content_sections.py, slot_extraction.py, images_metadata.py, parser.py, parse_docx; public API unchanged. Line counts in **0.5**. Session 7 (branch `refactor/database-split`): backend/database.py replaced by package backend/database/ (engine, users, slots, plans, metrics, schedule, lesson_steps, lesson_mode, sqlite_impl, get_db); single get_db() and DatabaseInterface preserved; DB/API tests pass. Line counts in **0.5**. Session 8 (branch `refactor/combined-original-styles`): post-merge style normalization for combined_originals DOCX; docProps replacement; docx_utils module logger; style tests; hyperlink Times New Roman 8pt in markdown; Supabase log-once. See **1.4**. Session 9 (branch `refactor/supabase-module`): backend/supabase_database.py replaced by package backend/supabase/ (auth, query_helpers, sync, client, database); facade supabase_database.py re-exports; get_project1_db/get_project2_db added; sync script uses backend.supabase.sync. See **1.4**. Session 10 (branch `refactor/frontend-analytics`): Analytics moved to Settings/Admin; Analytics split into useAnalytics hook and subcomponents; ErrorBreakdown copy clarified. See **1.4**. Session 11 (branch `refactor/batch-processor-tsx`): BatchProcessor.tsx refactor — useBatchProcessor hook and subcomponents; re-exports. See **1.4**. Session 12 (branch `refactor/root-declutter`): root declutter per ROOT_DECLUTTERING_PLAN; docs/scripts archived; links verified. See **1.4**. |
-| **In progress** | Session 13 (branch `refactor/orchestrator-split`): week_flow, slot_flow extracted; orchestrator thin coordinator. See **0.9**. |
+| **Done**        | Batch processor package; Database alias and optional db_path (see 1.4). Session 1 (branch `fix/test-suite-collection`): test suite collection and fixes. Session 2 (branch `refactor/split-api`): split backend/api.py into routers (health, settings, users, plans, process-week, analytics); app mounts routers; duplicate analytics removed; API/smoke tests pass. Follow-up: core router (validate, render, progress, transform, repair, tablet export), FastAPI lifespan, enrich_lesson_json_with_times in backend.utils.lesson_times, plan download in plans router; call sites updated (combine.py, scripts). Session 3 (refactor llm_service): prompt_builder, validation, providers, schema, parse_llm_response, post_process, domain_analysis extracted to backend/llm/; llm_service.py 789 lines; merged to master. See **0.5** for line counts per file. Session 4 (branch `refactor/performance-tracker`): retention 30 days, cleanup on init, sampling + debug_mode (env DEBUG_PERFORMANCE_TRACKING), critical ops include llm_api_call; retention/sampling/debug_mode tests; SQLite WAL for file DBs. Session 5 (branches `refactor/docx-renderer`, `refactor/docx-renderer-table-cell`): DOCX renderer package with style.py, hyperlink_placement.py, renderer.py, table_cell package (fill, format, placement); merged to master. Session 6 (branch `refactor/docx-parser`): DOCX parser package with structure.py, no_school.py, table_extraction.py, content_sections.py, slot_extraction.py, images_metadata.py, parser.py, parse_docx; public API unchanged. Line counts in **0.5**. Session 7 (branch `refactor/database-split`): backend/database.py replaced by package backend/database/ (engine, users, slots, plans, metrics, schedule, lesson_steps, lesson_mode, sqlite_impl, get_db); single get_db() and DatabaseInterface preserved; DB/API tests pass. Line counts in **0.5**. Session 8 (branch `refactor/combined-original-styles`): post-merge style normalization for combined_originals DOCX; docProps replacement; docx_utils module logger; style tests; hyperlink Times New Roman 8pt in markdown; Supabase log-once. See **1.4**. Session 9 (branch `refactor/supabase-module`): backend/supabase_database.py replaced by package backend/supabase/ (auth, query_helpers, sync, client, database); facade supabase_database.py re-exports; get_project1_db/get_project2_db added; sync script uses backend.supabase.sync. See **1.4**. Session 10 (branch `refactor/frontend-analytics`): Analytics moved to Settings/Admin; Analytics split into useAnalytics hook and subcomponents; ErrorBreakdown copy clarified. See **1.4**. Session 11 (branch `refactor/batch-processor-tsx`): BatchProcessor.tsx refactor — useBatchProcessor hook and subcomponents; re-exports. See **1.4**. Session 12 (branch `refactor/root-declutter`): root declutter per ROOT_DECLUTTERING_PLAN; docs/scripts archived; links verified. Session 13 (branch `refactor/orchestrator-split`): week_flow, slot_flow; orchestrator thin coordinator; merged to master. See **0.9**, **1.4**. Session 14 (branch `refactor/plans-router-split`): plans router split into plans.py (slim), lesson_mode.py, lesson_steps.py, lesson_steps_generator service; API/slot tests pass. See **1.4**. |
+| **In progress** | None. |
 | **Not started** | None. |
 
 
@@ -120,6 +120,15 @@ Work in order when possible; fix test suite (Session 1) before large refactors s
 | 472 | `tools/batch_processor_pkg/orchestrator.py` |
 | 1031 | `tools/batch_processor_pkg/slot_flow.py` |
 | 940 | `tools/batch_processor_pkg/week_flow.py` |
+
+**Plans router (Session 14, post split):**
+
+| Lines | File |
+| -----:| ------ |
+| 406 | `backend/routers/plans.py` |
+| 346 | `backend/routers/lesson_steps.py` |
+| 247 | `backend/routers/lesson_mode.py` |
+| 880 | `backend/services/lesson_steps_generator.py` |
 
 **Supabase database (Session 9b, post package split):**
 
@@ -297,6 +306,8 @@ Priorities are ordered by impact and risk. Do high-priority items on a branch; r
 - **Frontend Analytics (Session 10)** — Branch `refactor/frontend-analytics`. Analytics moved to Settings/Admin (sub-tabs: User & Sync, Database, Analytics); top-level nav Analytics and Database replaced by Settings. Analytics split into `frontend/src/components/analytics/`: useAnalytics hook, AnalyticsHeader, SummaryCards, ErrorBreakdown, ModelChart, WorkflowChart, DailyChart, OperationsTable, ParallelStats, SessionTable; Analytics.tsx re-exports. ErrorBreakdown copy and failure-type labels clarified.
 - **BatchProcessor.tsx refactor (Session 11)** — Branch `refactor/batch-processor-tsx`. BatchProcessor.tsx split into `frontend/src/components/batch_processor/`: useBatchProcessor hook, WeekSection, ProgressSection, BatchAlerts, SlotSection, ConfirmDialog; BatchProcessor.tsx re-exports BatchProcessorView.
 - **Root decluttering (Session 12)** — Branch `refactor/root-declutter`. Root archived/organized per ROOT_DECLUTTERING_PLAN; docs to docs/archive/root-documentation, logs to logs/archive, test files to docs/archive/test-files, Python scripts to tools/archive/root-scripts, batch/PowerShell to docs/archive/scripts; CONTRIBUTING and ROOT_ARCHIVE_INDEX updated; links/scripts verified.
+- **Orchestrator split (Session 13)** — Branch `refactor/orchestrator-split`. week_flow.py (run_process_user_week), slot_flow.py (process_one_slot); orchestrator thin coordinator; get_db/get_file_manager on processor; public API unchanged. Line counts in **0.5**.
+- **Plans router split (Session 14)** — Branch `refactor/plans-router-split`. lesson_mode.py (5 endpoints), lesson_steps.py (get/generate), lesson_steps_generator.py service; plans.py slim (plan detail, download, user plans, week status). API/slot tests pass.
 
 *(New refactors: track branches, commits, and merges in **Section 0** above; add a one-line bullet here when each is merged to master.)*
 
@@ -370,4 +381,11 @@ Automated refactoring tools are useful for **mechanical, repeated changes** (ren
 - `docs/ERROR_ANALYSIS_COMBINED_ORIGINAL_STYLES.md` — Combined-original style refactor.
 - `docs/implementation/ROOT_DECLUTTERING_PLAN.md` — Root directory cleanup.
 - `docs/planning/db_architecture/LOCAL_OPTIMIZATION_PLAN.md` — BatchProcessor + joblib/cache (optional).
+
+### 4.1 LOC, git, and refactoring tools for Cursor
+
+- **LOC and metrics:** See `docs/refactor/LOC_AND_METRICS.md`. Refresh section 0.5 with `python tools/refactor/count_loc.py` (use `--markdown` for tables).
+- **Git during refactoring:** See `docs/refactor/GIT_DURING_REFACTORING.md` (branching, commits, merge; SSOT for session order remains sections 0.2 and 0.3 above).
+- **Refactoring with Cursor:** When refactoring with Cursor (AI), follow `docs/refactor/REFACTORING_TOOLS_FOR_CURSOR.md` so Rope/Bowler/LibCST are used where appropriate (renames, mechanical patterns, large-file splits).
+- **Priorities from LOC:** See `docs/refactor/REFACTORING_PRIORITIES_FROM_LOC.md` for analysis of top files from the LOC script and how to refactor them per this module (plans/users routers, combine.py, PDF services, etc.).
 
