@@ -90,6 +90,7 @@ dmypy.json
 *.bak
 *.swp
 *~
+tmpclaude-*
 
 # API Keys (extra safety)
 *_api_key*

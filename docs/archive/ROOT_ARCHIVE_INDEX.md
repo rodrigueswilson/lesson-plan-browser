@@ -2,8 +2,10 @@
 
 This document tracks all files archived from the root directory during the decluttering process.
 
-**Last Updated**: 2025-01-27  
-**Status**: Archive Complete
+**Last Updated**: 2026-02-22  
+**Status**: Archive Complete (Session 12)
+
+**Session 12 (2026-02-22):** Additional root files archived per ROOT_DECLUTTERING_PLAN: root-documentation (16 MD files), logs/archive (30+ .txt and .log), docs/archive/test-files (test/debug/JSON/HTML/XML), tools/archive/root-scripts (56 Python scripts), docs/archive/scripts/batch (2 .bat), docs/archive/scripts/powershell (11 .ps1), docs/archive/temp-files (temp_json.json). Root now keeps only essential config, README, requirements.txt, pytest.ini, start-backend.bat, start-app.bat, start-app-with-logs.ps1, CHECK_BACKEND_STATUS.ps1, test-unified-frontend.ps1, and project assets. tmpclaude-* removed from tracking; .gitignore updated.
 
 ## Archive Schema
 

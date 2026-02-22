@@ -63,9 +63,12 @@ Thank you for your interest in contributing! This guide will help you set up you
 # From project root
 python -m uvicorn backend.api:app --reload --port 8000
 
-# Or use the convenience script
+# Or use the convenience script (from project root)
 start-backend.bat  # Windows
+.\start-app-with-logs.ps1  # PowerShell: backend + frontend with logs
 ```
+
+Other batch and PowerShell scripts that were in the root have been archived; see [docs/archive/ROOT_ARCHIVE_INDEX.md](archive/ROOT_ARCHIVE_INDEX.md) for locations.
 
 The API will be available at `http://localhost:8000`
 - Swagger docs: `http://localhost:8000/docs`
@@ -165,7 +168,7 @@ d:\LP/
 │   ├── llm_service.py   # LLM integration
 │   └── file_manager.py  # File organization
 ├── tools/               # Core processing
-│   ├── docx_parser.py   # DOCX parsing
+│   ├── docx_parser/      # DOCX parsing (package)
 │   ├── docx_renderer.py # DOCX generation
 │   ├── batch_processor.py # Weekly processing
 │   └── json_merger.py   # JSON consolidation
