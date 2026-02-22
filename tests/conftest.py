@@ -66,6 +66,8 @@ def client_isolated_db(isolated_db, monkeypatch):
     monkeypatch.setattr("backend.database.get_db", get_test_db)
     monkeypatch.setattr("backend.api.get_db", get_test_db)
     monkeypatch.setattr("backend.routers.users.get_db", get_test_db)
+    monkeypatch.setattr("backend.routers.slots.get_db", get_test_db)
+    monkeypatch.setattr("backend.routers.schedule.get_db", get_test_db)
     try:
         from starlette.testclient import TestClient
         from backend.api import app

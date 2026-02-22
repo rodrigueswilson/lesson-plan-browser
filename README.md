@@ -34,7 +34,8 @@ Bilingual Weekly Plan Builder/
 │   └── frontend/          # Unified frontend (PC + Tablet, platform-aware)
 ├── shared/                # Shared modules (lesson-api, lesson-browser, lesson-mode)
 ├── backend/               # Python FastAPI service
-│   ├── api.py            # REST API endpoints + SSE
+│   ├── api.py            # REST API app; mounts routers with prefix /api
+│   ├── routers/          # API by domain (users, slots, schedule, plans, lesson_mode, lesson_steps, etc.)
 │   ├── database/         # SQLite multi-user storage (engine, users, plans, metrics, etc.)
 │   ├── llm_service.py    # LLM orchestration (789 lines)
 │   ├── llm/              # Schema, validation, prompts, providers, post-process

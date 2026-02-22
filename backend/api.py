@@ -41,7 +41,9 @@ from backend.routers.lesson_mode import router as lesson_mode_router
 from backend.routers.lesson_steps import router as lesson_steps_router
 from backend.routers.plans import router as plans_router
 from backend.routers.process_week import router as process_week_router
+from backend.routers.schedule import router as schedule_router
 from backend.routers.settings import router as settings_router
+from backend.routers.slots import router as slots_router
 from backend.routers.users import router as users_router
 from backend.telemetry import logger
 
@@ -92,6 +94,8 @@ app = FastAPI(
 app.include_router(health_router)
 app.include_router(settings_router, prefix="/api")
 app.include_router(users_router, prefix="/api")
+app.include_router(slots_router, prefix="/api")
+app.include_router(schedule_router, prefix="/api")
 app.include_router(lesson_mode_router, prefix="/api")
 app.include_router(lesson_steps_router, prefix="/api")
 app.include_router(plans_router, prefix="/api")
