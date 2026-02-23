@@ -4,9 +4,9 @@
 
 from __future__ import annotations
 
-from enum import Enum
-
 from pydantic import BaseModel, ConfigDict, Field, RootModel, field_validator
+
+from backend.lesson_schema_enums import FrameType, ModelName, PatternId, ProficiencyLevel
 
 
 class Metadata(BaseModel):
@@ -109,15 +109,6 @@ class Material(RootModel[str]):
     )
 
 
-class ModelName(Enum):
-    Station_Teaching = "Station Teaching"
-    Parallel_Teaching = "Parallel Teaching"
-    Team_Teaching = "Team Teaching"
-    Alternative_Teaching = "Alternative Teaching"
-    One_Teach_One_Assist = "One Teach One Assist"
-    One_Teach_One_Observe = "One Teach One Observe"
-
-
 class ImplementationNote(RootModel[str]):
     root: str = Field(
         ...,
@@ -182,18 +173,6 @@ class EllStrategy(BaseModel):
         examples=["Levels 2-5", "Levels 2-3", "Level 1", "Levels 3-4"],
         pattern="^Levels? [0-9](-[0-9])?(, [0-9](-[0-9])?)*$",
     )
-
-
-# Make PatternId JSON-serializable by default by subclassing str
-# This ensures enums serialize as strings in all contexts (instructor library, json.dumps, etc.)
-class PatternId(str, Enum):
-    subject_pronoun_omission = "subject_pronoun_omission"
-    adjective_placement = "adjective_placement"
-    past_tense_ed_dropping = "past_tense_ed_dropping"
-    preposition_depend_on = "preposition_depend_on"
-    false_cognate_actual = "false_cognate_actual"
-    false_cognate_library = "false_cognate_library"
-    default = "default"
 
 
 class LinguisticNote(BaseModel):
@@ -340,22 +319,6 @@ class VocabularyCognates(RootModel[list[VocabularyCognate]]):
         max_length=6,
         min_length=6,
     )
-
-
-# Make ProficiencyLevel JSON-serializable by default by subclassing str
-# This ensures enums serialize as strings in all contexts (instructor library, json.dumps, etc.)
-class ProficiencyLevel(str, Enum):
-    levels_1_2 = "levels_1_2"
-    levels_3_4 = "levels_3_4"
-    levels_5_6 = "levels_5_6"
-
-
-# Make FrameType JSON-serializable by default by subclassing str
-# This ensures enums serialize as strings in all contexts (instructor library, json.dumps, etc.)
-class FrameType(str, Enum):
-    frame = "frame"
-    stem = "stem"
-    open_question = "open_question"
 
 
 class SentenceFrame(BaseModel):
