@@ -1,19 +1,26 @@
-"""Production deployment test script."""
-import requests
+"""Production deployment test script. Skips when backend is not running at localhost:8000."""
 import json
 from pathlib import Path
 
+import pytest
+import requests
+
 def test_production_deployment():
-    """Test production deployment with real data."""
-    
+    """Test production deployment with real data. Skips if backend is not reachable."""
+    # Skip when backend is not running so full suite can complete without hanging
+    try:
+        r = requests.get("http://localhost:8000/api/health", timeout=2)
+    except (requests.exceptions.ConnectionError, requests.exceptions.Timeout) as e:
+        pytest.skip(f"Backend not running at localhost:8000: {e}")
+
     print("=" * 60)
     print("Production Deployment Test")
     print("=" * 60)
-    
+
     # Test 1: Health Check
     print("\n1. Testing Health Check...")
     try:
-        r = requests.get("http://localhost:8000/api/health")
+        r = requests.get("http://localhost:8000/api/health", timeout=5)
         print(f"   Status: {r.status_code}")
         print(f"   Response: {r.json()}")
         assert r.status_code == 200
@@ -28,7 +35,7 @@ def test_production_deployment():
         with open("tests/fixtures/valid_lesson_minimal.json") as f:
             data = json.load(f)
         
-        r = requests.post("http://localhost:8000/api/validate", json={"json_data": data})
+        r = requests.post("http://localhost:8000/api/validate", json={"json_data": data}, timeout=10)
         print(f"   Status: {r.status_code}")
         result = r.json()
         print(f"   Valid: {result.get('valid')}")
@@ -42,7 +49,7 @@ def test_production_deployment():
     # Test 3: Render DOCX
     print("\n3. Testing DOCX Rendering...")
     try:
-        r = requests.post("http://localhost:8000/api/render", json={"json_data": data})
+        r = requests.post("http://localhost:8000/api/render", json={"json_data": data}, timeout=30)
         print(f"   Status: {r.status_code}")
         result = r.json()
         output_path = result.get("output_path")
@@ -71,7 +78,7 @@ def test_production_deployment():
     # Test 4: Download File
     print("\n4. Testing File Download...")
     try:
-        r = requests.get(f"http://localhost:8000/api/render/{filename}")
+        r = requests.get(f"http://localhost:8000/api/render/{filename}", timeout=10)
         print(f"   Status: {r.status_code}")
         print(f"   Content-Type: {r.headers.get('content-type')}")
         print(f"   Content-Length: {len(r.content):,} bytes")
