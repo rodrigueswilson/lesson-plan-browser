@@ -9,7 +9,9 @@ from docx.shared import Pt, Inches
 from docx.enum.section import WD_ORIENT
 from collections import defaultdict
 
-sys.path.insert(0, str(Path(__file__).parent))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+
+from tools.diagnostics.objectives_layout_heights import calculate_estimated_heights
 
 
 def analyze_docx_layout(docx_path: str):
@@ -317,114 +319,6 @@ def is_separator(para):
     pPr = para._element.get_or_add_pPr()
     pBdr = pPr.find('.//{http://schemas.openxmlformats.org/wordprocessingml/2006/main}pBdr')
     return pBdr is not None
-
-
-def calculate_estimated_heights(page_info, usable_height):
-    """Calculate estimated heights for each section."""
-    heights = {}
-    
-    # Header height
-    if page_info['has_header']:
-        header_paras = page_info['paragraphs_by_type']['header']
-        if header_paras:
-            para_info = header_paras[0]
-            font_size = para_info.get('font_size', 10)
-            # Approximate: font_size * line_spacing / 72 inches
-            heights['header'] = (font_size * 1.2) / 72  # ~0.17" for 10pt
-    
-    # Student Goal height - combine all text first
-    if page_info['has_student_goal']:
-        student_paras = page_info['paragraphs_by_type']['student_goal']
-        if student_paras:
-            # Get font size from first paragraph (should be consistent)
-            font_size = student_paras[0].get('font_size', 24)
-            line_spacing = student_paras[0].get('line_spacing') or 1.25
-            
-            # Combine all text
-            combined_text = ' '.join(para_info['text'] for para_info in student_paras if para_info['text'].strip())
-            
-            # Estimate lines - account for word wrapping (more accurate)
-            # Estimate characters per line: width / (font_size * 0.6 / 72)
-            # Using 10" width minus padding = ~9.4"
-            chars_per_line = (9.4 * 72) / (font_size * 0.6) if font_size > 0 else 60
-            # Account for word boundaries: average word + space ≈ 6 chars
-            words_per_line = max(1, chars_per_line / 6)
-            words = combined_text.split()
-            estimated_lines = max(1, len(words) / words_per_line)
-            
-            # Calculate height
-            text_height = (font_size * line_spacing * estimated_lines) / 72
-            
-            # Add spacing from paragraphs (only count space_after from last para, space_before from first)
-            spacing_height = 0
-            if student_paras:
-                spacing_height += (student_paras[0].get('space_before', 0)) / 72
-                spacing_height += (student_paras[-1].get('space_after', 0)) / 72
-            
-            heights['student_goal'] = text_height + spacing_height
-    
-    # Separator height
-    if page_info['has_separator']:
-        separator_paras = page_info['paragraphs_by_type']['separator']
-        if separator_paras:
-            para_info = separator_paras[0]
-            heights['separator'] = (
-                (para_info.get('space_before', 0) + para_info.get('space_after', 0)) / 72 + 0.05
-            )  # ~0.15" total
-    
-    # WIDA height - combine all text first
-    if page_info['has_wida']:
-        wida_paras = page_info['paragraphs_by_type']['wida']
-        if wida_paras:
-            # Get font size from first non-label paragraph
-            font_size = None
-            for para_info in wida_paras:
-                if para_info.get('font_size') and 'WIDA/Bilingual:' not in para_info['text']:
-                    font_size = para_info.get('font_size', 14)
-                    break
-            if not font_size:
-                font_size = 14
-            
-            line_spacing = wida_paras[0].get('line_spacing') or 1.0
-            
-            # Combine all text (excluding label)
-            combined_text = ' '.join(
-                para_info['text'] for para_info in wida_paras 
-                if para_info['text'].strip() and 'WIDA/Bilingual:' not in para_info['text']
-            )
-            
-            # Estimate characters per line for WIDA section
-            chars_per_line = (9.6 * 72) / (font_size * 0.55) if font_size > 0 else 60
-            # Account for word boundaries
-            words_per_line = max(1, chars_per_line / 6)
-            words = combined_text.split()
-            estimated_lines = max(1, len(words) / words_per_line)
-            
-            # Calculate height
-            text_height = (font_size * line_spacing * estimated_lines) / 72
-            
-            # Add label height if present
-            label_height = 0
-            for para_info in wida_paras:
-                if 'WIDA/Bilingual:' in para_info['text']:
-                    label_font = para_info.get('font_size', font_size)
-                    label_height = (label_font * 1.2) / 72  # Approximate label height
-                    break
-            
-            # Add spacing
-            spacing_height = 0
-            if wida_paras:
-                spacing_height += (wida_paras[0].get('space_before', 0)) / 72
-                spacing_height += (wida_paras[-1].get('space_after', 0)) / 72
-            
-            heights['wida'] = text_height + label_height + spacing_height
-    
-    # Calculate totals
-    total_estimated = sum(heights.values())
-    heights['total_estimated'] = total_estimated
-    heights['percentage_of_page'] = (total_estimated / usable_height) * 100 if usable_height > 0 else 0
-    
-    return heights
 
 
 def print_page_analysis(page_info, usable_height):
