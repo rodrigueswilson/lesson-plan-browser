@@ -4,116 +4,18 @@ Extracted from docx_utils for single responsibility.
 """
 
 import logging
-from io import BytesIO
-from typing import Optional, Dict, Any
+from typing import Any, Dict, Optional
 
 from docx import Document
 from docx.oxml.ns import qn
+
+from tools.docx_style_file import normalize_styles_via_file
 
 try:
     import structlog
     _log = structlog.get_logger(__name__)
 except ImportError:
     _log = logging.getLogger(__name__)
-
-
-def normalize_styles_via_file(master_doc: Document, target_doc: Document) -> Optional[BytesIO]:
-    """
-    Replace styles, numbering, font table, and docProps (custom.xml, core.xml) by using
-    temporary files and zipfile. Replacing docProps avoids "Word found unreadable content"
-    when merged DOCX have corrupt or conflicting custom properties.
-    
-    This is the most reliable method as it directly replaces the XML files in the DOCX package.
-    Only parts present in the master are replaced; missing parts are left unchanged in target.
-    
-    Returns a BytesIO stream containing the normalized document, or None if failed.
-    The caller should reload the document from this stream.
-    """
-    import tempfile
-    import zipfile
-    from pathlib import Path
-    from io import BytesIO
-    
-    _log.warning("file_based_normalization_started")
-    
-    try:
-        # Save both documents to temporary files
-        _log.debug("saving_documents_to_temp_files")
-        with tempfile.TemporaryDirectory() as temp_dir:
-            master_path = Path(temp_dir) / "master.docx"
-            target_path = Path(temp_dir) / "target.docx"
-            output_path = Path(temp_dir) / "target_normalized.docx"
-            
-            master_doc.save(str(master_path))
-            target_doc.save(str(target_path))
-            _log.debug("documents_saved_to_temp")
-            
-            # Files to replace for consistency (styles/numbering/font + docProps to avoid "unreadable content")
-            files_to_replace = [
-                'word/styles.xml',
-                'word/numbering.xml',
-                'word/fontTable.xml',
-                'docProps/custom.xml',
-                'docProps/core.xml',
-            ]
-            
-            replacement_data = {}
-            
-            # Extract replacement files from master
-            with zipfile.ZipFile(master_path, 'r') as master_zip:
-                master_files = master_zip.namelist()
-                for xml_file in files_to_replace:
-                    if xml_file in master_files:
-                        replacement_data[xml_file] = master_zip.read(xml_file)
-                        _log.debug("extracted_from_master", extra={"file": xml_file})
-            
-            missing = [f for f in files_to_replace if f not in replacement_data]
-            if missing:
-                _log.debug(
-                    "replacement_files_not_in_master",
-                    extra={"missing": missing, "note": "only parts present in template are replaced"},
-                )
-            if not replacement_data:
-                _log.warning("no_replacement_files_found_in_master")
-                return None
-            
-            # Replace files in target
-            with zipfile.ZipFile(target_path, 'r') as target_zip:
-                with zipfile.ZipFile(output_path, 'w', zipfile.ZIP_DEFLATED) as output_zip:
-                    # Copy all files from target except those being replaced
-                    files_copied = 0
-                    for item in target_zip.infolist():
-                        if item.filename not in replacement_data:
-                            data = target_zip.read(item.filename)
-                            output_zip.writestr(item, data)
-                            files_copied += 1
-                    
-                    # Add replacement files
-                    for filename, data in replacement_data.items():
-                        output_zip.writestr(filename, data)
-                    
-                    _log.debug("files_replaced_in_zip", extra={
-                        "files_copied": files_copied,
-                        "files_replaced": list(replacement_data.keys()),
-                    })
-            
-            # Read the normalized file into BytesIO
-            with open(output_path, 'rb') as f:
-                normalized_data = BytesIO(f.read())
-            
-            _log.warning("styles_and_numbering_replaced_via_file", extra={
-                "replaced_files": list(replacement_data.keys()),
-                "success": True,
-            })
-            
-            return normalized_data
-            
-    except Exception as e:
-        _log.error("file_based_style_replacement_failed", extra={
-            "error": str(e),
-            "error_type": type(e).__name__
-        }, exc_info=True)
-        return None
 
 
 def normalize_styles_from_master(master_doc: Document, target_doc: Document) -> None:
