@@ -1,27 +1,35 @@
 """
 Edge case testing for Phase 8 deployment.
 Tests various error scenarios and boundary conditions.
+Skips when backend is not running at localhost:8000.
 """
 
-import requests
 import json
+
+import pytest
+import requests
 
 BASE_URL = "http://localhost:8000"
 
+
 def test_edge_cases():
-    """Test various edge cases and error scenarios."""
-    
+    """Test various edge cases and error scenarios. Skips if backend is not reachable."""
+    try:
+        requests.get(f"{BASE_URL}/api/health", timeout=2)
+    except (requests.exceptions.ConnectionError, requests.exceptions.Timeout) as e:
+        pytest.skip(f"Backend not running at {BASE_URL}: {e}")
+
     print("=" * 60)
     print("EDGE CASE TESTING")
     print("=" * 60)
     print()
-    
+
     results = []
-    
+
     # Test 1: Empty JSON
     print("Test 1: Empty JSON")
     try:
-        r = requests.post(f"{BASE_URL}/api/validate", json={"json_data": {}})
+        r = requests.post(f"{BASE_URL}/api/validate", json={"json_data": {}}, timeout=10)
         print(f"  Status: {r.status_code}")
         print(f"  Valid: {r.json().get('valid', False)}")
         results.append(("Empty JSON", r.status_code == 200, "Expected validation failure"))
@@ -41,7 +49,7 @@ def test_edge_cases():
             },
             "days": {}
         }
-        r = requests.post(f"{BASE_URL}/api/validate", json={"json_data": data})
+        r = requests.post(f"{BASE_URL}/api/validate", json={"json_data": data}, timeout=10)
         print(f"  Status: {r.status_code}")
         print(f"  Valid: {r.json().get('valid', False)}")
         results.append(("Missing fields", r.status_code == 200, "Expected validation failure"))
@@ -63,7 +71,7 @@ def test_edge_cases():
             },
             "days": {}
         }
-        r = requests.post(f"{BASE_URL}/api/validate", json={"json_data": data})
+        r = requests.post(f"{BASE_URL}/api/validate", json={"json_data": data}, timeout=10)
         print(f"  Status: {r.status_code}")
         print(f"  Valid: {r.json().get('valid', False)}")
         results.append(("Invalid types", r.status_code == 200, "Expected validation failure"))
@@ -80,7 +88,7 @@ def test_edge_cases():
             "json_data": data,
             "template_path": "nonexistent.docx",
             "output_filename": "test.docx"
-        })
+        }, timeout=30)
         print(f"  Status: {r.status_code}")
         print(f"  Error handled: {r.status_code == 404}")
         results.append(("Nonexistent template", r.status_code == 404, "Expected 404"))
@@ -98,7 +106,7 @@ def test_edge_cases():
         r = requests.post(f"{BASE_URL}/api/render", json={
             "json_data": data,
             "output_filename": "stress_test.docx"
-        })
+        }, timeout=30)
         print(f"  Status: {r.status_code}")
         print(f"  Success: {r.status_code == 200}")
         if r.status_code == 200:
@@ -119,7 +127,7 @@ def test_edge_cases():
             r = requests.post(f"{BASE_URL}/api/render", json={
                 "json_data": data,
                 "output_filename": f"concurrent_test_{i}.docx"
-            })
+            }, timeout=30)
             return r.status_code == 200
         
         with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
@@ -142,7 +150,7 @@ def test_edge_cases():
         r = requests.post(f"{BASE_URL}/api/render", json={
             "json_data": data,
             "output_filename": "special_chars_test.docx"
-        })
+        }, timeout=30)
         print(f"  Status: {r.status_code}")
         print(f"  Success: {r.status_code == 200}")
         results.append(("Special characters", r.status_code == 200, "Should handle special chars"))
