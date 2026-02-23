@@ -145,44 +145,6 @@ async def get_plan_detail(
         db_for_plan = get_db(user_id=plan.user_id)
         lesson_json = enrich_lesson_json_from_steps(lesson_json, plan_id, db_for_plan)
 
-        # Debug: Check if vocabulary and sentence frames are in the response
-        # Check for Monday slot 2 specifically
-        monday_data = lesson_json.get("days", {}).get("monday", {})
-        monday_slots = monday_data.get("slots", [])
-        slot_2_data = None
-        if isinstance(monday_slots, list):
-            slot_2_data = next(
-                (
-                    s
-                    for s in monday_slots
-                    if isinstance(s, dict) and s.get("slot_number") == 2
-                ),
-                None,
-            )
-        if slot_2_data:
-            logger.info(
-                "plan_detail_slot_2_debug",
-                extra={
-                    "plan_id": plan_id,
-                    "has_vocabulary": bool(slot_2_data.get("vocabulary_cognates")),
-                    "vocab_count": len(slot_2_data.get("vocabulary_cognates", [])),
-                    "has_sentence_frames": bool(slot_2_data.get("sentence_frames")),
-                    "frames_count": len(slot_2_data.get("sentence_frames", [])),
-                    "slot_keys": list(slot_2_data.keys())[:20],
-                },
-            )
-            # Also print to console for immediate visibility
-            print(
-                f"[DEBUG] Slot 2 in API response: vocab={bool(slot_2_data.get('vocabulary_cognates'))}, frames={bool(slot_2_data.get('sentence_frames'))}"
-            )
-            print(f"[DEBUG] Slot 2 keys: {list(slot_2_data.keys())[:30]}")
-            # Check all slots to see which ones have vocabulary
-            for idx, s in enumerate(monday_slots):
-                if isinstance(s, dict):
-                    print(
-                        f"[DEBUG] Slot {s.get('slot_number')}: vocab={bool(s.get('vocabulary_cognates'))}, frames={bool(s.get('sentence_frames'))}"
-                    )
-
         # Create response - ensure lesson_json is a plain dict to avoid any Pydantic filtering
         response = LessonPlanDetailResponse(
             id=plan.id,
@@ -195,48 +157,6 @@ async def get_plan_detail(
             else str(plan.generated_at),
             output_file=plan.output_file,
         )
-
-        # Double-check: Verify vocabulary_cognates is still in the response
-        response_monday_data = response.lesson_json.get("days", {}).get("monday", {})
-        response_monday_slots = response_monday_data.get("slots", [])
-        response_slot_2 = next(
-            (
-                s
-                for s in response_monday_slots
-                if isinstance(s, dict) and s.get("slot_number") == 2
-            ),
-            None,
-        )
-        if response_slot_2:
-            print(
-                f"[DEBUG] After LessonPlanDetailResponse creation - Slot 2 vocab: {bool(response_slot_2.get('vocabulary_cognates'))}, frames: {bool(response_slot_2.get('sentence_frames'))}"
-            )
-            if not response_slot_2.get("vocabulary_cognates"):
-                print(
-                    "[DEBUG] WARNING: vocabulary_cognates missing after response creation!"
-                )
-                print(f"[DEBUG] Slot 2 keys: {list(response_slot_2.keys())[:30]}")
-
-        # Serialize to JSON to check if vocabulary_cognates survives serialization
-        import json as json_module
-
-        try:
-            response_dict = response.model_dump()
-            response_json_str = json_module.dumps(response_dict, default=str)
-            # Check if vocabulary_cognates is in the serialized JSON
-            if "vocabulary_cognates" in response_json_str:
-                print("[DEBUG] vocabulary_cognates found in serialized JSON")
-            else:
-                print(
-                    "[DEBUG] WARNING: vocabulary_cognates NOT found in serialized JSON!"
-                )
-            if "sentence_frames" in response_json_str:
-                print("[DEBUG] sentence_frames found in serialized JSON")
-            else:
-                print("[DEBUG] WARNING: sentence_frames NOT found in serialized JSON!")
-        except Exception as e:
-            print(f"[DEBUG] Failed to serialize response for check: {e}")
-
         return response
     except HTTPException:
         raise
