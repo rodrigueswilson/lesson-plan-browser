@@ -4,16 +4,20 @@ Tracks timing, token usage, and costs for research and optimization.
 Follows SSOT principle - single source for performance data.
 """
 
-import csv
 import os
 import uuid
 from contextlib import contextmanager
 from datetime import datetime
-from pathlib import Path
 from typing import Any, Dict, Generator, List, Optional
 
 from backend.database import get_db
 from backend.model_pricing import calculate_cost
+from backend.performance_tracker_export import (
+    get_most_common_model,
+    metrics_to_csv_string,
+    write_metrics_to_csv_file,
+)
+from backend.performance_tracker_sampling import should_track_operation
 from backend.telemetry import logger
 
 
@@ -92,19 +96,9 @@ class PerformanceTracker:
         Returns:
             Operation ID for later reference (empty string if tracking disabled)
         """
-        if not self.enabled:
-            return ""
-
-        # Critical operations are always stored regardless of sampling_rate.
-        # All other operations (parse_*, render_*, etc.) are subject to sampling
-        # unless debug_mode is True.
-        import random
-        _CRITICAL_OPERATIONS = frozenset([
-            "batch_process", "plan_generation", "llm_call", "llm_api_call"
-        ])
-        is_critical = operation_type in _CRITICAL_OPERATIONS
-
-        if not is_critical and not self.debug_mode and random.random() > self.sampling_rate:
+        if not should_track_operation(
+            self.enabled, operation_type, self.debug_mode, self.sampling_rate
+        ):
             return ""
 
         operation_id = str(uuid.uuid4())
@@ -315,17 +309,8 @@ class PerformanceTracker:
         if not summary or summary.get("operation_count", 0) == 0:
             return False
 
-        # Get the most common model used
         metrics = self.get_plan_metrics(plan_id)
-        model_counts: Dict[str, int] = {}
-        for m in metrics:
-            model = m.get("llm_model")
-            if model:
-                model_counts[model] = model_counts.get(model, 0) + 1
-        
-        llm_model = max(model_counts.items(), key=lambda x: x[1])[0] if model_counts else None
-
-        # Update weekly_plans
+        llm_model = get_most_common_model(metrics)
         updated = self.db.update_plan_summary(
             plan_id=plan_id,
             processing_time_ms=summary.get("total_time_ms"),
@@ -348,41 +333,9 @@ class PerformanceTracker:
         return updated
 
     def export_to_csv(self, plan_id: str, output_path: str) -> str:
-        """
-        Export metrics to CSV file.
-
-        Args:
-            plan_id: Weekly plan ID
-            output_path: Path to save CSV file
-
-        Returns:
-            Path to created CSV file (empty string if no metrics)
-        """
+        """Export metrics to CSV file. Returns path or empty string if no metrics."""
         metrics = self.get_plan_metrics(plan_id)
-
-        if not metrics:
-            logger.warning("no_metrics_to_export", extra={"plan_id": plan_id})
-            return ""
-
-        # Ensure output directory exists
-        Path(output_path).parent.mkdir(parents=True, exist_ok=True)
-
-        # Write CSV
-        with open(output_path, "w", newline="", encoding="utf-8") as f:
-            writer = csv.DictWriter(f, fieldnames=metrics[0].keys())
-            writer.writeheader()
-            writer.writerows(metrics)
-
-        logger.info(
-            "metrics_exported",
-            extra={
-                "plan_id": plan_id,
-                "output_path": output_path,
-                "metric_count": len(metrics),
-            },
-        )
-
-        return output_path
+        return write_metrics_to_csv_file(metrics, output_path, plan_id)
 
     def get_aggregate_stats(
         self, days: int = 30, user_id: Optional[str] = None
@@ -488,18 +441,7 @@ class PerformanceTracker:
             CSV string with analytics data
         """
         daily_data = self.get_daily_breakdown(days, user_id)
-        
-        if not daily_data:
-            return ""
-        
-        # Convert to CSV string
-        from io import StringIO
-        output = StringIO()
-        writer = csv.DictWriter(output, fieldnames=daily_data[0].keys())
-        writer.writeheader()
-        writer.writerows(daily_data)
-        
-        return output.getvalue()
+        return metrics_to_csv_string(daily_data)
 
 
 # Global tracker instance (env vars are read only at first creation)
