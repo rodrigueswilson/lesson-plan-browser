@@ -1,16 +1,28 @@
 """
 Test script for analytics API endpoints.
+Requires backend running at localhost:8000; skips when server is not available.
 """
 
-import requests
 import json
 
+import pytest
+import requests
+
 API_BASE = "http://localhost:8000/api"
+
+
+def _get_or_skip(url, timeout=1):
+    """GET url; skip test if backend is not running."""
+    try:
+        return requests.get(url, timeout=timeout)
+    except (requests.exceptions.ConnectionError, requests.exceptions.Timeout) as e:
+        pytest.skip(f"Backend not running at {API_BASE}: {e}")
+
 
 def test_analytics_summary():
     """Test analytics summary endpoint."""
     print("\n=== Testing Analytics Summary ===")
-    response = requests.get(f"{API_BASE}/analytics/summary?days=30")
+    response = _get_or_skip(f"{API_BASE}/analytics/summary?days=30")
     print(f"Status: {response.status_code}")
     
     if response.status_code == 200:
@@ -28,7 +40,7 @@ def test_analytics_summary():
 def test_analytics_daily():
     """Test daily analytics endpoint."""
     print("\n=== Testing Daily Analytics ===")
-    response = requests.get(f"{API_BASE}/analytics/daily?days=30")
+    response = _get_or_skip(f"{API_BASE}/analytics/daily?days=30")
     print(f"Status: {response.status_code}")
     
     if response.status_code == 200:
@@ -43,7 +55,7 @@ def test_analytics_daily():
 def test_analytics_export():
     """Test CSV export endpoint."""
     print("\n=== Testing Analytics Export ===")
-    response = requests.get(f"{API_BASE}/analytics/export?days=30")
+    response = _get_or_skip(f"{API_BASE}/analytics/export?days=30")
     print(f"Status: {response.status_code}")
     
     if response.status_code == 200:
@@ -60,7 +72,7 @@ def test_analytics_export():
 def test_health():
     """Test health endpoint."""
     print("\n=== Testing Health Check ===")
-    response = requests.get(f"{API_BASE}/health")
+    response = _get_or_skip(f"{API_BASE}/health")
     print(f"Status: {response.status_code}")
     
     if response.status_code == 200:
