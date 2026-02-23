@@ -1,0 +1,14 @@
+# Dependabot: open PRs for dependency updates. Complement with pip-audit in CI for CVE enforcement.
+# Docs: https://docs.github.com/en/code-security/dependabot/dependabot-version-updates
+
+version: 2
+updates:
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    # Prefer security updates; uncomment to also get non-security version bumps:
+    # versioning-strategy: increase
+    labels:
+      - "dependencies"
