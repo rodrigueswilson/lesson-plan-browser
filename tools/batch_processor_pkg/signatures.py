@@ -17,6 +17,11 @@ from docx.shared import Inches, Pt
 
 from backend.telemetry import logger
 
+from tools.batch_processor_pkg.signature_paragraph_helpers import (
+    add_date_section_to_paragraph,
+    get_paragraph_font_info,
+)
+
 
 def remove_signature_boxes(doc: Document) -> None:
     """Remove signature boxes/tables from document.
@@ -221,15 +226,9 @@ def add_signature_image_to_table(
                                     date_updated = True
                                     date_value = date_match.group(1)
 
-                                original_font_size = None
-                                original_font_name = None
-                                for run in para.runs:
-                                    if run.font.size:
-                                        original_font_size = run.font.size
-                                    if run.font.name:
-                                        original_font_name = run.font.name
-                                    if original_font_size and original_font_name:
-                                        break
+                                original_font_size, original_font_name = (
+                                    get_paragraph_font_info(para)
+                                )
 
                                 para.clear()
 
@@ -292,43 +291,12 @@ def add_signature_image_to_table(
                                     if original_font_name:
                                         between_run.font.name = original_font_name
 
-                                DATE_TAB_POSITION = Inches(5.5)
-                                para.paragraph_format.tab_stops.add_tab_stop(
-                                    DATE_TAB_POSITION, WD_TAB_ALIGNMENT.LEFT
+                                add_date_section_to_paragraph(
+                                    para,
+                                    date_value if date_updated else None,
+                                    original_font_size,
+                                    original_font_name,
                                 )
-
-                                para.add_run("\t")
-
-                                date_label_run = para.add_run("Date: ")
-                                date_label_run.font.bold = True
-                                if original_font_size:
-                                    date_label_run.font.size = original_font_size
-                                if original_font_name:
-                                    date_label_run.font.name = original_font_name
-
-                                if date_updated and date_value:
-                                    date_value_run = para.add_run(date_value)
-                                    date_value_run.font.underline = True
-                                    if original_font_size:
-                                        date_value_run.font.size = (
-                                            original_font_size
-                                        )
-                                    if original_font_name:
-                                        date_value_run.font.name = (
-                                            original_font_name
-                                        )
-                                else:
-                                    date_placeholder_run = para.add_run(
-                                        "__________________"
-                                    )
-                                    if original_font_size:
-                                        date_placeholder_run.font.size = (
-                                            original_font_size
-                                        )
-                                    if original_font_name:
-                                        date_placeholder_run.font.name = (
-                                            original_font_name
-                                        )
 
                                 logger.info(
                                     "signature_image_added",
@@ -393,15 +361,9 @@ def add_user_name_to_table(
                                 date_updated = True
                                 date_value = date_match.group(1)
 
-                            original_font_size = None
-                            original_font_name = None
-                            for run in para.runs:
-                                if run.font.size:
-                                    original_font_size = run.font.size
-                                if run.font.name:
-                                    original_font_name = run.font.name
-                                if original_font_size and original_font_name:
-                                    break
+                            original_font_size, original_font_name = (
+                                get_paragraph_font_info(para)
+                            )
 
                             para.clear()
 
@@ -433,39 +395,12 @@ def add_user_name_to_table(
                                 if original_font_name:
                                     between_run.font.name = original_font_name
 
-                            DATE_TAB_POSITION = Inches(5.5)
-                            para.paragraph_format.tab_stops.add_tab_stop(
-                                DATE_TAB_POSITION, WD_TAB_ALIGNMENT.LEFT
+                            add_date_section_to_paragraph(
+                                para,
+                                date_value if date_updated else None,
+                                original_font_size,
+                                original_font_name,
                             )
-
-                            para.add_run("\t")
-
-                            date_label_run = para.add_run("Date: ")
-                            date_label_run.font.bold = True
-                            if original_font_size:
-                                date_label_run.font.size = original_font_size
-                            if original_font_name:
-                                date_label_run.font.name = original_font_name
-
-                            if date_updated and date_value:
-                                date_value_run = para.add_run(date_value)
-                                date_value_run.font.underline = True
-                                if original_font_size:
-                                    date_value_run.font.size = original_font_size
-                                if original_font_name:
-                                    date_value_run.font.name = original_font_name
-                            else:
-                                date_placeholder_run = para.add_run(
-                                    "__________________"
-                                )
-                                if original_font_size:
-                                    date_placeholder_run.font.size = (
-                                        original_font_size
-                                    )
-                                if original_font_name:
-                                    date_placeholder_run.font.name = (
-                                        original_font_name
-                                    )
 
                             final_text = para.text
                             if "Teacher Signature:" not in final_text:
