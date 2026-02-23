@@ -1,16 +1,14 @@
 """
 Simple test to verify vocabulary and sentence frames in live pipeline.
-
-This script:
-1. Fetches existing plans from the API
-2. Gets lesson steps for a plan with vocabulary/frames
-3. Verifies vocabulary_cognates and sentence_frames are present
+Requires backend at localhost:8000 and at least one user with plans; skips otherwise.
 """
 
 import sys
-import requests
 import time
 from pathlib import Path
+
+import pytest
+import requests
 
 API_BASE = "http://localhost:8000/api"
 
@@ -62,6 +60,27 @@ def get_user_and_plans():
     
     print(f"[OK] Found {len(plans)} plans")
     return user_id, plans
+
+
+@pytest.fixture(scope="module")
+def user_id():
+    """User ID from live backend; skips if backend down or no users."""
+    if not wait_for_backend(max_retries=1, delay=0):
+        pytest.skip("Backend not running at " + API_BASE)
+    uid, plans = get_user_and_plans()
+    if not uid:
+        pytest.skip("No users from API")
+    return uid
+
+
+@pytest.fixture(scope="module")
+def plan_id(user_id):
+    """First plan ID for user; skips if no plans."""
+    _, plans = get_user_and_plans()
+    if not plans:
+        pytest.skip("No plans for user; create a plan first")
+    return plans[0]["id"]
+
 
 def test_plan_vocab_frames(user_id, plan_id):
     """Test vocabulary and frames in a plan's lesson steps."""

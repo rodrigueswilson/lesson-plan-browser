@@ -1,23 +1,32 @@
 """
 Test slot-aware extraction with real lesson plan files.
-
-Validates that the new slot-aware extraction works correctly with
-actual teacher documents.
+Skips when no sample DOCX is provided.
 """
 
 from pathlib import Path
-from tools.docx_parser import DOCXParser, validate_slot_structure
+
+import pytest
 from docx import Document
 
+from tools.docx_parser import DOCXParser, validate_slot_structure
 
-def test_file(file_path: str):
-    """Test slot-aware extraction on a real file."""
+# Optional: add paths to real DOCX files; test skips if none exist
+SLOT_AWARE_SAMPLE_PATHS = [
+    Path("tests/fixtures/sample_lesson_plan.docx"),
+]
+
+
+@pytest.mark.parametrize("file_path", SLOT_AWARE_SAMPLE_PATHS, ids=[p.name for p in SLOT_AWARE_SAMPLE_PATHS])
+def test_file(file_path):
+    """Test slot-aware extraction on a real file. Skips if file missing."""
+    path = Path(file_path)
+    if not path.exists():
+        pytest.skip(f"No sample DOCX at {path}")
     print(f"\n{'='*80}")
-    print(f"Testing: {Path(file_path).name}")
+    print(f"Testing: {path.name}")
     print(f"{'='*80}")
-    
-    # Open document
-    doc = Document(file_path)
+
+    doc = Document(str(path))
     table_count = len(doc.tables)
     print(f"Total tables: {table_count}")
     
@@ -37,7 +46,7 @@ def test_file(file_path: str):
         print(f"Match: {table_count == expected_table_count}")
     
     # Try to validate each slot
-    parser = DOCXParser(file_path)
+    parser = DOCXParser(str(path))
     
     for slot_num in range(1, min(available_slots + 1, 6)):  # Test up to 5 slots
         print(f"\n--- Slot {slot_num} ---")
