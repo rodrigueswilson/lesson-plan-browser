@@ -25,14 +25,14 @@ class TestEndToEndTransformation:
         mock_instructor.from_openai.return_value = mock_instructor_client
         
         # Create mock response with enum
+        from backend.lesson_schema_enums import FrameType, ProficiencyLevel
         from backend.lesson_schema_models import (
             BilingualLessonPlanOutputSchema,
             Days,
             DayPlan,
             DayPlanSingleSlot,
-            SentenceFrame,
-            ProficiencyLevel
         )
+        from backend.lesson_schema_vocabulary import SentenceFrame
         
         # Create a valid lesson plan with enum
         sentence_frame = SentenceFrame(

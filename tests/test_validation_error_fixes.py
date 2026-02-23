@@ -8,11 +8,8 @@ Unit tests for validation error fixes:
 import pytest
 from unittest.mock import Mock, patch
 from backend.llm_service import LLMService
-from backend.lesson_schema_models import (
-    BilingualLessonPlanOutputSchema,
-    ProficiencyLevel,
-    PatternId,
-)
+from backend.lesson_schema_enums import ProficiencyLevel
+from backend.lesson_schema_models import BilingualLessonPlanOutputSchema, PatternId
 
 
 class TestEnumSerialization:
@@ -20,7 +17,8 @@ class TestEnumSerialization:
     
     def test_model_dump_with_json_mode(self):
         """Test that model_dump(mode='json') properly serializes enums"""
-        from backend.lesson_schema_models import SentenceFrame, FrameType
+        from backend.lesson_schema_enums import FrameType
+        from backend.lesson_schema_vocabulary import SentenceFrame
         
         # Create a sentence frame with enum
         frame = SentenceFrame(
@@ -46,7 +44,8 @@ class TestEnumSerialization:
     def test_enums_are_json_serializable(self):
         """Test that enums subclassing str are JSON serializable by default"""
         import json
-        from backend.lesson_schema_models import PatternId, ProficiencyLevel, FrameType
+        from backend.lesson_schema_enums import FrameType, ProficiencyLevel
+        from backend.lesson_schema_models import PatternId
         
         # Test that enums can be directly serialized with json.dumps
         test_data = {
@@ -65,7 +64,7 @@ class TestEnumSerialization:
     def test_enum_conversion_helper(self, mock_get_api_key):
         """Test the _convert_enums_to_strings helper method"""
         from backend.llm_service import LLMService
-        from backend.lesson_schema_models import PatternId, ProficiencyLevel
+        from backend.lesson_schema_models import PatternId
 
         service = LLMService(provider="openai")
         
@@ -89,7 +88,7 @@ class TestEnumSerialization:
     def test_check_for_enums_helper(self, mock_get_api_key):
         """Test the _check_for_enums helper method"""
         from backend.llm_service import LLMService
-        from backend.lesson_schema_models import PatternId, ProficiencyLevel
+        from backend.lesson_schema_models import PatternId
 
         service = LLMService(provider="openai")
         
