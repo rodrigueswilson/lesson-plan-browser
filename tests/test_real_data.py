@@ -1,12 +1,18 @@
-"""Test production deployment with real lesson plan data."""
-import requests
+"""Test production deployment with real lesson plan data. Skips when backend not running."""
 import json
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
+
+import pytest
+import requests
 
 def test_with_real_data():
-    """Test with actual lesson plan data."""
-    
+    """Test with actual lesson plan data. Skips if backend is not reachable."""
+    try:
+        requests.get("http://localhost:8000/api/health", timeout=2)
+    except (requests.exceptions.ConnectionError, requests.exceptions.Timeout) as e:
+        pytest.skip(f"Backend not running at localhost:8000: {e}")
+
     print("=" * 60)
     print("Real Data Production Test")
     print("=" * 60)
@@ -24,7 +30,7 @@ def test_with_real_data():
     
     # Test 1: Validate
     print("\n1. Validating JSON...")
-    r = requests.post("http://localhost:8000/api/validate", json={"json_data": data})
+    r = requests.post("http://localhost:8000/api/validate", json={"json_data": data}, timeout=10)
     if r.status_code == 200 and r.json().get("valid"):
         print("   ✓ Validation passed")
     else:
@@ -39,7 +45,7 @@ def test_with_real_data():
     r = requests.post("http://localhost:8000/api/render", json={
         "json_data": data,
         "output_filename": output_filename
-    })
+    }, timeout=30)
     
     if r.status_code == 200:
         result = r.json()
