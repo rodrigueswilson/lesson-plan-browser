@@ -1,23 +1,30 @@
 """
-Test the new training examples
+Test the new training examples. Skips when backend not running at localhost:8000.
 """
 
 import json
-import requests
 from pathlib import Path
+
+import pytest
+import requests
 
 API_BASE = "http://localhost:8000"
 
 def test_example(filepath):
-    """Test validation and rendering of an example file"""
+    """Test validation and rendering of an example file. Skips if backend unreachable."""
+    try:
+        requests.get(f"{API_BASE}/api/health", timeout=2)
+    except (requests.exceptions.ConnectionError, requests.exceptions.Timeout) as e:
+        pytest.skip(f"Backend not running at {API_BASE}: {e}")
+
     print(f"\n{'='*60}")
     print(f"Testing: {filepath.name}")
     print('='*60)
-    
+
     # Load the file
     with open(filepath, 'r', encoding='utf-8') as f:
         data = json.load(f)
-    
+
     # Validate
     print("\n1. Validating...")
     try:

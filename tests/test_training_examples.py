@@ -1,25 +1,26 @@
 """
-Test script for training examples
-Validates all example JSON files used in training
+Test script for training examples. Validates example JSON via API.
+Skips when backend is not running at localhost:8000.
 """
 
 import json
-import requests
 from pathlib import Path
+
+import pytest
+import requests
 
 API_BASE = "http://localhost:8000"
 
 def test_health():
-    """Test system health"""
+    """Test system health. Skips if backend is not reachable."""
     print("\n=== Testing System Health ===")
     try:
-        response = requests.get(f"{API_BASE}/api/health", timeout=5)
+        response = requests.get(f"{API_BASE}/api/health", timeout=2)
         print(f"Status: {response.status_code}")
         print(f"Response: {response.json()}")
-        return response.status_code == 200
-    except Exception as e:
-        print(f"ERROR: {e}")
-        return False
+        assert response.status_code == 200
+    except (requests.exceptions.ConnectionError, requests.exceptions.Timeout) as e:
+        pytest.skip(f"Backend not running at {API_BASE}: {e}")
 
 def test_validate_file(filepath):
     """Test validation of a JSON file"""
