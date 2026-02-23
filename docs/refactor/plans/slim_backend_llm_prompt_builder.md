@@ -13,8 +13,8 @@
 ## Suggested extractions
 
 1. ~~Schema example building~~ **Done:** -> `backend/llm/schema_example.build_schema_example` (facade in prompt_builder).
-2. (Identify next logical units: e.g. days/instruction helpers, retry prompt building.)
-3. ...
+2. ~~Retry prompt building~~ **Done:** -> `backend/llm/retry_prompt.build_retry_prompt` (facade in prompt_builder).
+3. (Optional) Days/instruction helpers or further prompt text extraction in a future pass.
 
 ## Steps (one commit per extraction)
 
