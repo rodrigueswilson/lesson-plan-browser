@@ -79,8 +79,8 @@ Work in order when possible; fix test suite (Session 1) before large refactors s
 | Lines | File |
 | -----:| ------ |
 | 394 | `tools/docx_renderer/table_cell/fill_cell.py` |
-| 87 | `tools/docx_renderer/table_cell/fill_cell_cleanup.py` |
-| 35 | `tools/docx_renderer/table_cell/section_mappings.py` |
+| 78 | `tools/docx_renderer/table_cell/fill_cell_cleanup.py` |
+| 32 | `tools/docx_renderer/table_cell/section_mappings.py` |
 | 359 | `tools/docx_renderer/table_cell/fill_day.py` |
 | 273 | `tools/docx_renderer/hyperlink_placement.py` |
 | 240 | `tools/docx_renderer/render_pipeline.py` |
@@ -127,7 +127,7 @@ Work in order when possible; fix test suite (Session 1) before large refactors s
 | Lines | File |
 | -----:| ------ |
 | 394 | `backend/database/metrics.py` |
-| 115 | `backend/database/metrics_aggregate.py` |
+| 95 | `backend/database/metrics_aggregate.py` |
 | 394 | `backend/database/sqlite_impl.py` |
 | 281 | `backend/database/plans.py` |
 | 166 | `backend/database/users.py` |
@@ -161,9 +161,9 @@ Work in order when possible; fix test suite (Session 1) before large refactors s
 | Lines | File |
 | -----:| ------ |
 | 313 | `tools/batch_processor_pkg/extraction.py` |
-| 201 | `tools/batch_processor_pkg/extraction_primary_file.py` |
-| 336 | `tools/batch_processor_pkg/signatures.py` |
-| 252 | `tools/batch_processor_pkg/signature_table_fill.py` |
+| 188 | `tools/batch_processor_pkg/extraction_primary_file.py` |
+| 290 | `tools/batch_processor_pkg/signatures.py` |
+| 218 | `tools/batch_processor_pkg/signature_table_fill.py` |
 
 **Slot flow (Session 20, post split):**
 
@@ -190,7 +190,7 @@ Work in order when possible; fix test suite (Session 1) before large refactors s
 | Lines | File |
 | -----:| ------ |
 | 399 | `tools/diagnostics/analyze_objectives_layout.py` |
-| 95 | `tools/diagnostics/objectives_layout_heights.py` |
+| 75 | `tools/diagnostics/objectives_layout_heights.py` |
 
 **Plans router (Session 14, post split):**
 
@@ -206,7 +206,7 @@ Work in order when possible; fix test suite (Session 1) before large refactors s
 | Lines | File |
 | -----:| ------ |
 | 387 | `backend/routers/users.py` |
-| 108 | `backend/routers/users_list_logic.py` |
+| 97 | `backend/routers/users_list_logic.py` |
 | 380 | `backend/routers/schedule.py` |
 | 272 | `backend/routers/slots.py` |
 
