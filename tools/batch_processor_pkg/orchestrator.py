@@ -46,6 +46,7 @@ from tools.batch_processor_pkg import signatures as signatures_module
 from tools.batch_processor_pkg.extraction import resolve_primary_file as extraction_resolve_primary_file
 from tools.batch_processor_pkg import transform as transform_module
 from tools.batch_processor_pkg import persistence as persistence_module
+from tools.batch_processor_pkg.orchestrator_parallel import process_slots_parallel_llm
 from tools.docx_parser import DOCXParser
 
 # DEBUG FLAG: Set to True to skip actual LLM calls and return mock data
@@ -207,52 +208,10 @@ class BatchProcessor:
         provider: str,
         plan_id: Optional[str] = None,
     ) -> List[SlotProcessingContext]:
-        """Process all slots' LLM calls in parallel with concurrency limit.
-
-        Args:
-            contexts: List of SlotProcessingContext with extracted_content
-            week_of: Week date range
-            provider: LLM provider name
-            plan_id: Plan ID for progress tracking
-
-        Returns:
-            List of updated SlotProcessingContext with lesson_json
-        """
-        # Get concurrency limit from settings
-        limit = settings.MAX_CONCURRENT_LLM_REQUESTS
-        semaphore = asyncio.Semaphore(limit)
-
-        async def limited_transform(
-            ctx: SlotProcessingContext,
-        ) -> SlotProcessingContext:
-            """Execute transformation within semaphore to limit concurrency."""
-            async with semaphore:
-                return await self._transform_slot_with_llm(
-                    ctx, week_of, provider, plan_id
-                )
-
-        # Create tasks for limited parallel execution
-        tasks = [limited_transform(ctx) for ctx in contexts]
-
-        # Execute in parallel with error handling
-        results = await asyncio.gather(*tasks, return_exceptions=True)
-
-        # Process results
-        for i, result in enumerate(results):
-            if isinstance(result, Exception):
-                contexts[i].error = str(result)
-                logger.error(
-                    "parallel_llm_slot_failed",
-                    extra={
-                        "slot_index": contexts[i].slot_index,
-                        "slot_number": contexts[i].slot.get("slot_number"),
-                        "error": str(result),
-                    },
-                )
-            else:
-                contexts[i] = result
-
-        return contexts
+        """Process all slots' LLM calls in parallel with concurrency limit."""
+        return await process_slots_parallel_llm(
+            self, contexts, week_of, provider, plan_id
+        )
 
     async def _process_slot(
         self,
