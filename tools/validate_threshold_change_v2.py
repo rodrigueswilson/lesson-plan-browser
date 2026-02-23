@@ -17,8 +17,11 @@ from typing import Dict, List, Tuple
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 from tools.docx_parser import DOCXParser
+from tools.validate_threshold_link_analysis import (
+    extract_output_links_with_urls,
+    categorize_links,
+)
 from docx import Document
-from docx.oxml.ns import qn
 
 class ImprovedThresholdValidator:
     """Improved validator with proper URL resolution and metadata checking."""
@@ -57,12 +60,12 @@ class ImprovedThresholdValidator:
         # Parse output with proper URL resolution
         print("\n2. Analyzing output file...")
         output_doc = Document(output_path)
-        output_links = self._extract_output_links_with_urls(output_doc)
+        output_links = extract_output_links_with_urls(output_doc)
         
         print(f"   Found {len(output_links)} hyperlinks in output")
         
         # Categorize links (inline vs fallback)
-        inline_links, fallback_links = self._categorize_links(output_doc, output_links)
+        inline_links, fallback_links = categorize_links(output_doc, output_links)
         
         print(f"   Inline: {len(inline_links)}")
         print(f"   Fallback: {len(fallback_links)}")
@@ -136,92 +139,6 @@ class ImprovedThresholdValidator:
         print(f"   Broken: {len(broken)} (target: 0)")
         
         return result
-    
-    def _extract_output_links_with_urls(self, doc: Document) -> List[Dict]:
-        """Extract hyperlinks with proper URL resolution."""
-        links = []
-        
-        # Get document relationships for URL resolution
-        rels = doc.part.rels
-        
-        # Check tables first (most links are here)
-        for table_idx, table in enumerate(doc.tables):
-            for row_idx, row in enumerate(table.rows):
-                for cell_idx, cell in enumerate(row.cells):
-                    for para in cell.paragraphs:
-                        # Find hyperlinks in paragraph
-                        hyperlinks = para._element.xpath('.//w:hyperlink')
-                        for hyperlink in hyperlinks:
-                            r_id = hyperlink.get(qn('r:id'))
-                            text = ''.join(node.text for node in hyperlink.xpath('.//w:t') if node.text)
-                            
-                            # Resolve actual URL
-                            url = None
-                            if r_id and r_id in rels:
-                                url = rels[r_id].target_ref
-                            
-                            if text and url:
-                                links.append({
-                                    'text': text,
-                                    'url': url,
-                                    'location_type': 'table',
-                                    'table_idx': table_idx,
-                                    'row_idx': row_idx,
-                                    'cell_idx': cell_idx,
-                                    'location': f"T{table_idx}R{row_idx}C{cell_idx}"
-                                })
-        
-        # Check paragraphs (fallback section)
-        for para_idx, para in enumerate(doc.paragraphs):
-            hyperlinks = para._element.xpath('.//w:hyperlink')
-            for hyperlink in hyperlinks:
-                r_id = hyperlink.get(qn('r:id'))
-                text = ''.join(node.text for node in hyperlink.xpath('.//w:t') if node.text)
-                
-                # Resolve actual URL
-                url = None
-                if r_id and r_id in rels:
-                    url = rels[r_id].target_ref
-                
-                if text and url:
-                    links.append({
-                        'text': text,
-                        'url': url,
-                        'location_type': 'paragraph',
-                        'paragraph_idx': para_idx,
-                        'paragraph_text': para.text[:100]
-                    })
-        
-        return links
-    
-    def _categorize_links(self, doc: Document, output_links: List[Dict]) -> Tuple[List, List]:
-        """Categorize links as inline (in table) or fallback (in paragraphs)."""
-        
-        inline = []
-        fallback = []
-        
-        # Find if there's a "Referenced Links" section
-        fallback_table_idx = None
-        for table_idx, table in enumerate(doc.tables):
-            # Check if this is the fallback table
-            if table.rows and table.rows[0].cells:
-                first_cell_text = table.rows[0].cells[0].text
-                if 'Referenced Links' in first_cell_text or 'Referenced Media' in first_cell_text:
-                    fallback_table_idx = table_idx
-                    break
-        
-        for link in output_links:
-            if link['location_type'] == 'table':
-                # Check if it's in the fallback table
-                if fallback_table_idx is not None and link['table_idx'] >= fallback_table_idx:
-                    fallback.append(link)
-                else:
-                    inline.append(link)
-            else:
-                # Paragraph links are fallback
-                fallback.append(link)
-        
-        return inline, fallback
     
     def _find_broken_links(self, input_links: List[Dict], output_links: List[Dict]) -> List[Dict]:
         """Find links that are in input but not in output (broken)."""
