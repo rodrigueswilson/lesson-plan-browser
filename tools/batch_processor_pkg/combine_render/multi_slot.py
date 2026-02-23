@@ -10,6 +10,9 @@ from typing import Any, Callable, Dict, List, Optional
 from docx import Document
 
 from backend.telemetry import logger
+from tools.batch_processor_pkg.combine_render.multi_slot_metadata import (
+    apply_slot_metadata_to_lesson,
+)
 from tools.batch_processor_pkg.render_helpers import (
     normalize_lesson_json_for_render,
     resolve_signature_image_path,
@@ -54,71 +57,7 @@ def _render_multi_slot(
             lesson["lesson_json"], slot_num, subject
         )
         slot_data = lesson.get("slot_data", {})
-
-        if slot_data:
-            if isinstance(slot_data, dict):
-                primary_teacher_name = slot_data.get("primary_teacher_name")
-                primary_teacher_first_name = slot_data.get(
-                    "primary_teacher_first_name"
-                )
-                primary_teacher_last_name = slot_data.get(
-                    "primary_teacher_last_name"
-                )
-                lesson_json["metadata"]["primary_teacher_name"] = (
-                    primary_teacher_name
-                )
-                lesson_json["metadata"]["primary_teacher_first_name"] = (
-                    primary_teacher_first_name
-                )
-                lesson_json["metadata"]["primary_teacher_last_name"] = (
-                    primary_teacher_last_name
-                )
-            else:
-                primary_teacher_name = getattr(
-                    slot_data, "primary_teacher_name", None
-                )
-                primary_teacher_first_name = getattr(
-                    slot_data, "primary_teacher_first_name", None
-                )
-                primary_teacher_last_name = getattr(
-                    slot_data, "primary_teacher_last_name", None
-                )
-                lesson_json["metadata"]["primary_teacher_name"] = (
-                    primary_teacher_name
-                )
-                lesson_json["metadata"]["primary_teacher_first_name"] = (
-                    primary_teacher_first_name
-                )
-                lesson_json["metadata"]["primary_teacher_last_name"] = (
-                    primary_teacher_last_name
-                )
-
-            try:
-                combined_teacher_name = processor._build_teacher_name(
-                    {
-                        "first_name": getattr(processor, "_user_first_name", ""),
-                        "last_name": getattr(processor, "_user_last_name", ""),
-                        "name": getattr(processor, "_user_name", ""),
-                    },
-                    slot_data
-                    if isinstance(slot_data, dict)
-                    else {
-                        "primary_teacher_name": primary_teacher_name,
-                        "primary_teacher_first_name": primary_teacher_first_name,
-                        "primary_teacher_last_name": primary_teacher_last_name,
-                    },
-                )
-                lesson_json["metadata"]["teacher_name"] = combined_teacher_name
-            except Exception:
-                primary_teacher_name = (
-                    slot_data.get("primary_teacher_name")
-                    if isinstance(slot_data, dict)
-                    else getattr(slot_data, "primary_teacher_name", None)
-                )
-                lesson_json["metadata"]["teacher_name"] = (
-                    primary_teacher_name or "Unknown"
-                )
-
+        apply_slot_metadata_to_lesson(lesson_json, slot_data, processor)
         lesson_json["_media_schema_version"] = "2.0"
 
         temp_filename = f"_temp_slot{slot_num}_{subject.replace('/', '_')}.docx"
