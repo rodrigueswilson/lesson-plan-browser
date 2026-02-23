@@ -6,17 +6,15 @@ from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, Request
 
 from backend.authorization import get_current_user_id, verify_user_access
-from backend.config import settings
 from backend.database import get_db
 from backend.models import UserCreate, UserResponse, UserUpdate
 from backend.rate_limiter import rate_limit_auth, rate_limit_general
 from backend.telemetry import logger
 from backend.week_detector import detect_weeks_from_folder, format_week_display
 
-router = APIRouter()
+from backend.routers.users_list_logic import fetch_active_users
 
-# Log Supabase fallback warning once per process to avoid log noise
-_supabase_fallback_logged: set = set()
+router = APIRouter()
 
 
 # User Management Endpoints
@@ -65,110 +63,7 @@ async def list_users():
     logger.info("users_list_requested")
 
     try:
-        all_users = []
-
-        # If using Supabase, query both projects
-        if settings.USE_SUPABASE:
-            from backend.config import Settings
-            from backend.supabase_database import SupabaseDatabase
-
-            # Supabase connection failures are expected until fully implemented in a later stage.
-            # SQLite fallback below handles it when Supabase is unreachable (e.g. offline).
-            _supabase_note = (
-                "Supabase will be fully implemented in a later stage. "
-                "SQLite fallback in use. This warning is expected."
-            )
-
-            # Query project1 if configured
-            if settings.SUPABASE_URL_PROJECT1 and settings.SUPABASE_KEY_PROJECT1:
-                try:
-                    s1 = Settings()
-                    s1.SUPABASE_PROJECT = "project1"
-                    db1 = SupabaseDatabase(custom_settings=s1)
-                    users1 = db1.list_users()
-                    all_users.extend(users1)
-                    logger.info(
-                        "users_loaded_from_project",
-                        extra={"project": "project1", "count": len(users1)},
-                    )
-                except Exception as e:
-                    if "project1" not in _supabase_fallback_logged:
-                        _supabase_fallback_logged.add("project1")
-                        logger.warning(
-                            "users_load_project1_failed",
-                            extra={"error": str(e), "note": _supabase_note},
-                        )
-                    else:
-                        logger.debug(
-                            "users_load_project1_failed",
-                            extra={"error": str(e), "note": _supabase_note},
-                        )
-
-            # Query project2 if configured
-            if settings.SUPABASE_URL_PROJECT2 and settings.SUPABASE_KEY_PROJECT2:
-                try:
-                    s2 = Settings()
-                    s2.SUPABASE_PROJECT = "project2"
-                    db2 = SupabaseDatabase(custom_settings=s2)
-                    users2 = db2.list_users()
-                    all_users.extend(users2)
-                    logger.info(
-                        "users_loaded_from_project",
-                        extra={"project": "project2", "count": len(users2)},
-                    )
-                except Exception as e:
-                    if "project2" not in _supabase_fallback_logged:
-                        _supabase_fallback_logged.add("project2")
-                        logger.warning(
-                            "users_load_project2_failed",
-                            extra={"error": str(e), "note": _supabase_note},
-                        )
-                    else:
-                        logger.debug(
-                            "users_load_project2_failed",
-                            extra={"error": str(e), "note": _supabase_note},
-                        )
-
-            # Fallback to SQLite when Supabase is unreachable (e.g. getaddrinfo failed)
-            if not all_users:
-                try:
-                    db = get_db()
-                    fallback_users = db.list_users()
-                    all_users.extend(fallback_users)
-                    logger.info(
-                        "users_loaded_from_sqlite_fallback",
-                        extra={"count": len(fallback_users)},
-                    )
-                except Exception as e:
-                    logger.warning(
-                        "users_load_sqlite_fallback_failed",
-                        extra={"error": str(e)},
-                    )
-        else:
-            # Use SQLite
-            db = get_db()
-            all_users = db.list_users()
-
-        # Deduplicate by user ID (in case same users exist in multiple projects)
-        seen_ids = set()
-        unique_users = []
-        for user in all_users:
-            if user.id not in seen_ids:
-                seen_ids.add(user.id)
-                unique_users.append(user)
-
-        # Filter to only show User 1 (Wilson Rodrigues) and User 2 (Daniela Silva)
-        # All other users are archived and should not appear in the frontend
-        ALLOWED_USER_IDS = {
-            "04fe8898-cb89-4a73-affb-64a97a98f820",  # User 1: Wilson Rodrigues
-            "29fa9ed7-3174-4999-86fd-40a542c28cff",  # User 2: Daniela Silva
-        }
-        active_users = [u for u in unique_users if u.id in ALLOWED_USER_IDS]
-
-        # Sort by name for consistent ordering
-        active_users.sort(key=lambda u: u.name or "")
-
-        return active_users
+        return fetch_active_users()
     except Exception as e:
         logger.error("users_list_failed", extra={"error": str(e)})
         raise HTTPException(status_code=500, detail=f"Failed to list users: {str(e)}")
