@@ -2,6 +2,7 @@
 
 import json
 import logging
+import uuid
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 
@@ -23,7 +24,7 @@ def create_weekly_plan(
     total_slots: int = 1,
 ) -> str:
     """Create a new weekly plan record - works in both modes."""
-    plan_id = f"plan_{datetime.now().strftime('%Y%m%d%H%M%S')}"
+    plan_id = f"plan_{datetime.now().strftime('%Y%m%d%H%M%S')}_{uuid.uuid4().hex[:8]}"
 
     if db.use_ipc:
         try:
