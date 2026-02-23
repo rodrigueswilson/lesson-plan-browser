@@ -13,6 +13,7 @@ from docx.text.run import Run
 from .. import logger
 from .. import style as style_module
 from . import placement as placement_module
+from . import section_mappings as section_mappings_module
 
 try:
     from tools.markdown_to_docx import MarkdownToDocx
@@ -350,36 +351,8 @@ def fill_cell(
             if hl_day and day_name:
                 if hl_day.lower().strip() != day_name.lower().strip():
                     continue
-            hint = (hyperlink.get("section_hint") or "").lower()
-            is_section_match = False
-            section_mappings = {
-                "unit_lesson": ["unit", "lesson", "module"],
-                "objective": ["objective", "goal", "swbat"],
-                "anticipatory_set": ["anticipatory", "warm up", "hook", "do now", "entry"],
-                "tailored_instruction": [
-                    "instruction",
-                    "activity",
-                    "procedure",
-                    "lesson",
-                    "tailored",
-                    "differentiation",
-                ],
-                "misconceptions": ["misconception", "misconceptions", "error", "pitfall"],
-                "assessment": ["assessment", "check", "evaluate", "exit ticket"],
-                "homework": ["homework", "assignment", "practice"],
-            }
-            if hint == section_name:
-                is_section_match = True
-            elif section_name in section_mappings:
-                if hint in section_mappings[section_name]:
-                    is_section_match = True
-                elif any(
-                    kw in hint
-                    for kw in section_mappings[section_name]
-                    if len(kw) > 3
-                ):
-                    is_section_match = True
-            if is_section_match:
+            hint = hyperlink.get("section_hint") or ""
+            if section_mappings_module.section_matches(section_name, hint):
                 p = cell.add_paragraph()
                 MarkdownToDocx.add_formatted_text(
                     p, f"\u2022 [{hyperlink['text']}]({hyperlink['url']})"
@@ -400,36 +373,8 @@ def fill_cell(
                 img_slot = image.get("_source_slot")
                 if img_slot is not None and img_slot != current_slot_number:
                     continue
-            hint = (image.get("section_hint") or "").lower()
-            is_section_match = False
-            section_mappings = {
-                "unit_lesson": ["unit", "lesson", "module"],
-                "objective": ["objective", "goal", "swbat"],
-                "anticipatory_set": ["anticipatory", "warm up", "hook", "do now", "entry"],
-                "tailored_instruction": [
-                    "instruction",
-                    "activity",
-                    "procedure",
-                    "lesson",
-                    "tailored",
-                    "differentiation",
-                ],
-                "misconceptions": ["misconception", "misconceptions", "error", "pitfall"],
-                "assessment": ["assessment", "check", "evaluate", "exit ticket"],
-                "homework": ["homework", "assignment", "practice"],
-            }
-            if hint == section_name:
-                is_section_match = True
-            elif section_name in section_mappings:
-                if hint in section_mappings[section_name]:
-                    is_section_match = True
-                elif any(
-                    kw in hint
-                    for kw in section_mappings[section_name]
-                    if len(kw) > 3
-                ):
-                    is_section_match = True
-            if is_section_match:
+            hint = image.get("section_hint") or ""
+            if section_mappings_module.section_matches(section_name, hint):
                 renderer._inject_image_inline(cell, image, max_width=1.3)
                 if pending_images is not None:
                     pending_images.remove(image)
