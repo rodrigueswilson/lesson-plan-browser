@@ -113,46 +113,46 @@ def format_tailored_instruction(
             levels = strategy.get("proficiency_levels", "")
             parts.append(f"- **{strategy_name}** ({levels}): {implementation}")
 
-        if vocabulary_cognates:
-            valid_pairs = filter_valid_vocabulary_pairs(renderer, vocabulary_cognates)
-            if valid_pairs:
-                parts.append("\n**Vocabulary / Cognate Awareness:**")
-                for pair in valid_pairs:
-                    english = str(pair.get("english", "")).strip()
-                    portuguese = str(pair.get("portuguese", "")).strip()
-                    parts.append(f"- **{english}** -> *{portuguese}*")
+    if vocabulary_cognates:
+        valid_pairs = filter_valid_vocabulary_pairs(renderer, vocabulary_cognates)
+        if valid_pairs:
+            parts.append("\n**Vocabulary / Cognate Awareness:**")
+            for pair in valid_pairs:
+                english = str(pair.get("english", "")).strip()
+                portuguese = str(pair.get("portuguese", "")).strip()
+                parts.append(f"- **{english}** -> *{portuguese}*")
 
-        if sentence_frames:
-            valid_frames = filter_valid_sentence_frames(renderer, sentence_frames)
-            if valid_frames:
-                parts.append("\n**Sentence Frames / Stems / Questions:**")
-                level_order = [
-                    ("levels_1_2", "Levels 1-2"),
-                    ("levels_3_4", "Levels 3-4"),
-                    ("levels_5_6", "Levels 5-6"),
+    if sentence_frames:
+        valid_frames = filter_valid_sentence_frames(renderer, sentence_frames)
+        if valid_frames:
+            parts.append("\n**Sentence Frames / Stems / Questions:**")
+            level_order = [
+                ("levels_1_2", "Levels 1-2"),
+                ("levels_3_4", "Levels 3-4"),
+                ("levels_5_6", "Levels 5-6"),
+            ]
+            for level_key, level_label in level_order:
+                frames_for_level = [
+                    f
+                    for f in valid_frames
+                    if f.get("proficiency_level") == level_key
                 ]
-                for level_key, level_label in level_order:
-                    frames_for_level = [
-                        f
-                        for f in valid_frames
-                        if f.get("proficiency_level") == level_key
-                    ]
-                    if not frames_for_level:
-                        continue
-                    parts.append(f"\n- **{level_label}:**")
-                    for frame in frames_for_level:
-                        english = str(frame.get("english", "")).strip()
-                        portuguese = str(frame.get("portuguese", "")).strip()
-                        language_function = str(
-                            frame.get("language_function", "")
-                        ).strip()
-                        parts.append(f"  - PT: *{portuguese}*")
-                        if language_function:
-                            parts.append(
-                                f"    EN: **{english}** (function: {language_function})"
-                            )
-                        else:
-                            parts.append(f"    EN: **{english}**")
+                if not frames_for_level:
+                    continue
+                parts.append(f"\n- **{level_label}:**")
+                for frame in frames_for_level:
+                    english = str(frame.get("english", "")).strip()
+                    portuguese = str(frame.get("portuguese", "")).strip()
+                    language_function = str(
+                        frame.get("language_function", "")
+                    ).strip()
+                    parts.append(f"  - PT: *{portuguese}*")
+                    if language_function:
+                        parts.append(
+                            f"    EN: **{english}** (function: {language_function})"
+                        )
+                    else:
+                        parts.append(f"    EN: **{english}**")
 
     if "materials" in instruction and instruction["materials"]:
         parts.append("\n**Materials:** " + ", ".join(instruction["materials"]))

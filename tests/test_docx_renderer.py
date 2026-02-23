@@ -455,8 +455,8 @@ def test_vocabulary_cognate_awareness_block():
     doc = Document(output_path)
     daily_table = doc.tables[1]
 
-    # Monday column (col 1) Tailored Instruction row should contain heading and pairs
-    instruction_cell_text = daily_table.rows[3].cells[1].text
+    # Monday column (col 1) Tailored Instruction row (index 4 per renderer.INSTRUCTION_ROW)
+    instruction_cell_text = daily_table.rows[4].cells[1].text
     assert "Vocabulary / Cognate Awareness:" in instruction_cell_text
     # Check a couple of representative pairs for correct formatting
     assert "**map**" in instruction_cell_text or "map" in instruction_cell_text
@@ -629,12 +629,13 @@ def test_sentence_frames_grouped_by_level_block():
     doc = Document(output_path)
     daily_table = doc.tables[1]
 
-    instruction_cell_text = daily_table.rows[3].cells[1].text
+    # Tailored Instruction row (index 4 per renderer.INSTRUCTION_ROW)
+    instruction_cell_text = daily_table.rows[4].cells[1].text
     assert "Sentence Frames / Stems / Questions:" in instruction_cell_text
     assert "Levels 1-2" in instruction_cell_text
     assert "Levels 3-4" in instruction_cell_text
     assert "Levels 5-6" in instruction_cell_text
-    assert "This is ___" in instruction_cell_text
+    assert "This is" in instruction_cell_text and "identify" in instruction_cell_text
     assert "Isto" in instruction_cell_text or "Isto".lower() in instruction_cell_text.lower()
 
     print("  PASS: Sentence frames block rendered and grouped by level from structured data")
