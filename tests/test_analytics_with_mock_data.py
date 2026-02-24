@@ -9,10 +9,26 @@ from pathlib import Path
 # Add parent directory to path
 sys.path.insert(0, str(Path(__file__).parent))
 
+import pytest
+import uuid
 from datetime import datetime, timedelta
 import random
+from sqlalchemy import text
+from sqlmodel import Session
+
 from backend.database import get_db
 from backend.performance_tracker import get_tracker
+from backend.schema import PerformanceMetric
+
+
+@pytest.fixture
+def user_id():
+    """Create mock data, yield user_id for the test, then clean up."""
+    user_id_val, plan_ids = create_mock_data(num_plans=30)
+    try:
+        yield user_id_val
+    finally:
+        cleanup_mock_data(user_id_val, plan_ids)
 
 
 def create_mock_data(num_plans=30):
@@ -48,13 +64,11 @@ def create_mock_data(num_plans=30):
         
         # Add 3-5 operations per plan
         num_operations = random.randint(3, 5)
-        
-        with db.get_connection() as conn:
-            cursor = conn.cursor()
-            
+
+        with Session(db.engine) as session:
             for j in range(num_operations):
                 op_type = random.choice(operation_types)
-                
+
                 # Generate realistic metrics based on operation type
                 if op_type == "parse_slot":
                     duration = random.randint(800, 2000)
@@ -85,32 +99,25 @@ def create_mock_data(num_plans=30):
                     model = None
                     provider = None
                     cost = 0.0
-                
+
                 tokens_total = tokens_in + tokens_out
-                
-                # Insert metric
-                cursor.execute(
-                    """
-                    INSERT INTO performance_metrics 
-                    (plan_id, operation_type, duration_ms, tokens_input, tokens_output, 
-                     tokens_total, llm_model, llm_provider, cost_usd, started_at, completed_at)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                    """,
-                    (
-                        plan_id,
-                        op_type,
-                        duration,
-                        tokens_in,
-                        tokens_out,
-                        tokens_total,
-                        model,
-                        provider,
-                        cost,
-                        plan_date.isoformat(),
-                        plan_date.isoformat(),
-                    ),
+                metric = PerformanceMetric(
+                    id=f"metric_{plan_id}_{j}_{uuid.uuid4().hex[:8]}",
+                    plan_id=plan_id,
+                    operation_type=op_type,
+                    duration_ms=float(duration),
+                    tokens_input=tokens_in,
+                    tokens_output=tokens_out,
+                    tokens_total=tokens_total,
+                    llm_model=model,
+                    llm_provider=provider,
+                    cost_usd=cost,
+                    started_at=plan_date,
+                    completed_at=plan_date,
                 )
-        
+                session.add(metric)
+            session.commit()
+
         if (i + 1) % 10 == 0:
             print(f"✓ Created {i + 1}/{num_plans} plans...")
     
@@ -213,31 +220,37 @@ def test_analytics_with_data(user_id):
 def cleanup_mock_data(user_id, plan_ids):
     """Clean up all mock data."""
     db = get_db()
-    
+
     print(f"\n{'='*70}")
     print("Cleaning Up Mock Data...")
     print('='*70)
-    
-    with db.get_connection() as conn:
-        cursor = conn.cursor()
-        
-        # Delete performance metrics
+
+    with Session(db.engine) as session:
         for plan_id in plan_ids:
-            cursor.execute("DELETE FROM performance_metrics WHERE plan_id = ?", (plan_id,))
+            session.execute(
+                text("DELETE FROM performance_metrics WHERE plan_id = :plan_id"),
+                {"plan_id": plan_id},
+            )
         print(f"✓ Deleted performance metrics for {len(plan_ids)} plans")
-        
-        # Delete plans
+
         for plan_id in plan_ids:
-            cursor.execute("DELETE FROM weekly_plans WHERE id = ?", (plan_id,))
+            session.execute(
+                text("DELETE FROM weekly_plans WHERE id = :plan_id"),
+                {"plan_id": plan_id},
+            )
         print(f"✓ Deleted {len(plan_ids)} plans")
-        
-        # Delete class slots for user
-        cursor.execute("DELETE FROM class_slots WHERE user_id = ?", (user_id,))
-        
-        # Delete user
-        cursor.execute("DELETE FROM users WHERE id = ?", (user_id,))
-        print(f"✓ Deleted test user")
-    
+
+        session.execute(
+            text("DELETE FROM class_slots WHERE user_id = :user_id"),
+            {"user_id": user_id},
+        )
+        session.execute(
+            text("DELETE FROM users WHERE id = :user_id"),
+            {"user_id": user_id},
+        )
+        print("✓ Deleted test user")
+        session.commit()
+
     print('='*70)
     print("✓ Cleanup Complete - All mock data removed")
     print('='*70)

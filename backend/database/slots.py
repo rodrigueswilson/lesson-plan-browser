@@ -1,6 +1,7 @@
 """Class slot operations for SQLite database."""
 
 import logging
+import uuid
 from datetime import datetime
 from typing import List, Optional
 
@@ -31,7 +32,7 @@ def create_class_slot(
             primary_teacher_name = f"{primary_teacher_first_name or ''} {primary_teacher_last_name or ''}".strip()
 
         slot = ClassSlot(
-            id=f"slot_{datetime.now().strftime('%Y%m%d%H%M%S')}_{slot_number}",
+            id=f"slot_{datetime.now().strftime('%Y%m%d%H%M%S')}_{slot_number}_{uuid.uuid4().hex[:8]}",
             user_id=user_id,
             slot_number=slot_number,
             subject=subject,

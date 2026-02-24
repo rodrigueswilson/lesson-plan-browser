@@ -1,6 +1,7 @@
 """User CRUD operations for SQLite database."""
 
 import logging
+import uuid
 from datetime import datetime
 from typing import List, Optional
 
@@ -29,7 +30,7 @@ def create_user(
             name = f"{first_name} {last_name}".strip()
 
         user = User(
-            id=f"user_{datetime.now().strftime('%Y%m%d%H%M%S')}",
+            id=f"user_{datetime.now().strftime('%Y%m%d%H%M%S')}_{uuid.uuid4().hex[:8]}",
             name=name,
             first_name=first_name,
             last_name=last_name,

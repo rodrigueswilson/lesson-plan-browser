@@ -170,14 +170,14 @@ async def test_user_workflow():
     print(f"   - Maria has {len(maria_plans)} weekly plan(s)")
     if maria_plans:
         for plan in maria_plans:
-            print(f"     * Week: {plan['week_of']}, Status: {plan['status']}")
+            print(f"     * Week: {plan.week_of}, Status: {plan.status}")
     print()
     
     # Update a slot
     print("9. Testing slot update...")
     db.update_class_slot(slot1_id, homeroom="6C")
     updated_slot = db.get_slot(slot1_id)
-    print(f"   - Updated slot 1 homeroom: {updated_slot['homeroom']}\n")
+    print(f"   - Updated slot 1 homeroom: {updated_slot.homeroom}\n")
     
     # Summary
     print("="*60)

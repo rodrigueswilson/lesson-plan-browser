@@ -22,6 +22,7 @@ def get_aggregate_stats(
         with Session(db.engine) as session:
             query = select(
                 func.count(PerformanceMetric.id).label("total_operations"),
+                func.sum(PerformanceMetric.duration_ms).label("total_duration_ms"),
                 func.sum(PerformanceMetric.tokens_total).label("total_tokens"),
                 func.sum(PerformanceMetric.tokens_input).label("total_tokens_input"),
                 func.sum(PerformanceMetric.tokens_output).label("total_tokens_output"),
@@ -99,12 +100,14 @@ def get_aggregate_stats(
 
             return {
                 "total_operations": metrics.total_operations or 0,
+                "total_duration_ms": float(metrics.total_duration_ms or 0),
                 "total_tokens": metrics.total_tokens or 0,
                 "total_tokens_input": metrics.total_tokens_input or 0,
                 "total_tokens_output": metrics.total_tokens_output or 0,
                 "total_cost_usd": metrics.total_cost or 0,
                 "avg_cost_usd": float(plan_stats.avg_cost or 0) if plan_stats else 0,
                 "avg_latency_ms": metrics.avg_latency or 0,
+                "avg_duration_ms": float(metrics.avg_latency or 0),
                 "total_plans": total_plans or 0,
                 "avg_duration_per_plan_ms": float(plan_stats.avg_duration or 0) if plan_stats else 0,
                 "model_distribution": model_distribution,
