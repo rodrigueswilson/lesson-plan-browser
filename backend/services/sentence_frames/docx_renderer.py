@@ -13,6 +13,7 @@ from docx.oxml.ns import qn
 from docx.shared import Inches, Pt, RGBColor
 
 from backend.telemetry import logger
+from tools.docx_renderer.style import sanitize_xml_text
 
 from .html_builder import (
     build_header_text,
@@ -44,6 +45,7 @@ def add_bold_text_to_paragraph(
     font_name: str = "Source Sans Pro",
 ) -> None:
     """Add text to a paragraph with specified words in bold."""
+    text = sanitize_xml_text(text or "")
     if not bold_words:
         run = paragraph.add_run(text)
         run.font.size = Pt(font_size)
@@ -128,7 +130,7 @@ def generate_docx(
         header_para = doc.add_paragraph()
         header_para.paragraph_format.space_before = Inches(0.39)
         header_para.paragraph_format.left_indent = Inches(0.39)
-        header_run = header_para.add_run(header_text)
+        header_run = header_para.add_run(sanitize_xml_text(header_text))
         header_run.font.size = Pt(10)
         header_run.font.name = "Source Sans Pro"
         header_run.font.color.rgb = RGBColor(128, 128, 128)
@@ -152,7 +154,7 @@ def generate_docx(
             if func:
                 func_para = doc.add_paragraph()
                 func_para.paragraph_format.alignment = 1
-                func_run = func_para.add_run(func.upper())
+                func_run = func_para.add_run(sanitize_xml_text(func.upper()))
                 func_run.font.size = Pt(11)
                 func_run.font.name = "Source Sans Pro"
                 func_run.font.color.rgb = RGBColor(128, 128, 128)
@@ -176,7 +178,7 @@ def generate_docx(
         header_para = doc.add_paragraph()
         header_para.paragraph_format.space_before = Inches(0.39)
         header_para.paragraph_format.left_indent = Inches(0.39)
-        header_run = header_para.add_run(header_text)
+        header_run = header_para.add_run(sanitize_xml_text(header_text))
         header_run.font.size = Pt(10)
         header_run.font.name = "Source Sans Pro"
         header_run.font.color.rgb = RGBColor(128, 128, 128)
@@ -205,7 +207,7 @@ def generate_docx(
             if func:
                 func_para = doc.add_paragraph()
                 func_para.paragraph_format.alignment = 1
-                func_run = func_para.add_run(func.upper())
+                func_run = func_para.add_run(sanitize_xml_text(func.upper()))
                 func_run.font.size = Pt(9)
                 func_run.font.name = "Source Sans Pro"
                 func_run.font.color.rgb = RGBColor(128, 128, 128)
@@ -234,7 +236,7 @@ def generate_docx(
             if func:
                 func_para = doc.add_paragraph()
                 func_para.paragraph_format.alignment = 1
-                func_run = func_para.add_run(func.upper())
+                func_run = func_para.add_run(sanitize_xml_text(func.upper()))
                 func_run.font.size = Pt(11)
                 func_run.font.name = "Source Sans Pro"
                 func_run.font.color.rgb = RGBColor(128, 128, 128)
@@ -262,7 +264,7 @@ def generate_docx(
             if func:
                 func_para = doc.add_paragraph()
                 func_para.paragraph_format.alignment = 1
-                func_run = func_para.add_run(func.upper())
+                func_run = func_para.add_run(sanitize_xml_text(func.upper()))
                 func_run.font.size = Pt(11)
                 func_run.font.name = "Source Sans Pro"
                 func_run.font.color.rgb = RGBColor(128, 128, 128)

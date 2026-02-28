@@ -6,6 +6,7 @@ import pytest
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from backend.services.sentence_frames_pdf_generator import (  # noqa: E402
+	generate_sentence_frames_docx,
 	generate_sentence_frames_html,
 )
 
@@ -147,3 +148,44 @@ async def test_sentence_frames_html_generation(tmp_path):
 		"Compare",
 	]:
 		assert func in contents
+
+
+def test_sentence_frames_docx_with_null_byte(tmp_path):
+	"""Regression: DOCX generation must not fail on NULL bytes or control chars.
+
+	Lesson content (from LLM or source DOCX) can contain NULL bytes or control
+	characters that XML rejects. Sanitization must remove them before add_run().
+	"""
+	lesson_json = {
+		"metadata": {
+			"week_of": "10/06-10/10",
+			"teacher_name": "Test Teacher",
+			"grade": "5",
+			"subject": "Science",
+			"homeroom": "HR-5A",
+		},
+		"days": {
+			"monday": {
+				"unit_lesson": "Unit One",
+				"sentence_frames": [
+					{
+						"proficiency_level": "levels_3_4",
+						"english": "I see \x00 ___",
+						"portuguese": "Eu vejo ___",
+						"frame_type": "frame",
+						"language_function": "observe",
+					},
+				],
+			}
+		},
+	}
+	output_path = tmp_path / "sentence_frames_null_test.docx"
+
+	result = generate_sentence_frames_docx(
+		lesson_json,
+		output_path=str(output_path),
+		user_name="Test Teacher",
+	)
+
+	assert Path(result).exists()
+	assert Path(result).suffix == ".docx"
