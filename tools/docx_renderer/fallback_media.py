@@ -14,6 +14,9 @@ from docx.shared import Inches, Pt
 
 from . import logger
 from . import hyperlink_placement as _hyperlink_module
+from . import style as _style_module
+
+sanitize_xml_text = _style_module.sanitize_xml_text
 
 
 def append_unmatched_media(
@@ -50,7 +53,9 @@ def append_unmatched_media(
             if link.get("context_snippet"):
                 context_para = doc.add_paragraph()
                 context_run = context_para.add_run(
-                    f'  Context: "{link["context_snippet"][:80]}..."'
+                    sanitize_xml_text(
+                        f'  Context: "{link["context_snippet"][:80]}..."'
+                    )
                 )
                 context_run.font.size = Pt(9)
                 context_run.italic = True
@@ -74,7 +79,9 @@ def append_unmatched_media(
 
                 caption = doc.add_paragraph()
                 caption_run = caption.add_run(
-                    f"Image {i}: {image.get('filename', 'Untitled')}"
+                    sanitize_xml_text(
+                        f"Image {i}: {image.get('filename', 'Untitled')}"
+                    )
                 )
                 caption_run.italic = True
                 caption_run.font.size = Pt(10)
@@ -82,7 +89,9 @@ def append_unmatched_media(
                 if image.get("context_snippet"):
                     context_para = doc.add_paragraph()
                     context_run = context_para.add_run(
-                        f'Context: "{image["context_snippet"][:80]}..."'
+                        sanitize_xml_text(
+                            f'Context: "{image["context_snippet"][:80]}..."'
+                        )
                     )
                     context_run.font.size = Pt(9)
                     context_run.italic = True
@@ -128,7 +137,9 @@ def insert_images(
 
                 caption = doc.add_paragraph()
                 caption_run = caption.add_run(
-                    f"Image {i}: {image.get('filename', 'Untitled')}"
+                    sanitize_xml_text(
+                        f"Image {i}: {image.get('filename', 'Untitled')}"
+                    )
                 )
                 caption_run.italic = True
                 caption_run.font.size = Pt(10)
