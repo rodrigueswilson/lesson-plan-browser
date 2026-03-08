@@ -13,6 +13,7 @@ from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_TAB_ALIGNMENT
 from docx.shared import Inches, Pt
 
 from backend.telemetry import logger
+from tools.docx_renderer.style import sanitize_xml_text
 
 from tools.batch_processor_pkg.signature_paragraph_helpers import (
     add_date_section_to_paragraph,
@@ -257,7 +258,7 @@ def add_signature_box(
                                         before_date_text = para_text[:date_pos]
                                         if before_date_text.strip():
                                             before_run = para.add_run(
-                                                before_date_text
+                                                sanitize_xml_text(before_date_text)
                                             )
                                             if original_font_size:
                                                 before_run.font.size = (
@@ -274,7 +275,7 @@ def add_signature_box(
                                         )
                                         date_label_run.font.bold = True
                                         date_value_run = para.add_run(
-                                            date_formatted
+                                            sanitize_xml_text(date_formatted)
                                         )
                                         date_value_run.font.underline = True
                                         if original_font_size:
@@ -300,7 +301,7 @@ def add_signature_box(
                                         ).strip()
                                         if after_date_text:
                                             after_run = para.add_run(
-                                                after_date_text
+                                                sanitize_xml_text(after_date_text)
                                             )
                                             if original_font_size:
                                                 after_run.font.size = (
