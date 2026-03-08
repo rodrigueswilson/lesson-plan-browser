@@ -352,6 +352,28 @@ class TestObjectivesPrinterIntegration:
         assert Path(docx_path).exists()
         assert Path(docx_path).suffix == ".docx"
 
+    def test_objectives_docx_generation_with_invalid_xml_chars(
+        self, sample_lesson_json, tmp_path
+    ):
+        """Objectives DOCX generation succeeds when objective text contains NULL/control chars."""
+        lesson_with_bad_chars = json.loads(json.dumps(sample_lesson_json))
+        slot = lesson_with_bad_chars["days"]["monday"]["slots"][0]
+        slot["objective"]["wida_objective"] = "WIDA with null\x00 and control\x01"
+        slot["objective"]["student_goal"] = "Goal with \x02 embedded"
+
+        printer = ObjectivesPrinter()
+        output_path = tmp_path / "objectives_with_invalid_chars.docx"
+
+        docx_path = printer.generate_docx(
+            lesson_json=lesson_with_bad_chars,
+            output_path=str(output_path),
+            user_name="Test Teacher",
+            week_of="11/18/2024",
+        )
+
+        assert Path(docx_path).exists()
+        assert Path(docx_path).suffix == ".docx"
+
 
 class TestBackwardCompatibility:
     """Test backward compatibility with existing plans."""
