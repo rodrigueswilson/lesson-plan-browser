@@ -8,6 +8,7 @@ from typing import Optional
 from docx.enum.text import WD_TAB_ALIGNMENT
 from docx.shared import Inches
 from docx.text.paragraph import Paragraph
+from tools.docx_renderer.style import sanitize_xml_text
 
 
 def get_paragraph_font_info(para: Paragraph) -> tuple[Optional[object], Optional[str]]:
@@ -45,7 +46,7 @@ def add_date_section_to_paragraph(
         date_label_run.font.name = font_name
 
     if date_value:
-        date_value_run = para.add_run(date_value)
+        date_value_run = para.add_run(sanitize_xml_text(date_value))
         date_value_run.font.underline = True
         if font_size:
             date_value_run.font.size = font_size
