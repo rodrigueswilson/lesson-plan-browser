@@ -11,6 +11,7 @@ from pathlib import Path
 from docx.shared import Inches, Pt
 
 from backend.telemetry import logger
+from tools.docx_renderer.style import sanitize_xml_text
 
 from tools.batch_processor_pkg.signature_paragraph_helpers import (
     add_date_section_to_paragraph,
@@ -70,7 +71,9 @@ def add_signature_image_to_table(
                                 para.clear()
 
                                 if before_teacher.strip():
-                                    before_run = para.add_run(before_teacher)
+                                    before_run = para.add_run(
+                                        sanitize_xml_text(before_teacher)
+                                    )
                                     if original_font_size:
                                         before_run.font.size = original_font_size
                                     if original_font_name:
@@ -122,7 +125,9 @@ def add_signature_image_to_table(
                                     )
 
                                 if between_text:
-                                    between_run = para.add_run(between_text)
+                                    between_run = para.add_run(
+                                        sanitize_xml_text(between_text)
+                                    )
                                     if original_font_size:
                                         between_run.font.size = original_font_size
                                     if original_font_name:
@@ -168,6 +173,7 @@ def add_user_name_to_table(
     table, user_name: str  # noqa: ANN001
 ) -> None:
     """Add user name (underlined) to the signature table."""
+    user_name = sanitize_xml_text(user_name or "")
     for row in table.rows:
         for cell in row.cells:
             cell_text = cell.text.strip()
@@ -205,7 +211,9 @@ def add_user_name_to_table(
                             para.clear()
 
                             if before_teacher.strip():
-                                before_run = para.add_run(before_teacher)
+                                before_run = para.add_run(
+                                    sanitize_xml_text(before_teacher)
+                                )
                                 if original_font_size:
                                     before_run.font.size = original_font_size
                                 if original_font_name:
@@ -226,7 +234,9 @@ def add_user_name_to_table(
                                 name_run.font.name = original_font_name
 
                             if between_text:
-                                between_run = para.add_run(between_text)
+                                between_run = para.add_run(
+                                    sanitize_xml_text(between_text)
+                                )
                                 if original_font_size:
                                     between_run.font.size = original_font_size
                                 if original_font_name:
