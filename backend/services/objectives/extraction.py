@@ -5,6 +5,7 @@ from typing import Any, Dict, List
 from backend.services.objectives_utils import normalize_objective_payload
 from backend.services.sorting_utils import sort_slots
 from backend.telemetry import logger
+from tools.docx_renderer.style import sanitize_xml_text
 
 from .subject_parsing import extract_subject_from_unit_lesson
 
@@ -61,15 +62,23 @@ def extract_objectives(lesson_json: Dict[str, Any]) -> List[Dict[str, Any]]:
             if not objective_data:
                 continue
 
-            content_obj = (
-                objective_data.get("content_objective", "").strip().lower()
-            )
-            student_goal = objective_data.get("student_goal", "").strip().lower()
-            wida_obj = objective_data.get("wida_objective", "").strip().lower()
+            content_objective = sanitize_xml_text(
+                objective_data.get("content_objective", "") or ""
+            ).strip()
+            student_goal = sanitize_xml_text(
+                objective_data.get("student_goal", "") or ""
+            ).strip()
+            wida_objective = sanitize_xml_text(
+                objective_data.get("wida_objective", "") or ""
+            ).strip()
+
+            content_obj = content_objective.lower()
+            student_goal_lower = student_goal.lower()
+            wida_obj = wida_objective.lower()
 
             if (
                 content_obj == "no school"
-                and student_goal == "no school"
+                and student_goal_lower == "no school"
                 and wida_obj == "no school"
             ):
                 continue
@@ -93,11 +102,9 @@ def extract_objectives(lesson_json: Dict[str, Any]) -> List[Dict[str, Any]]:
                     "subject": final_subject,
                     "unit_lesson": unit_lesson,
                     "teacher_name": teacher_name,
-                    "content_objective": objective_data.get(
-                        "content_objective", ""
-                    ),
-                    "student_goal": objective_data.get("student_goal", ""),
-                    "wida_objective": objective_data.get("wida_objective", ""),
+                    "content_objective": content_objective,
+                    "student_goal": student_goal,
+                    "wida_objective": wida_objective,
                 }
             )
 
