@@ -10,6 +10,7 @@ from docx.oxml.ns import qn
 from docx.shared import Inches, Pt, RGBColor
 
 from backend.telemetry import logger
+from tools.docx_renderer.style import sanitize_xml_text
 
 from . import extraction
 from . import font_calculation
@@ -103,14 +104,16 @@ def generate_docx(
         day_date = font_calculation.get_day_date(week_of, obj["day"])
         header_para = doc.add_paragraph()
         header_run = header_para.add_run(
-            f"{day_date} | {obj['subject']} | Grade {grade} | {homeroom}"
+            sanitize_xml_text(
+                f"{day_date} | {obj['subject']} | Grade {grade} | {homeroom}"
+            )
         )
         header_run.font.size = Pt(10)
         header_run.font.name = "Calibri"
         header_para.paragraph_format.space_after = Pt(2)
         header_para.paragraph_format.keep_with_next = True
 
-        wida_text = obj.get("wida_objective", "").strip()
+        wida_text = sanitize_xml_text(obj.get("wida_objective", "") or "").strip()
         if not wida_text:
             wida_text = "No WIDA Objective specified"
 
@@ -139,7 +142,9 @@ def generate_docx(
         wida_section_padding = 0.1
         total_wida_section_height = total_wida_content_height + wida_section_padding
 
-        student_goal_text = obj.get("student_goal", "").strip()
+        student_goal_text = sanitize_xml_text(
+            obj.get("student_goal", "") or ""
+        ).strip()
         if not student_goal_text:
             student_goal_text = "No Student Goal specified"
 
