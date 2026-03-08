@@ -8,6 +8,9 @@ from docx.shared import Inches, Pt
 
 from . import logger
 from . import hyperlink_placement as _hyperlink_module
+from . import style as _style_module
+
+sanitize_xml_text = _style_module.sanitize_xml_text
 
 
 def inject_hyperlink_inline(renderer, cell, hyperlink: Dict, row_idx: int = None) -> None:
@@ -35,7 +38,9 @@ def inject_image_inline(renderer, cell, image: Dict, max_width: float) -> None:
         )
 
         caption = cell.add_paragraph()
-        caption_run = caption.add_run(f"[{image.get('filename', 'image')}]")
+        caption_run = caption.add_run(
+            sanitize_xml_text(f"[{image.get('filename', 'image')}]")
+        )
         caption_run.font.size = Pt(7)
         caption_run.italic = True
 
