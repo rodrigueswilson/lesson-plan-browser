@@ -7,6 +7,7 @@ from typing import Any, Callable, Dict, List, Optional, Tuple
 
 from backend.config import settings
 from backend.llm.post_process import normalize_sentence_frame_punctuation
+from backend.llm.sanitize_lesson_json import sanitize_lesson_json_strings
 from backend.llm.validation import (
     parse_llm_response,
     parse_validation_errors,
@@ -328,6 +329,7 @@ def run_transform_lesson(
         )
 
         lesson_json = normalize_sentence_frame_punctuation(lesson_json)
+        lesson_json = sanitize_lesson_json_strings(lesson_json)
 
         if plan_id:
             tracker.update_plan_summary(plan_id)
