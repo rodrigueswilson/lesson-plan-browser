@@ -25,10 +25,11 @@ def _convert_yy_week_to_dates(v: str) -> str:
     return converted if converted is not None else v
 
 
+# Order: last in list runs first. Run YY W## conversion before canonical so "25 W37" is converted first.
 WeekOfBatchInput = Annotated[
     str,
-    BeforeValidator(_convert_yy_week_to_dates),
     BeforeValidator(normalize_week_of_canonical),
+    BeforeValidator(_convert_yy_week_to_dates),
 ]
 
 
@@ -348,6 +349,10 @@ class BatchProcessRequest(BaseModel):
     user_id: str = Field(..., description="User ID")
     week_of: WeekOfBatchInput = Field(
         ..., description="Week date range (MM/DD-MM/DD) or YY W## (e.g. 25 W36)"
+    )
+    week_folder: Optional[str] = Field(
+        None,
+        description="Optional YY W## folder name (e.g. 25 W37). When set, pipeline uses this folder for file resolution.",
     )
     provider: Optional[str] = Field(
         "openai", description="LLM provider (openai or anthropic)"

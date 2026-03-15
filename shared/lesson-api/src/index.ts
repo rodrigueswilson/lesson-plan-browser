@@ -1056,7 +1056,8 @@ export const planApi = {
     forceSlots: number[] = [],
     currentUserId?: string
   ) => {
-    const body = {
+    const isYyWeek = /^\d{2}\s*W\s*\d{1,2}$/i.test((weekOf || '').trim());
+    const body: Record<string, unknown> = {
       user_id: userId,
       week_of: weekOf,
       provider: provider,
@@ -1065,6 +1066,9 @@ export const planApi = {
       missing_only: missingOnly,
       force_slots: forceSlots,
     };
+    if (isYyWeek) {
+      body.week_folder = weekOf.trim();
+    }
     return request<{
       success: boolean;
       plan_id: string;

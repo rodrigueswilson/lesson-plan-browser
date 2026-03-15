@@ -1,6 +1,7 @@
 """
 Batch process-week API endpoint (POST /api/process-week).
 """
+from pathlib import Path
 from typing import Optional
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Request
@@ -98,7 +99,8 @@ async def process_week(
                 slots.append(dict(slot_obj))
 
         if batch_request.slot_ids:
-            slots = [slot for slot in slots if slot["id"] in batch_request.slot_ids]
+            slot_ids_set = {str(x) for x in batch_request.slot_ids}
+            slots = [slot for slot in slots if str(slot.get("id")) in slot_ids_set]
             if not slots:
                 raise HTTPException(
                     status_code=400,
@@ -107,9 +109,18 @@ async def process_week(
 
         plan_id = None
         if batch_request.partial or batch_request.missing_only:
+            from backend.utils.date_formatter import normalize_week_of_for_match
+
             existing_plans = db.get_user_plans(batch_request.user_id, limit=10)
+            canonical = normalize_week_of_for_match(batch_request.week_of)
             existing_plan = next(
-                (p for p in existing_plans if p.week_of == batch_request.week_of), None
+                (
+                    p
+                    for p in existing_plans
+                    if p.week_of == batch_request.week_of
+                    or (canonical and normalize_week_of_for_match(p.week_of or "") == canonical)
+                ),
+                None,
             )
             if existing_plan:
                 plan_id = existing_plan.id
@@ -140,6 +151,18 @@ async def process_week(
             "updates": [],
         }
 
+        week_folder_path = None
+        if batch_request.week_folder:
+            user = db.get_user(batch_request.user_id)
+            if user and getattr(user, "base_path_override", None):
+                week_folder_path = str(
+                    Path(user.base_path_override) / batch_request.week_folder.strip()
+                )
+                logger.info(
+                    "week_folder_path_from_request",
+                    extra={"week_folder": batch_request.week_folder, "path": week_folder_path},
+                )
+
         async def process_in_background():
             try:
                 logger.info("background_process_started", extra={"plan_id": plan_id})
@@ -147,6 +170,7 @@ async def process_week(
                     batch_request.user_id,
                     batch_request.week_of,
                     batch_request.provider,
+                    week_folder_path=week_folder_path,
                     slot_ids=batch_request.slot_ids,
                     plan_id=plan_id,
                     partial=batch_request.partial,
