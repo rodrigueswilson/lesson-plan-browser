@@ -4,7 +4,7 @@ import { WeekView } from './WeekView';
 import { DayView } from './DayView';
 import { LessonDetailView } from './LessonDetailView';
 import { TopNavigationBar } from './TopNavigationBar';
-import { planApi, WeeklyPlan, ScheduleEntry, scheduleApi, lessonApi, userApi, ClassSlot } from '@lesson-api';
+import { planApi, WeeklyPlan, ScheduleEntry, scheduleApi, lessonApi, userApi, ClassSlot, normalizeWeekOfForMatch } from '@lesson-api';
 import { useStore } from '../store/useStore';
 import { Button } from '@lesson-ui/Button';
 import { Select } from '@lesson-ui/Select';
@@ -36,114 +36,125 @@ const sortLessons = (entries: ScheduleEntry[]) => {
   });
 };
 
-const getSortedWeekValues = (
-  plans: WeeklyPlan[],
-  weeks: Array<{ week_of: string; latest_created_at?: string }>
-): string[] => {
-  const weekSet = new Set<string>();
-  const weekMeta = new Map<string, { latest_created_at?: string }>();
+/** Get ISO week number (1-53) for a given date. */
+function getISOWeekNumber(year: number, month: number, day: number): number {
+  const d = new Date(year, month - 1, day);
+  d.setDate(d.getDate() + 4 - (d.getDay() || 7));
+  const startOfYear = new Date(d.getFullYear(), 0, 1);
+  return Math.ceil((((d.getTime() - startOfYear.getTime()) / 86400000) + startOfYear.getDay() + 1) / 7);
+}
 
-  // Use weeks (from API) as primary source for metadata
-  weeks.forEach((week) => {
-    if (week.week_of) {
-      weekSet.add(week.week_of);
-      weekMeta.set(week.week_of, { latest_created_at: week.latest_created_at });
-    }
-  });
-
-  // PLANS (local cache) might also have generated_at, but RecenetWeek is authoritative for "latest"
-  plans.forEach((plan) => {
-    if (plan.week_of) {
-      weekSet.add(plan.week_of);
-      if (!weekMeta.has(plan.week_of)) {
-        // If plan not in RecentWeeks, fall back to its own generated_at
-        weekMeta.set(plan.week_of, { latest_created_at: plan.generated_at });
-      }
-    }
-  });
-
-  const getSortableValue = (weekOf: string): number => {
-    // 1. EXTRACT TARGET MONTH (MM)
-    const clean = weekOf.replace(/^week of\s+/i, '').trim();
-    const match = clean.match(/^(\d{1,2})[-/](\d{1,2})/);
-    if (!match) return 0;
-    const tMonth = parseInt(match[1], 10); // 1-12
-
-    // 2. DETERMINE CREATION DATE (YYYY, MM)
-    let cYear = 0;
-    let cMonth = 0;
-
-    // Start with a fallback default year (e.g. current year or recent past)
-    // Only used if NO plan data exists at all
+/** Format week_of (e.g. "09-29-10-03") as "W12 03/16-03/20" for display when not provided by API. */
+function formatWeekOfForDisplay(weekOf: string): string {
+  if (!weekOf) return 'Unknown Week';
+  const parts = weekOf.replace(/^week of\s+/i, '').trim().split(/[-/]/);
+  if (parts.length >= 4) {
+    const m1 = parseInt(parts[0], 10);
+    const d1 = parseInt(parts[1], 10);
+    const m2 = parseInt(parts[2], 10);
+    const d2 = parseInt(parts[3], 10);
     const now = new Date();
-    cYear = now.getFullYear();
-    cMonth = now.getMonth() + 1;
+    let year = now.getFullYear();
+    if (now.getMonth() + 1 === 12 && m1 <= 2) year += 1;
+    else if (now.getMonth() + 1 === 1 && m1 === 12) year -= 1;
+    const w = getISOWeekNumber(year, m1, d1);
+    const pad = (n: number) => String(n).padStart(2, '0');
+    const start = `${pad(m1)}/${pad(d1)}`;
+    const end = `${pad(m2)}/${pad(d2)}`;
+    return `W${String(w).padStart(2, '0')} ${start}-${end}`;
+  }
+  return weekOf;
+}
 
-    const meta = weekMeta.get(weekOf);
-    if (meta?.latest_created_at) {
-      const d = new Date(meta.latest_created_at);
-      if (!Number.isNaN(d.getTime())) {
-        cYear = d.getFullYear();
-        cMonth = d.getMonth() + 1; // 1-12
-      }
-    }
+type WeekOption = { week_of: string; display: string; folder_name?: string };
 
-    // 3. DEDUCE TARGET CALENDAR YEAR (tYear)
-    // Heuristic: If we are creating a plan for a month "far ahead" or "far behind"
-    // the creation date, we likely crossed a year boundary.
-    // E.g. Created Dec(12) 2025 for Jan(1) -> Jan is 2026.
-    // E.g. Created Jan(1) 2026 for Dec(12) -> Dec is 2025.
+function parseWeekOfStart(weekOf: string): { month: number; day: number } | null {
+  const parts = weekOf.replace(/^week of\s+/i, '').trim().split(/[-/]/);
+  if (parts.length >= 4) {
+    const month = parseInt(parts[0], 10);
+    const day = parseInt(parts[1], 10);
+    if (!Number.isNaN(month) && !Number.isNaN(day)) return { month, day };
+  }
+  return null;
+}
 
-    let tYear = cYear;
+function getWeekCalendarSortKey(
+  weekOf: string,
+  folderName: string | undefined,
+  plans: WeeklyPlan[]
+): number {
+  const parsed = parseWeekOfStart(weekOf);
+  const month = parsed?.month ?? 1;
+  const day = parsed?.day ?? 1;
 
-    const diff = tMonth - cMonth;
-    if (diff < -6) {
-      // Target is WAY less than Create (e.g. Jan - Dec = -11). 
-      // Likely Next Year.
-      tYear = cYear + 1;
-    } else if (diff > 6) {
-      // Target is WAY more than Create (e.g. Dec - Jan = 11). 
-      // Likely Previous Year.
-      tYear = cYear - 1;
-    }
-
-    // 4. CALCULATE ACADEMIC BASE YEAR & SCORE
-    // Academic Year runs Aug (Month 8) to July (Month 7).
-    // We treat Aug-Dec as "Early Part" and Jan-July as "Late Part".
-    // We normalize to the "Start Year" of the Academic Cycle.
-
-    let acadBaseYear = tYear;
-    let acadMonthIndex = 0; // 0=Aug, 1=Sep... 11=July
-
-    // Map Calendar Month (1-12) to Academic Index (0-11)
-    // 8->0, 9->1... 12->4, 1->5... 7->11
-    if (tMonth >= 8) {
-      acadMonthIndex = tMonth - 8;
-      acadBaseYear = tYear; // Fall 2025 belongs to Acad Year 2025
+  let year: number;
+  const folderMatch = folderName?.match(/^(\d{2})\s*W\s*\d/i);
+  if (folderMatch) {
+    year = 2000 + parseInt(folderMatch[1], 10);
+  } else {
+    const canonical = normalizeWeekOfForMatch(weekOf);
+    const plansForWeek = plans.filter(
+      (p) => p.week_of && normalizeWeekOfForMatch(p.week_of) === canonical
+    );
+    const latestGenerated = plansForWeek
+      .map((p) => (p.generated_at ? new Date(p.generated_at).getTime() : 0))
+      .reduce((a, b) => Math.max(a, b), 0);
+    if (latestGenerated > 0) {
+      year = new Date(latestGenerated).getFullYear();
     } else {
-      acadMonthIndex = tMonth + 4;
-      acadBaseYear = tYear - 1; // Spring 2026 belongs to Acad Year 2025
+      const now = new Date();
+      const currMonth = now.getMonth() + 1;
+      if (now.getMonth() + 1 === 12 && month <= 2) year = now.getFullYear() + 1;
+      else if (currMonth === 1 && month === 12) year = now.getFullYear() - 1;
+      else year = now.getFullYear();
     }
+  }
+  return year * 10000 + month * 100 + day;
+}
 
-    // Final Sort Value: YYYYMM (Academic)
-    // This makes Jan 2026 (202505) > Dec 2025 (202504)
-    // And Jan 2027 (202605) > Jan 2026 (202505)
+/**
+ * Build available weeks, then sort by calendar (year + week start) newest first.
+ * Year from folder_name (YY W##), or from plan's generated_at, or inferred.
+ * Selector shows first = most recent calendar week (e.g. 26 W12), last = oldest (e.g. 25 W36).
+ */
+function buildAvailableWeeksInApiOrder(
+  weeks: Array<{ week_of: string; display: string; folder_name?: string }>,
+  plans: WeeklyPlan[]
+): Array<{ week_of: string; display: string }> {
+  const seen = new Set<string>();
+  const result: WeekOption[] = [];
 
-    return (acadBaseYear * 100) + acadMonthIndex;
-  };
-
-  return Array.from(weekSet).sort((a, b) => {
-    const valA = getSortableValue(a);
-    const valB = getSortableValue(b);
-
-    // Sort DESCENDING (Newest first)
-    if (valA !== valB) {
-      return valB - valA;
+  for (const w of weeks) {
+    if (w.week_of && !seen.has(w.week_of)) {
+      seen.add(w.week_of);
+      result.push({ week_of: w.week_of, display: w.display, folder_name: w.folder_name });
     }
+  }
 
-    return b.localeCompare(a);
-  });
-};
+  const planOnlyLatest = new Map<string, number>();
+  for (const p of plans) {
+    if (!p.week_of) continue;
+    const canonical = normalizeWeekOfForMatch(p.week_of);
+    if (seen.has(canonical)) continue;
+    const at = p.generated_at ? new Date(p.generated_at).getTime() : 0;
+    planOnlyLatest.set(canonical, Math.max(planOnlyLatest.get(canonical) ?? 0, at));
+  }
+  const planOnly = Array.from(planOnlyLatest.entries())
+    .map(([week_of, latestAt]) => ({ week_of, latestAt }))
+    .sort((a, b) => b.latestAt - a.latestAt);
+  for (const { week_of } of planOnly) {
+    seen.add(week_of);
+    result.push({ week_of, display: formatWeekOfForDisplay(week_of) });
+  }
+
+  result.sort(
+    (a, b) =>
+      getWeekCalendarSortKey(b.week_of, b.folder_name, plans) -
+      getWeekCalendarSortKey(a.week_of, a.folder_name, plans)
+  );
+
+  return result.map(({ week_of, display }) => ({ week_of, display }));
+}
 
 
 interface LessonPlanBrowserProps {
@@ -423,29 +434,21 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
           .getRecentWeeks(currentUser.id, 25, currentUser.id)
           .catch(() => ({ data: [] }));
         cachedWeeks = weeksResponse.data || [];
-        const cachedWeekValues = getSortedWeekValues(
-          cachedPlans || [],
-          cachedWeeks
+        const cachedAvailableWeeks = buildAvailableWeeksInApiOrder(
+          cachedWeeks,
+          cachedPlans || []
         );
-        const weekLookup = new Map(
-          cachedWeeks.map((week) => [week.week_of, week])
-        );
-        const sortedWeekOptions = cachedWeekValues
-          .map((value) => weekLookup.get(value))
-          .filter(
-            (option): option is { week_of: string; display: string } =>
-              Boolean(option)
-          );
-        setAvailableWeeks(
-          sortedWeekOptions.length > 0 ? sortedWeekOptions : cachedWeeks
-        );
+        setAvailableWeeks(cachedAvailableWeeks);
+        if (!selectedWeek && cachedAvailableWeeks.length > 0) {
+          setSelectedWeek(cachedAvailableWeeks[0]?.week_of ?? null);
+        }
       } catch (error) {
         console.error('Failed to fetch weeks:', error);
       }
 
       const desiredWeek =
         selectedWeek ||
-        cachedWeeks[0]?.week_of ||
+        cachedAvailableWeeks[0]?.week_of ||
         cachedPlans[0]?.week_of ||
         null;
       const cacheHasDesiredWeek = desiredWeek
@@ -518,31 +521,20 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
 
       setPlans(plans);
 
-      const sortedWeekValues = getSortedWeekValues(plans, weeks);
-      const weekLookup = new Map(weeks.map((week) => [week.week_of, week]));
-      const sortedWeekOptions = sortedWeekValues
-        .map((value) => weekLookup.get(value))
-        .filter(
-          (option): option is { week_of: string; display: string } => Boolean(option)
-        );
-      const finalWeekOptions =
-        sortedWeekOptions.length > 0 ? sortedWeekOptions : weeks;
-      setAvailableWeeks(finalWeekOptions);
+      const availableWeeksList = buildAvailableWeeksInApiOrder(weeks, plans);
+      setAvailableWeeks(availableWeeksList);
 
-      if (!selectedWeek && sortedWeekValues.length > 0) {
-        const autoSelectedWeek = sortedWeekValues[0];
-        console.log('[LessonPlanBrowser] Auto-selecting week:', {
-          availableWeeks: sortedWeekValues,
+      const weekValues = availableWeeksList.map((w) => w.week_of);
+      if (!selectedWeek && weekValues.length > 0) {
+        const autoSelectedWeek = weekValues[0];
+        console.log('[LessonPlanBrowser] Auto-selecting week (most recent):', {
+          availableWeeks: weekValues,
           selected: autoSelectedWeek
         });
         setSelectedWeek(autoSelectedWeek);
-      } else if (
-        selectedWeek &&
-        !sortedWeekValues.includes(selectedWeek) &&
-        sortedWeekValues.length > 0
-      ) {
-        console.log('[LessonPlanBrowser] Selected week not available, switching to:', sortedWeekValues[0]);
-        setSelectedWeek(sortedWeekValues[0]);
+      } else if (selectedWeek && !weekValues.includes(selectedWeek) && weekValues.length > 0) {
+        console.log('[LessonPlanBrowser] Selected week not available, switching to:', weekValues[0]);
+        setSelectedWeek(weekValues[0]);
       } else {
         console.log('[LessonPlanBrowser] Keeping existing selectedWeek:', selectedWeek);
       }
@@ -931,7 +923,9 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
         let availablePlans = plans;
 
         // CRITICAL: Use lessonWeekOf (the correct week for this lesson) not selectedWeek
-        if (!availablePlans.some((p) => p.week_of === lessonWeekOf)) {
+        const canonicalLessonWeek = normalizeWeekOfForMatch(lessonWeekOf);
+        const planMatchesWeek = (p: WeeklyPlan) => p.week_of === lessonWeekOf || (!!canonicalLessonWeek && normalizeWeekOfForMatch(p.week_of) === canonicalLessonWeek);
+        if (!availablePlans.some(planMatchesWeek)) {
           console.log('[handleLessonClick] Plan not in availablePlans, checking cache/refetching:', {
             lessonWeekOf: lessonWeekOf,
             availableWeekOfValues: availablePlans.map(p => p.week_of)
@@ -954,17 +948,16 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
           }
         }
 
-        // CRITICAL: Use lessonWeekOf (the correct week for this lesson) not selectedWeek
+        // CRITICAL: Use lessonWeekOf (the correct week for this lesson) not selectedWeek; canonical match so 3/2-03/06 matches 03/02-03/06
         const completedPlans = availablePlans
-          .filter((p) => p.week_of === lessonWeekOf && p.status === 'completed')
+          .filter((p) => planMatchesWeek(p) && p.status === 'completed')
           .sort(
             (a, b) =>
               new Date(b.generated_at ?? 0).getTime() - new Date(a.generated_at ?? 0).getTime()
           );
 
-        // CRITICAL: Use lessonWeekOf (the correct week for this lesson) not selectedWeek
         const fallbackPlans = availablePlans
-          .filter((p) => p.week_of === lessonWeekOf)
+          .filter(planMatchesWeek)
           .sort(
             (a, b) =>
               new Date(b.generated_at ?? 0).getTime() - new Date(a.generated_at ?? 0).getTime()
