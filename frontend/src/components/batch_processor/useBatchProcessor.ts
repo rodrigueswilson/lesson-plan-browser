@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useStore } from '@lesson-browser';
-import { planApi, createProgressStream, userApi } from '@lesson-api';
+import { planApi, createProgressStream, userApi, type ClassSlot } from '@lesson-api';
 
 export type ButtonState = 'idle' | 'processing' | 'success' | 'error';
 
 export interface WeekStatus {
+  plan_id?: string | null;
   done_slots: number[];
   missing_slots: number[];
   status: string | null;
@@ -34,6 +35,7 @@ export function useBatchProcessor() {
     progress,
     setProgress,
     selectedSlots,
+    setSelectedSlots,
     toggleSlot,
     selectAllSlots,
     deselectAllSlots,
@@ -43,6 +45,7 @@ export function useBatchProcessor() {
   const [result, setResult] = useState<ProcessResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [recentWeeks, setRecentWeeks] = useState<RecentWeek[]>([]);
+  const [availableWeeks, setAvailableWeeks] = useState<RecentWeek[]>([]);
   const [buttonState, setButtonState] = useState<ButtonState>('idle');
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [partial, setPartial] = useState(true);
@@ -50,12 +53,35 @@ export function useBatchProcessor() {
   const [forceSlots, setForceSlots] = useState<Set<number>>(new Set());
   const [weekStatus, setWeekStatus] = useState<WeekStatus | null>(null);
   const [isLoadingStatus, setIsLoadingStatus] = useState(false);
+  const appliedAutoDeselectRef = useRef<string | null>(null);
 
   useEffect(() => {
     if (slots.length > 0 && selectedSlots.size === 0) {
       selectAllSlots();
     }
   }, [slots.length, selectedSlots.size, selectAllSlots]);
+
+  useEffect(() => {
+    appliedAutoDeselectRef.current = null;
+  }, [weekOf]);
+
+  useEffect(() => {
+    if (
+      !weekOf ||
+      !weekStatus?.plan_id ||
+      !Array.isArray(weekStatus.done_slots) ||
+      weekStatus.done_slots.length === 0 ||
+      slots.length === 0
+    ) {
+      return;
+    }
+    if (appliedAutoDeselectRef.current === weekOf) return;
+    appliedAutoDeselectRef.current = weekOf;
+    const missingIds = slots
+      .filter((s: ClassSlot) => !weekStatus.done_slots.includes(s.slot_number))
+      .map((s: ClassSlot) => String(s.id));
+    setSelectedSlots(new Set(missingIds));
+  }, [weekOf, weekStatus?.plan_id, weekStatus?.done_slots, slots, setSelectedSlots]);
 
   const loadRecentWeeks = async () => {
     if (!currentUser) {
@@ -84,9 +110,34 @@ export function useBatchProcessor() {
     }
   };
 
+  const loadAvailableWeeks = async () => {
+    if (!currentUser) return;
+    try {
+      const response = await userApi.getAvailableWeeks(
+        currentUser.id,
+        currentUser.id
+      );
+      const raw = (response.data ?? []) as Array<{
+        week_of: string;
+        display: string;
+        folder_name?: unknown;
+      }>;
+      const weeks: RecentWeek[] = raw.map((w) => ({
+        week_of: w.week_of,
+        display: w.display,
+        folder_name: typeof w.folder_name === 'string' ? w.folder_name : '',
+      }));
+      setAvailableWeeks(weeks);
+    } catch (err) {
+      console.error('[BatchProcessor] Failed to load available weeks:', err);
+      setAvailableWeeks([]);
+    }
+  };
+
   useEffect(() => {
     if (currentUser?.id) {
       loadRecentWeeks();
+      loadAvailableWeeks();
     }
   }, [currentUser?.id]);
 
@@ -243,6 +294,7 @@ export function useBatchProcessor() {
     result,
     error,
     recentWeeks,
+    availableWeeks,
     buttonState,
     showConfirmDialog,
     setShowConfirmDialog,

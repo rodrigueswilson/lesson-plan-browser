@@ -2,6 +2,7 @@ import { Play, CheckCircle2, Loader2, X } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { Label } from '../ui/Label';
+import { Select } from '../ui/Select';
 import type { ButtonState } from './useBatchProcessor';
 import type { RecentWeek } from './useBatchProcessor';
 
@@ -9,6 +10,7 @@ interface WeekSectionProps {
   weekOf: string;
   setWeekOf: (value: string) => void;
   recentWeeks: RecentWeek[];
+  availableWeeks: RecentWeek[];
   isProcessing: boolean;
   buttonState: ButtonState;
   selectedSlotsSize: number;
@@ -19,6 +21,7 @@ export function WeekSection({
   weekOf,
   setWeekOf,
   recentWeeks,
+  availableWeeks,
   isProcessing,
   buttonState,
   selectedSlotsSize,
@@ -28,7 +31,29 @@ export function WeekSection({
 
   return (
     <div className="space-y-2">
-      <Label htmlFor="week">Week Of (MM-DD-MM-DD)</Label>
+      <Label htmlFor="week">Week Of (MM-DD-MM-DD or YY W##)</Label>
+
+      {availableWeeks.length > 0 && (
+        <div className="mb-2">
+          <Label className="text-xs text-muted-foreground" htmlFor="week-select">
+            Available weeks (from folder):
+          </Label>
+          <Select
+            id="week-select"
+            value={weekOf}
+            onChange={(e) => setWeekOf(e.target.value)}
+            disabled={isProcessing}
+            className="mt-1 max-w-[200px]"
+          >
+            <option value="">Select a week...</option>
+            {availableWeeks.map((week) => (
+              <option key={week.week_of} value={week.week_of}>
+                {week.display}
+              </option>
+            ))}
+          </Select>
+        </div>
+      )}
 
       {recentWeeks.length > 0 && (
         <div className="mb-2">
@@ -53,7 +78,7 @@ export function WeekSection({
       <div className="flex gap-2">
         <Input
           id="week"
-          placeholder="e.g., 10-06-10-10"
+          placeholder="e.g., 10-06-10-10 or 25 W36"
           value={weekOf}
           onChange={(e) => setWeekOf(e.target.value)}
           disabled={isProcessing}
@@ -91,7 +116,7 @@ export function WeekSection({
         </Button>
       </div>
       <p className="text-xs text-muted-foreground">
-        Format: Month-Day-Month-Day (e.g., 10-06-10-10 for Oct 6 - Oct 10)
+        Format: MM-DD-MM-DD (e.g. 10-06-10-10) or YY W## (e.g. 25 W36)
       </p>
     </div>
   );

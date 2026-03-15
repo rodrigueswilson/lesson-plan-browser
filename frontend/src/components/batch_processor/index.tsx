@@ -17,6 +17,7 @@ export function BatchProcessorView() {
     result,
     error,
     recentWeeks,
+    availableWeeks,
     buttonState,
     showConfirmDialog,
     setShowConfirmDialog,
@@ -72,11 +73,45 @@ export function BatchProcessorView() {
           weekOf={weekOf}
           setWeekOf={setWeekOf}
           recentWeeks={recentWeeks}
+          availableWeeks={availableWeeks}
           isProcessing={isProcessing}
           buttonState={buttonState}
           selectedSlotsSize={selectedSlots.size}
           onProcessClick={handleProcessClick}
         />
+
+        {weekStatus?.plan_id && (
+          <div className="rounded-lg border border-green-200 bg-green-50/50 dark:border-green-800 dark:bg-green-950/30 px-4 py-3">
+            <p className="text-sm font-medium text-green-800 dark:text-green-200">
+              A plan exists for this week. You can skip re-calling the LLM:
+            </p>
+            <div className="flex flex-wrap items-center gap-4 mt-2">
+              <label className="flex items-center gap-2 text-sm cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={partial}
+                  onChange={(e) => setPartial(e.target.checked)}
+                  className="w-4 h-4"
+                  disabled={isProcessing}
+                />
+                Partial/Merge (merge into existing plan)
+              </label>
+              <label className="flex items-center gap-2 text-sm cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={missingOnly}
+                  onChange={(e) => setMissingOnly(e.target.checked)}
+                  className="w-4 h-4"
+                  disabled={isProcessing}
+                />
+                Missing only (process just slots not yet in the plan)
+              </label>
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">
+              Then click Generate. These options are also in the confirmation dialog.
+            </p>
+          </div>
+        )}
 
         <ProgressSection
           isProcessing={isProcessing}
