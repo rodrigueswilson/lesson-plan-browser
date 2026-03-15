@@ -10,6 +10,7 @@ from backend.database import get_db
 from backend.models import UserCreate, UserResponse, UserUpdate
 from backend.rate_limiter import rate_limit_auth, rate_limit_general
 from backend.telemetry import logger
+from backend.utils.date_formatter import normalize_week_of_for_match
 from backend.week_detector import detect_weeks_from_folder, format_week_display
 
 from backend.routers.users_list_logic import fetch_active_users
@@ -107,57 +108,8 @@ async def get_recent_weeks(
 
         result = []
 
-        # First, try to detect weeks from folder structure if base_path_override is configured
-        if user.base_path_override:
-            try:
-                logger.info(
-                    "detecting_weeks_from_folder",
-                    extra={"path": user.base_path_override, "user_id": user_id},
-                )
-                detected_weeks = detect_weeks_from_folder(
-                    user.base_path_override, limit=limit
-                )
-
-                if detected_weeks:
-                    # Format detected weeks for frontend
-                    for week_info in detected_weeks:
-                        week_of = week_info.get("week_of")
-                        folder_name = week_info.get("folder_name", week_of)
-
-                        if week_of:
-                            # Use format_week_display to create display string
-                            display = format_week_display(week_info)
-
-                            result.append(
-                                {
-                                    "week_of": week_of,
-                                    "display": display,
-                                    "folder_name": folder_name,
-                                }
-                            )
-
-                    logger.info(
-                        "weeks_detected_from_folder",
-                        extra={"count": len(result), "user_id": user_id},
-                    )
-                    return result
-                else:
-                    logger.info(
-                        "no_weeks_found_in_folder",
-                        extra={"path": user.base_path_override, "user_id": user_id},
-                    )
-            except Exception as folder_error:
-                logger.warning(
-                    "folder_detection_failed",
-                    extra={
-                        "error": str(folder_error),
-                        "path": user.base_path_override,
-                        "user_id": user_id,
-                    },
-                )
-                # Continue to database fallback
-
-        # Fallback: Query database for distinct weeks
+        # Prefer database so order is "most recent first" (generated_at desc), matching Android.
+        # Use folder detection only when database has no weeks.
         from sqlmodel import Session, select
 
         from backend.schema import WeeklyPlan
@@ -184,30 +136,61 @@ async def get_recent_weeks(
                     if len(unique_weeks) >= limit:
                         break
 
-        # Format for frontend
+        # Format for frontend; normalize week_of to canonical so selector gets one format
         for week_of in unique_weeks:
-            # Format display name
-            try:
-                parts = week_of.split("-")
-                if len(parts) == 4:
-                    start = f"{parts[0]}/{parts[1]}"
-                    end = f"{parts[2]}/{parts[3]}"
-                    display = f"{start} to {end}"
-                else:
-                    display = week_of
-            except Exception:
-                display = week_of
-
+            canonical_week = normalize_week_of_for_match(week_of) or week_of
+            display = format_week_display({"week_of": canonical_week, "folder_name": canonical_week or ""})
             result.append(
                 {
-                    "week_of": week_of,
+                    "week_of": canonical_week,
                     "display": display,
-                    "folder_name": week_of,  # Use week_of as folder_name for compatibility
+                    "folder_name": canonical_week,
                 }
             )
 
+        source = "database"
+
+        # If database had no weeks, try folder detection (e.g. base_path_override)
+        if not result and user.base_path_override:
+            try:
+                logger.info(
+                    "detecting_weeks_from_folder",
+                    extra={"path": user.base_path_override, "user_id": user_id},
+                )
+                detected_weeks = detect_weeks_from_folder(
+                    user.base_path_override, limit=limit
+                )
+                if detected_weeks:
+                    source = "folder"
+                    for week_info in detected_weeks:
+                        week_of = week_info.get("week_of")
+                        folder_name = week_info.get("folder_name", week_of)
+                        if week_of:
+                            canonical_week = normalize_week_of_for_match(week_of) or week_of
+                            display = format_week_display({"week_of": canonical_week, "folder_name": folder_name or canonical_week})
+                            result.append(
+                                {
+                                    "week_of": canonical_week,
+                                    "display": display,
+                                    "folder_name": folder_name,
+                                }
+                            )
+                    logger.info(
+                        "weeks_detected_from_folder",
+                        extra={"count": len(result), "user_id": user_id},
+                    )
+            except Exception as folder_error:
+                logger.warning(
+                    "folder_detection_failed",
+                    extra={
+                        "error": str(folder_error),
+                        "path": user.base_path_override,
+                        "user_id": user_id,
+                    },
+                )
+
         logger.info(
-            "recent_weeks_found", extra={"count": len(result), "source": "database"}
+            "recent_weeks_found", extra={"count": len(result), "source": source}
         )
         return result
 
@@ -219,6 +202,77 @@ async def get_recent_weeks(
             "recent_weeks_error", extra={"error": str(e), "traceback": error_details}
         )
         raise HTTPException(status_code=500, detail=f"Failed to detect weeks: {str(e)}")
+
+
+@router.get("/users/{user_id}/available-weeks", tags=["Users"])
+@rate_limit_general
+async def get_available_weeks(
+    request: Request,
+    user_id: str,
+    current_user_id: Optional[str] = Depends(get_current_user_id),
+):
+    """
+    Get all available week folders from the user's lesson plan directory (YY W## format).
+
+    Scans user's base_path_override for week subfolders (e.g. 25 W36, 25 W37)
+    and returns them for the Generate Weekly Plan selector.
+
+    Args:
+        user_id: User ID
+        current_user_id: Current authenticated user ID (from X-Current-User-Id header)
+
+    Returns:
+        List of { week_of, display, folder_name } in YY W## format; empty if no path configured.
+    """
+    logger.info("available_weeks_requested", extra={"user_id": user_id})
+
+    try:
+        verify_user_access(user_id, current_user_id, allow_if_none=True)
+
+        db = get_db(user_id=user_id)
+        user = db.get_user(user_id)
+
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        if not user.base_path_override:
+            logger.info("available_weeks_no_path", extra={"user_id": user_id})
+            return []
+
+        detected_weeks = detect_weeks_from_folder(
+            user.base_path_override, limit=500
+        )
+        result = []
+        for week_info in detected_weeks:
+            folder_name = week_info.get("folder_name") or ""
+            if folder_name:
+                result.append(
+                    {
+                        "week_of": folder_name,
+                        "display": folder_name,
+                        "folder_name": folder_name,
+                    }
+                )
+
+        logger.info(
+            "available_weeks_found",
+            extra={"user_id": user_id, "count": len(result)},
+        )
+        return result
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        import traceback
+
+        error_details = traceback.format_exc()
+        logger.error(
+            "available_weeks_error",
+            extra={"error": str(e), "traceback": error_details},
+        )
+        raise HTTPException(
+            status_code=500, detail=f"Failed to list available weeks: {str(e)}"
+        )
 
 
 @router.get("/users/{user_id}", response_model=UserResponse, tags=["Users"])
