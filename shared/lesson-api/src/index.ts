@@ -396,22 +396,58 @@ const WEEK_DISPLAY_FORMATTER = new Intl.DateTimeFormat('en-US', {
   year: 'numeric',
 });
 
+/**
+ * Normalize week_of to canonical "MM/DD-MM/DD" for reliable matching.
+ * Handles "3/2-03/06", "03/02-03/06", "03-02-03-06" etc.
+ */
+export function normalizeWeekOfForMatch(weekOf: string): string {
+  if (!weekOf || typeof weekOf !== 'string') return '';
+  const clean = weekOf.replace(/^week of\s+/i, '').trim();
+  const pad = (n: number) => String(n).padStart(2, '0');
+  // Two parts separated by "-" (e.g. "03/02-03/06" or "3/2-03/06")
+  const twoPart = clean.split('-');
+  if (twoPart.length === 2) {
+    const [a, b] = twoPart.map((p) => p.trim().split('/').map(Number));
+    if (a.length >= 2 && b.length >= 2 && !a.some(Number.isNaN) && !b.some(Number.isNaN)) {
+      return `${pad(a[0])}/${pad(a[1])}-${pad(b[0])}/${pad(b[1])}`;
+    }
+  }
+  // Four parts "MM-DD-MM-DD"
+  const fourPart = clean.split(/[-/]/).map((s) => parseInt(s, 10)).filter((n) => !Number.isNaN(n));
+  if (fourPart.length >= 4) {
+    return `${pad(fourPart[0])}/${pad(fourPart[1])}-${pad(fourPart[2])}/${pad(fourPart[3])}`;
+  }
+  return clean;
+}
+
+function getISOWeekNumber(year: number, month: number, day: number): number {
+  const d = new Date(year, month - 1, day);
+  d.setDate(d.getDate() + 4 - (d.getDay() || 7));
+  const startOfYear = new Date(d.getFullYear(), 0, 1);
+  return Math.ceil(
+    ((d.getTime() - startOfYear.getTime()) / 86400000 + startOfYear.getDay() + 1) / 7
+  );
+}
+
 function formatWeekDisplayLabel(weekOf: string): string {
   if (!weekOf) {
     return 'Unknown Week';
   }
 
-  // Remove any existing "Week of" prefix to process just the date part
   const cleanWeekOf = weekOf.replace(/^week of\s+/i, '').trim();
-
-  // Try to match "MM-DD-MM-DD" or "MM/DD-MM/DD" patterns
-  // Matches: 01-05-01-09, 09/15-09/19, 12-01-12-05, etc.
   const rangeMatch = cleanWeekOf.match(/^(\d{1,2})[-/](\d{1,2})[-/](\d{1,2})[-/](\d{1,2})$/);
 
   if (rangeMatch) {
     const [_, m1, d1, m2, d2] = rangeMatch;
-    // Format as "MM/DD - MM/DD"
-    return `${m1}/${d1} - ${m2}/${d2}`;
+    const month = parseInt(m1, 10);
+    const day = parseInt(d1, 10);
+    const now = new Date();
+    let year = now.getFullYear();
+    if (now.getMonth() + 1 === 12 && month <= 2) year += 1;
+    else if (now.getMonth() + 1 === 1 && month === 12) year -= 1;
+    const w = getISOWeekNumber(year, month, day);
+    const pad = (s: string) => String(parseInt(s, 10)).padStart(2, '0');
+    return `W${String(w).padStart(2, '0')} ${pad(m1)}/${pad(d1)}-${pad(m2)}/${pad(d2)}`;
   }
 
   // Try single date format (YYYY-MM-DD)
@@ -915,6 +951,14 @@ export const userApi = {
       currentUserId || userId
     );
   },
+
+  getAvailableWeeks: (userId: string, currentUserId?: string) =>
+    request<RecentWeek[]>(
+      'GET',
+      `${API_BASE_URL}/users/${userId}/available-weeks`,
+      undefined,
+      currentUserId || userId
+    ),
 };
 
 export const slotApi = {
