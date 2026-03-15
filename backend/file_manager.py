@@ -36,11 +36,23 @@ class FileManager:
         Uses most recent week folder if available, otherwise calculates from date.
 
         Args:
-            week_of: Week date range (MM/DD-MM/DD) or None to use most recent
+            week_of: Week date range (MM/DD-MM/DD), or YY W## folder name (e.g. 25 W36)
 
         Returns:
             Path to week folder (e.g., F:/path/to/25 W41)
         """
+        if week_of:
+            # If week_of is already YY W## folder name, resolve directly
+            yy_week_match = re.match(
+                r"^(\d{2})\s*W\s*(\d{1,2})\b", week_of.strip(), re.IGNORECASE
+            )
+            if yy_week_match:
+                yy, ww = yy_week_match.groups()
+                folder_name = f"{yy} W{int(ww):02d}"
+                folder_path = self.base_path / folder_name
+                if folder_path.exists():
+                    return folder_path
+
         # If week_of is provided, try to find matching folder
         if week_of:
             week_num = self._calculate_week_number(week_of)
