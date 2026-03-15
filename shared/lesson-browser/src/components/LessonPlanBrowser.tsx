@@ -81,7 +81,7 @@ function parseWeekOfStart(weekOf: string): { month: number; day: number } | null
 function getWeekCalendarSortKey(
   weekOf: string,
   folderName: string | undefined,
-  plans: WeeklyPlan[]
+  _plans: WeeklyPlan[]
 ): number {
   const parsed = parseWeekOfStart(weekOf);
   const month = parsed?.month ?? 1;
@@ -92,21 +92,13 @@ function getWeekCalendarSortKey(
   if (folderMatch) {
     year = 2000 + parseInt(folderMatch[1], 10);
   } else {
-    const canonical = normalizeWeekOfForMatch(weekOf);
-    const plansForWeek = plans.filter(
-      (p) => p.week_of && normalizeWeekOfForMatch(p.week_of) === canonical
-    );
-    const latestGenerated = plansForWeek
-      .map((p) => (p.generated_at ? new Date(p.generated_at).getTime() : 0))
-      .reduce((a, b) => Math.max(a, b), 0);
-    if (latestGenerated > 0) {
-      year = new Date(latestGenerated).getFullYear();
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const currMonth = now.getMonth() + 1;
+    if (month >= 8 && month <= 12) {
+      year = currMonth >= 1 && currMonth <= 7 ? currentYear - 1 : currentYear;
     } else {
-      const now = new Date();
-      const currMonth = now.getMonth() + 1;
-      if (now.getMonth() + 1 === 12 && month <= 2) year = now.getFullYear() + 1;
-      else if (currMonth === 1 && month === 12) year = now.getFullYear() - 1;
-      else year = now.getFullYear();
+      year = currMonth === 12 ? currentYear - 1 : currentYear;
     }
   }
   return year * 10000 + month * 100 + day;
@@ -114,7 +106,7 @@ function getWeekCalendarSortKey(
 
 /**
  * Build available weeks, then sort by calendar (year + week start) newest first.
- * Year from folder_name (YY W##), or from plan's generated_at, or inferred.
+ * Year from folder_name (YY W##) when present, else inferred from week_of (school-year heuristic).
  * Selector shows first = most recent calendar week (e.g. 26 W12), last = oldest (e.g. 25 W36).
  */
 function buildAvailableWeeksInApiOrder(
