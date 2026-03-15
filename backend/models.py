@@ -3,9 +3,33 @@ API Request/Response Models for Bilingual Lesson Plan Builder.
 """
 
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Union
+from typing import Annotated, Any, Dict, List, Optional, Union
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic.functional_validators import BeforeValidator
+
+from backend.utils.date_formatter import normalize_week_of_canonical, normalize_week_of_for_match
+from backend.week_detector import extract_week_dates_from_folder_name
+
+WeekOf = Annotated[
+    str,
+    BeforeValidator(normalize_week_of_canonical),
+]
+
+
+def _convert_yy_week_to_dates(v: str) -> str:
+    """Convert YY W## input to MM-DD-MM-DD for batch request; pass through otherwise."""
+    if not v or not isinstance(v, str):
+        return v
+    converted = extract_week_dates_from_folder_name(v.strip())
+    return converted if converted is not None else v
+
+
+WeekOfBatchInput = Annotated[
+    str,
+    BeforeValidator(_convert_yy_week_to_dates),
+    BeforeValidator(normalize_week_of_canonical),
+]
 
 
 class HealthResponse(BaseModel):
@@ -84,7 +108,7 @@ class TransformRequest(BaseModel):
     primary_content: str = Field(..., description="Primary teacher's lesson content")
     grade: str = Field(..., description="Grade level (e.g., '6', '7')")
     subject: str = Field(..., description="Subject area")
-    week_of: str = Field(..., description="Week date range (MM/DD-MM/DD)")
+    week_of: WeekOf = Field(..., description="Week date range (MM/DD-MM/DD)")
     teacher_name: Optional[str] = Field(None, description="Bilingual teacher name")
     homeroom: Optional[str] = Field(None, description="Homeroom/class identifier")
     provider: Optional[str] = Field(
@@ -234,7 +258,7 @@ class ClassSlotResponse(BaseModel):
 class WeeklyPlanCreate(BaseModel):
     """Request to create a weekly plan."""
 
-    week_of: str = Field(..., description="Week date range (MM/DD-MM/DD)")
+    week_of: WeekOf = Field(..., description="Week date range (MM/DD-MM/DD)")
 
 
 class WeeklyPlanResponse(BaseModel):
@@ -251,6 +275,13 @@ class WeeklyPlanResponse(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
+    @field_validator("week_of", mode="after")
+    @classmethod
+    def normalize_week_of(cls, v: Optional[str]) -> str:
+        if not v:
+            return v or ""
+        return normalize_week_of_for_match(v) or v
+
 
 class WeekStatusResponse(BaseModel):
     """Status of slots for a specific week."""
@@ -263,12 +294,61 @@ class WeekStatusResponse(BaseModel):
     total_slots: int = 0
     generated_at: Optional[datetime] = None
 
+    @field_validator("week_of", mode="after")
+    @classmethod
+    def normalize_week_of(cls, v: Optional[str]) -> str:
+        if not v:
+            return v or ""
+        return normalize_week_of_for_match(v) or v
+
+
+class DuplicatePlanItem(BaseModel):
+    """One plan in a duplicate-week entry."""
+
+    id: str
+    generated_at: Optional[str] = None
+    status: str = "pending"
+
+
+class DuplicateWeekResponse(BaseModel):
+    """A week that has more than one plan (oldest to newest)."""
+
+    week_of: str
+    plans: List[DuplicatePlanItem]
+
+    @field_validator("week_of", mode="after")
+    @classmethod
+    def normalize_week_of(cls, v: Optional[str]) -> str:
+        if not v:
+            return v or ""
+        return normalize_week_of_for_match(v) or v
+
+
+class ResolveDuplicatesRequest(BaseModel):
+    """Request to keep one plan for a week and remove the rest."""
+
+    week_of: WeekOf = Field(..., description="Week that has duplicates")
+    keep_plan_id: str = Field(..., description="Plan ID to keep")
+    create_backup: bool = Field(
+        True, description="Create a full DB backup before removing plans"
+    )
+
+
+class ResolveDuplicatesResponse(BaseModel):
+    """Response after resolving duplicates."""
+
+    success: bool
+    backup_path: Optional[str] = None
+    removed_count: int = 0
+
 
 class BatchProcessRequest(BaseModel):
     """Request to process all class slots for a week."""
 
     user_id: str = Field(..., description="User ID")
-    week_of: str = Field(..., description="Week date range (MM/DD-MM/DD)")
+    week_of: WeekOfBatchInput = Field(
+        ..., description="Week date range (MM/DD-MM/DD) or YY W## (e.g. 25 W36)"
+    )
     provider: Optional[str] = Field(
         "openai", description="LLM provider (openai or anthropic)"
     )
