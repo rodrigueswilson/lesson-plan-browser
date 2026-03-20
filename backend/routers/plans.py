@@ -4,17 +4,26 @@ Plans and week status API endpoints: plan detail, download, user plans, week sta
 import asyncio
 import json
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Literal, Optional
 
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from fastapi.responses import FileResponse
 
 from backend.authorization import get_current_user_id, verify_user_access
 from backend.config import settings
 from backend.database import get_db
+from backend.database.plans import parse_export_generated_at
 from backend.models import (
+    DeletePlanResponse,
+    DuplicateWeekResponse,
     LessonPlanDetailResponse,
+    ResolveDuplicatesRequest,
+    ResolveDuplicatesResponse,
+    RestorePlanResponse,
+    WeeklyPlanExportResponse,
     WeeklyPlanResponse,
+    WeeklyPlanRestoreRequest,
+    WeekPlansGroupResponse,
     WeekStatusResponse,
 )
 from backend.rate_limiter import rate_limit_auth, rate_limit_general
@@ -275,6 +284,246 @@ async def get_user_plans(
 
 
 @router.get(
+    "/users/{user_id}/plans/by-week",
+    response_model=list[WeekPlansGroupResponse],
+    tags=["Weekly Plans"],
+)
+@rate_limit_general
+async def get_plans_by_week(
+    request: Request,
+    user_id: str,
+    sort: Literal["school", "recent"] = Query(
+        "school",
+        description="school: Aug–Jun school-year order (newer years first); recent: max generated_at per week",
+    ),
+    current_user_id: Optional[str] = Depends(get_current_user_id),
+):
+    """List all weeks and their plan versions for Settings > Database (includes single-version weeks)."""
+    try:
+        verify_user_access(user_id, current_user_id, allow_if_none=True)
+        db = get_db(user_id=user_id)
+        rows = await asyncio.to_thread(
+            db.get_plans_grouped_by_week, user_id, sort
+        )
+        return [
+            WeekPlansGroupResponse(week_of=r["week_of"], plans=r["plans"]) for r in rows
+        ]
+    except Exception as e:
+        logger.error(f"Error getting plans by week: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get(
+    "/users/{user_id}/plans/duplicates",
+    response_model=list[DuplicateWeekResponse],
+    tags=["Weekly Plans"],
+)
+@rate_limit_general
+async def get_duplicate_weeks(
+    request: Request,
+    user_id: str,
+    current_user_id: Optional[str] = Depends(get_current_user_id),
+):
+    """Get weeks that have more than one plan for this user (for Settings > Database)."""
+    try:
+        verify_user_access(user_id, current_user_id, allow_if_none=True)
+        db = get_db(user_id=user_id)
+        rows = await asyncio.to_thread(db.get_duplicate_weeks, user_id)
+        return [DuplicateWeekResponse(week_of=r["week_of"], plans=r["plans"]) for r in rows]
+    except Exception as e:
+        logger.error(f"Error getting duplicate weeks: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post(
+    "/users/{user_id}/plans/resolve-duplicates",
+    response_model=ResolveDuplicatesResponse,
+    tags=["Weekly Plans"],
+)
+@rate_limit_general
+async def resolve_duplicates(
+    request: Request,
+    user_id: str,
+    body: ResolveDuplicatesRequest,
+    current_user_id: Optional[str] = Depends(get_current_user_id),
+):
+    """Keep one plan for a week and remove the others; optionally create a backup first."""
+    try:
+        verify_user_access(user_id, current_user_id, allow_if_none=True)
+        db = get_db(user_id=user_id)
+        rows = await asyncio.to_thread(db.get_duplicate_weeks, user_id)
+        week_entry = next((r for r in rows if r["week_of"] == body.week_of), None)
+        if not week_entry:
+            raise HTTPException(
+                status_code=400,
+                detail=f"No duplicate week found for week_of={body.week_of!r}",
+            )
+        plan_ids = [p["id"] for p in week_entry["plans"]]
+        if body.keep_plan_id not in plan_ids:
+            raise HTTPException(
+                status_code=400,
+                detail=f"keep_plan_id {body.keep_plan_id!r} is not in this week's plans",
+            )
+        backup_path = None
+        if body.create_backup:
+            from backend.maintenance import DatabaseMaintenance
+            maintenance = DatabaseMaintenance()
+            backup_path = await asyncio.to_thread(maintenance.create_backup)
+        to_remove = [pid for pid in plan_ids if pid != body.keep_plan_id]
+        for plan_id in to_remove:
+            await asyncio.to_thread(db.delete_plan_and_dependents, plan_id)
+        return ResolveDuplicatesResponse(
+            success=True,
+            backup_path=backup_path,
+            removed_count=len(to_remove),
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error resolving duplicates: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+def _weekly_plan_to_export_response(plan) -> WeeklyPlanExportResponse:
+    return WeeklyPlanExportResponse(
+        id=plan.id,
+        user_id=plan.user_id,
+        week_of=plan.week_of,
+        status=plan.status or "pending",
+        output_file=plan.output_file,
+        week_folder_path=plan.week_folder_path,
+        consolidated=int(plan.consolidated) if plan.consolidated is not None else 0,
+        total_slots=plan.total_slots if plan.total_slots is not None else 1,
+        generated_at=plan.generated_at.isoformat() if plan.generated_at else None,
+        processing_time_ms=plan.processing_time_ms,
+        total_tokens=plan.total_tokens,
+        total_cost_usd=plan.total_cost_usd,
+        llm_model=plan.llm_model,
+        error_message=plan.error_message,
+        lesson_json=plan.lesson_json,
+    )
+
+
+@router.get(
+    "/users/{user_id}/plans/{plan_id}/export",
+    response_model=WeeklyPlanExportResponse,
+    tags=["Weekly Plans"],
+)
+@rate_limit_general
+async def export_weekly_plan_json(
+    request: Request,
+    user_id: str,
+    plan_id: str,
+    current_user_id: Optional[str] = Depends(get_current_user_id),
+):
+    """Export one weekly plan as JSON (metadata + lesson_json) for backup."""
+    try:
+        verify_user_access(user_id, current_user_id, allow_if_none=True)
+        db = get_db(user_id=user_id)
+        plan = await asyncio.to_thread(db.get_weekly_plan, plan_id)
+        if not plan or plan.user_id != user_id:
+            raise HTTPException(status_code=404, detail="Plan not found")
+        return _weekly_plan_to_export_response(plan)
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error exporting plan {plan_id}: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.delete(
+    "/users/{user_id}/plans/{plan_id}",
+    response_model=DeletePlanResponse,
+    tags=["Weekly Plans"],
+)
+@rate_limit_general
+async def delete_user_plan(
+    request: Request,
+    user_id: str,
+    plan_id: str,
+    current_user_id: Optional[str] = Depends(get_current_user_id),
+):
+    """Delete one weekly plan and its dependents (lesson_steps, metrics, lesson_mode sessions)."""
+    try:
+        verify_user_access(user_id, current_user_id, allow_if_none=True)
+        db = get_db(user_id=user_id)
+        plan = await asyncio.to_thread(db.get_weekly_plan, plan_id)
+        if not plan or plan.user_id != user_id:
+            raise HTTPException(status_code=404, detail="Plan not found")
+        await asyncio.to_thread(db.delete_plan_and_dependents, plan_id)
+        return DeletePlanResponse(success=True)
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error deleting plan {plan_id}: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post(
+    "/users/{user_id}/plans/restore-from-export",
+    response_model=RestorePlanResponse,
+    tags=["Weekly Plans"],
+)
+@rate_limit_general
+async def restore_plan_from_export(
+    request: Request,
+    user_id: str,
+    body: WeeklyPlanRestoreRequest,
+    current_user_id: Optional[str] = Depends(get_current_user_id),
+):
+    """Restore a weekly plan from per-plan export JSON (Settings > Database)."""
+    try:
+        verify_user_access(user_id, current_user_id, allow_if_none=True)
+        if body.user_id != user_id:
+            raise HTTPException(
+                status_code=400,
+                detail="user_id in JSON must match the user_id in the URL",
+            )
+        db = get_db(user_id=user_id)
+        existing = await asyncio.to_thread(db.get_weekly_plan, body.id)
+        if existing:
+            if existing.user_id != user_id:
+                raise HTTPException(status_code=404, detail="Plan not found")
+            if not body.replace_existing:
+                raise HTTPException(
+                    status_code=409,
+                    detail=(
+                        "A plan with this id already exists. "
+                        "Check 'Replace existing plan' to overwrite it "
+                        "(this removes the current row and dependents first)."
+                    ),
+                )
+            await asyncio.to_thread(db.delete_plan_and_dependents, body.id)
+        ga = parse_export_generated_at(body.generated_at)
+        await asyncio.to_thread(
+            db.insert_weekly_plan_from_export,
+            body.id,
+            body.user_id,
+            body.week_of,
+            body.status,
+            body.output_file,
+            body.week_folder_path,
+            body.consolidated,
+            body.total_slots,
+            ga,
+            body.processing_time_ms,
+            body.total_tokens,
+            body.total_cost_usd,
+            body.llm_model,
+            body.error_message,
+            body.lesson_json,
+        )
+        return RestorePlanResponse(success=True, plan_id=body.id)
+    except HTTPException:
+        raise
+    except NotImplementedError as e:
+        raise HTTPException(status_code=501, detail=str(e))
+    except Exception as e:
+        logger.error(f"Error restoring plan from export: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get(
     "/plans/status/{user_id}/{week_of}",
     response_model=WeekStatusResponse,
     tags=["Weekly Plans"],
@@ -301,9 +550,19 @@ async def get_week_status(
         total_slots_count = len(slots_raw)
         all_slot_numbers = [s.slot_number for s in slots_raw]
 
-        # Get existing plans for this week
+        from backend.utils.date_formatter import normalize_week_of_canonical, normalize_week_of_for_match
+
+        try:
+            week_of = normalize_week_of_canonical(week_of)
+        except ValueError:
+            raise HTTPException(status_code=422, detail="Invalid week_of format; use MM/DD-MM/DD or MM-DD-MM-DD")
+
         plans = db.get_user_plans(user_id, limit=20)
-        plan = next((p for p in plans if p.week_of == week_of), None)
+        canonical = week_of
+        plan = next(
+            (p for p in plans if p.week_of == week_of or (canonical and normalize_week_of_for_match(p.week_of or "") == canonical)),
+            None,
+        )
 
         if not plan:
             return WeekStatusResponse(

@@ -247,6 +247,56 @@ class SQLiteDatabase(DatabaseInterface):
             self, user_id, week_of
         )
 
+    def get_duplicate_weeks(self, user_id: str) -> List[Dict[str, Any]]:
+        return plans_module.get_duplicate_weeks(self, user_id)
+
+    def get_plans_grouped_by_week(
+        self, user_id: str, sort_mode: str = "school"
+    ) -> List[Dict[str, Any]]:
+        return plans_module.get_plans_grouped_by_week(
+            self, user_id, sort_mode=sort_mode
+        )
+
+    def insert_weekly_plan_from_export(
+        self,
+        plan_id: str,
+        user_id: str,
+        week_of: str,
+        status: str,
+        output_file: Optional[str],
+        week_folder_path: Optional[str],
+        consolidated: int,
+        total_slots: int,
+        generated_at: Optional[Any],
+        processing_time_ms: Optional[float],
+        total_tokens: Optional[int],
+        total_cost_usd: Optional[float],
+        llm_model: Optional[str],
+        error_message: Optional[str],
+        lesson_json: Optional[Dict[str, Any]],
+    ) -> None:
+        return plans_module.insert_weekly_plan_from_export(
+            self,
+            plan_id,
+            user_id,
+            week_of,
+            status,
+            output_file,
+            week_folder_path,
+            consolidated,
+            total_slots,
+            generated_at,
+            processing_time_ms,
+            total_tokens,
+            total_cost_usd,
+            llm_model,
+            error_message,
+            lesson_json,
+        )
+
+    def delete_plan_and_dependents(self, plan_id: str) -> None:
+        return plans_module.delete_plan_and_dependents(self, plan_id)
+
     # Metrics
     def save_performance_metric(
         self,

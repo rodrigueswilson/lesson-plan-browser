@@ -3,7 +3,7 @@ API Request/Response Models for Bilingual Lesson Plan Builder.
 """
 
 from datetime import datetime
-from typing import Annotated, Any, Dict, List, Optional, Union
+from typing import Annotated, Any, Dict, List, Optional, TypeAlias, Union
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 from pydantic.functional_validators import BeforeValidator
@@ -312,7 +312,7 @@ class DuplicatePlanItem(BaseModel):
 
 
 class DuplicateWeekResponse(BaseModel):
-    """A week that has more than one plan (oldest to newest)."""
+    """A calendar week and its plan versions (oldest to newest). Used for duplicate weeks and full by-week listings."""
 
     week_of: str
     plans: List[DuplicatePlanItem]
@@ -323,6 +323,49 @@ class DuplicateWeekResponse(BaseModel):
         if not v:
             return v or ""
         return normalize_week_of_for_match(v) or v
+
+
+WeekPlansGroupResponse: TypeAlias = DuplicateWeekResponse
+
+
+class WeeklyPlanExportResponse(BaseModel):
+    """Full weekly plan row for JSON backup (Settings > Database)."""
+
+    id: str
+    user_id: str
+    week_of: str
+    status: str = "pending"
+    output_file: Optional[str] = None
+    week_folder_path: Optional[str] = None
+    consolidated: int = 0
+    total_slots: int = 1
+    generated_at: Optional[str] = None
+    processing_time_ms: Optional[float] = None
+    total_tokens: Optional[int] = None
+    total_cost_usd: Optional[float] = None
+    llm_model: Optional[str] = None
+    error_message: Optional[str] = None
+    lesson_json: Optional[Dict[str, Any]] = None
+
+
+class WeeklyPlanRestoreRequest(WeeklyPlanExportResponse):
+    """Restore body: same as export JSON plus optional replace when plan id already exists."""
+
+    replace_existing: bool = False
+
+
+class DeletePlanResponse(BaseModel):
+    success: bool
+
+
+class RestorePlanResponse(BaseModel):
+    success: bool
+    plan_id: str
+
+
+class DatabaseBackupResponse(BaseModel):
+    success: bool
+    backup_path: str
 
 
 class ResolveDuplicatesRequest(BaseModel):

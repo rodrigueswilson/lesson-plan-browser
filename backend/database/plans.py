@@ -8,8 +8,15 @@ from typing import Any, Dict, List, Optional
 
 from sqlmodel import Session, delete, desc, select
 
-from backend.schema import OriginalLessonPlan, WeeklyPlan
+from backend.schema import (
+    LessonModeSession,
+    LessonStep,
+    OriginalLessonPlan,
+    PerformanceMetric,
+    WeeklyPlan,
+)
 from backend.services.objectives_utils import normalize_objectives_in_lesson
+from backend.utils.metadata_utils import infer_school_year_from_date, parse_week_of_date
 
 logger = logging.getLogger(__name__)
 
@@ -318,3 +325,179 @@ def delete_original_lesson_plans(db, user_id: str, week_of: str) -> int:
     except Exception as e:
         logger.error(f"Error deleting original lesson plans: {e}")
         return 0
+
+
+def _school_month_rank(month: int) -> int:
+    """Order within school year: Aug=0 ... Jul=11 (later in the year = higher rank)."""
+    if month == 8:
+        return 0
+    if 9 <= month <= 12:
+        return month - 8
+    if 1 <= month <= 6:
+        return month + 4
+    if month == 7:
+        return 11
+    return -1
+
+
+def _max_year_from_plan_summaries(plans: List[Dict[str, Any]]) -> Optional[int]:
+    best: Optional[int] = None
+    for p in plans:
+        ga = p.get("generated_at")
+        if not ga or not isinstance(ga, str):
+            continue
+        try:
+            dt = datetime.fromisoformat(ga.replace("Z", "+00:00"))
+            y = dt.year
+            best = y if best is None else max(best, y)
+        except ValueError:
+            continue
+    return best
+
+
+def _school_week_group_sort_key(week_of: str, plans: List[Dict[str, Any]]) -> tuple:
+    """Higher tuple sorts first when reverse=True (newer school year, later in academic year)."""
+    parsed = parse_week_of_date(week_of)
+    if parsed is None:
+        return (-9999, -9999, -9999)
+    m, d, y = parsed[0], parsed[1], parsed[2]
+    if y is None:
+        y = _max_year_from_plan_summaries(plans) or datetime.utcnow().year
+    sy_start, _sy_end = infer_school_year_from_date(m, d, y)
+    rank = _school_month_rank(m)
+    return (sy_start, rank, m * 100 + d)
+
+
+def _recent_week_group_sort_key(plans: List[Dict[str, Any]]) -> tuple:
+    max_dt: Optional[datetime] = None
+    for p in plans:
+        ga = p.get("generated_at")
+        if not ga or not isinstance(ga, str):
+            continue
+        try:
+            dt = datetime.fromisoformat(ga.replace("Z", "+00:00"))
+            if max_dt is None or dt > max_dt:
+                max_dt = dt
+        except ValueError:
+            continue
+    if max_dt is None:
+        return (datetime.min,)
+    return (max_dt,)
+
+
+def _group_plans_by_week(
+    db, user_id: str, sort_mode: str = "school"
+) -> List[Dict[str, Any]]:
+    """All weeks for user with plan summaries; sort weeks per sort_mode; newest plan first per week."""
+    with Session(db.engine) as session:
+        all_plans = list(
+            session.exec(
+                select(WeeklyPlan)
+                .where(WeeklyPlan.user_id == user_id)
+                .order_by(WeeklyPlan.generated_at)
+            ).all()
+        )
+    by_week: Dict[str, List[Dict[str, Any]]] = {}
+    for p in all_plans:
+        w = p.week_of or ""
+        if w not in by_week:
+            by_week[w] = []
+        by_week[w].append(
+            {
+                "id": p.id,
+                "generated_at": p.generated_at.isoformat() if p.generated_at else None,
+                "status": p.status or "pending",
+            }
+        )
+    groups = [{"week_of": week_of, "plans": plans} for week_of, plans in by_week.items()]
+    mode = (sort_mode or "school").strip().lower()
+    if mode == "recent":
+        groups.sort(key=lambda g: _recent_week_group_sort_key(g["plans"]), reverse=True)
+    else:
+        groups.sort(
+            key=lambda g: _school_week_group_sort_key(g["week_of"], g["plans"]),
+            reverse=True,
+        )
+    for g in groups:
+        g["plans"] = list(reversed(g["plans"]))
+    return groups
+
+
+def get_plans_grouped_by_week(
+    db, user_id: str, sort_mode: str = "school"
+) -> List[Dict[str, Any]]:
+    """Return every week that has at least one plan for this user."""
+    return _group_plans_by_week(db, user_id, sort_mode=sort_mode)
+
+
+def get_duplicate_weeks(db, user_id: str) -> List[Dict[str, Any]]:
+    """Return weeks that have more than one plan for this user (subset of grouped-by-week)."""
+    return [w for w in _group_plans_by_week(db, user_id, sort_mode="school") if len(w["plans"]) > 1]
+
+
+def parse_export_generated_at(value: Optional[str]) -> Optional[datetime]:
+    """Parse ISO datetime from export JSON; returns naive UTC-ish datetime."""
+    if not value or not isinstance(value, str):
+        return None
+    try:
+        dt = datetime.fromisoformat(value.replace("Z", "+00:00"))
+        if dt.tzinfo is not None:
+            return dt.replace(tzinfo=None)
+        return dt
+    except ValueError:
+        return None
+
+
+def insert_weekly_plan_from_export(
+    db,
+    plan_id: str,
+    user_id: str,
+    week_of: str,
+    status: str,
+    output_file: Optional[str],
+    week_folder_path: Optional[str],
+    consolidated: int,
+    total_slots: int,
+    generated_at: Optional[datetime],
+    processing_time_ms: Optional[float],
+    total_tokens: Optional[int],
+    total_cost_usd: Optional[float],
+    llm_model: Optional[str],
+    error_message: Optional[str],
+    lesson_json: Optional[Dict[str, Any]],
+) -> None:
+    """Insert a weekly_plans row from export JSON (Settings > Database restore). Non-IPC only."""
+    if db.use_ipc:
+        raise NotImplementedError("insert_weekly_plan_from_export requires SQLModel engine")
+    plan = WeeklyPlan(
+        id=plan_id,
+        user_id=user_id,
+        week_of=week_of,
+        status=status or "pending",
+        output_file=output_file,
+        week_folder_path=week_folder_path,
+        consolidated=consolidated,
+        total_slots=total_slots or 1,
+        generated_at=generated_at or datetime.utcnow(),
+        processing_time_ms=processing_time_ms,
+        total_tokens=total_tokens,
+        total_cost_usd=total_cost_usd,
+        llm_model=llm_model,
+        error_message=error_message,
+        lesson_json=lesson_json,
+    )
+    with Session(db.engine) as session:
+        session.add(plan)
+        session.commit()
+
+
+def delete_plan_and_dependents(db, plan_id: str) -> None:
+    """Delete a weekly plan and its lesson_steps, performance_metrics, lesson_mode_sessions."""
+    with Session(db.engine) as session:
+        session.exec(delete(LessonStep).where(LessonStep.lesson_plan_id == plan_id))
+        session.exec(delete(PerformanceMetric).where(PerformanceMetric.plan_id == plan_id))
+        session.exec(
+            delete(LessonModeSession).where(LessonModeSession.lesson_plan_id == plan_id)
+        )
+        session.exec(delete(WeeklyPlan).where(WeeklyPlan.id == plan_id))
+        session.commit()
