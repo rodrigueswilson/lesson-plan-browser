@@ -34,7 +34,9 @@ This folder contains the planning and architecture documents for the November ex
 | Containerization | `CONTAINERIZATION_STRATEGY.md` | Monitoring compose only; no worker containers or Redis/Celery stack. |
 | Agent Skills / MCP | `AGENT_SKILLS_AND_CODE_EXECUTION.md` | No skill folders, sandbox, or MCP integration in backend. |
 | Lesson Plan Browser | `LESSON_PLAN_BROWSER_MODULE.md`, `UI_PLANNING_*` | Partial (week/day/lesson views). Missing filtering, time-aware defaults, advanced lesson mode, mobile parity. |
+| Lesson Plan Editor | `lesson_plan_editor/README.md` | Planning only; dual-mode edit (manual + assistant), MCP integration, export/sync documented as research-first bundle. |
 | Cross-Platform | `CROSS_PLATFORM_TECHNOLOGY_ANALYSIS.md` | Only Windows Tauri client exists; no RN/Capacitor projects. |
+| Assessment Module | `ASSESSMENT_MODULE.md` | Not implemented; planning only. LLM-designed assessment per lesson, tool set, tablet collection; WIDA Can Do Descriptors; ODPAR. |
 
 ### Core Documents
 
@@ -96,6 +98,15 @@ This folder contains the planning and architecture documents for the November ex
    - **Status**: ✅ Complete
    - **Dependencies**: References DATABASE_ARCHITECTURE_AND_SYNC.md
 
+6b. **[lesson_plan_editor/README.md](./lesson_plan_editor/README.md)**
+   - **Purpose**: Planned dual-mode lesson plan editing (manual rich-text + LLM assistant), SSOT `lesson_json`, export/sync, MCP/agent boundary
+   - **Key Features**:
+     - Research-first methodology (memo, spikes, decision log)
+     - Shared save pipeline for manual and assistant paths
+     - Integration with planned Agent Skills / MCP via backend gateway
+   - **Status**: Planning (draft bundle)
+   - **Dependencies**: References LESSON_PLAN_BROWSER_MODULE.md, AGENT_SKILLS_AND_CODE_EXECUTION.md, DATABASE_ARCHITECTURE_AND_SYNC.md, ENHANCED_GENERATION_AND_VOCABULARY_MODULES.md
+
 7. **[CROSS_PLATFORM_TECHNOLOGY_ANALYSIS.md](./CROSS_PLATFORM_TECHNOLOGY_ANALYSIS.md)**
    - **Purpose**: Technology stack analysis for Windows 11 and Android 16 implementations
    - **Key Features**:
@@ -106,6 +117,16 @@ This folder contains the planning and architecture documents for the November ex
      - Implementation timeline and migration path
    - **Status**: ✅ Complete
    - **Dependencies**: References LESSON_PLAN_BROWSER_MODULE.md
+
+8. **[ASSESSMENT_MODULE.md](./ASSESSMENT_MODULE.md)**
+   - **Purpose**: Plan for the Assessment module – LLM-designed assessment per lesson, tools for in-class data collection, alignment with WIDA Can Do and ODPAR
+   - **Key Features**:
+     - When LLM creates a lesson plan, it decides how the lesson will be assessed and how the student will be assessed during delivery
+     - Tool set (checklist, tally record, future tools); LLM selects 1–3 tools per lesson, aligned with objectives (e.g. Writing objective → writing assessment)
+     - Tools available on tablet for teacher to collect assessment data (Observe, Document)
+     - WIDA Can Do Descriptors as reference for student goals, ELD objectives, assessment section; ODPAR cycle (Observe, Document, Plan, Act, Reflect)
+   - **Status**: Planning
+   - **Dependencies**: References REFERENCE_DOCS_AND_LESSON_PLAN_ACCESS.md, PHASE1_CURRICULUM_DOCUMENT_INVENTORY.md; document context (Phase 1–2) for Can Do registration
 
 ---
 
