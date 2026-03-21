@@ -8,6 +8,7 @@ from typing import Any, List
 
 from backend.config import settings
 from backend.schema import LessonStep
+from backend.utils.vocabulary_display_format import format_vocab_plain_bullet
 from backend.services.lesson_steps import phase_steps
 from backend.telemetry import logger
 
@@ -66,7 +67,7 @@ def add_vocab_and_frames_steps(
             portuguese = str(pair.get("portuguese", "")).strip()
             if not english or not portuguese:
                 continue
-            lines.append(f"- {english} -> {portuguese}")
+            lines.append(format_vocab_plain_bullet(english, portuguese))
 
         if lines:
             vocab_step_id = str(uuid.uuid4())

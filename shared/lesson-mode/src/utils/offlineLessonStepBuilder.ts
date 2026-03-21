@@ -1,5 +1,6 @@
 import type { LessonStep } from '@lesson-api';
 import { extractLessonPlanContext, LessonPlanContext } from './lessonPlanContext';
+import { formatVocabPlainBullet } from './vocabularyPairFormat';
 
 const CONTENT_TYPES: LessonStep['content_type'][] = [
   'objective',
@@ -95,7 +96,7 @@ const buildVocabularyDisplay = (
       if (!english || !portuguese) {
         return null;
       }
-      return `- ${english} -> ${portuguese}`;
+      return formatVocabPlainBullet(english, portuguese);
     })
     .filter((line): line is string => Boolean(line));
 

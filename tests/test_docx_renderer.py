@@ -16,12 +16,16 @@ from pathlib import Path
 import json
 import tempfile
 
+import pytest
+
 # Add parent directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from tools.docx_renderer import DOCXRenderer
 from tools.markdown_to_docx import MarkdownToDocx
 from docx import Document
+
+pytestmark = pytest.mark.unit
 
 
 def test_basic_rendering():
@@ -48,7 +52,6 @@ def test_basic_rendering():
     assert len(doc.tables) == 3, "Should have 3 tables"
     
     print("  PASS: Basic rendering works")
-    return True
 
 
 def test_metadata_population():
@@ -138,7 +141,6 @@ def test_metadata_population():
     assert "10/6-10/10" in row.cells[4].text, "Should contain week"
     
     print("  PASS: Metadata population works")
-    return True
 
 
 def test_daily_plan_population():
@@ -173,7 +175,6 @@ def test_daily_plan_population():
     assert "WIDA/Bilingual:" in monday_objective, "Should contain WIDA objective"
     
     print("  PASS: Daily plan population works")
-    return True
 
 
 def test_markdown_formatting():
@@ -235,7 +236,6 @@ def test_markdown_formatting():
     assert "italic" in monday_objective, "Should contain italic text"
     
     print("  PASS: Markdown formatting works")
-    return True
 
 
 def test_missing_optional_fields():
@@ -277,7 +277,6 @@ def test_missing_optional_fields():
     assert success, "Rendering should succeed even with missing optional fields"
     
     print("  PASS: Missing optional fields handled correctly")
-    return True
 
 
 def test_template_preservation():
@@ -312,7 +311,6 @@ def test_template_preservation():
     assert len(daily_table.columns) == 6, "Should have 6 columns in daily plans table"
     
     print("  PASS: Template structure preserved")
-    return True
 
 
 def test_markdown_to_docx_utilities():
@@ -333,7 +331,6 @@ def test_markdown_to_docx_utilities():
     assert match.group(1) == "This is a bullet", "Should extract bullet text"
     
     print("  PASS: Markdown utilities work correctly")
-    return True
 
 
 def test_vocabulary_cognate_awareness_block():
@@ -458,6 +455,7 @@ def test_vocabulary_cognate_awareness_block():
     # Monday column (col 1) Tailored Instruction row (index 4 per renderer.INSTRUCTION_ROW)
     instruction_cell_text = daily_table.rows[4].cells[1].text
     assert "Vocabulary / Cognate Awareness:" in instruction_cell_text
+    assert "\u2192" in instruction_cell_text
     # Check a couple of representative pairs for correct formatting
     assert "**map**" in instruction_cell_text or "map" in instruction_cell_text
     assert "mapa" in instruction_cell_text
@@ -465,7 +463,6 @@ def test_vocabulary_cognate_awareness_block():
     assert "escala" in instruction_cell_text
 
     print("  PASS: Vocabulary / Cognate Awareness block rendered from structured data")
-    return True
 
 
 def test_sentence_frames_grouped_by_level_block():
@@ -639,7 +636,6 @@ def test_sentence_frames_grouped_by_level_block():
     assert "Isto" in instruction_cell_text or "Isto".lower() in instruction_cell_text.lower()
 
     print("  PASS: Sentence frames block rendered and grouped by level from structured data")
-    return True
 
 
 def run_all_tests():
@@ -665,8 +661,8 @@ def run_all_tests():
     
     for test in tests:
         try:
-            if test():
-                passed += 1
+            test()
+            passed += 1
         except AssertionError as e:
             print(f"  FAIL: {e}")
             failed += 1

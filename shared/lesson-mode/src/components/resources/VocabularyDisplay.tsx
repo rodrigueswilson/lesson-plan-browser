@@ -3,6 +3,7 @@ import type React from 'react';
 import type { LessonStep } from '@lesson-api';
 import { ExpandableItemView, ExpandableItem } from './ExpandableItemView';
 import { getCognateBadgeClasses } from '../../utils/vocabularyHighlight';
+import { splitVocabularyPairContent } from '../../utils/vocabularyPairFormat';
 import type { LessonPlanContext } from '../../utils/lessonPlanContext';
 
 interface VocabularyDisplayProps {
@@ -94,8 +95,7 @@ export function VocabularyDisplay({ steps, planContext }: VocabularyDisplayProps
       return mapVocabArray(fallbackVocabulary);
     }
 
-    // Fallback: Parse from display_content
-    // Format: "- english -> portuguese"
+    // Fallback: Parse from display_content (Unicode arrow or legacy "->")
     console.log('[VocabularyDisplay] Parsing from display_content');
     const lines = (vocabStep.display_content || '')
       .split('\n')
@@ -106,14 +106,18 @@ export function VocabularyDisplay({ steps, planContext }: VocabularyDisplayProps
 
     return lines.map((line, idx) => {
       const content = line.replace(/^[-•]\s*/, '');
-      const parts = content.split('->').map((part) => part.trim());
-      const english = parts[0] || '';
-      const portuguese = parts[1] || '';
-
+      const pair = splitVocabularyPairContent(content);
+      if (pair) {
+        return {
+          id: idx,
+          primaryText: pair.english,
+          secondaryText: pair.portuguese,
+        };
+      }
       return {
         id: idx,
-        primaryText: english || content,
-        secondaryText: portuguese || undefined,
+        primaryText: content,
+        secondaryText: undefined,
       };
     });
   }, [vocabStep]);

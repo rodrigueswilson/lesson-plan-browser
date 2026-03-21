@@ -2,9 +2,10 @@ import { useState, useEffect, useMemo } from 'react';
 import { ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@lesson-ui/Button';
 import { Card } from '@lesson-ui/Card';
-import { lessonApi, LessonPlanDetail, ScheduleEntry } from '@lesson-api';
+import { lessonApi, LessonPlanDetail, ScheduleEntry, normalizeWeekOfForMatch } from '@lesson-api';
 import { useStore } from '../store/useStore';
 import { highlightVocabularyWords, extractVocabularyWords, getCognateBadgeClasses, getCognateBadgeLabel } from '@lesson-mode/utils/vocabularyHighlight';
+import { splitVocabularyPairContent } from '@lesson-mode/utils/vocabularyPairFormat';
 import { parseMarkdown } from '@lesson-mode/utils/markdownUtils';
 import { LessonMetadataDisplay } from './LessonMetadataDisplay';
 
@@ -69,50 +70,25 @@ export function LessonDetailView({
         const plansResponse = await planApi.list(currentUser.id, 100, currentUser.id); // Increased limit
         const plans = plansResponse.data || [];
 
-        // Normalize weekOf for comparison (handle both dash and slash formats)
-        const normalizeWeek = (week: string) => {
-          if (!week) return '';
-          // Replace slashes with dashes for consistent comparison
-          return week.replace(/\//g, '-');
-        };
+        // Canonical week normalization so "3/2-03/06" and "03/02-03/06" match
+        const canonicalWeekOf = normalizeWeekOfForMatch(weekOf);
+        console.log('[LessonDetailView] Canonical weekOf:', canonicalWeekOf, 'Available plans:', plans.map(p => p.week_of));
 
-        const normalizedWeekOf = normalizeWeek(weekOf);
-        console.log('[LessonDetailView] Normalized weekOf:', normalizedWeekOf, 'Available plans:', plans.map(p => p.week_of));
-
-        // Try exact match first
         let plan = plans.find(p => p.week_of === weekOf);
         let matchMethod = plan ? 'exact' : null;
-
-        // If not found, try normalized comparison (handles slash vs dash)
-        if (!plan) {
-          plan = plans.find(p => normalizeWeek(p.week_of) === normalizedWeekOf);
-          matchMethod = plan ? 'normalized' : null;
+        if (!plan && canonicalWeekOf) {
+          plan = plans.find(p => normalizeWeekOfForMatch(p.week_of) === canonicalWeekOf);
+          matchMethod = plan ? 'canonical' : null;
         }
 
-        // If still not found, try reverse normalization (handle both formats)
-        if (!plan) {
-          const reverseNormalize = (week: string) => week.replace(/-/g, '/');
-          const reverseNormalized = reverseNormalize(weekOf);
-          plan = plans.find(p => {
-            const pNormalized = reverseNormalize(p.week_of);
-            return normalizeWeek(pNormalized) === normalizedWeekOf || pNormalized === reverseNormalized;
-          });
-          matchMethod = plan ? 'reverse_normalized' : null;
-        }
-
-        // Detailed logging for debugging
         console.log('[LessonDetailView] Plan matching result:', {
           requestedWeekOf: weekOf,
-          normalizedWeekOf: normalizedWeekOf,
+          canonicalWeekOf,
           matchMethod: matchMethod,
           found: plan ? 'YES' : 'NO',
           matchedPlanId: plan?.id,
           matchedPlanWeekOf: plan?.week_of,
-          allAvailableWeeks: plans.map(p => ({
-            id: p.id,
-            week_of: p.week_of,
-            normalized: normalizeWeek(p.week_of)
-          }))
+          allAvailableWeeks: plans.map(p => ({ id: p.id, week_of: p.week_of }))
         });
 
         if (!plan) {
@@ -132,21 +108,19 @@ export function LessonDetailView({
         const loadedPlan = planDetailResponse.data;
 
         // CRITICAL VALIDATION: Verify the loaded plan's week_of matches what we requested
-        if (loadedPlan.week_of !== weekOf && normalizeWeek(loadedPlan.week_of) !== normalizedWeekOf) {
+        const loadedCanonical = normalizeWeekOfForMatch(loadedPlan.week_of);
+        if (loadedPlan.week_of !== weekOf && loadedCanonical !== canonicalWeekOf) {
           console.error('[LessonDetailView] WEEK MISMATCH DETECTED!', {
             requestedWeekOf: weekOf,
             loadedPlanWeekOf: loadedPlan.week_of,
-            normalizedRequested: normalizedWeekOf,
-            normalizedLoaded: normalizeWeek(loadedPlan.week_of),
+            canonicalRequested: canonicalWeekOf,
+            canonicalLoaded: loadedCanonical,
             planId: plan.id,
             error: 'Loaded plan is for a different week than requested!'
           });
 
-          // Try to find the correct plan
-          const correctPlan = plans.find(p => {
-            const pNormalized = normalizeWeek(p.week_of);
-            return p.week_of === weekOf || pNormalized === normalizedWeekOf;
-          });
+          // Try to find the correct plan using canonical match
+          const correctPlan = plans.find(p => p.week_of === weekOf || normalizeWeekOfForMatch(p.week_of) === canonicalWeekOf);
 
           if (correctPlan && correctPlan.id !== plan.id) {
             console.warn('[LessonDetailView] Found correct plan, reloading:', {
@@ -586,13 +560,21 @@ export function LessonDetailView({
             .filter((line: string) => line.startsWith('-') || line.startsWith('•'));
 
           if (lines.length > 0) {
-            const parsedVocab = lines.map((line: string) => {
-              const content = line.replace(/^[-•]\s*/, '');
-              const parts = content.split('->').map((part: string) => part.trim());
-              const english = parts[0] || '';
-              const portuguese = parts[1] || '';
-              return { english, portuguese, is_cognate: false };
-            });
+            const parsedVocab = lines
+              .map((line: string) => {
+                const content = line.replace(/^[-•]\s*/, '');
+                const pair = splitVocabularyPairContent(content);
+                if (!pair) {
+                  return null;
+                }
+                return { english: pair.english, portuguese: pair.portuguese, is_cognate: false };
+              })
+              .filter(
+                (
+                  item: { english: string; portuguese: string; is_cognate: boolean } | null
+                ): item is { english: string; portuguese: string; is_cognate: boolean } =>
+                  item !== null
+              );
             console.log('[LessonDetailView] Parsed', parsedVocab.length, 'vocabulary items from display_content');
             computedSlotData = { ...computedSlotData, vocabulary_cognates: parsedVocab };
           }

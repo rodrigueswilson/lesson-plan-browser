@@ -1,6 +1,7 @@
 import { Card } from '@lesson-ui/Card';
 import type { LessonStep } from '@lesson-api';
 import { getCognateBadgeClasses, getCognateBadgeLabel } from '../utils/vocabularyHighlight';
+import { VOCAB_PAIR_SEP, splitVocabularyPairContent } from '../utils/vocabularyPairFormat';
 import { parseMarkdown } from '../utils/markdownUtils';
 
 interface StepContentDisplayProps {
@@ -110,7 +111,7 @@ export function StepContentDisplay({ step, vocabularyWords = [] }: StepContentDi
                   {step.vocabulary_cognates.map((vocab: any, idx: number) => (
                     <li key={idx}>
                       <strong>{vocab.english || ''}</strong>
-                      {' -> '}
+                      {VOCAB_PAIR_SEP}
                       <em>{vocab.portuguese || ''}</em>
                       <span
                         className={`ml-2 ${getCognateBadgeClasses(vocab.is_cognate, 'sm')}`}
@@ -145,14 +146,14 @@ export function StepContentDisplay({ step, vocabularyWords = [] }: StepContentDi
                 <ul className="list-disc list-inside space-y-2 text-lg">
                   {lines.map((line, idx) => {
                     const content = line.replace(/^[-•]\s*/, '');
-                    const parts = content.split('->').map((part) => part.trim());
-                    const english = parts[0] || '';
-                    const portuguese = parts[1] || '';
+                    const pair = splitVocabularyPairContent(content);
 
-                    if (english && portuguese) {
+                    if (pair) {
                       return (
                         <li key={idx}>
-                          <strong>{english}</strong>{' -> '}<em>{portuguese}</em>
+                          <strong>{pair.english}</strong>
+                          {VOCAB_PAIR_SEP}
+                          <em>{pair.portuguese}</em>
                         </li>
                       );
                     }

@@ -8,6 +8,8 @@ filter_valid_vocabulary_pairs, filter_valid_sentence_frames.
 
 from typing import Dict, List, Optional
 
+from backend.utils.vocabulary_display_format import format_vocab_markdown_bullet
+
 
 def format_objective(renderer, objective: Dict) -> str:
     """Format objective section."""
@@ -120,7 +122,7 @@ def format_tailored_instruction(
             for pair in valid_pairs:
                 english = str(pair.get("english", "")).strip()
                 portuguese = str(pair.get("portuguese", "")).strip()
-                parts.append(f"- **{english}** -> *{portuguese}*")
+                parts.append(format_vocab_markdown_bullet(english, portuguese))
 
     if sentence_frames:
         valid_frames = filter_valid_sentence_frames(renderer, sentence_frames)

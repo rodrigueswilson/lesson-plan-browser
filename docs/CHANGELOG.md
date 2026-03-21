@@ -8,6 +8,7 @@ All notable changes to the Bilingual Weekly Plan Builder.
 - `tests/test_lesson_steps_api.py` integration coverage to verify `/api/lesson-steps/generate` plus retrieval returns structured JSON data.
 
 ### Changed
+- **Vocabulary / cognate pairs:** Standardized the English–Portuguese separator to the Unicode arrow (U+2192) in DOCX tailored instruction, lesson-step display lines, and Lesson Mode / lesson-browser UI; legacy ASCII `->` in stored text still parses (`backend/utils/vocabulary_display_format.py`, `shared/lesson-mode/src/utils/vocabularyPairFormat.ts`).
 - `sql/create_lesson_steps_table_supabase.sql` now mirrors the upgraded schema (JSONB columns + timestamp defaults); run manually inside Supabase after deployment.
 - `/api/lesson-steps/generate` returns persisted rows so `LessonStepResponse` validation succeeds and clients see accurate timestamps.
 - `backend/models_slot.py` now re-exports the canonical `BatchProcessRequest` definition from `backend/models.py` to maintain a single source of truth.
