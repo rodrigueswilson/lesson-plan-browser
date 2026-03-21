@@ -66,7 +66,13 @@ function App() {
   // PC state (full navigation)
   const [activeNavItem, setActiveNavItem] = useState<NavItem>('home');
   const [settingsTab, setSettingsTab] = useState<'user-sync' | 'database' | 'analytics'>('user-sync');
-  const [lessonModeEntry, setLessonModeEntry] = useState<{ scheduleEntry?: any; planId?: string; day?: string; slot?: number } | null>(null);
+  const [lessonModeEntry, setLessonModeEntry] = useState<{
+    scheduleEntry?: any;
+    planId?: string;
+    day?: string;
+    slot?: number;
+    weekOf?: string;
+  } | null>(null);
   const [shouldOpenLesson, setShouldOpenLesson] = useState(false);
 
   // Setup Android back button handler (tablet only)
@@ -311,12 +317,20 @@ function App() {
         case 'browser':
           return (
             <LessonPlanBrowser
-              onEnterLessonMode={(scheduleEntry, day?: string, slot?: number, planId?: string) => {
+              onEnterLessonMode={(
+                scheduleEntry,
+                day?: string,
+                slot?: number,
+                planId?: string,
+                _previousViewMode?: 'week' | 'day' | 'lesson',
+                weekOf?: string
+              ) => {
                 setLessonModeEntry({
                   scheduleEntry,
                   day,
                   slot,
                   planId,
+                  weekOf,
                 });
                 setActiveNavItem('lesson-mode');
               }}
@@ -362,6 +376,7 @@ function App() {
                   planId={lessonModeEntry?.planId}
                   day={lessonModeEntry?.day}
                   slot={lessonModeEntry?.slot}
+                  weekOf={lessonModeEntry?.weekOf}
                   onExit={(exitDay?: string, exitSlot?: number) => {
                     // Preserve the lesson mode entry data when exiting
                     setLessonModeEntry({
@@ -369,6 +384,7 @@ function App() {
                       planId: lessonModeEntry?.planId,
                       day: exitDay || lessonModeEntry?.day,
                       slot: exitSlot !== undefined ? exitSlot : lessonModeEntry?.slot,
+                      weekOf: lessonModeEntry?.weekOf,
                     });
                     setShouldOpenLesson(true);
                     setActiveNavItem('browser');

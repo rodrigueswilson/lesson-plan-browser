@@ -6,6 +6,11 @@ import { LessonDetailView } from './LessonDetailView';
 import { TopNavigationBar } from './TopNavigationBar';
 import { planApi, WeeklyPlan, ScheduleEntry, scheduleApi, lessonApi, userApi, ClassSlot, normalizeWeekOfForMatch } from '@lesson-api';
 import { useStore } from '../store/useStore';
+
+function logToNative(msg: string): void {
+  if (typeof window === 'undefined') return;
+  import('@tauri-apps/api/core').then((api) => api.invoke('log_to_native', { message: msg })).catch(() => {});
+}
 import { Button } from '@lesson-ui/Button';
 import { Select } from '@lesson-ui/Select';
 import { Label } from '@lesson-ui/Label';
@@ -117,10 +122,11 @@ function buildAvailableWeeksInApiOrder(
   const result: WeekOption[] = [];
 
   for (const w of weeks) {
-    if (w.week_of && !seen.has(w.week_of)) {
-      seen.add(w.week_of);
-      result.push({ week_of: w.week_of, display: w.display, folder_name: w.folder_name });
-    }
+    if (!w.week_of) continue;
+    const canonical = normalizeWeekOfForMatch(w.week_of);
+    if (canonical && seen.has(canonical)) continue;
+    if (canonical) seen.add(canonical);
+    result.push({ week_of: w.week_of, display: w.display, folder_name: w.folder_name });
   }
 
   const planOnlyLatest = new Map<string, number>();
@@ -396,11 +402,13 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
 
   const fetchPlans = async (isRefresh = false) => {
     if (!currentUser) {
+      logToNative('[LessonPlanBrowser] fetchPlans skipped: no currentUser');
       setPlans([]);
       setAvailableWeeks([]);
       setLoading(false);
       return;
     }
+    logToNative(`[LessonPlanBrowser] fetchPlans start user=${currentUser.id}`);
 
     // Check cache first (unless it's a refresh)
     const now = Date.now();
@@ -515,6 +523,7 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
 
       const availableWeeksList = buildAvailableWeeksInApiOrder(weeks, plans);
       setAvailableWeeks(availableWeeksList);
+      logToNative(`[LessonPlanBrowser] fetchPlans done weeks=${weeks.length} plans=${plans.length} availableWeeksList=${availableWeeksList.length}`);
 
       const weekValues = availableWeeksList.map((w) => w.week_of);
       if (!selectedWeek && weekValues.length > 0) {
@@ -531,6 +540,8 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
         console.log('[LessonPlanBrowser] Keeping existing selectedWeek:', selectedWeek);
       }
     } catch (error) {
+      const errMsg = error instanceof Error ? error.message : String(error);
+      logToNative(`[LessonPlanBrowser] fetchPlans ERROR: ${errMsg}`);
       console.error('Failed to fetch plans:', error);
       // If error is rate limit, use cached data if available
       if (error instanceof Error && error.message.includes('429')) {
@@ -553,6 +564,13 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
     }
     fetchPlans();
   }, [currentUser]);
+
+  // If we have available weeks but no selected week (e.g. race or state order on tablet), pick the first
+  useEffect(() => {
+    if (availableWeeks.length > 0 && !selectedWeek && !loading) {
+      setSelectedWeek(availableWeeks[0].week_of);
+    }
+  }, [availableWeeks, selectedWeek, loading]);
 
   // Update clock every second
   useEffect(() => {
@@ -1153,7 +1171,20 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
     // Stay in day view
   };
 
-  // Helper function to find a lesson for Lesson Mode
+  /** Match plan list to schedule week_of (handles 3/2 vs 03/02 style differences). */
+  const resolvePlanIdForWeek = (weekOf: string | undefined | null): string | undefined => {
+    if (!weekOf) return undefined;
+    let matchingPlan = plans.find((p) => p.week_of === weekOf);
+    if (!matchingPlan) {
+      const canonical = normalizeWeekOfForMatch(weekOf);
+      if (canonical) {
+        matchingPlan = plans.find((p) => normalizeWeekOfForMatch(p.week_of) === canonical);
+      }
+    }
+    return matchingPlan?.id;
+  };
+
+  // Helper function to find a lesson for Lesson Mode (top bar)
   const findLessonForLessonMode = async (): Promise<{
     scheduleEntry: ScheduleEntry;
     day: string;
@@ -1162,29 +1193,37 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
   } | null> => {
     if (!currentUser) return null;
 
-    // Priority 1: Use selectedLesson if available
-    if (selectedLesson) {
-      const matchingPlan = plans.find(p => p.week_of === selectedLesson!.scheduleEntry.week_of);
+    // Lesson detail view: must match "Enter Lesson Mode" for the lesson on screen
+    if (viewMode === 'lesson' && selectedLesson) {
       return {
         scheduleEntry: selectedLesson.scheduleEntry,
         day: selectedLesson.day,
         slot: selectedLesson.slot,
-        planId: matchingPlan?.id,
+        planId: resolvePlanIdForWeek(selectedLesson.scheduleEntry.week_of),
       };
     }
 
-    // Priority 2: Use currentLesson
+    // Week/Day: prefer the lesson happening *now* (Live) over selectedLesson.
+    // selectedLesson is kept after Back from lesson detail for nav, so it is often stale.
     if (currentLesson) {
-      const matchingPlan = plans.find(p => p.week_of === currentLesson!.week_of);
       return {
         scheduleEntry: currentLesson,
         day: currentLesson.day_of_week || 'monday',
         slot: currentLesson.slot_number || 1,
-        planId: matchingPlan?.id,
+        planId: resolvePlanIdForWeek(currentLesson.week_of),
       };
     }
 
-    // Priority 3: Find next lesson from schedule
+    if (selectedLesson) {
+      return {
+        scheduleEntry: selectedLesson.scheduleEntry,
+        day: selectedLesson.day,
+        slot: selectedLesson.slot,
+        planId: resolvePlanIdForWeek(selectedLesson.scheduleEntry.week_of),
+      };
+    }
+
+    // Fallback: find next lesson from schedule
     try {
       const allScheduleEntries = await scheduleApi.getSchedule(currentUser.id);
       if (!allScheduleEntries || allScheduleEntries.length === 0) {
@@ -1257,12 +1296,11 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
         return null;
       }
 
-      const matchingPlan = plans.find(p => p.week_of === nextLesson!.week_of);
       return {
         scheduleEntry: nextLesson,
         day: nextLesson.day_of_week || 'monday',
         slot: nextLesson.slot_number || 1,
-        planId: matchingPlan?.id,
+        planId: resolvePlanIdForWeek(nextLesson.week_of),
       };
     } catch (error) {
       console.error('[LessonPlanBrowser] Failed to find lesson for Lesson Mode:', error);
@@ -1757,7 +1795,12 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
     );
   }
 
-  if (!selectedWeek) {
+  // Use first available week when API returned weeks but selectedWeek state is not set yet (e.g. Android WebView).
+  // Fall back to first plan's week_of if availableWeeks is empty but we have plans (defensive).
+  const effectiveSelectedWeek =
+    selectedWeek || availableWeeks[0]?.week_of || plans[0]?.week_of || null;
+  if (!effectiveSelectedWeek) {
+    logToNative(`[LessonPlanBrowser] render no week availableWeeks=${availableWeeks.length} plans=${plans.length} loading=${loading}`);
     return (
       <div className="h-full flex items-center justify-center">
         <div className="text-center">
@@ -1795,16 +1838,16 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
         }}
         onEnterLessonMode={onEnterLessonMode ? (scheduleEntry, day, slot, planId, previousViewMode, weekOf) => {
           // Pass current view mode and weekOf when entering from TopNavigationBar
-          onEnterLessonMode(scheduleEntry, day, slot, planId, viewMode, weekOf || selectedWeek || undefined);
+          onEnterLessonMode(scheduleEntry, day, slot, planId, viewMode, weekOf || effectiveSelectedWeek || undefined);
         } : undefined}
         onExitLessonMode={onExitLessonMode}
         showLessonModeButton={showLessonModeButton}
-        selectedWeek={selectedWeek}
+        selectedWeek={effectiveSelectedWeek}
         availableWeeks={availableWeeks}
         onWeekChange={(week) => {
           setSelectedWeek(week);
           // Only reset if switching to a different week
-          if (week !== selectedWeek) {
+          if (week !== effectiveSelectedWeek) {
             setSelectedDay(null);
             setSelectedLesson(null);
             setCachedLessonPlanData(null); // Clear cached data for new week
@@ -1823,7 +1866,7 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
         {viewMode === 'week' && !initialLesson && (
           <div className="h-full w-full overflow-hidden">
             <WeekView
-              weekOf={selectedWeek!}
+              weekOf={effectiveSelectedWeek}
               onLessonClick={handleLessonClick}
               onDayClick={handleWeekDayClick}
               currentLessonId={currentLesson?.id}
@@ -1834,7 +1877,7 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
         {viewMode === 'day' && selectedDay && (
           <div className="h-full w-full overflow-hidden">
             <DayView
-              weekOf={selectedWeek!}
+              weekOf={effectiveSelectedWeek}
               day={selectedDay}
               onLessonClick={handleLessonClick}
               onDaySwitch={handleDaySwitch}
@@ -1853,8 +1896,8 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
 
               // Use the weekOf stored in selectedLesson (from when lesson was clicked)
               // This ensures we use the correct week even if selectedWeek hasn't updated yet
-              // Fallback to selectedWeek if weekOf wasn't stored
-              const weekOfForLesson = selectedLesson.weekOf || selectedLesson.scheduleEntry.week_of || selectedWeek;
+              // Fallback to effectiveSelectedWeek if weekOf wasn't stored
+              const weekOfForLesson = selectedLesson.weekOf || selectedLesson.scheduleEntry.week_of || effectiveSelectedWeek;
 
               console.log('[LessonPlanBrowser] Rendering LessonDetailView with weekOf:', {
                 selectedLesson_weekOf: selectedLesson.weekOf,
@@ -1878,8 +1921,8 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
                   onBack={handleBack}
                   onEnterLessonMode={onEnterLessonMode ? (scheduleEntry, day, slot, planId, previousViewMode, weekOf) => {
                     // Pass 'lesson' view mode and weekOf when entering from LessonDetailView
-                    // Use selectedWeek as fallback if weekOf is not provided
-                    onEnterLessonMode(scheduleEntry, day, slot, planId, 'lesson', weekOf || selectedWeek || undefined);
+                    // Use effectiveSelectedWeek as fallback if weekOf is not provided
+                    onEnterLessonMode(scheduleEntry, day, slot, planId, 'lesson', weekOf || effectiveSelectedWeek || undefined);
                   } : undefined}
                   onPreviousLesson={handlePreviousLesson}
                   onNextLesson={handleNextLesson}
