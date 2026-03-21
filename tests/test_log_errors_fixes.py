@@ -11,6 +11,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 import pytest
 
 from backend.lesson_schema_models import Phase
+from backend.llm.validation import validate_structure
 from backend.llm_service import LLMService
 
 
@@ -91,8 +92,7 @@ class TestVocabularyCognatesTrim:
     """Test vocabulary_cognates truncation when LLM returns 7 items."""
 
     def test_validate_structure_truncates_seven_to_six(self):
-        """_validate_structure should truncate 7 vocab items to 6 and pass."""
-        service = LLMService()
+        """validate_structure should truncate 7 vocab items to 6 and pass."""
         lesson_json = {
             "metadata": {
                 "week_of": "02/09-02/13",
@@ -254,6 +254,6 @@ class TestVocabularyCognatesTrim:
                 },
             },
         }
-        valid, err = service._validate_structure(lesson_json)
+        valid, err = validate_structure(lesson_json)
         assert valid, f"Validation should pass after truncation: {err}"
         assert len(lesson_json["days"]["monday"]["vocabulary_cognates"]) == 6

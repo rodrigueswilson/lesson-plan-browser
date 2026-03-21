@@ -9,7 +9,7 @@ from fastapi.responses import RedirectResponse, Response
 from backend.config import settings
 from backend.maintenance import DatabaseMaintenance, run_maintenance
 from backend.metrics import get_metrics_response
-from backend.models import HealthResponse
+from backend.models import DatabaseBackupResponse, HealthResponse
 from backend.telemetry import logger
 from backend.week_detector import detect_weeks_from_folder
 
@@ -137,6 +137,18 @@ async def trigger_maintenance(background_tasks: BackgroundTasks):
         }
     except Exception as e:
         logger.error(f"Error triggering maintenance: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/api/admin/database/backup", response_model=DatabaseBackupResponse)
+async def create_database_backup_only():
+    """Create a timestamped SQLite backup under data/archives (no prune or cleanup)."""
+    try:
+        m = DatabaseMaintenance()
+        backup_path = m.create_backup()
+        return DatabaseBackupResponse(success=True, backup_path=backup_path)
+    except Exception as e:
+        logger.error(f"Error creating database backup: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 

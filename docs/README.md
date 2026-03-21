@@ -49,10 +49,14 @@ Sample lesson plans and transformation outputs:
 Technology and design decisions:
 - **ADR-001-tech-stack.md** - Technology stack selection rationale
 
+## Guides
+
+- **[Tablet standalone DB (API contract)](guides/TABLET_STANDALONE_DB.md)** — Contract and pitfalls for the tablet app and local database; prevents regressions when changing `shared/lesson-api`.
+
 ## Quick Reference
 
 ### File Locations
-- **Primary Prompt:** `../prompt_v4.md`
+- **Primary Prompt:** [`prompt_v4.md`](prompt_v4.md) (repo path: `docs/prompt_v4.md`)
 - **Strategy Pack:** `../strategies_pack_v2/`
 - **WIDA Files:** `../wida/`
 

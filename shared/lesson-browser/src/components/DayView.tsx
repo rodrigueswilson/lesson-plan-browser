@@ -1,6 +1,6 @@
 import { Card } from '@lesson-ui/Card';
 import { Button } from '@lesson-ui/Button';
-import { scheduleApi, ScheduleEntry, planApi, lessonApi } from '@lesson-api';
+import { scheduleApi, ScheduleEntry, planApi, lessonApi, normalizeWeekOfForMatch } from '@lesson-api';
 import { useStore } from '../store/useStore';
 import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -109,7 +109,8 @@ export function DayView({ weekOf, day, onLessonClick, onDaySwitch }: DayViewProp
         try {
           const plansResponse = await planApi.list(currentUser.id, 10, currentUser.id);
           const plans = plansResponse.data || [];
-          const plan = plans.find(p => p.week_of === weekOf);
+          const canonicalWeek = normalizeWeekOfForMatch(weekOf);
+          const plan = plans.find(p => p.week_of === weekOf) ?? (canonicalWeek ? plans.find(p => normalizeWeekOfForMatch(p.week_of) === canonicalWeek) : undefined);
           
           if (plan) {
             const planDetailResponse = await lessonApi.getPlanDetail(plan.id, currentUser.id);

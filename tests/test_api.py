@@ -14,10 +14,14 @@ import sys
 import json
 from pathlib import Path
 
+import pytest
+
 # Add parent directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from backend.api import app
+
+pytestmark = pytest.mark.unit
 
 
 def test_health_check(client):

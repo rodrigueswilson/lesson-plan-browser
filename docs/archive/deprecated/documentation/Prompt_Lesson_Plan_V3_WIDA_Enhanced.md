@@ -1,3 +1,5 @@
+> **DEPRECATED — historical copy only.** Canonical prompt: [`docs/prompt_v4.md`](../../../prompt_v4.md). Strategy limits and ids here may be obsolete (e.g. older “2–3 strategies” wording).
+
 # **Comprehensive Bilingual Push-In Support Planning Framework**
 
 ## **System Configuration**

@@ -57,6 +57,16 @@ Thank you for your interest in contributing! This guide will help you set up you
 
 ## Development Workflow
 
+### Changes to the shared API (lesson-api)
+
+When adding or changing methods in `shared/lesson-api` that may be used by the tablet app, ensure either a **local-DB path** or a **safe default** in standalone mode (so the tablet never depends on HTTP for that method). See [docs/guides/TABLET_STANDALONE_DB.md](guides/TABLET_STANDALONE_DB.md) for the contract and audit list.
+
+### Dependency hygiene (automatic + your part)
+
+- **Dependabot** (GitHub): Opens PRs weekly to bump dependencies (see `.github/dependabot.yml`). Review and merge those PRs to stay updated.
+- **pip-audit (CI)**: Runs on every push/PR that touches `requirements.txt` (see `.github/workflows/pip-audit.yml`). The build fails if a known CVE is reported (one exception is documented in the workflow until FastAPI supports a newer Starlette).
+- **Your part**: Merge Dependabot PRs when you’re ready; keep `requirements.txt` with pinned versions where possible. To check locally: `pip install pip-audit && pip-audit -r requirements.txt`.
+
 ### Running the Backend
 
 ```bash
@@ -83,18 +93,33 @@ npm run tauri dev
 
 ### Running Tests
 
-```bash
-# Run all tests
-pytest tests/
+Use these **canonical commands** (from project root) so everyone and CI use the same gate.
 
-# Run specific test file
-pytest tests/test_api.py
+**CI-parity slice (before each commit)** — same surface as the SQLite GitHub Actions step *Run unit-marked critical path tests*: all tests marked `@pytest.mark.unit` (see `pytest.ini` and [docs/dev/verification_and_llm_ops.md](dev/verification_and_llm_ops.md)):
+
+```bash
+python -m pytest tests/ -m unit -q
+```
+
+**Full suite (before merge or PR)** — entire test suite (several minutes; `pytest.ini` applies `--timeout=120` per test):
+
+```bash
+python -m pytest tests/ -q
+```
+
+Run from the **project root**. For refactors, use the test command from the plan when refactoring a specific file; otherwise use the **CI-parity** command above. Green-slice options (`-m "not e2e"`, optional ignores) are summarized in [docs/dev/test_suite_status.md](dev/test_suite_status.md). Before merging to `master`, run the full suite.
+
+**Other useful commands:**
+
+```bash
+# Run a specific test file
+python -m pytest tests/test_api.py -v
 
 # Run with coverage
-pytest tests/ --cov=backend --cov=tools
+python -m pytest tests/ --cov=backend --cov=tools -q
 
-# Run with verbose output
-pytest tests/ -v
+# Override timeout (e.g. disable or increase)
+python -m pytest tests/ -q --timeout=0
 ```
 
 ## Code Style
@@ -142,6 +167,24 @@ def process_lesson(
 - **Naming**: camelCase for variables, PascalCase for components
 - **Hooks**: Follow React Hooks rules
 
+### Pre-commit hooks
+
+The project uses [pre-commit](https://pre-commit.com/) to run code style, lint, and security checks before each commit. Contributors are expected to have hooks pass before pushing.
+
+**Install (once per clone):**
+
+```bash
+pre-commit install
+```
+
+**Run on all files (e.g. before pushing or in CI):**
+
+```bash
+pre-commit run --all-files
+```
+
+Hooks include Black, flake8, isort, Bandit, mypy, JSON/Jinja2 schema checks, and markdown lint. Install pre-commit with `pip install pre-commit` if needed.
+
 ### Running Linters
 
 ```bash
@@ -187,6 +230,42 @@ d:\LP/
 
 ## Making Changes
 
+### Feature development workflow (safe workflow with master as default)
+
+Keep `master` stable and do all new work on branches:
+
+1. **Start from an up-to-date default branch**
+   ```bash
+   git checkout master
+   git pull origin master
+   ```
+
+2. **Create a feature branch**
+   ```bash
+   git checkout -b feature/short-description
+   ```
+   Use `fix/...`, `docs/...`, or `refactor/...` for non-feature work.
+
+3. **Develop and test locally**
+   - Make small, logical commits.
+   - Run tests before pushing: `python -m pytest tests/ -q` (or the quick subset from the Testing section).
+   - Optionally run `pre-commit run --all-files` to catch style issues.
+
+4. **Push the branch and open a Pull Request**
+   ```bash
+   git push -u origin feature/short-description
+   ```
+   Open a PR **into `master`** (not into develop unless you use that as a staging branch). CI runs automatically on the PR and must pass before merge.
+
+5. **Merge when ready**
+   After review and green CI, merge the PR into `master`. Then delete the feature branch (GitHub can do this after merge), and pull the updated `master` locally:
+   ```bash
+   git checkout master
+   git pull origin master
+   ```
+
+This way `master` always reflects tested, merged work; broken or half-done code stays on the feature branch until the PR is approved and CI passes.
+
 ### Branch Naming
 
 - `feature/description` - New features
@@ -224,7 +303,7 @@ docs(readme): update installation instructions
 
 ### Pull Request Process
 
-1. **Create a branch** from `main`
+1. **Create a branch** from `master` (see "Feature development workflow" above)
 2. **Make your changes** with clear commits
 3. **Add tests** for new functionality
 4. **Update documentation** if needed

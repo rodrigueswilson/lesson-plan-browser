@@ -54,8 +54,8 @@ def create_mock_llm_service():
                         },
                         "ell_support": [
                             {
-                                "strategy_id": "visual_aids",
-                                "strategy_name": "Visual Aids",
+                                "strategy_id": "graphic_organizers",
+                                "strategy_name": "Graphic Organizers for Language Learning",
                                 "implementation": "Use diagrams and charts"
                             }
                         ],
@@ -145,8 +145,8 @@ async def demo_tracking():
             mock_renderer = Mock()
             mock_renderer.render_consolidated_plan.return_value = "output/demo_plan.docx"
             
-            with patch("tools.batch_processor.DOCXParser", return_value=mock_parser), \
-                 patch("tools.batch_processor.DOCXRenderer", return_value=mock_renderer), \
+            with patch("tools.batch_processor_pkg.extraction.DOCXParser", return_value=mock_parser), \
+                 patch("tools.docx_renderer.DOCXRenderer", return_value=mock_renderer), \
                  patch("tools.batch_processor.get_file_manager") as mock_fm:
                 
                 mock_file_manager = Mock()

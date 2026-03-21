@@ -54,11 +54,11 @@ Comprehensive pedagogical frameworks and instructional models.
 **Strategies:**
 - translanguaging
 - siop
-- dual_language_instruction
 - clil
-- scaffolded_instruction
+- calla
 - differentiated_instruction
 - project_based_learning
+- scaffolded_instruction
 
 **Best For:** Integrated skills | Grades 3-12 | Proficiency levels 2-6
 
@@ -66,10 +66,10 @@ Comprehensive pedagogical frameworks and instructional models.
 Strategies leveraging cross-linguistic connections and biliteracy development.
 
 **Strategies:**
-- contrastive_analysis
 - the_bridge
-- preview_review
 - strategic_code_switching
+- preview_review
+- contrastive_analysis
 - bilingual_books_texts
 - cross_linguistic_transfer
 - metalinguistic_awareness
@@ -96,7 +96,7 @@ Collaborative learning and social interaction strategies.
 
 **Strategies:**
 - collaborative_learning
-- peer_tutoring_bilingual
+- think_pair_share
 
 **Best For:** Speaking, listening | Grades K-8 | Proficiency levels 1-4
 
@@ -185,16 +185,18 @@ Each strategy includes:
 
 ## Usage with Prompt Engine
 
-The prompt engine (`prompt_v4.md`) automatically:
-1. Loads `_index.json` to access selection rules
-2. Analyzes lesson context to determine relevant categories
-4. Applies fine-selection within loaded strategies
-5. Generates WIDA-enhanced lesson plans with selected strategies
+[`docs/prompt_v4.md`](../docs/prompt_v4.md) is the narrative spec: it tells the model how to use `_index.json`, the category JSON files in this directory, and the WIDA files under [`../wida/`](../wida/).
+
+At runtime, [`backend/llm/prompt_builder.py`](../backend/llm/prompt_builder.py) loads that markdown template **and** appends an injected block built by [`backend/llm/strategy_pack_context.py`](../backend/llm/strategy_pack_context.py): allow-list from `_index.json`, heuristic category selection (grade/subject), trimmed strategy objects from the selected category JSON files, optional WIDA proficiency snippets, and a character budget cap so prompts stay bounded.
+
+Post-generation, [`backend/llm/transform_runner.py`](../backend/llm/transform_runner.py) validates `tailored_instruction.ell_support[].strategy_id` against pack ids (with legacy aliases); invalid ids trigger retry feedback.
+
+**For maintainers:** Keep `_index.json`, category JSON `id` lists, this README, `docs/prompt_v4.md`, and `wida/wida_strategy_enhancements.json` aligned. Run `python tools/verify_strategy_pack_ssot.py` from the repo root to catch index/WIDA drift.
 
 ## Cross-References
 
 ### Core System Files
-- **Prompt Engine:** `../prompt_v4.md`
+- **Prompt Engine:** [`docs/prompt_v4.md`](../docs/prompt_v4.md)
 - **WIDA Files:** `../wida/`
 - **Strategy Pack Index:** `_index.json` (this directory)
 - **Strategy Categories:** `core/` and `specialized/` (this directory)

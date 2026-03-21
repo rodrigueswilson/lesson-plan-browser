@@ -43,8 +43,8 @@ def load_schema():
     with open('schemas/lesson_output_schema.json', 'r', encoding='utf-8') as f:
         return json.load(f)
 
-def test_llm_transformation(api_key: str = None):
-    """Test the LLM transformation with prompt_v4"""
+def run_llm_transformation_demo(api_key: str = None):
+    """Run the LLM transformation demo with prompt_v4 (not collected by pytest)."""
     
     # Check for API key
     if not api_key:
@@ -244,12 +244,12 @@ if __name__ == "__main__":
         print("1. Get an OpenAI API key from https://platform.openai.com/api-keys")
         print("2. Set it as environment variable:")
         print("   Windows: set OPENAI_API_KEY=your-key-here")
-        print("   Or pass it to the function: test_llm_transformation('your-key')")
+        print("   Or pass it to the function: run_llm_transformation_demo('your-key')")
         print()
         exit(1)
     
     # Run test
-    lesson_json = test_llm_transformation(api_key)
+    lesson_json = run_llm_transformation_demo(api_key)
     
     if lesson_json:
         # Validate

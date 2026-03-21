@@ -188,11 +188,14 @@ export function TopNavigationBar({
                 }}
                 className="w-48"
               >
-                {availableWeeks.map((week) => (
-                  <option key={week.week_of} value={week.week_of}>
-                    {week.display}
-                  </option>
-                ))}
+                {availableWeeks.map((week, index) => {
+                  const weekNumber = availableWeeks.length - index;
+                  return (
+                    <option key={week.week_of} value={week.week_of}>
+                      {String(weekNumber).padStart(2, '0')} - {week.display}
+                    </option>
+                  );
+                })}
               </Select>
             </div>
           )}

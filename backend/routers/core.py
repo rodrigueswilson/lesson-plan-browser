@@ -52,8 +52,8 @@ async def export_tablet_db(
     """
     Export a user-only SQLite DB suitable for bundling into the tablet APK.
 
-    Output path:
-      data/tablet_db_exports/<user_id>/lesson_planner.db
+    Output path: same directory as the main DB, under tablet_db_exports/<user_id>/lesson_planner.db,
+    so the path is correct whether the app runs from project root or elsewhere.
     """
     user_id = request.user_id
     verify_user_access(
@@ -61,8 +61,9 @@ async def export_tablet_db(
     )  # header optional, enforced if provided
 
     source_db = settings.SQLITE_DB_PATH
-    output_path = Path("data") / "tablet_db_exports" / user_id / "lesson_planner.db"
-    output_path = (Path(__file__).resolve().parents[2] / output_path).resolve()
+    # Use same directory as main DB so export path is correct regardless of run context (matches pre-refactor behavior)
+    output_path = settings.SQLITE_DB_PATH.parent / "tablet_db_exports" / user_id / "lesson_planner.db"
+    output_path = output_path.resolve()
 
     try:
         result = export_user_tablet_db(
@@ -244,8 +245,14 @@ async def poll_task_progress(task_id: str):
     """
     from backend.progress import progress_tracker
 
-    print(f"DEBUG: Polling progress for task_id: {task_id}")
-    print(f"DEBUG: Available task IDs: {list(progress_tracker.tasks.keys())[:5]}")
+    all_ids = list(progress_tracker.tasks.keys())
+    task_in_tracker = task_id in progress_tracker.tasks
+    recent_ids = all_ids[-5:] if len(all_ids) >= 5 else all_ids
+    print(
+        f"DEBUG: Polling progress for task_id: {task_id}; "
+        f"in_tracker: {task_in_tracker}; total_tasks: {len(all_ids)}; "
+        f"recent_ids: {recent_ids}"
+    )
 
     task = progress_tracker.get_task(task_id)
 

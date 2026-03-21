@@ -428,46 +428,32 @@ fn push_tablet_db(db_path: String) -> Result<serde_json::Value, String> {
             out
         });
 
-    // 3) mkdir databases
-    let mut adb_mkdir_cmd = Command::new("adb");
-    adb_mkdir_cmd.arg("-s").arg(&device).args([
-        "shell",
-        "run-as",
-        package_name,
-        "mkdir",
-        "-p",
-        "databases",
-    ]);
-    match run_command_capture(adb_mkdir_cmd) {
-        Ok(out) => steps.push(record_ok("run_as_mkdir", out)),
-        Err(out) => {
-            steps.push(record_err("run_as_mkdir", out.clone()));
-            return Err(format!(
-                "run-as mkdir failed (is the app debuggable?): {}",
-                out
-            ));
+    // 3) Copy into app dir: run separate shell commands to avoid Windows quoting issues.
+    for (step_name, shell_cmd) in [
+        ("run_as_mkdir", format!("run-as {} sh -c 'mkdir -p databases'", package_name)),
+        ("run_as_cp", format!("run-as {} sh -c 'cp {} databases/lesson_planner.db'", package_name, temp_remote)),
+        ("run_as_rm_wal", format!("run-as {} sh -c 'rm -f databases/lesson_planner.db-shm databases/lesson_planner.db-wal'", package_name)),
+    ] {
+        let mut cmd = Command::new("adb");
+        cmd.arg("-s").arg(&device).args(["shell", &shell_cmd]);
+        match run_command_capture(cmd) {
+            Ok(out) => steps.push(record_ok(step_name, out)),
+            Err(out) => {
+                steps.push(record_err(step_name, out.clone()));
+                return Err(format!("{} failed (is the app debuggable?): {}", step_name, out));
+            }
         }
     }
 
-    // 4) cp into app databases
-    let mut adb_cp_cmd = Command::new("adb");
-    adb_cp_cmd.arg("-s").arg(&device).args([
-        "shell",
-        "run-as",
-        package_name,
-        "cp",
-        temp_remote,
-        "databases/lesson_planner.db",
-    ]);
-    match run_command_capture(adb_cp_cmd) {
-        Ok(out) => steps.push(record_ok("run_as_cp", out)),
-        Err(out) => {
-            steps.push(record_err("run_as_cp", out.clone()));
-            return Err(format!(
-                "run-as cp failed (is the app debuggable?): {}",
-                out
-            ));
-        }
+    // 4) Verify the copied file (for debugging).
+    let verify_cmd = format!("run-as {} sh -c 'ls -la databases/lesson_planner.db 2>&1'", package_name);
+    let mut adb_verify = Command::new("adb");
+    adb_verify
+        .arg("-s")
+        .arg(&device)
+        .args(["shell", &verify_cmd]);
+    if let Ok(out) = run_command_capture(adb_verify) {
+        steps.push(record_ok("verify_db_file", out));
     }
 
     // 5) cleanup temp

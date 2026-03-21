@@ -1,4 +1,4 @@
-import { ScheduleEntry, WeeklyPlan, planApi, lessonApi } from '@lesson-api';
+import { ScheduleEntry, WeeklyPlan, planApi, lessonApi, normalizeWeekOfForMatch } from '@lesson-api';
 
 /**
  * Resolves the plan ID for a schedule entry based on week context.
@@ -23,17 +23,18 @@ export async function resolvePlanIdFromScheduleEntry(
 
     // Get the current week based on the schedule entry's day
     const currentWeekOf = getWeekOfForDay(scheduleEntry.day_of_week);
+    const canonicalCurrent = normalizeWeekOfForMatch(currentWeekOf);
 
-    // Try to find a plan that matches the week
-    // First, try exact match with current week
+    // Try to find a plan that matches the week (exact or canonical, e.g. 3/2-03/06 vs 03/02-03/06)
     let matchingPlan = availablePlans.find(p => p.week_of === currentWeekOf);
+    if (!matchingPlan && canonicalCurrent) {
+      matchingPlan = availablePlans.find(p => normalizeWeekOfForMatch(p.week_of) === canonicalCurrent);
+    }
 
     // If no exact match, try to find the most recent plan for that week
     if (!matchingPlan) {
-      // Find plans that could match (same week format pattern)
       const candidatePlans = availablePlans.filter(p => {
         if (!p.week_of) return false;
-        // Check if week_of overlaps with current week
         return weeksOverlap(p.week_of, currentWeekOf);
       });
 

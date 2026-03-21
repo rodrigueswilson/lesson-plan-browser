@@ -193,8 +193,8 @@
         },
         "ell_support": [
           {
-            "strategy_id": "visual_aids",
-            "strategy_name": "Visual Aids",
+            "strategy_id": "graphic_organizers",
+            "strategy_name": "Graphic Organizers for Language Learning",
             "implementation": "Use images of Roman structures with bilingual labels",
             "proficiency_levels": "Levels 1-4"
           },
@@ -554,20 +554,20 @@
         },
         "ell_support": [
           {
-            "strategy_id": "review_games",
-            "strategy_name": "Review Games",
+            "strategy_id": "formative_assessment_ml",
+            "strategy_name": "Formative Assessment for Multilingual Learners",
             "implementation": "Vocabulary bingo with Portuguese-English cognates, matching games, Kahoot with bilingual questions",
             "proficiency_levels": "Levels 2-5"
           },
           {
-            "strategy_id": "bilingual_glossary",
-            "strategy_name": "Bilingual Glossary",
+            "strategy_id": "bilingual_dictionary",
+            "strategy_name": "Bilingual Dictionary and Glossary Use",
             "implementation": "Provide comprehensive glossary of unit vocabulary in Portuguese and English for review",
             "proficiency_levels": "Levels 2-5"
           },
           {
-            "strategy_id": "peer_tutoring",
-            "strategy_name": "Peer Tutoring",
+            "strategy_id": "collaborative_learning",
+            "strategy_name": "Collaborative Learning with L1 Support",
             "implementation": "Pair higher proficiency students with lower proficiency for review activities",
             "proficiency_levels": "Levels 2-5"
           }

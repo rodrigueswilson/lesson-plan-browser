@@ -97,8 +97,8 @@ def _create_minimal_day(unit_name="Unit One"):
             },
             "ell_support": [
                 {
-                    "strategy_id": "visual_aids",
-                    "strategy_name": "Visual Aids",
+                    "strategy_id": "graphic_organizers",
+                    "strategy_name": "Graphic Organizers for Language Learning",
                     "implementation": "Use images, diagrams, and graphic organizers to support comprehension",
                     "proficiency_levels": "Levels 1-4"
                 },

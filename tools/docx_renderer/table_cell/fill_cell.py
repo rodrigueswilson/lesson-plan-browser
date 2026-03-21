@@ -315,6 +315,10 @@ def fill_cell(
                 img_slot = image.get("_source_slot")
                 if img_slot is not None and img_slot != current_slot_number:
                     continue
+            if current_subject is not None:
+                image_subject = image.get("_source_subject")
+                if image_subject is not None and image_subject != current_subject:
+                    continue
             hint = image.get("section_hint") or ""
             if section_mappings_module.section_matches(section_name, hint):
                 renderer._inject_image_inline(cell, image, max_width=1.3)

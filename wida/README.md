@@ -33,6 +33,8 @@ Proficiency-level adaptations for bilingual teaching strategies.
 **Last Updated:** 2025-09-20  
 **Total Strategies:** 33
 
+**Historical id note:** The strategy pack retired `peer_tutoring_bilingual`; `backend/llm/domain_analysis.py` maps it to `think_pair_share`. The `think_pair_share` block in this file already covers paired oral discourse and scaffolding across proficiency bands. Repository history did not retain a separate extractable WIDA payload for the removed id to merge beyond that entry, so no additional merge was applied (review complete).
+
 **Purpose:** Proficiency-responsive implementations, scaffolds, and language objectives for bilingual strategies aligned with WIDA 2020 framework
 
 **Key Components:**
@@ -51,7 +53,7 @@ Proficiency-level adaptations for bilingual teaching strategies.
 ## Usage
 
 ### Integration with Prompt Engine
-The prompt engine (`../prompt_v4.md`) loads these files to:
+The prompt engine (`../docs/prompt_v4.md`) loads these files to:
 1. Generate WIDA-aligned bilingual language objectives
 2. Apply proficiency-responsive strategy adaptations
 3. Create level-banded assessment overlays
@@ -97,7 +99,7 @@ producing [product] that demonstrates [dimension focus].
 ## Cross-References
 
 ### Core System Files
-- **Prompt Engine:** `../prompt_v4.md`
+- **Prompt Engine:** `../docs/prompt_v4.md`
 - **Strategy Pack Index:** `../strategies_pack_v2/_index.json`
 - **Strategy Categories:** `../strategies_pack_v2/core/` and `../strategies_pack_v2/specialized/`
 
@@ -142,7 +144,7 @@ When adding or modifying strategy adaptations:
 ### Implementation Support
 - Strategy-specific adaptations in this directory
 - Comprehensive examples in `../docs/examples/`
-- Prompt engine protocols in `../prompt_v4.md`
+- Prompt engine protocols in `../docs/prompt_v4.md`
 
 ## Notes
 

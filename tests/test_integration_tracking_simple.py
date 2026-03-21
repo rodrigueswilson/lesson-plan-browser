@@ -3,6 +3,7 @@ Simplified integration test for performance tracking.
 Tests tracking without full document rendering.
 """
 
+import tempfile
 from pathlib import Path
 from unittest.mock import Mock
 
@@ -11,6 +12,8 @@ import pytest
 from backend.database import Database
 from backend.llm_service import LLMService
 from backend.performance_tracker import PerformanceTracker
+
+pytestmark = pytest.mark.unit
 
 
 @pytest.fixture
@@ -107,27 +110,25 @@ def test_multiple_operations_tracking(test_db, test_plan, monkeypatch):
     metrics = tracker.get_plan_metrics(test_plan)
     assert len(metrics) == 3
     
-    # Verify summary
+    # Verify summary (aggregates tokens_total / cost; input/output from raw metrics)
     summary = tracker.get_plan_summary(test_plan)
     assert summary["operation_count"] == 3
-    assert summary["total_tokens_input"] == 6000  # 1000 + 2000 + 3000
-    assert summary["total_tokens_output"] == 3000  # 500 + 1000 + 1500
     assert summary["total_tokens"] == 9000
     assert summary["total_cost_usd"] > 0
+    metrics = tracker.get_plan_metrics(test_plan)
+    assert sum(m["tokens_input"] for m in metrics) == 6000
+    assert sum(m["tokens_output"] for m in metrics) == 3000
     
     # Update plan summary
     success = tracker.update_plan_summary(test_plan)
     assert success is True
     
-    # Verify weekly_plans table updated
-    with test_db.get_connection() as conn:
-        cursor = conn.cursor()
-        cursor.execute("SELECT * FROM weekly_plans WHERE id = ?", (test_plan,))
-        plan = dict(cursor.fetchone())
-        
-        assert plan["total_tokens"] == 9000
-        assert plan["total_cost_usd"] > 0
-        assert plan["llm_model"] == "gpt-4-turbo-preview"
+    # Verify weekly_plans row updated (SQLModel session, not sqlite cursor)
+    plan_row = test_db.get_weekly_plan(test_plan)
+    assert plan_row is not None
+    assert plan_row.total_tokens == 9000
+    assert plan_row.total_cost_usd is not None and plan_row.total_cost_usd > 0
+    assert plan_row.llm_model == "gpt-4-turbo-preview"
 
 
 def test_tracking_with_errors(test_db, test_plan, monkeypatch):

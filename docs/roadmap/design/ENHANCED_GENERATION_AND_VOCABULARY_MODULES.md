@@ -573,6 +573,110 @@ See [Database Schema Changes](#database-schema-changes) for complete schema.
 - `vocabulary_usages`: Links words to specific lesson plans
 - `image_normalization_cache`: Caches normalized image versions
 
+### Vocabulary bank: categorization and external glossaries
+
+The vocabulary module will generate and maintain a **vocabulary table** in the database. Vocabulary is **categorized** for retrieval by lesson slot:
+
+- **Subject** (e.g. ELA, Math, Science, Social Studies)
+- **Grade cluster / school year** (e.g. K–2, 3–5, 6–8, 9–12, or grade-level bands used by curriculum)
+- **Language** (e.g. English plus L1: Spanish, Haitian, Portuguese, etc. for bilingual support)
+
+**Retrieval for lesson slots:** For a given slot (grade, subject, language), the app filters vocabulary by `(subject, grade_cluster, language)` and returns a focused set (e.g. for word walls, glossary suggestions, or LLM context). This keeps the vocabulary bank queryable and avoids loading the full corpus.
+
+**External glossary sources (optional import):** WIDA Language Charts (2025) and similar documents point educators to **state-approved bilingual glossaries and cognates** for content assessments. These can be used as **import sources** for the vocabulary bank:
+
+- **[NYU Steinhardt – Bilingual Glossaries and Cognates](https://steinhardt.nyu.edu/metrocenter/statewide-rbern/resources/bilingual-glossaries-and-cognates)** (NYS Statewide RBERN): ELA, Math, Science, Social Studies glossaries and cognates by language (e.g. English–Spanish, English–Haitian). Sorted by subject and grade band (e.g. Elementary Math, High School Living Environment). Downloadable and disseminable for ELLs/MLLs.
+- **Massachusetts Department of Education – Bilingual Word-to-Word Dictionaries and Glossaries:** Similar state-approved resources; link and structure to be added when we integrate.
+
+**Import strategy for external glossaries:**
+
+- Treat each external glossary as an **import source**: map its subject and grade band to our `subject` and `grade_cluster` (or equivalent) and use a **source** tag (e.g. `nyu_glossary_math`, `nyu_cognates_ela`) so we can filter, refresh, or replace by source.
+- Use consistent **language codes** (e.g. `es`, `ht`, `pt`) across sources.
+- **Start small:** Ingest one subject and one language first (e.g. Math + Spanish), validate schema and retrieval, then expand. Do not ingest entire corpora in one pass.
+
+**Suggested schema extension for glossary-sourced terms:** If we add vocabulary rows imported from these glossaries, extend (or add a parallel table) with at least:
+
+| Field | Purpose |
+|-------|--------|
+| `term_en` | English term (or primary `word_text`) |
+| `term_l1` | Translation in L1 (or use `definition_pt` / a generic `translation` column per language) |
+| `language` | L1 language code (e.g. `es`, `ht`) |
+| `subject` | ELA, Math, Science, Social Studies |
+| `grade_cluster` or `grade_range` | K–2, 3–5, 6–8, 9–12 (or single grade) |
+| `source` | e.g. `nyu_glossary_math`, `nyu_cognates_ela`, `wida_internal` |
+| `is_cognate` | Boolean for cognate pairs |
+| `notes` | e.g. "NYS RBERN glossary", "content-standard term" |
+
+The existing `vocabulary_items` table already has `word_text`, `language`, `grade`, `subject`, `definition_en`, `definition_pt`. We can add `source`, `is_cognate`, and (if needed) `grade_cluster` or map grade to cluster at query time. For many languages, use a separate **translations** table (e.g. `vocabulary_translations`: `vocab_item_id`, `language`, `term_l1`) instead of one column per language.
+
+**Optional later:** Tag vocabulary with WIDA alignment (e.g. `eld_standard`, `key_language_use`, `domain_or_mode`) for ELD-aligned word lists; only if we see clear value (YAGNI until then).
+
+### Dictionary APIs, translations, and levelled definitions
+
+The vocabulary module will **dialogue with external dictionary APIs and image search APIs** so that each word can have **definitions, translations, and illustrations** that support multilingual learners at different proficiency levels.
+
+- **Portuguese translations:** For each vocabulary item, the module should attempt to retrieve a **Portuguese translation** (and later other L1s) from one or more dictionary APIs. This complements glossary imports: `definition_pt` (or translations in `vocabulary_translations`) can come from either **state glossaries** or **dictionary APIs**, with `source` tracking which.
+- **Definitions by proficiency level:** Where dictionary APIs (or our own templates) support it, store or generate **leveled English definitions** (e.g. “simple”, “intermediate”, “advanced” explanations) aligned to **ELD proficiency bands**. These are not one-to-one with WIDA levels but should roughly target students’ **zone of proximal development**—simple language plus visuals for lower levels, richer academic language for higher levels.
+- **API orchestration:** A thin **dictionary service** can wrap multiple APIs (e.g. monolingual EN, EN–PT, EN–ES) and apply rate limiting, caching, and normalization so the rest of the app just asks for “definitions + translations for this `vocabulary_item`.” Follow SSOT: the database record is the **authoritative source** after retrieval, not the external APIs.
+- **Pedagogical use:** Lesson-plan prompts can choose definitions and translations appropriate to a learner’s **current ELD level** (e.g. Level 1–2 → simpler definitions and more visuals; Level 3–4 → intermediate definitions; Level 5–6 → fuller academic definitions) while still allowing the teacher to override or edit wording.
+
+### WIDA vocabulary categories and instructional guidelines (from analyzed sources)
+
+The WIDA framework and related sources we analyzed (e.g. Language Charts, Can Do, ELD standards) provide a **vocabulary categorization** and **instructional guidelines** that the vocabulary module and lesson plan generation can align to.
+
+**Categorizing vocabulary (three categories):**
+
+| Category | Description | Examples |
+|----------|-------------|----------|
+| **Everyday (General) language** | Words used in nontechnical ways, often for social and instructional purposes. | *dogs* instead of *canines* |
+| **Cross-disciplinary (Specific) language** | Common academic terms used across multiple content areas. | *analyze*, *evaluate*, *summarize*, *chart*, *individual* |
+| **Technical language** | Specialized, precise, often abstract words tied to a specific content area. | *mitosis*, *imperialism* |
+
+Use these categories to **tag or filter** vocabulary in the bank (e.g. `vocabulary_category`: `everyday` \| `cross_disciplinary` \| `technical`) so lesson plans and word banks can emphasize the right mix (e.g. list cross-disciplinary and technical terms with meanings; prompt students to add everyday terms in L1).
+
+**Instructional guidelines for preparing vocabulary:**
+
+- **List visually supported key words**, including cross-disciplinary and technical terms with their meanings.
+- **Prompt students to generate their own lists** of terms and concepts in English and in other languages they know.
+- **Create and revise conceptual webs** during the lesson or unit, with sketches, graphic supports, and labels in relevant languages.
+- **Point students to approved bilingual dictionaries and glossaries of cognates** (e.g. [NYU RBERN](https://steinhardt.nyu.edu/metrocenter/statewide-rbern/resources/bilingual-glossaries-and-cognates)) for meaning-making.
+
+**Student activities (level-appropriate, from Can Do–style descriptors):**
+
+- Have students **create their own vocabulary and concept cards**.
+- Provide **word and phrase banks** (or pre-taught vocabulary lists) so students can generate new lists or label content-related diagrams, pictures, and graphs.
+
+**Use in the app:** When generating lesson plans or vocabulary sets, prompts can reference these categories and guidelines (e.g. "include cross-disciplinary and technical terms with definitions; suggest a conceptual web; link to approved glossaries"). The vocabulary table can include an optional `vocabulary_category` field (everyday, cross_disciplinary, technical) for filtering and for aligning word banks to WIDA guidance.
+
+### Additional vocabulary pedagogy (NotebookLM, non-WIDA sources)
+
+New (non-WIDA) sources summarized in NotebookLM add **specific guidance on how to select, pace, and teach vocabulary**. These guidelines should influence both how we design the vocabulary bank and how the lesson planner prompts shape vocabulary activities, while keeping the schema as simple as possible (YAGNI).
+
+**Strategic word selection and pacing**
+
+- **Intensive, multi-day instruction:** Prioritize **small sets of academic vocabulary** that receive repeated, varied practice over several days instead of long lists briefly touched once. The planner can mark some words in a week as potential **focus words** that recur across lessons and games.
+- **Sourcing from engaging texts:** Favor vocabulary drawn from **brief, engaging, content-rich texts** (e.g. trade books, op-eds, student essays) so words are anchored in meaningful discourse, not decontextualized lists. The vocabulary bank can optionally track a `source_text_id` or `source_type` (e.g. trade_book, op_ed, student_essay) when we implement text-sourced words.
+- **Deliberate selection:** Selected words should (a) connect to students’ prior knowledge, (b) act as **gateways** that unlock many related words, and (c) tie to both curriculum topics and real-world applications. Prompt templates for vocabulary selection should explicitly ask the model to **justify why each word is useful** using these criteria instead of only frequency.
+
+**Morphology and word parts**
+
+- **Core morphemes set:** Sources recommend explicitly teaching a small set of **valuable root morphemes** (e.g. a “14 morphemes” list) that give access to a large family of words. We can maintain this as a small **reference list** (separate from the main vocabulary_items table) when we add morphology features.
+- **Transfer over memorization:** Activities should help students **transfer existing knowledge of roots and affixes** to decode new words (e.g. “What other words do you know that include this root? How does that help you infer this new word?”) rather than memorizing root lists in isolation. Game and activity generators should prefer “use the root to infer meaning” tasks over “match root to definition” tasks when morphology is in scope.
+
+**Embedding vocabulary in sensemaking and context**
+
+- **Beyond isolated pre-teaching:** Especially in **science**, vocabulary instruction should be embedded in **sensemaking** (students figuring out how the world works) instead of only in pre-teaching chunks. The planner can offer options like “introduce key terms during investigation/experiment debrief” and “revisit vocabulary while students construct explanations,” not just “pre-teach vocabulary.”
+- **Language function and genre:** Vocabulary work should highlight how **genre** shapes word choice (e.g. precise, technical terms in lab reports vs. more narrative language in reflections) and how authors signal **stance** (certainty, possibility, caution) and create **cohesion** (connectors, reference words). Prompts for writing tasks can ask the model to (a) point out genre-typical vocabulary and (b) suggest a short mini-lesson on stance/cohesion language using words from the text.
+- **Connotation and collocations:** Instruction should help students explore **diction and register** (connotation differences between near-synonyms) and notice **collocations**—word combinations that frequently appear together in a fixed order (e.g. *plus and minus*, *multiply and divide*, *ebb and flow*). When we extend the schema, we can add an optional `collocations` field or a small `vocabulary_collocations` table to store a few common pairings for high-value words, but only if we see repeated use cases.
+
+**Additional classroom supports and scaffolds**
+
+- **Frayer Model and graphic organizers:** Sources recommend the **Frayer Model** and similar graphic organizers (definition, characteristics, examples, non-examples) to deepen understanding of key words. The planner can suggest “Use a Frayer Model for these 2–3 focus words” when generating vocabulary steps for the week.
+- **Illustrated vocabulary banks and evidence walls:** Encourage visually-rich supports such as illustrated word banks, word walls, and **evidence walls** that display key terms alongside student work or evidence. When the teacher enables images, vocabulary cards and games should be easy to repurpose for such displays.
+- **Interactive content-area workbooks:** Interactive math or science workbooks (digital or print) are highlighted as supports where vocabulary is embedded in tasks. The app can suggest “embed vocabulary checks in interactive workbook pages or simulations” in lesson suggestions, but we do not need a dedicated workbook data structure at this stage.
+
+Overall, these guidelines should shape how we **prioritize a small set of high-leverage words, connect them to engaging texts and morphology, embed them in sensemaking, and surface classroom-friendly supports**—without expanding the core vocabulary schema beyond what is immediately necessary.
+
 ---
 
 ## Image and Audio Collection System
@@ -709,26 +813,73 @@ All images are normalized to standard sizes:
 
 ---
 
-## Game Generation Modules
+## Vocabulary output pipelines and game generation modules
 
 ### Overview
 
-Two game generation modules create vocabulary games from approved vocabulary:
+Once vocabulary is stored and teacher-approved, it flows through **pipelines** into multiple materials:
 
-1. **Lesson Plan Browser Games**: In-app interactive games for use during lessons
-2. **SCORM 2004 Package Generator**: Standalone SCORM packages for LMS integration
+- **Printable / digital index cards** (front–back flashcards with word, translation, image, example sentence).
+- **Dictionaries and glossaries** (searchable lists and exports by subject, grade, language).
+- **In-app games** for live instruction.
+- **Exported LMS packages** (SCORM and cmi5) for use in Schoology and other LMSs.
+
+These pipelines **reuse the same vocabulary that was originally selected for lesson plans**, transforming it into student-facing materials that can be used **during instruction and for practice after class**, instead of generating separate, disconnected word lists.
+
+Over time, we can add **agents, skills, and tools** that automate the creation of **daily or weekly SCORM/cmi5 packages**: given approved vocabulary, sentence frames, and difficulty bands, an agent can assemble text (e.g. cloze items, crosswords, matching prompts) and export ready-to-upload packages.
+
+Two core game generation modules create vocabulary games from approved vocabulary:
+
+1. **Lesson Plan Browser Games**: In-app interactive games for use during lessons.
+2. **SCORM 2004 and cmi5 Package Generators**: Standalone packages for LMS integration (including Schoology and other platforms that support cmi5/xAPI).
 
 ### Game Types Supported
 
-1. **Matching Games**: Pair words with translations/definitions (cards or digital)
-2. **Crossword Puzzles**: Clues matched with vocabulary words
-3. **Fill-in-the-Gap (Cloze)**: Complete sentences with vocabulary
-4. **Word Search**: Find vocabulary words in letter grid
-5. **Flashcards**: Word/meaning cards with spaced repetition
-6. **Memory/Concentration**: Find pairs by remembering locations
-7. **Sorting/Categorization**: Group vocabulary by semantic/grammatical categories
-8. **Word Ladders/Chains**: Change one letter at a time to form new words
-9. **Bingo**: Mark words as definitions/translations are heard/seen
+To keep implementation focused, we define a small taxonomy of **canonical game types** that can be auto-generated from the lesson plan and vocabulary database. Many UI “skins” can reuse the same underlying item logic.
+
+1. **Form–meaning mapping games**
+   - **Flashcards**: Word ↔ definition, word ↔ image, EN ↔ PT (self-check, simple spaced repetition).
+   - **Matching**: Pair words with translations, definitions, images, or functions (e.g. *hypothesize*, *predict*).
+   - **Memory / concentration**: Face-down cards; find matching pairs (e.g. EN–PT).
+2. **Sentence frames, cloze, and grammar games**
+   - **Fill-in-the-Gap (Cloze)**: Single or multiple gaps in sentences/short texts using vocabulary or function words.
+   - **Drag-and-drop into blanks**: Word bank dropped into sentence frames; ideal for WIDA-aligned sentence stems.
+   - **Sentence ordering / unscramble**: Reorder words/phrases to form a correct sentence or short paragraph.
+3. **Categorization and semantic games**
+   - **Sorting/Categorization**: Group words by semantic/grammatical categories (e.g. everyday vs cross-disciplinary vs technical; noun vs verb).
+   - **Odd one out**: Identify which word does not belong in a set.
+   - **Scale/timeline placements**: Place words along continua (e.g. certainty, intensity).
+4. **Word puzzles and orthography games**
+   - **Crossword Puzzles**: Clues matched with vocabulary words for spelling and recall.
+   - **Word Search**: Find target vocabulary in a letter grid.
+   - **Word Ladders/Chains / anagrams**: Change letters or rearrange to reach a target word.
+5. **Listening and multimodal games**
+   - **Listen-and-select**: Hear a word/phrase; choose the correct text, image, or definition.
+   - **Listen-and-type**: Short dictation/spelling tasks using audio from the vocabulary module.
+6. **Game-style wrappers**
+   - **Bingo**: Boards with vocabulary; prompts are definitions, images, or audio.
+   - **Timed / streak modes**: Any of the above item types with timers, streaks, or simple level progression.
+
+In future iterations, we can extend these with **scenario-based activities** such as picture–story sequencing, dialogue building, role-play prompts, information-gap tasks, labeling diagrams, and short “quests” (sequences of 3–4 items). These should still be generated from the same core vocabulary, sentence frames, and short scenario templates per subject and WIDA Key Use.
+
+**Additional game inspirations for future cmi5 packages (from language-teaching practice):**
+
+- **Word recognition / retention variants**
+  - **Vocabulary Bingo** (already covered under Bingo) with different clue types (definition, synonym, image, L1 translation).
+  - **Wordshake / Sushi Spell–style speed games**: timed typing or rapid selection of target words to build recall speed.
+  - **Go Fish (vocabulary version)**: card-exchange mechanic where students must use definitions or clues instead of naming the word directly.
+- **Interactive / narrative games**
+  - **Story Cubes / Story Chains**: use images and target words to co-construct short narratives.
+  - **Telephone Pictionary / draw-and-guess**: one student draws a target word; the next guesses based on the drawing (can be adapted as digital rounds).
+  - **Hedbanz / “What am I?”**: yes/no questions to discover a hidden word, emphasizing descriptive language and categorization.
+  - **I Spy**: use descriptive clues (color, size, shape, function) to locate objects or images that match target vocabulary.
+- **Competitive / strategy formats**
+  - **Scrabble-like board play**: variants where extra points are awarded for using target vocabulary and explaining its meaning/use.
+  - **Vocab-Zee / Yahtzee-style tasks**: roll/trigger actions that require using words in sentences, giving synonyms/antonyms, or identifying collocations under time pressure.
+  - **Jeopardy / team trivia**: category-based quizzes (e.g. collocations, prefixes, stance verbs) with adjustable difficulty bands.
+  - **Wordle-like guessing**: limited attempts to guess a target word, constrained to the lesson’s vocabulary set or theme.
+
+These patterns are mostly **wrappers around the same core item types** (matching, cloze, categorization, spelling, sentence production). When we implement them as cmi5 packages, they should still draw from the shared vocabulary bank, sentence frames, and WIDA-aligned difficulty metadata so that content remains reusable across packages and lessons.
 
 ### Game Data Sources
 
@@ -739,6 +890,7 @@ Games use approved vocabulary items:
 - **Audio pronunciations**
 - **Part of speech**
 - **WIDA level**
+- **Sentence frames** (when provided by the lesson planner or language-support modules)
 
 ### Lesson Plan Browser Games
 
@@ -757,9 +909,9 @@ Games use approved vocabulary items:
 - Accessible from lesson plan browser module
 - Can be launched during lesson delivery
 
-### SCORM 2004 Package Generator
+### SCORM 2004 and cmi5 Package Generators
 
-**Purpose**: Generate SCORM 2004 compliant packages for LMS platforms (Moodle, Canvas, Blackboard, etc.).
+**Purpose**: Generate **SCORM 2004** and **cmi5/xAPI**-compliant packages for LMS platforms (Schoology, Moodle, Canvas, Blackboard, etc.).
 
 **SCORM 2004 Features**:
 - Sequencing and navigation
@@ -767,6 +919,17 @@ Games use approved vocabulary items:
 - Progress tracking
 - Score reporting
 - Completion status
+
+**cmi5 / xAPI Features**:
+- Launch packages as **cmi5 courses** with one or more Assignable Units (AUs).
+- Send **xAPI statements** (e.g. `answered`, `completed`, `passed`, `failed`) with vocabulary-item IDs, game type, difficulty level, and score.
+- Support **adaptive flows** at the package level: lower-performing students see easier items first; students answering correctly move to more challenging items.
+
+Adaptive behavior is driven by:
+
+- **Initial placement rules** (e.g. start at easier items for a given WIDA/ELD band).
+- **Branching logic inside games** (e.g. after N correct answers at current level, move up; after repeated difficulty, keep or lower level).
+- **Historical performance from Schoology or other LMSs** (when available via SCORM/cmi5/xAPI reports).
 
 **Package Structure**:
 ```
@@ -785,10 +948,37 @@ scorm_package.zip
 **Generation Process**:
 1. Select vocabulary items (from approved vocabulary)
 2. Select game type(s)
-3. Configure game parameters (difficulty, language mode, etc.)
+3. Configure game parameters (difficulty, language mode, WIDA/ELD level bands, etc.)
 4. Generate game HTML/JavaScript
-5. Package as SCORM 2004 zip file
-6. Store in `vocabulary_games.scorm_package_path`
+5. Package as SCORM 2004 or cmi5 zip file
+6. Store package path (e.g. `vocabulary_games.scorm_package_path` / `cmi5_package_path`)
+
+**Data capture and ethics:**
+
+- LMSs such as **Schoology** remain the **system of record** for grades; the app only receives **aggregated or anonymized performance data** needed to improve future lesson plans and packages (e.g. “students at WIDA 2–3 struggled with these word types”).
+- Any data pulled from LMS reports must follow the same **privacy, consent, and ethical rules** as the rest of the app (see assessment and analytics modules): clear purpose, minimal fields, secure storage, and transparency to teachers and schools.
+- Performance data from these packages feeds into the app’s **ODPAR (Observe–Document–Plan–Act–Review)** cycles so that vocabulary selection, sentence frames, and games can be iteratively improved from week to week, always under the same ethical guardrails.
+- All handling of student information (including LMS-derived data) must comply with **FERPA (Family Educational Rights and Privacy Act)** and any additional district or state privacy policies.
+- For **Schoology** specifically, the app must respect the **Board of Education’s implementation and data-governance rules**: we can only access assessment models and assessment databases that the Board explicitly authorizes. Integration work includes (a) studying the Board’s Schoology instance and data schemas, (b) mapping allowed assessment fields into our own assessment/analytics models, and (c) computing only the summary signals needed to inform **lesson planning and cmi5 exercise design**, never replicating or bypassing the Board’s own assessment systems.
+- The **ASSESSMENT_MODULE** will be the primary consumer of performance signals from both cmi5 packages and the teacher’s tablet app. Its assessment models will define **algorithms and formulas** that transform raw task data (e.g. item difficulty, accuracy, WIDA level, task type) into actionable indicators for lesson planning and vocabulary game design. Assessment tools in the tablet app should align with the **WIDA framework**, go beyond simple checklists, and favor **reusable patterns** (e.g. observation tools, quick rubrics, structured note forms) that can be used across classes and are easy for teachers to complete. The goal is to support **consistent, class-by-class evidence collection** that teachers can share with supervisors, typically by using **one concise assessment tool per class**, chosen to match that lesson’s objectives.
+
+### Tabs and learning/play areas inside each cmi5 package (future pattern)
+
+To maximize reuse of vocabulary and sentence frames, each cmi5 package can follow a **standard three-tab layout**, all backed by the same data:
+
+- **Tab 1 – Learn**
+  - Flashcards (word–definition–image–audio) drawn from `vocabulary_items`.
+  - Simple matching or listen-and-select activities.
+  - Example sentences and sentence frames aligned to the lesson’s WIDA level and Key Use.
+- **Tab 2 – Practice**
+  - Cloze and drag-into-frame items using the same word set and frames.
+  - Sorting/categorization by vocabulary category (everyday, cross-disciplinary, technical) or part of speech.
+  - Labeling diagrams or short texts where students apply vocabulary in context.
+- **Tab 3 – Play / Challenge**
+  - More game-like activities (crosswords, word search, Bingo, memory, quests) using exactly the same vocabulary.
+  - Optional timed/streak/levelled modes that integrate with the adaptive logic and xAPI tracking.
+
+This layout keeps **learning, practice, and play** in one package, reduces redundancy in content creation, and makes it easy for students to revisit the same vocabulary across multiple modalities within Schoology.
 
 **Image Handling in SCORM**:
 - Only approved images included in package

@@ -289,7 +289,7 @@ OUTPUT: WIDA-Enhanced Bilingual Lesson Plan (Markdown Table)
 - `../co_teaching/portuguese_misconceptions.json` - High-frequency Portuguese→English interference patterns (NEW - MVP)
 - `../co_teaching/co_teaching_models.csv` - Friend & Cook co-teaching models reference
 - `../co_teaching/co_teaching_strategies.pdf` - Visual co-teaching guide (757KB)
-- `../prompt_v4.md` - Transformation engine with modular v2.0 integration, co-teaching, and linguistic misconceptions
+- [`prompt_v4.md`](prompt_v4.md) - Transformation engine with modular v2.0 integration, co-teaching, and linguistic misconceptions
 - `bilingual_strategies_dictionary.md` - Human reference guide (this directory)
 - `../input/Lesson Plan Template SY'25-26.docx` - District template for DOCX generation
 

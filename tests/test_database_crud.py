@@ -10,6 +10,8 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from backend.database import Database
 
+pytestmark = pytest.mark.unit
+
 
 def test_database_crud_structured_names():
     """Create/read/update user and slot with first_name/last_name; cleanup."""

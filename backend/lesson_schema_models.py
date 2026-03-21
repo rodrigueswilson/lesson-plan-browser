@@ -7,6 +7,7 @@ from __future__ import annotations
 from pydantic import BaseModel, ConfigDict, Field, RootModel, field_validator
 
 from backend.lesson_schema_enums import ModelName, PatternId
+from backend.models import WeekOf
 from backend.lesson_schema_support import BilingualOverlay, SupportsByLevel
 from backend.lesson_schema_vocabulary import (
     Homework,
@@ -18,11 +19,10 @@ from backend.lesson_schema_vocabulary import (
 
 
 class Metadata(BaseModel):
-    week_of: str = Field(
+    week_of: WeekOf = Field(
         ...,
-        description="Week date range (MM/DD-MM/DD)",
-        examples=["10/6-10/10", "3/15-3/19"],
-        pattern="^\\d{1,2}/\\d{1,2}-\\d{1,2}/\\d{1,2}$",
+        description="Week date range (MM/DD-MM/DD), accepts MM-DD-MM-DD or MM/DD-MM/DD",
+        examples=["10/06-10/10", "03/15-03/19"],
     )
     grade: str = Field(
         ..., description="Grade level", examples=["K", "1", "2", "7", "12"]
@@ -157,7 +157,10 @@ class Phase(BaseModel):
 class EllStrategy(BaseModel):
     strategy_id: str = Field(
         ...,
-        description="Strategy identifier from strategy pack",
+        description=(
+            "Must exactly match the strategy pack JSON `id` (same string as in "
+            "strategies_pack_v2 category files and _index.json)"
+        ),
         examples=["cognate_awareness", "graphic_organizers", "sentence_frames"],
         pattern="^[a-z_]+$",
     )

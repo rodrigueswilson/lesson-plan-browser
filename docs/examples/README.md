@@ -71,7 +71,7 @@ Use these examples to:
 
 ## Related Documentation
 
-- **[Prompt Engine](../../prompt_v4.md)** - Transformation prompt with all protocols
+- **[Prompt Engine](../prompt_v4.md)** - Transformation prompt with all protocols
 - **[Strategy Dictionary](../bilingual_strategies_dictionary.md)** - Complete strategy reference
 - **[Architecture](../architecture_001.md)** - System design and data flow
 - **[WIDA Files](../../wida/)** - WIDA 2020 framework and proficiency adaptations

@@ -118,7 +118,7 @@ class TestDayHintNormalization:
 class TestPlacementObservability:
     """Test placement outcome tracking."""
 
-    @patch("tools.docx_renderer.logger")
+    @patch("tools.docx_renderer.table_cell.fill_day.logger")
     def test_fill_day_logs_placement_outcome(self, mock_logger):
         """_fill_day logs placement outcomes."""
         from pathlib import Path
@@ -194,7 +194,7 @@ class TestPlacementObservability:
 
         assert placement_logged, "Should log placement outcome"
 
-    @patch("tools.docx_renderer.logger")
+    @patch("tools.docx_renderer.hyperlink_placement.logger")
     def test_restore_hyperlinks_logs_fallback(self, mock_logger):
         """_restore_hyperlinks logs fallback placement."""
         renderer = DOCXRenderer("input/Lesson Plan Template SY'25-26.docx")
@@ -314,7 +314,7 @@ class TestNoSchoolFilteringDiagnostics:
             "Tracked links should have no day_hint"
         )
 
-    @patch("backend.telemetry.logger")
+    @patch("tests.test_hyperlink_improvements.logger")
     def test_no_school_filtering_logs_diagnostics(self, mock_logger):
         """No-School filtering logs diagnostics for preserved links."""
         # This simulates the logging in batch_processor.py

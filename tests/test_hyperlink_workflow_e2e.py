@@ -11,6 +11,7 @@ This test validates the complete hyperlink journey:
 Tests both the happy path and edge cases.
 """
 
+import os
 import sys
 import unittest
 from pathlib import Path
@@ -18,6 +19,8 @@ import tempfile
 import shutil
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
+
+_REPO_ROOT = Path(__file__).resolve().parents[1]
 
 from tools.docx_parser import DOCXParser
 from tools.docx_renderer import DOCXRenderer
@@ -30,12 +33,24 @@ class TestHyperlinkWorkflowE2E(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Set up test fixtures."""
-        cls.template_file = Path(r"d:\LP\input\Lesson Plan Template SY'25-26.docx")
-        cls.test_input_file = Path(r'F:\rodri\Documents\OneDrive\AS\Daniela LP\25 W43\Morais 10_20_25 - 10_24_25.docx')
-        
+        cls.template_file = _REPO_ROOT / "input" / "Lesson Plan Template SY'25-26.docx"
+        env_in = (os.environ.get("HYPERLINK_E2E_INPUT") or "").strip()
+        cls.test_input_file = Path(env_in) if env_in else Path()
+
+        if not cls.template_file.is_file():
+            raise unittest.SkipTest(
+                f"Missing district template (expected {cls.template_file}). "
+                "Place the template DOCX under input/ or skip this module."
+            )
+        if not cls.test_input_file.is_file():
+            raise unittest.SkipTest(
+                "Set HYPERLINK_E2E_INPUT to an absolute path of a lesson .docx that "
+                "contains hyperlinks (schema v2.0). CI omits this; run locally when needed."
+            )
+
         # Create temp directory for outputs
         cls.temp_dir = Path(tempfile.mkdtemp())
-        
+
         # Run the complete workflow once in setup
         cls._run_complete_workflow()
     

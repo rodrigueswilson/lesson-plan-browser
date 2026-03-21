@@ -247,19 +247,21 @@ def test_gpt5_mini_specific():
     print("[OK] All GPT-5 Mini specific tests passed\n")
 
 
+@pytest.mark.skipif(
+    not os.environ.get("RUN_STRUCTURED_OUTPUTS_API"),
+    reason="Set RUN_STRUCTURED_OUTPUTS_API=1 to run live OpenAI structured-output transform (slow, uses API quota)",
+)
 @pytest.mark.timeout(300)
 def test_integration_with_real_api():
     """Test actual LLM call with structured outputs (requires API key; can take minutes)."""
     print("=" * 60)
     print("TEST 5: Integration Test (Real API)")
     print("=" * 60)
-    
+
     api_key = os.getenv("OPENAI_API_KEY") or os.getenv("LLM_API_KEY")
-    
+
     if not api_key:
-        print("[SKIP] Skipping integration test - no API key found")
-        print("   Set OPENAI_API_KEY environment variable to run this test")
-        return
+        pytest.skip("OPENAI_API_KEY or LLM_API_KEY required when RUN_STRUCTURED_OUTPUTS_API=1")
     
     # Try GPT-5 Mini first (user's actual model), then fallback to gpt-4-turbo-preview
     test_models = ["gpt-5-mini", "gpt-4-turbo-preview"]

@@ -56,9 +56,13 @@ class DiagnosticLogger:
         if stage not in self.stage_counters:
             self.stage_counters[stage] = 0
         self.stage_counters[stage] += 1
-        
-        # Write to individual stage file with counter
-        stage_file = self.session_dir / f"{stage}_{self.stage_counters[stage]:03d}.json"
+        count = self.stage_counters[stage]
+
+        # First write uses plain name (stable for tests); repeats get a numeric suffix
+        if count == 1:
+            stage_file = self.session_dir / f"{stage}.json"
+        else:
+            stage_file = self.session_dir / f"{stage}_{count:03d}.json"
         with open(stage_file, 'w', encoding='utf-8') as f:
             json.dump(entry, f, indent=2, ensure_ascii=False)
     

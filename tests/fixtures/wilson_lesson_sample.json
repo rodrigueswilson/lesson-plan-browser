@@ -695,7 +695,7 @@
                 "proficiency_levels": "Levels 2-4"
               },
               {
-                "strategy_id": "peer_tutoring_bilingual",
+                "strategy_id": "think_pair_share",
                 "strategy_name": "Peer Tutoring (Portuguese/English)",
                 "implementation": "Pair stronger bilingual peers with emerging writers; the stronger peer helps translate the student's Portuguese idea into an English sentence using frames.",
                 "proficiency_levels": "Levels 1-4"
@@ -951,7 +951,7 @@
                 "proficiency_levels": "Levels 2-4"
               },
               {
-                "strategy_id": "peer_tutoring_bilingual",
+                "strategy_id": "think_pair_share",
                 "strategy_name": "Peer Tutoring (Bilingual Pairs)",
                 "implementation": "Pair students so one stronger English speaker supports vocabulary while bilingual teacher supports L1 explanations for clarity.",
                 "proficiency_levels": "Levels 2-4"
@@ -1073,7 +1073,7 @@
                 "proficiency_levels": "Levels 2-4"
               },
               {
-                "strategy_id": "peer_tutoring_bilingual",
+                "strategy_id": "think_pair_share",
                 "strategy_name": "Peer Tutoring (Bilingual Pairs)",
                 "implementation": "Pair a stronger English speaker with a Portuguese speaker to retell the problem in Portuguese then produce the English answer together using frames.",
                 "proficiency_levels": "Levels 2-4"
@@ -1797,7 +1797,7 @@
                 "proficiency_levels": "Levels 2-5"
               },
               {
-                "strategy_id": "peer_tutoring_bilingual",
+                "strategy_id": "think_pair_share",
                 "strategy_name": "Bilingual Peer Tutoring",
                 "implementation": "Pair a student with stronger English with one who benefits from Portuguese explanations; allow short peer-teaching in L1 then English practice.",
                 "proficiency_levels": "Levels 1-4"

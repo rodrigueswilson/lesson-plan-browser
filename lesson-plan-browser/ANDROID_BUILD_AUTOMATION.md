@@ -29,7 +29,35 @@ This document records the current end-to-end process for producing tablet APKs, 
 
 ---
 
-## 2. Environment Management
+## 2. Canonical tablet APK build (use this for every tablet)
+
+**The only supported way** to build a tablet APK that uses the local database after push is to run from `lesson-plan-browser/frontend`:
+
+```bash
+npm run android:build
+```
+
+This script sets `TAURI_ENV_PLATFORM=android` and `TAURI_ENV_TARGET_TRIPLE=aarch64-linux-android` so the frontend is built with the Android env (including `VITE_ENABLE_STANDALONE_DB=true`). Without that, the app tries the HTTP API and shows "No weeks available" after you push a DB. For the contract that keeps the tablet working with the local DB (and how to avoid breaking it), see [docs/guides/TABLET_STANDALONE_DB.md](../../docs/guides/TABLET_STANDALONE_DB.md).
+
+**Per-user flow:** The **same APK** is used for every tablet. The **database** you push is user-specific: on the PC, use the Tablet tab to export a user-only DB for that tablet's owner (e.g. Wilson Rodrigues), then push that DB to the tablet. So "right conditions for each user" means: one correct APK build + one user-specific DB push per tablet.
+
+**Export and DB schema:** The "Export user-only tablet DB" flow (Tablet tab or `POST /api/tablet/export-db`) is designed to work with a changing main DB. The export uses the **tablet** schema (Tauri migrations under `lesson-plan-browser/frontend/src-tauri/migrations/`) as the destination and copies from the main DB column-by-column: columns present in both are copied; extra columns in the main DB are ignored; columns in the tablet schema but missing in the main DB get NULL or a safe default. So new data (e.g. 2025 lesson plans) and extra columns in the main DB do not break the export. If you add new **required** columns to the main DB that the tablet app needs, add the same columns to the corresponding tablet migration file so the exported DB includes them.
+
+**Build failure (rustc crash on x86_64):** If the build fails with `STATUS_ACCESS_VIOLATION` when compiling for `x86_64-linux-android`, the `android:build` script is already set to build only the `aarch64` target (physical tablets). Ensure you use `npm run android:build` as-is; it passes `--target aarch64` so the x86_64 target is skipped. If you need an x86_64 emulator build, try building from a clean state or a different machine where rustc does not crash for that target.
+
+**Troubleshooting:** If the tablet shows "No weeks available" after push:
+1. Confirm the APK was built with `npm run android:build` (or with `TAURI_ENV_PLATFORM=android` and `TAURI_ENV_TARGET_TRIPLE=aarch64-linux-android` set when building).
+2. Confirm the exported DB contains that user's data: `SELECT COUNT(*) FROM users;` and `SELECT COUNT(*) FROM weekly_plans WHERE user_id = '<user_id>';`.
+3. Force-stop the app before pushing the DB, then run the copy step (step 4 in section 4.2) so the app sees the new file on next launch.
+4. Check app logs (rebuild the APK first so debug logging is present): run `adb logcat | findstr /i "LP DB"`. You should see:
+   - `[DB] Initializing database at: ...` and either `[DB] Database initialized with existing data. users=X weekly_plans=Y` or `[DB] WARNING: Database is empty`.
+   - `[LP] userApi.list STANDALONE_DB_ENABLED=true isStandaloneMode=true canUseLocalDb=true` if the build has standalone DB enabled; if you see `STANDALONE_DB_ENABLED=false` the APK was built without the Android env (rebuild with `npm run android:build` or with those env vars set).
+   - `[LP] [API] Local DB users count=1` (or higher) if the local DB is used and has users; `[LP] [API] Local DB query failed: ...` if the DB query failed (e.g. "Database not initialized").
+   - `[LP] [API] getRecentWeeks local DB weeks count=N` if weeks are loaded from the local DB; if N is 0 the DB has no `weekly_plans` for that user.
+
+---
+
+## 3. Environment Management
 
 Vite only exposes variables prefixed with `VITE_`. Instead of editing `.env` in place, we store committed templates in `frontend/env/`:
 
@@ -57,9 +85,9 @@ The npm scripts wrap this behavior:
 
 ---
 
-## 3. Manual Build Flow (Current State)
+## 4. Manual Build Flow (Current State)
 
-### 3.1 Debug loop (fast iteration)
+### 4.1 Debug loop (fast iteration)
 
 1. **Start the Tauri Android dev driver** (keep running):
    ```powershell
@@ -74,7 +102,7 @@ The npm scripts wrap this behavior:
    adb -s R52Y90L71YP shell am start -n com.lessonplanner.browser/.MainActivity
    ```
 
-### 3.2 Tablet-ready bundle (standalone mode)
+### 4.2 Tablet-ready bundle (standalone mode)
 
 1. **Force android mode + production env**:
    ```powershell
@@ -90,19 +118,18 @@ The npm scripts wrap this behavior:
    ```
 3. **Install + restart** (same as debug flow).
 
-4. **Seed / refresh the local SQLite DB** (optional but often required):
+4. **Seed / refresh the local SQLite DB** (optional but often required). Force-stop the app first so the DB file isn't locked, then push and copy into the app's `databases/` directory. Remove any `-shm`/`-wal` sidecar files so SQLite opens the new DB cleanly:
    ```powershell
-   adb -s R52Y90L71YP push data\lesson_planner.db /data/local/tmp/lesson_planner.db
-   adb -s R52Y90L71YP shell run-as com.lessonplanner.browser mkdir -p databases
-   adb -s R52Y90L71YP shell run-as com.lessonplanner.browser cp /data/local/tmp/lesson_planner.db databases/lesson_planner.db
-   adb -s R52Y90L71YP shell rm /data/local/tmp/lesson_planner.db
    adb -s R52Y90L71YP shell am force-stop com.lessonplanner.browser
+   adb -s R52Y90L71YP push data\lesson_planner.db /data/local/tmp/lesson_planner.db
+   adb -s R52Y90L71YP shell "run-as com.lessonplanner.browser sh -c 'mkdir -p databases; cp /data/local/tmp/lesson_planner.db databases/lesson_planner.db; rm -f databases/lesson_planner.db-shm databases/lesson_planner.db-wal'"
+   adb -s R52Y90L71YP shell rm /data/local/tmp/lesson_planner.db
    adb -s R52Y90L71YP shell am start -n com.lessonplanner.browser/.MainActivity
    ```
 
 ---
 
-## 4. Automation Blueprint
+## 5. Automation Blueprint
 
 To avoid typing the same commands repeatedly, we can wrap the workflow in a PowerShell script (Python would work too). Suggested entry point: `scripts/build-tablet.ps1`.
 
@@ -169,7 +196,7 @@ These wrappers allow a single double-click (or CI job) to run the entire sequenc
 
 ---
 
-## 4.1 Python automation (`scripts/tablet_build.py`)
+## 5.1 Python automation (`scripts/tablet_build.py`)
 
 For a cross-platform option (and for richer logging/archiving), we now have `scripts/tablet_build.py`. Key features:
 
@@ -198,7 +225,7 @@ Use this script if you prefer Python-based orchestration or want timestamped APK
 
 ---
 
-## 5. Future Enhancements
+## 6. Future Enhancements
 
 1. **CI Integration** – Wire the PowerShell script into GitHub Actions to produce nightly debug APKs, archive them as artifacts, and optionally push to a device farm.
 2. **Signed release flow** – Extend the script to run `assembleArm64Release`, call `apksigner`, and upload to an internal distribution channel.
@@ -207,7 +234,7 @@ Use this script if you prefer Python-based orchestration or want timestamped APK
 
 ---
 
-## 6. Related Docs
+## 7. Related Docs
 
 - `TABLET_INSTALLATION_GUIDE.md` – high-level steps for installing on physical hardware.
 - `PHYSICAL_TABLET_BUILD_PLAN.md` – historical build plan (prepend a link pointing to this new automation-focused guide).

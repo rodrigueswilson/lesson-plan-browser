@@ -6,7 +6,7 @@ This document lists **refactoring and fix priorities** for the codebase and give
 
 ## 0. Multi-session plan and progress (update this as you go)
 
-**Last updated:** 2026-02-22 (Session 28: six biggest files under 400 LOC — validate_threshold_change_v2, backend/llm/validation, docx_style_utils, backend/routers/plans, slot_configuration_helper, test_json_merger_samples; see 0.1, 0.5, 1.4.)
+**Last updated:** 2026-02-23 (LOC refresh: top files in 0.5; maintenance item 6.)
 
 ### 0.1 Progress summary
 
@@ -49,16 +49,49 @@ Work in order when possible; fix test suite (Session 1) before large refactors s
 5. **Merge to master:** When the branch is fully tested and reviewed, merge to `master` (e.g. via PR or direct merge per your process). Then update section 0.1 and 1.4 in this document: move the item to "Done" and add a short note under 1.4 if needed.
 6. **Next session:** Start from updated `master` and the next row in the table.
 
-**Running the full suite:** The suite has 650+ tests and can take several minutes. Run in your own terminal: `python -m pytest tests/ -q` (or `-v`). `pytest.ini` sets `--timeout=120` per test (requires `pytest-timeout`); if a test hits 120s it will fail instead of hanging. To override: `python -m pytest tests/ -q --timeout=180` or `--timeout=0` to disable. For a quick check: `python -m pytest tests/test_api.py tests/test_database_crud.py tests/test_week_calculation.py -q`. **TestClient/httpx:** Tests require `httpx>=0.24,<0.28` for Starlette TestClient compatibility (see `requirements.txt`). **DB-dependent tests:** Use the shared `isolated_db` (or `temp_db` / `test_db` / `db`) fixture from `tests/conftest.py` so each test gets an initialized, isolated SQLite DB; do not use `session.cursor()` — use `session.execute(text("..."))` with SQLModel Session.
+**Running tests:** Canonical commands are in [CONTRIBUTING](../CONTRIBUTING.md) (Test before commit). **Full suite:** `python -m pytest tests/ -q` (650+ tests, several minutes; `pytest.ini` sets `--timeout=120` per test). **CI-parity / quick check:** `python -m pytest tests/ -m unit -q` (same marker slice as SQLite CI; see `pytest.ini`). To override timeout: `--timeout=180` or `--timeout=0`. **TestClient/httpx:** Tests require `httpx>=0.24,<0.28` for Starlette TestClient compatibility (see `requirements.txt`). **DB-dependent tests:** Use the shared `isolated_db` (or `temp_db` / `test_db` / `db`) fixture from `tests/conftest.py` so each test gets an initialized, isolated SQLite DB; do not use `session.cursor()` — use `session.execute(text("..."))` with SQLModel Session.
 
 ### 0.4 How to update this document after each session
 
 - **Section 0.1 (Progress summary):** Move completed priorities from "Not started" to "Done"; put the current session's work in "In progress" while active.
 - **Section 0.2:** Leave as-is unless you add or reorder sessions.
 - **Section 1.4 (Done):** Add a one-line bullet per completed refactor (branch name and what was done), e.g. `- **Split backend/api.py** — Branch refactor/split-api; routers by domain (see session 2).`
+- **Section 0.5 (Line counts):** After bigger changes or periodically, run `python tools/refactor/count_loc.py --markdown` from project root and refresh the "Top N by LOC" table below (and optionally the area subsections). Keeps refactor targets visible.
 - **Last updated:** Set to the date when you last edited this file.
 
-### 0.5 Line counts (backend LLM, post–Session 23; docx_renderer post–Session 24 slim)
+### 0.5 Line counts
+
+**Top 25 by LOC (refreshed 2026-02-23).** Run `python tools/refactor/count_loc.py --markdown` to regenerate.
+
+| Lines | File |
+| -----:| ------ |
+| 399 | `tools/diagnostics/analyze_objectives_layout.py` |
+| 396 | `backend/models.py` |
+| 394 | `backend/performance_tracker.py` |
+| 394 | `backend/database/metrics.py` |
+| 394 | `backend/database/sqlite_impl.py` |
+| 394 | `tools/docx_renderer/table_cell/fill_cell.py` |
+| 388 | `tools/diagnostics/comprehensive_diagnostic.py` |
+| 387 | `backend/routers/users.py` |
+| 387 | `tools/batch_processor_pkg/orchestrator.py` |
+| 380 | `backend/routers/schedule.py` |
+| 378 | `backend/models_slot.py` |
+| 377 | `backend/utils/metadata_utils.py` |
+| 372 | `tools/json_repair_fixes.py` |
+| 370 | `tools/batch_processor_pkg/combined_original_render.py` |
+| 368 | `tools/utilities/simulate_improvements.py` |
+| 364 | `tools/docx_parser/parser.py` |
+| 362 | `backend/llm/prompt_builder.py` |
+| 360 | `tools/batch_processor_pkg/combine_render/multi_slot.py` |
+| 359 | `tools/docx_renderer/table_cell/fill_day.py` |
+| 351 | `backend/file_manager.py` |
+| 346 | `backend/routers/lesson_steps.py` |
+| 346 | `tools/validate_threshold_change_v2.py` |
+| 346 | `tools/diagnostics/comprehensive_analysis_both_folders.py` |
+| 345 | `tools/batch_processor_pkg/slot_flow_extract.py` |
+| 344 | `backend/lesson_schema_models.py` |
+
+**By area (backend LLM, docx_renderer, etc.; historical reference):**
 
 | Lines | File |
 | -----:| ------ |

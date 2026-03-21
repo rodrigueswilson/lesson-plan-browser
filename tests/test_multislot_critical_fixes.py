@@ -15,6 +15,11 @@ from tools.docx_renderer import DOCXRenderer
 # Use the actual template file for testing
 TEMPLATE_PATH = Path("d:/LP/input/Lesson Plan Template SY'25-26.docx")
 
+# Minimal valid PNG (1x1) for inject_image_inline base64 decode
+_TINY_PNG_B64 = (
+    "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmWQQAAAABJRU5ErkJggg=="
+)
+
 
 class TestCriticalFixes:
     """Test critical fixes for production readiness."""
@@ -166,7 +171,7 @@ class TestCriticalFixes:
         
         images = [
             {
-                'data': 'img1',
+                'data': _TINY_PNG_B64,
                 'caption': 'Science Image',
                 'filename': 'science.jpg',
                 '_source_slot': 1,
@@ -175,7 +180,7 @@ class TestCriticalFixes:
                 'day_hint': 'Wednesday'
             },
             {
-                'data': 'img2',
+                'data': _TINY_PNG_B64,
                 'caption': 'History Image',
                 'filename': 'history.jpg',
                 '_source_slot': 1,  # Same slot

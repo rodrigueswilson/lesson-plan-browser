@@ -129,6 +129,28 @@ class DOCXRenderer:
             subject=subject,
         )
 
+    def _fill_multi_slot_day(
+        self,
+        table,
+        col_idx: int,
+        slots: List[Dict],
+        metadata: Dict = None,
+        day_name: str = None,
+        pending_hyperlinks: List[Dict] = None,
+        pending_images: List[Dict] = None,
+    ) -> None:
+        """Fill multiple slots for one day (delegates to table_cell; used by tests and callers)."""
+        table_cell.fill_multi_slot_day(
+            self,
+            table,
+            col_idx,
+            slots,
+            metadata=metadata,
+            day_name=day_name,
+            pending_hyperlinks=pending_hyperlinks,
+            pending_images=pending_images,
+        )
+
     def _fill_cell(
         self,
         table,

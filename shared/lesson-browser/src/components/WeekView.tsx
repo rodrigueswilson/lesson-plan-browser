@@ -1,5 +1,5 @@
 import { Card } from '@lesson-ui/Card';
-import { scheduleApi, ScheduleEntry, planApi, lessonApi } from '@lesson-api';
+import { scheduleApi, ScheduleEntry, planApi, lessonApi, normalizeWeekOfForMatch } from '@lesson-api';
 import { useStore } from '../store/useStore';
 import { useState, useEffect } from 'react';
 import { getSubjectColors, meetingPeriodColors } from '../utils/scheduleColors';
@@ -192,7 +192,8 @@ export function WeekView({ weekOf, onLessonClick, onDayClick, currentLessonId }:
         try {
           const plansResponse = await planApi.list(currentUser.id, 10, currentUser.id);
           const plans = plansResponse.data || [];
-          const plan = plans.find(p => p.week_of === weekOf);
+          const canonicalWeek = normalizeWeekOfForMatch(weekOf);
+          const plan = plans.find(p => p.week_of === weekOf) ?? (canonicalWeek ? plans.find(p => normalizeWeekOfForMatch(p.week_of) === canonicalWeek) : undefined);
           
           console.log('[WeekView] Plan lookup for weekOf:', {
             weekOf: weekOf,

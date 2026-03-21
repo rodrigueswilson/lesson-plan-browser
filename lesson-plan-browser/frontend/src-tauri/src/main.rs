@@ -3,6 +3,12 @@
 
 mod db_commands;
 
+#[tauri::command]
+fn log_to_native(_app: tauri::AppHandle, message: String) -> Result<(), String> {
+    eprintln!("[LP] {}", message);
+    Ok(())
+}
+
 // For desktop builds, use main() as entry point
 // For Android builds, use lib.rs::run() as entry point
 #[cfg(not(target_os = "android"))]
@@ -22,6 +28,7 @@ fn main() {
         .plugin(tauri_plugin_http::init())
         .plugin(tauri_plugin_shell::init())
         .invoke_handler(tauri::generate_handler![
+            log_to_native,
             db_commands::sql_query,
             db_commands::sql_execute,
             db_commands::get_app_data_dir,

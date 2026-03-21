@@ -1,7 +1,7 @@
 """Performance metrics and analytics operations for SQLite database."""
 
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, List, Optional
 
 from sqlalchemy import case, func, or_
@@ -12,6 +12,10 @@ from backend.schema import PerformanceMetric, WeeklyPlan
 from backend.database.metrics_aggregate import get_aggregate_stats
 
 logger = logging.getLogger(__name__)
+
+
+def _utc_now_naive() -> datetime:
+    return datetime.now(timezone.utc).replace(tzinfo=None)
 
 
 def save_performance_metric(
@@ -75,7 +79,7 @@ def save_performance_metric(
 def delete_old_metrics(db, days: int = 30) -> int:
     """Delete performance metrics older than specified days."""
     try:
-        cutoff_date = datetime.utcnow() - timedelta(days=days)
+        cutoff_date = _utc_now_naive() - timedelta(days=days)
         with Session(db.engine) as session:
             statement = delete(PerformanceMetric).where(
                 PerformanceMetric.started_at < cutoff_date
@@ -157,7 +161,7 @@ def get_daily_breakdown(
 ) -> List[Dict[str, Any]]:
     """Get daily breakdown of activity."""
     try:
-        start_date = datetime.utcnow() - timedelta(days=days)
+        start_date = _utc_now_naive() - timedelta(days=days)
 
         with Session(db.engine) as session:
             metrics_query = (
@@ -165,6 +169,8 @@ def get_daily_breakdown(
                     func.date(PerformanceMetric.started_at).label("date"),
                     func.count(PerformanceMetric.id).label("operations"),
                     func.sum(PerformanceMetric.cost_usd).label("cost_usd"),
+                    func.sum(PerformanceMetric.duration_ms).label("duration_ms"),
+                    func.sum(PerformanceMetric.tokens_total).label("tokens"),
                 )
                 .where(PerformanceMetric.started_at >= start_date)
                 .group_by(func.date(PerformanceMetric.started_at))
@@ -200,9 +206,18 @@ def get_daily_breakdown(
                         date_iso = row.date
                     else:
                         date_iso = str(row.date)
-                    daily_dict[date_str] = {"date": date_iso, "operations": 0, "cost_usd": 0, "plans": 0}
+                    daily_dict[date_str] = {
+                        "date": date_iso,
+                        "operations": 0,
+                        "cost_usd": 0,
+                        "plans": 0,
+                        "duration_ms": 0,
+                        "tokens": 0,
+                    }
                 daily_dict[date_str]["operations"] = row.operations or 0
                 daily_dict[date_str]["cost_usd"] = float(row.cost_usd or 0)
+                daily_dict[date_str]["duration_ms"] = float(row.duration_ms or 0)
+                daily_dict[date_str]["tokens"] = int(row.tokens or 0)
 
             for row in plans_results:
                 date_str = str(row.date)
@@ -213,10 +228,19 @@ def get_daily_breakdown(
                         date_iso = row.date
                     else:
                         date_iso = str(row.date)
-                    daily_dict[date_str] = {"date": date_iso, "operations": 0, "cost_usd": 0, "plans": 0}
+                    daily_dict[date_str] = {
+                        "date": date_iso,
+                        "operations": 0,
+                        "cost_usd": 0,
+                        "plans": 0,
+                        "duration_ms": 0,
+                        "tokens": 0,
+                    }
                 daily_dict[date_str]["plans"] = row.plans or 0
 
-            return list(daily_dict.values())
+            rows = list(daily_dict.values())
+            rows.sort(key=lambda r: r["date"], reverse=True)
+            return rows
     except Exception as e:
         logger.error(f"Error getting daily breakdown: {e}")
         return []
@@ -227,7 +251,7 @@ def get_session_breakdown(
 ) -> List[Dict[str, Any]]:
     """Get session-by-session breakdown."""
     try:
-        start_date = datetime.utcnow() - timedelta(days=days)
+        start_date = _utc_now_naive() - timedelta(days=days)
 
         with Session(db.engine) as session:
             query = select(WeeklyPlan).where(WeeklyPlan.generated_at >= start_date)
@@ -260,7 +284,7 @@ def get_operation_stats(
 ) -> List[Dict[str, Any]]:
     """Get time breakdown by operation type."""
     try:
-        start_date = datetime.utcnow() - timedelta(days=days)
+        start_date = _utc_now_naive() - timedelta(days=days)
 
         with Session(db.engine) as session:
             query = (
@@ -298,7 +322,7 @@ def get_error_stats(
 ) -> Dict[str, Any]:
     """Get success vs failure stats with error distribution."""
     try:
-        start_date = datetime.utcnow() - timedelta(days=days)
+        start_date = _utc_now_naive() - timedelta(days=days)
 
         with Session(db.engine) as session:
             query_total = select(
@@ -361,7 +385,7 @@ def get_parallel_processing_stats(
 ) -> Dict[str, Any]:
     """Get parallel processing statistics."""
     try:
-        start_date = datetime.utcnow() - timedelta(days=days)
+        start_date = _utc_now_naive() - timedelta(days=days)
 
         with Session(db.engine) as session:
             query = select(

@@ -332,7 +332,7 @@ When adding or modifying co-teaching models:
 - **[Architecture](../docs/architecture_001.md)** - System architecture
 - **[Strategy Pack](../strategies_pack_v2/)** - Bilingual strategies
 - **[WIDA Files](../wida/)** - WIDA framework and adaptations
-- **[Prompt Engine](../prompt_v4.md)** - Transformation prompt
+- **[Prompt Engine](../docs/prompt_v4.md)** - Transformation prompt
 
 ---
 

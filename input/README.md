@@ -105,7 +105,7 @@ Primary teacher lesson plans should include:
 
 ## Related Documentation
 
-- **[Prompt Engine](../prompt_v4.md)** - Transformation prompt
+- **[Prompt Engine](../docs/prompt_v4.md)** - Transformation prompt
 - **[Architecture](../docs/architecture_001.md)** - System design
 - **[Examples](../docs/examples/)** - Sample outputs
 - **[App Overview](../docs/app_overview.md)** - Document processing pipeline

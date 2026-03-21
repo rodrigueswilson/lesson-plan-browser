@@ -1,6 +1,8 @@
 # Deprecated Files
 
-Legacy files and previous versions superseded by current production system. These files are preserved for reference and historical context.
+**Canonical lesson prompt (production):** [`docs/prompt_v4.md`](../../../prompt_v4.md) — use that file, not the copies below, for current strategy counts, `ell_support` rules, and WIDA paths.
+
+Legacy files and previous versions superseded by current production system. These files are preserved for reference and historical context. Numeric limits and strategy names in archived prompts may be **obsolete**.
 
 ## Deprecation Policy
 

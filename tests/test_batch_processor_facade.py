@@ -14,6 +14,8 @@ from tools.batch_processor import (
     get_tracker,
 )
 
+pytestmark = pytest.mark.unit
+
 
 def test_facade_imports():
     """Public API is importable from tools.batch_processor."""

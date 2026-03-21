@@ -1037,34 +1037,6 @@
         }
       }
     },
-    "peer_tutoring_bilingual": {
-      "strategy_id": "peer_tutoring_bilingual",
-      "wida_alignment": {
-        "key_language_uses": ["Inform", "Explain"],
-        "primary_dimension": "sentence",
-        "assessment_modes": ["interpersonal", "presentational"]
-      },
-      "proficiency_adaptations": {
-        "levels_1_2": {
-          "implementation": "Same-L1 pairing for comprehension; English rehearsal for output",
-          "scaffolds": ["Bilingual pairing", "Cue cards", "Modeled prompts"],
-          "language_functions": ["Ask", "Answer", "Repeat"],
-          "assessment": "Checklists for tutoring moves; simple oral checks"
-        },
-        "levels_3_4": {
-          "implementation": "Structured tutoring scripts with frames and goal tracking",
-          "scaffolds": ["Scripts", "Frames", "Progress logs"],
-          "language_functions": ["Explain", "Clarify", "Paraphrase"],
-          "assessment": "Goal attainment evidence; tutor logs"
-        },
-        "levels_5_6": {
-          "implementation": "Content-specific tutoring with academic discourse and metacognitive prompts",
-          "scaffolds": ["Discourse frames", "Question stems", "Reflection prompts"],
-          "language_functions": ["Model", "Evaluate", "Synthesize"],
-          "assessment": "Tutor/tutee reflections; observed academic discourse"
-        }
-      }
-    },
     "contrastive_analysis": {
       "strategy_id": "contrastive_analysis",
       "wida_alignment": {

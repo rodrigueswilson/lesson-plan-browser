@@ -32,6 +32,12 @@ pytest tests/ -q -k "docx or renderer"
 pytest tests/test_api.py tests/test_database_crud.py -q
 ```
 
+**CI parity** (SQLite GitHub Actions; pytest marker `unit` — see [CONTRIBUTING](../../CONTRIBUTING.md)):
+
+```bash
+python -m pytest tests/ -m unit -q
+```
+
 ## References
 
 - [GIT_DURING_REFACTORING.md](GIT_DURING_REFACTORING.md)

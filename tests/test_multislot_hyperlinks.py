@@ -11,9 +11,11 @@ from docx import Document
 from docx.shared import Pt
 from tools.docx_renderer import DOCXRenderer
 
+pytestmark = pytest.mark.unit
 
-# Use the actual template file for testing
-TEMPLATE_PATH = Path("d:/LP/input/Lesson Plan Template SY'25-26.docx")
+_REPO_ROOT = Path(__file__).resolve().parents[1]
+# District template (repo-relative); same path convention as hyperlink E2E tests
+TEMPLATE_PATH = _REPO_ROOT / "input" / "Lesson Plan Template SY'25-26.docx"
 
 
 class TestAppendMode:

@@ -244,7 +244,7 @@ def combine_lessons_impl(
     renderer = DOCXRenderer(template_path)
 
     if len(lessons) == 1:
-        return _render_single_slot(
+        output_path = _render_single_slot(
             processor,
             user,
             lessons,
@@ -256,17 +256,37 @@ def combine_lessons_impl(
             renderer,
             _safe_finalize,
         )
-    return _render_multi_slot(
-        processor,
-        user,
-        lessons,
-        week_of,
-        output_path,
-        template_path,
-        generated_at,
-        plan_id,
-        merged_json,
-        renderer,
-        file_mgr,
-        _safe_finalize,
-    )
+    else:
+        output_path = _render_multi_slot(
+            processor,
+            user,
+            lessons,
+            week_of,
+            output_path,
+            template_path,
+            generated_at,
+            plan_id,
+            merged_json,
+            renderer,
+            file_mgr,
+            _safe_finalize,
+        )
+    if plan_id and getattr(processor, "db", None):
+        try:
+            processor.db.update_weekly_plan(
+                plan_id,
+                status="completed",
+                output_file=output_path,
+                lesson_json=merged_json,
+            )
+            logger.debug(
+                "batch_persisted_lesson_json",
+                extra={"plan_id": plan_id, "output_file": output_path},
+            )
+        except Exception as e:
+            logger.warning(
+                "persist_lesson_json_failed",
+                extra={"plan_id": plan_id, "error": str(e)},
+                exc_info=True,
+            )
+    return output_path

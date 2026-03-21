@@ -91,7 +91,7 @@ Tests to **skip** until a ticket is resolved. Human fills **Ticket ID** and **Re
 - **Slow / live tests:** Should slow or live-only tests be excluded from default CI and run in a separate job or with a marker (e.g. `@pytest.mark.slow`, `@pytest.mark.live`)?  
   **Decision:** *(e.g. Add marker `live` and run in optional job; or leave as-is.)*
 
-- **Critical path:** The project already runs a critical path in CI (test_api, test_database_crud, test_week_calculation, test_batch_processor_facade, test_docx_renderer). Keep as-is or add more modules?  
+- **Critical path:** SQLite CI runs `pytest tests/ -m unit` after integration authorization. Add or remove coverage by marking modules with `pytest.mark.unit` (see `pytest.ini`). Keep as-is or widen the marker set?  
   **Decision:** *(e.g. Keep as-is.)*
 
 - **Branch:** CI workflow should trigger on `master` (see MAINTENANCE_RECOMMENDATIONS). Confirm branches in `.github/workflows/ci-integration-tests.yml` include `master`.  

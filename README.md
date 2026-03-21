@@ -25,6 +25,8 @@ npm run tauri dev
 
 See **[Developer Guide](docs/CONTRIBUTING.md)** for setup instructions.
 
+**Strategy pack / WIDA consistency:** from the repo root run `python tools/verify_strategy_pack_ssot.py` (also runs in CI). It checks that `strategies_pack_v2/_index.json` and `wida/wida_strategy_enhancements.json` match the category JSON `id` lists. For CI-parity pytest commands, optional live LLM tests, log search hints, and injection token tuning, see **[docs/dev/verification_and_llm_ops.md](docs/dev/verification_and_llm_ops.md)**.
+
 ## System Architecture
 
 ```
@@ -123,6 +125,7 @@ Bilingual Weekly Plan Builder/
 - **[Security Review](docs/security/SECURITY_REVIEW.md)** - Security best practices
 
 ### Reference
+- **[Reference documents (lesson plan generation)](reference_docs/README.md)** - Documents used during lesson plan generation (e.g. WIDA Can Do Descriptors); retrieved by grade cluster and domain.
 - **[Strategy Dictionary](docs/bilingual_strategies_dictionary.md)** - All 33 bilingual strategies
 - **[Co-Teaching Models](co_teaching/README.md)** - Friend & Cook model reference
 - **[WIDA Framework](wida/README.md)** - WIDA 2020 integration details

@@ -398,7 +398,7 @@
       "properties": {
         "strategy_id": {
           "type": "string",
-          "description": "Strategy identifier from strategy pack",
+          "description": "Must exactly match the strategy pack JSON id (strategies_pack_v2 category files and _index.json)",
           "pattern": "^[a-z_]+$",
           "examples": ["cognate_awareness", "graphic_organizers", "sentence_frames"]
         },

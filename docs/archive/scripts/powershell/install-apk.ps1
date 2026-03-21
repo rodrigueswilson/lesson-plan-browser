@@ -35,15 +35,27 @@ param(
 
 $ErrorActionPreference = "Stop"
 
-# Get script directory (root of project)
-# This script must be run from the project root directory (D:\LP)
-$rootDir = $PSScriptRoot
-if (-not $rootDir) {
-    $rootDir = (Get-Location).Path
+# Resolve project root (folder that contains lesson-plan-browser).
+# Script may live under docs/archive/...; $PSScriptRoot is NOT the repo root.
+$rootDir = $null
+$candidate = if ($PSScriptRoot) { [string]$PSScriptRoot } else { (Get-Location).Path }
+while ($candidate) {
+    if (Test-Path (Join-Path $candidate "lesson-plan-browser")) {
+        $rootDir = $candidate
+        break
+    }
+    $parent = Split-Path $candidate -Parent
+    if (-not $parent -or $parent -eq $candidate) { break }
+    $candidate = $parent
 }
-# Ensure we're in the root directory
-if (-not (Test-Path (Join-Path $rootDir "lesson-plan-browser"))) {
-    Write-Error "This script must be run from the project root directory (D:\LP). Current directory: $rootDir"
+if (-not $rootDir) {
+    $cwd = (Get-Location).Path
+    if (Test-Path (Join-Path $cwd "lesson-plan-browser")) {
+        $rootDir = $cwd
+    }
+}
+if (-not $rootDir) {
+    Write-Error "Could not find project root (folder containing 'lesson-plan-browser'). Clone layout may differ."
     exit 1
 }
 
@@ -65,15 +77,38 @@ Write-Host ""
 # Step 2: Check for connected devices
 Write-Host "Step 2: Checking for connected devices..." -ForegroundColor Yellow
 $devicesOutput = adb devices
-$devices = $devicesOutput | Select-Object -Skip 1 | Where-Object { $_ -match '\tdevice' }
+$lines = $devicesOutput | Select-Object -Skip 1 | Where-Object { $_.Trim() -ne '' }
+
+# Fail fast with a clear message (do not treat as "no devices")
+$unauthLines = $lines | Where-Object { $_ -match '\bunauthorized\b' }
+if ($unauthLines) {
+    Write-Host "  Error: Device(s) connected but USB debugging is NOT AUTHORIZED." -ForegroundColor Red
+    Write-Host ""
+    Write-Host "  On the tablet: unlock the screen and tap Allow on the USB debugging prompt." -ForegroundColor Yellow
+    Write-Host "  If no prompt: Settings → Developer options → Revoke USB debugging authorizations," -ForegroundColor Gray
+    Write-Host "  then unplug/replug USB and run: adb kill-server; adb start-server" -ForegroundColor Gray
+    Write-Host ""
+    Write-Host "  adb devices:" -ForegroundColor Yellow
+    Write-Host $devicesOutput
+    exit 1
+}
+
+$offlineLines = $lines | Where-Object { $_ -match '\boffline\b' }
+if ($offlineLines) {
+    Write-Host "  Error: Device(s) offline. Reconnect USB or restart ADB (adb kill-server)." -ForegroundColor Red
+    Write-Host $devicesOutput
+    exit 1
+}
+
+$devices = $lines | Where-Object { $_ -match '\tdevice\s*$' -or $_ -match '\s+device\s*$' }
 
 if (-not $devices) {
-    Write-Host "  Warning: No devices found" -ForegroundColor Yellow
+    Write-Host "  Warning: No authorized devices found" -ForegroundColor Yellow
     Write-Host ""
     Write-Host "Please ensure:" -ForegroundColor Yellow
     Write-Host "  1. Tablet/device is connected via USB" -ForegroundColor Gray
     Write-Host "  2. USB debugging is enabled on the device" -ForegroundColor Gray
-    Write-Host "  3. Device is authorized (check device screen for prompt)" -ForegroundColor Gray
+    Write-Host "  3. Device shows as 'device' in adb devices (not unauthorized)" -ForegroundColor Gray
     Write-Host ""
     Write-Host "All devices:" -ForegroundColor Yellow
     Write-Host $devicesOutput

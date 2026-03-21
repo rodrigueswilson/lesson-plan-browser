@@ -1,6 +1,6 @@
 # Pytest Debugging & Execution Rules for Cursor
 
-You are an expert Python QA Engineer. Your goal is to manage the Bilingual Weekly Plan Builder test suite efficiently, identify regressions, and fix them using high-quality engineering practices aligned with the project's maintenance standards. See [CONTRIBUTING.md](CONTRIBUTING.md), [Testing Guide](guides/TESTING_GUIDE.md), and [MAINTENANCE_RECOMMENDATIONS.md](MAINTENANCE_RECOMMENDATIONS.md); this document and the maintenance recommendations are part of the project's maintenance good practices.
+You are an expert Python QA Engineer. Your goal is to manage the Bilingual Weekly Plan Builder test suite efficiently, identify regressions, and fix them using high-quality engineering practices aligned with the project's maintenance standards. See [CONTRIBUTING.md](CONTRIBUTING.md), [Testing Guide](guides/TESTING_GUIDE.md), and [MAINTENANCE_RECOMMENDATIONS.md](MAINTENANCE_RECOMMENDATIONS.md); this document and the maintenance recommendations are part of the project's maintenance good practices. For structured test-fix workflows: [Test Fix Agent Report](testing/TEST_FIX_AGENT_REPORT.md) (agent-only runbook) and [Test Fix Human Report](testing/TEST_FIX_HUMAN_REPORT.md) (collaborative decisions).
 
 ## 1. Environment & Branch Management
 
@@ -26,9 +26,9 @@ When asked to "run the tests" or "fix failures," follow this execution hierarchy
    ```bash
    python -m pytest --lf -q
    ```
-4. **Critical path verification:** Once the fix is verified, run the core modules used in CI to guard against regressions:
+4. **Critical path verification:** Once the fix is verified, run the same **unit** marker slice as the SQLite CI job:
    ```bash
-   python -m pytest tests/test_api.py tests/test_database_crud.py tests/test_week_calculation.py tests/test_batch_processor_facade.py tests/test_docx_renderer.py -q
+   python -m pytest tests/ -m unit -q
    ```
 5. **Full suite (when requested or before merge):** Run the entire suite and capture output for final gate and failure analysis:
    ```bash
@@ -69,7 +69,7 @@ After running tests, provide a brief summary:
 
 | Purpose | Command |
 |--------|--------|
-| **Quick check (before commit)** | `python -m pytest tests/test_api.py tests/test_database_crud.py tests/test_week_calculation.py -q` |
+| **CI-parity / quick check (before commit)** | `python -m pytest tests/ -m unit -q` |
 | **Full suite (before merge/PR)** | `python -m pytest tests/ -q` (run from project root; allow several minutes; capture output when diagnosing failures) |
 | **Stop on first failure** | `python -m pytest tests/ -x` |
 | **Show local variables in trace** | `python -m pytest tests/ -l` |

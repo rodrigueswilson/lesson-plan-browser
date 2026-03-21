@@ -15,6 +15,8 @@ from backend.authorization import (
     _sanitize_user_id,
 )
 
+pytestmark = pytest.mark.unit
+
 
 class TestValidateUserIDFormat:
     """Test user ID format validation."""

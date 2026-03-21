@@ -35,6 +35,7 @@ This folder contains the planning and architecture documents for the November ex
 | Agent Skills / MCP | `AGENT_SKILLS_AND_CODE_EXECUTION.md` | No skill folders, sandbox, or MCP integration in backend. |
 | Lesson Plan Browser | `LESSON_PLAN_BROWSER_MODULE.md`, `UI_PLANNING_*` | Partial (week/day/lesson views). Missing filtering, time-aware defaults, advanced lesson mode, mobile parity. |
 | Lesson Plan Editor | `lesson_plan_editor/README.md` | Planning only; dual-mode edit (manual + assistant), MCP integration, export/sync documented as research-first bundle. |
+| Pedagogical tooltips / popovers | `pedagogical_tooltips/README.md` | Research only; strategy + WIDA inline help from JSON SSOT; data inventory, UX/a11y, spikes, decision log. |
 | Cross-Platform | `CROSS_PLATFORM_TECHNOLOGY_ANALYSIS.md` | Only Windows Tauri client exists; no RN/Capacitor projects. |
 | Assessment Module | `ASSESSMENT_MODULE.md` | Not implemented; planning only. LLM-designed assessment per lesson, tool set, tablet collection; WIDA Can Do Descriptors; ODPAR. |
 

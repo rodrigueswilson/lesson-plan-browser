@@ -35,17 +35,11 @@ curl http://localhost:8000/api/health
 
 ### Testing
 
-```bash
-# Run all test suites
-python tests/test_json_repair.py      # 7 tests
-python tests/test_pipeline.py         # 3 tests
-python tests/test_integration.py      # 8 tests
-python tests/test_docx_renderer.py    # 7 tests
-python tests/test_api.py              # 10 tests
-python tests/test_end_to_end.py       # 5 tests
-python test_edge_cases.py             # 7 tests
+From repo root (see [CONTRIBUTING](../CONTRIBUTING.md) for detail):
 
-# Total: 47 tests (all should pass)
+```bash
+python -m pytest tests/ -m unit -q   # CI-parity (SQLite job marker slice)
+python -m pytest tests/ -q         # full suite (several minutes)
 ```
 
 ### Validation

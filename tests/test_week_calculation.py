@@ -2,6 +2,8 @@
 import pytest
 from datetime import datetime
 
+pytestmark = pytest.mark.unit
+
 
 def test_week_of_first_date_parsing():
     """Parse first date from week range and compute ISO week number."""

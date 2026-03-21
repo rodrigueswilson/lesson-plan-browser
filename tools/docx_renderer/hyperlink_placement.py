@@ -24,7 +24,8 @@ def inject_hyperlink_inline(renderer, cell, hyperlink: Dict, row_idx: int = None
     """Inject hyperlink into cell on its own line."""
     link_text = hyperlink.get("text", "")
     link_url = hyperlink.get("url", "")
-    cell_text = cell.text or ""
+    raw_cell = getattr(cell, "text", "") or ""
+    cell_text = raw_cell if isinstance(raw_cell, str) else ""
 
     markdown_pattern = rf"\[{re.escape(link_text)}\]\({re.escape(link_url)}\)"
     if re.search(markdown_pattern, cell_text, re.IGNORECASE):

@@ -11,10 +11,9 @@
 - **Project:** Bilingual Weekly Plan Builder (LP). Root: `d:\LP` (or repo root on your machine).
 - **Tests:** All tests live under `tests/`. Run pytest from **project root**. Config: `pytest.ini` (testpaths = tests, timeout = 120s).
 - **Canonical commands** (see also [Cursor Pytest Automation Prompt](../Cursor%20Pytest%20Automation%20Prompt.md) and [MAINTENANCE_RECOMMENDATIONS](../MAINTENANCE_RECOMMENDATIONS.md)):
-  - **Quick check (before commit):**  
-    `python -m pytest tests/test_api.py tests/test_database_crud.py tests/test_week_calculation.py -q`
-  - **Critical path (CI core):**  
-    `python -m pytest tests/test_api.py tests/test_database_crud.py tests/test_week_calculation.py tests/test_batch_processor_facade.py tests/test_docx_renderer.py -q`
+  - **CI-parity / quick check (before commit):**  
+    `python -m pytest tests/ -m unit -q`
+  - **Same slice as SQLite CI:** marker `unit` in `pytest.ini`; see `.github/workflows/ci-integration-tests.yml` step *Run unit-marked critical path tests*.
   - **Full suite (before merge / for this runbook):**  
     `python -m pytest tests/ -q 2>&1 | tee pytest_full_suite.txt`  
     Run from project root; allow several minutes. The file `pytest_full_suite.txt` will contain the full output.
@@ -113,7 +112,7 @@ Apply fixes only when the fix is **mechanical** and does not require product/beh
 4. Re-run:  
    `python -m pytest tests/<file> -q`  
    then  
-   `python -m pytest tests/test_api.py tests/test_database_crud.py tests/test_week_calculation.py tests/test_batch_processor_facade.py tests/test_docx_renderer.py -q`
+   `python -m pytest tests/ -m unit -q`
 5. Commit with a clear message, e.g. `fix(tests): use Session in test_analytics_integration fixtures`.
 
 Repeat until no more unambiguous groups remain. Any failure that needs a **product decision** (e.g. "Is 403 acceptable here?", "Fix schema or relax test?") must **not** be fixed here; instead add it to Report 2 (Section 5 below).
@@ -135,10 +134,9 @@ Also ensure the **Failure groups** table (or a reference to it) is in the Human 
 
 ## 6. Final Verification
 
-1. Run **quick check:**  
-   `python -m pytest tests/test_api.py tests/test_database_crud.py tests/test_week_calculation.py -q`
-2. Run **critical path:**  
-   `python -m pytest tests/test_api.py tests/test_database_crud.py tests/test_week_calculation.py tests/test_batch_processor_facade.py tests/test_docx_renderer.py -q`
+1. Run **CI-parity slice (unit marker):**  
+   `python -m pytest tests/ -m unit -q`
+2. (Same command covers the former quick check + critical path list; add a single-file run only when debugging a specific module.)
 3. If anything fails that was passing before your fixes, revert or fix the regression and re-commit.
 4. Optionally run the full suite again and refresh `pytest_full_suite.txt` and the Failure groups table so the Human Report is up to date.
 

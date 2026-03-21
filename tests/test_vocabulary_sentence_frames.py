@@ -254,119 +254,60 @@ class TestDailyPlanData:
         assert len(plan.vocabulary_cognates) == 6
         assert len(plan.sentence_frames) == 8
 
-    def test_daily_plan_vocabulary_wrong_count(self):
-        """Test that vocabulary_cognates must have exactly 6 items."""
+    def test_daily_plan_vocabulary_count_lenient(self):
+        """DailyPlanData does not enforce exactly 6 vocabulary rows (DB / legacy compatibility)."""
         vocab_list = self.create_valid_vocabulary_list()
-        vocab_list.pop()  # Remove one, now has 5
+        vocab_list.pop()
+        plan = DailyPlanData(vocabulary_cognates=vocab_list)
+        assert len(plan.vocabulary_cognates) == 5
 
-        with pytest.raises(ValidationError) as exc_info:
-            DailyPlanData(vocabulary_cognates=vocab_list)
-        assert "exactly 6 items" in str(exc_info.value)
-
-    def test_daily_plan_sentence_frames_wrong_count(self):
-        """Test that sentence_frames must have exactly 8 items."""
+    def test_daily_plan_sentence_frames_count_lenient(self):
+        """DailyPlanData does not enforce exactly 8 sentence frames."""
         frames = self.create_valid_sentence_frames()
-        frames.pop()  # Remove one, now has 7
+        frames.pop()
+        plan = DailyPlanData(sentence_frames=frames)
+        assert len(plan.sentence_frames) == 7
 
-        with pytest.raises(ValidationError) as exc_info:
-            DailyPlanData(sentence_frames=frames)
-        assert "exactly 8 items" in str(exc_info.value)
-
-    def test_daily_plan_sentence_frames_wrong_levels_1_2_count(self):
-        """Test that Levels 1-2 must have exactly 3 frames."""
+    def test_daily_plan_sentence_frames_skewed_distribution_allowed(self):
+        """Non-canonical level distribution is accepted on DailyPlanData (validation is elsewhere)."""
         frames = self.create_valid_sentence_frames()
-        # Remove one Levels 1-2 frame and add one Levels 3-4 frame to keep total at 8
-        frames = [f for f in frames if not (f.proficiency_level == "levels_1_2" and f.english == "It has ___")]
-        frames.append(SentenceFrame(
-            proficiency_level="levels_3_4",
-            english="Another frame ___",
-            portuguese="Outro quadro ___",
-            frame_type="frame"
-        ))
-
-        with pytest.raises(ValidationError) as exc_info:
-            DailyPlanData(sentence_frames=frames)
-        assert "exactly 3 frames for levels_1_2" in str(exc_info.value)
-
-    def test_daily_plan_sentence_frames_wrong_levels_3_4_count(self):
-        """Test that Levels 3-4 must have exactly 3 frames."""
-        frames = self.create_valid_sentence_frames()
-        # Remove one Levels 3-4 frame and add one Levels 3-4 frame (but wrong type) to keep total at 8
-        # This will fail on levels_3_4 count check
-        frames = [f for f in frames if not (f.proficiency_level == "levels_3_4" and f.english == "I think ___ because ___")]
-        frames.append(SentenceFrame(
-            proficiency_level="levels_3_4",
-            english="Another frame ___",
-            portuguese="Outro quadro ___",
-            frame_type="frame"
-        ))
-        # Now remove one more to make it 2 instead of 3
-        frames = [f for f in frames if not (f.proficiency_level == "levels_3_4" and f.english == "This shows ___ because ___")]
-
-        with pytest.raises(ValidationError) as exc_info:
-            DailyPlanData(sentence_frames=frames)
-        # Should fail on levels_3_4 count (or total count if we have 7 items)
-        error_msg = str(exc_info.value)
-        assert ("exactly 3 frames for levels_3_4" in error_msg or 
-                "exactly 8 items" in error_msg)
-
-    def test_daily_plan_sentence_frames_wrong_levels_5_6_count(self):
-        """Test that Levels 5-6 must have exactly 2 items."""
-        frames = self.create_valid_sentence_frames()
-        # Remove one Levels 5-6 item (open_question) to have only 1 item for levels_5_6
-        frames = [f for f in frames if f.frame_type != "open_question"]
-        # Add one Levels 3-4 frame to keep total at 8
-        frames.append(SentenceFrame(
-            proficiency_level="levels_3_4",
-            english="Another frame ___",
-            portuguese="Outro quadro ___",
-            frame_type="frame"
-        ))
-
-        with pytest.raises(ValidationError) as exc_info:
-            DailyPlanData(sentence_frames=frames)
-        # Should fail on levels_5_6 count
-        error_msg = str(exc_info.value)
-        assert ("exactly 2 items for levels_5_6" in error_msg or
-                "exactly 3 frames for levels_3_4" in error_msg)  # Might fail on levels_3_4 first if we have 4
-
-    def test_daily_plan_sentence_frames_missing_stem(self):
-        """Test that Levels 5-6 must have exactly 1 stem."""
-        frames = self.create_valid_sentence_frames()
-        # Replace stem with another open_question
         frames = [
-            f if f.frame_type != "stem" else SentenceFrame(
-                proficiency_level="levels_5_6",
-                english="What evidence supports ___?",
-                portuguese="Que evidências apoiam ___?",
-                frame_type="open_question"
+            f
+            for f in frames
+            if not (f.proficiency_level == "levels_1_2" and f.english == "It has ___")
+        ]
+        frames.append(
+            SentenceFrame(
+                proficiency_level="levels_3_4",
+                english="Another frame ___",
+                portuguese="Outro quadro ___",
+                language_function="describe",
+                frame_type="frame",
+            )
+        )
+        plan = DailyPlanData(sentence_frames=frames)
+        assert len(plan.sentence_frames) == 8
+
+    def test_daily_plan_sentence_frames_two_stems_levels_5_6_allowed(self):
+        """Two stems at levels_5_6 (no open question) still parses for slot storage."""
+        frames = self.create_valid_sentence_frames()
+        frames = [
+            (
+                f
+                if f.frame_type != "open_question"
+                else SentenceFrame(
+                    proficiency_level="levels_5_6",
+                    english="This demonstrates ___",
+                    portuguese="Isso demonstra ___",
+                    language_function="argue",
+                    frame_type="stem",
+                )
             )
             for f in frames
         ]
-
-        with pytest.raises(ValidationError) as exc_info:
-            DailyPlanData(sentence_frames=frames)
-        assert "exactly 1 stem for levels_5_6" in str(exc_info.value)
-
-    def test_daily_plan_sentence_frames_missing_open_question(self):
-        """Test that Levels 5-6 must have exactly 1 open question."""
-        frames = self.create_valid_sentence_frames()
-        # Replace open_question with another stem (keeping total at 8 items)
-        frames = [
-            f if f.frame_type != "open_question" else SentenceFrame(
-                proficiency_level="levels_5_6",
-                english="This demonstrates ___",
-                portuguese="Isso demonstra ___",
-                frame_type="stem"
-            )
-            for f in frames
-        ]
-
-        with pytest.raises(ValidationError) as exc_info:
-            DailyPlanData(sentence_frames=frames)
-        # Should fail because we now have 2 stems and 0 open questions
-        assert ("exactly 1 open question for levels_5_6" in str(exc_info.value) or 
-                "exactly 1 stem for levels_5_6" in str(exc_info.value))
+        plan = DailyPlanData(sentence_frames=frames)
+        stems = [f for f in plan.sentence_frames if f.proficiency_level == "levels_5_6" and f.frame_type == "stem"]
+        assert len(stems) == 2
 
     def test_daily_plan_optional_fields(self):
         """Test that vocabulary_cognates and sentence_frames are optional."""

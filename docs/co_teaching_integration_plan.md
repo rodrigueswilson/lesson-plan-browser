@@ -110,7 +110,7 @@ Based on the provided CSV, six co-teaching models are available:
         "translanguaging",
         "preview_review",
         "strategic_code_switching",
-        "dual_language_instruction",
+        "calla",
         "culturally_responsive_pedagogy"
       ],
       "wida_proficiency_fit": {

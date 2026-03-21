@@ -56,7 +56,7 @@ export const TabletSync: React.FC = () => {
   };
 
   const ensureExport = async (): Promise<TabletExportDbResponse> => {
-    if (result?.output_path) return result;
+    if (result?.output_path && result?.user_id === currentUser!.id) return result;
     const response = await tabletApi.exportDb(currentUser!.id, currentUser!.id);
     setResult(response.data);
     return response.data;
@@ -75,13 +75,27 @@ export const TabletSync: React.FC = () => {
 
     try {
       const exported = await ensureExport();
+      if (exported.counts?.weekly_plans === 0) {
+        setError(
+          `The exported database has no lesson plans for ${currentUser.name}. The tablet will show "No weeks available" until you export a user who has plans.`
+        );
+        setPushing(false);
+        return;
+      }
       setPushStatus('Pushing database to tablet (ADB)...');
 
       const { invoke } = await import('@tauri-apps/api/core');
       // Rust expects snake_case param; Tauri JS uses camelCase
-      await invoke('push_tablet_db', { dbPath: exported.output_path });
-
-      setPushStatus('Push complete. Tablet app restarted.');
+      const res = (await invoke('push_tablet_db', {
+        dbPath: exported.output_path,
+      })) as { steps?: Array<{ step: string; ok: boolean; output?: string }> };
+      const verifyOut = res?.steps?.find((s) => s.step === 'verify_db_file')?.output;
+      let msg = verifyOut
+        ? `Push complete. Tablet app restarted.\nVerification: ${verifyOut.trim()}`
+        : 'Push complete. Tablet app restarted.';
+      msg +=
+        "\n\nIf the tablet still shows \"No weeks available\", run in a terminal: adb logcat -d | findstr /i \"LP DB\" and check the [DB] and [LP] lines for users= and weekly_plans= and getRecentWeeks count.";
+      setPushStatus(msg);
     } catch (e: any) {
       setError(e?.message || String(e));
       setPushStatus(null);

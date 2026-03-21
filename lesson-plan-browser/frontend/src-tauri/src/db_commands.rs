@@ -98,12 +98,14 @@ pub fn init_database(db_path: PathBuf) -> Result<(), String> {
     // Run migrations (creates tables if they don't exist)
     run_migrations(&conn)?;
     
-    // Check if database has actual data
+    // Check if database has actual data (log counts for logcat troubleshooting)
     if !database_has_data(&conn) {
         eprintln!("[DB] WARNING: Database is empty (no users found).");
         eprintln!("[DB] Push data using: .\\update-tablet.ps1 or .\\copy-db-to-tablet.ps1");
     } else {
-        eprintln!("[DB] Database initialized with existing data.");
+        let user_count: i64 = conn.query_row("SELECT COUNT(*) FROM users", [], |r| r.get(0)).unwrap_or(0);
+        let plan_count: i64 = conn.query_row("SELECT COUNT(*) FROM weekly_plans", [], |r| r.get(0)).unwrap_or(0);
+        eprintln!("[DB] Database initialized with existing data. users={} weekly_plans={}", user_count, plan_count);
     }
     
     *db_guard = Some(conn);

@@ -1,7 +1,7 @@
 """Aggregate analytics queries for performance metrics. Used by metrics.py."""
 
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, Optional
 
 from sqlalchemy import func
@@ -12,12 +12,16 @@ from backend.schema import PerformanceMetric, WeeklyPlan
 logger = logging.getLogger(__name__)
 
 
+def _utc_now_naive() -> datetime:
+    return datetime.now(timezone.utc).replace(tzinfo=None)
+
+
 def get_aggregate_stats(
     db, days: int = 30, user_id: Optional[str] = None
 ) -> Dict[str, Any]:
     """Get aggregate analytics across all plans."""
     try:
-        start_date = datetime.utcnow() - timedelta(days=days)
+        start_date = _utc_now_naive() - timedelta(days=days)
 
         with Session(db.engine) as session:
             query = select(
@@ -58,7 +62,11 @@ def get_aggregate_stats(
                 PerformanceMetric.llm_model,
                 func.count(PerformanceMetric.id).label("count"),
                 func.sum(PerformanceMetric.cost_usd).label("cost"),
-            ).where(PerformanceMetric.started_at >= start_date)
+                func.sum(PerformanceMetric.tokens_total).label("tokens"),
+            ).where(
+                PerformanceMetric.started_at >= start_date,
+                PerformanceMetric.llm_model.isnot(None),
+            )
 
             if user_id:
                 model_query = model_query.join(
@@ -72,6 +80,7 @@ def get_aggregate_stats(
                     "llm_model": row.llm_model or "Unknown",
                     "count": row.count or 0,
                     "cost": float(row.cost or 0),
+                    "tokens": int(row.tokens or 0),
                 }
                 for row in model_results
             ]
@@ -80,6 +89,7 @@ def get_aggregate_stats(
                 PerformanceMetric.operation_type,
                 func.avg(PerformanceMetric.duration_ms).label("avg_duration"),
                 func.count(PerformanceMetric.id).label("count"),
+                func.sum(PerformanceMetric.tokens_total).label("tokens"),
             ).where(PerformanceMetric.started_at >= start_date)
 
             if user_id:
@@ -94,6 +104,7 @@ def get_aggregate_stats(
                     "operation_type": row.operation_type,
                     "avg_duration_ms": float(row.avg_duration or 0),
                     "count": row.count or 0,
+                    "tokens": int(row.tokens or 0),
                 }
                 for row in operation_results
             ]

@@ -11,9 +11,14 @@ import os
 import threading
 import time
 import uuid
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import AsyncGenerator, Optional
+
+
+def _utc_now_naive() -> datetime:
+    """Naive UTC wall time (replaces deprecated datetime.utcnow())."""
+    return datetime.now(timezone.utc).replace(tzinfo=None)
 
 
 class ProgressTracker:
@@ -50,7 +55,7 @@ class ProgressTracker:
                     loaded_tasks = data.get("tasks", {})
 
                     # Filter out old completed tasks
-                    now = datetime.utcnow()
+                    now = _utc_now_naive()
                     tasks_to_remove = []
                     for task_id, task in loaded_tasks.items():
                         if task.get("stage") in ["complete", "completed", "error"]:
@@ -132,7 +137,7 @@ class ProgressTracker:
                 # Prepare data for serialization (create a copy to avoid modification during save)
                 data = {
                     "tasks": self.tasks,
-                    "last_updated": datetime.utcnow().isoformat(),
+                    "last_updated": _utc_now_naive().isoformat(),
                 }
 
                 # Create unique temp file for this thread to avoid race conditions
@@ -171,7 +176,7 @@ class ProgressTracker:
 
     def _cleanup_old_tasks(self):
         """Remove completed tasks older than retention period."""
-        now = datetime.utcnow()
+        now = _utc_now_naive()
         removed_count = 0
 
         for task_id, task in list(self.tasks.items()):
@@ -206,7 +211,7 @@ class ProgressTracker:
             "stage": "initialized",
             "message": "Task created",
             "updates": [],
-            "created_at": datetime.utcnow().isoformat(),
+            "created_at": _utc_now_naive().isoformat(),
         }
         self._save_state()
         return task_id
@@ -242,7 +247,7 @@ class ProgressTracker:
             "stage": stage,
             "progress": progress,
             "message": message,
-            "timestamp": datetime.utcnow().isoformat(),
+            "timestamp": _utc_now_naive().isoformat(),
         }
 
         # Include result data if provided
@@ -297,10 +302,10 @@ class ProgressTracker:
         # Only reload if we haven't loaded recently to avoid excessive I/O
         if (
             not hasattr(self, "_last_load_attempt")
-            or (datetime.utcnow() - self._last_load_attempt).total_seconds() > 5
+            or (_utc_now_naive() - self._last_load_attempt).total_seconds() > 5
         ):
             self._load_state()
-            self._last_load_attempt = datetime.utcnow()
+            self._last_load_attempt = _utc_now_naive()
             return self.tasks.get(task_id)
 
         return None
@@ -338,7 +343,7 @@ async def stream_render_progress(
                 "stage": stage,
                 "progress": progress,
                 "message": message,
-                "timestamp": datetime.utcnow().isoformat(),
+                "timestamp": _utc_now_naive().isoformat(),
             }
             yield f"data: {json.dumps(data)}\n\n"
             await asyncio.sleep(0.5)

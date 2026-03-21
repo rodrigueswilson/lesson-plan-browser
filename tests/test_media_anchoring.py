@@ -6,7 +6,7 @@ Tests context extraction, fuzzy matching, and inline media injection.
 
 import pytest
 from pathlib import Path
-from unittest.mock import Mock, patch
+from unittest.mock import ANY, Mock, patch
 from docx import Document
 from docx.shared import Inches
 
@@ -200,13 +200,13 @@ class TestMediaInjection:
             'url': 'https://example.com'
         }
         
-        # Mock _add_hyperlink method
-        with patch.object(renderer, '_add_hyperlink') as mock_add:
+        with patch(
+            "tools.docx_renderer.hyperlink_placement.add_hyperlink"
+        ) as mock_add:
             renderer._inject_hyperlink_inline(mock_cell, hyperlink)
-            
-            # Should add space and then hyperlink
-            mock_para.add_run.assert_called_once_with(" ")
-            mock_add.assert_called_once_with(mock_para, 'Resource Link', 'https://example.com')
+            mock_add.assert_called_once_with(
+                renderer, ANY, "Resource Link", "https://example.com", bold=False
+            )
     
     @patch('tools.docx_renderer.logger')
     def test_inject_image_inline_with_caption(self, mock_logger):

@@ -3,8 +3,11 @@ Run actual processing to see the crash error.
 """
 
 import asyncio
+import os
 import sys
 from pathlib import Path
+
+import pytest
 
 sys.path.insert(0, str(Path(__file__).parent))
 
@@ -12,6 +15,11 @@ from backend.database import Database
 from tools.batch_processor import BatchProcessor
 from backend.llm_service import get_llm_service
 
+
+@pytest.mark.skipif(
+    not os.environ.get("RUN_ACTUAL_PROCESSING"),
+    reason="Set RUN_ACTUAL_PROCESSING=1 to run live batch + API processing",
+)
 async def test_real_processing():
     """Run actual processing to see what crashes."""
     
@@ -49,7 +57,7 @@ async def test_real_processing():
         
     except Exception as e:
         print("\n" + "=" * 80)
-        print("❌ CRASH DETECTED:")
+        print("CRASH DETECTED:")
         print("=" * 80)
         print(f"Error type: {type(e).__name__}")
         print(f"Error message: {e}")

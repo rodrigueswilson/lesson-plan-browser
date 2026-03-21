@@ -7,6 +7,7 @@ Tests the flexible domain selection feature that allows objectives to include
 
 import pytest
 from backend.llm.domain_analysis import analyze_domains_from_activities
+from backend.llm.prompt_builder import build_schema_example
 from backend.llm_service import LLMService
 from backend.models_slot import ObjectiveData
 
@@ -32,8 +33,8 @@ class TestDomainAnalysis:
         assert domains["reading"] is False, "Think-Pair-Share should not detect reading"
         assert domains["writing"] is False, "Think-Pair-Share should not detect writing"
 
-    def test_collaborative_learning_detects_listening_speaking(self):
-        """Test that Collaborative Learning strategy detects Listening + Speaking"""
+    def test_collaborative_learning_domains_from_pack_weights(self):
+        """Collaborative learning skill_weights in the pack include all four domains."""
         ell_support = [
             {
                 "strategy_id": "collaborative_learning",
@@ -41,13 +42,13 @@ class TestDomainAnalysis:
                 "implementation": "...",
             }
         ]
-        
+
         domains = analyze_domains_from_activities(ell_support=ell_support)
-        
+
         assert domains["listening"] is True
         assert domains["speaking"] is True
-        assert domains["reading"] is False
-        assert domains["writing"] is False
+        assert domains["reading"] is True
+        assert domains["writing"] is True
 
     def test_sentence_frames_detects_speaking_writing(self):
         """Test that Sentence Frames strategy detects Speaking + Writing"""
@@ -66,8 +67,8 @@ class TestDomainAnalysis:
         assert domains["listening"] is False
         assert domains["reading"] is False
 
-    def test_literature_circles_detects_three_domains(self):
-        """Test that Literature Circles detects Reading + Speaking + Listening"""
+    def test_literature_circles_legacy_alias_maps_to_interactive_read_alouds(self):
+        """Legacy id literature_circles aliases to interactive_read_alouds (pack-derived)."""
         ell_support = [
             {
                 "strategy_id": "literature_circles",
@@ -75,12 +76,51 @@ class TestDomainAnalysis:
                 "implementation": "...",
             }
         ]
-        
+
         domains = analyze_domains_from_activities(ell_support=ell_support)
-        
+
         assert domains["reading"] is True
         assert domains["speaking"] is True
         assert domains["listening"] is True
+        assert domains["writing"] is False
+
+    def test_interactive_read_alouds_pack_id(self):
+        ell_support = [
+            {
+                "strategy_id": "interactive_read_alouds",
+                "strategy_name": "Interactive Read-Alouds",
+                "implementation": "...",
+            }
+        ]
+        domains = analyze_domains_from_activities(ell_support=ell_support)
+        assert domains["listening"] is True
+        assert domains["reading"] is True
+        assert domains["speaking"] is True
+        assert domains["writing"] is False
+
+    def test_calla_pack_id_all_four_domains(self):
+        ell_support = [
+            {
+                "strategy_id": "calla",
+                "strategy_name": "CALLA",
+                "implementation": "...",
+            }
+        ]
+        domains = analyze_domains_from_activities(ell_support=ell_support)
+        assert all(domains[d] for d in ("listening", "reading", "speaking", "writing"))
+
+    def test_peer_tutoring_bilingual_legacy_alias(self):
+        ell_support = [
+            {
+                "strategy_id": "peer_tutoring_bilingual",
+                "strategy_name": "Peer Tutoring",
+                "implementation": "...",
+            }
+        ]
+        domains = analyze_domains_from_activities(ell_support=ell_support)
+        assert domains["listening"] is True
+        assert domains["speaking"] is True
+        assert domains["reading"] is False
         assert domains["writing"] is False
 
     def test_phase_plan_keyword_detection(self):
@@ -202,7 +242,8 @@ class TestPromptIncludesDomainGuidance:
     def test_prompt_includes_examples_for_all_domain_counts(self):
         """Test that prompt includes examples for 1, 2, 3, and 4 domains"""
         service = LLMService(provider="openai")
-        
+        service.model = "gpt-3.5-turbo"
+
         prompt = service._build_prompt(
             primary_content="Test content",
             grade="5",
@@ -225,9 +266,7 @@ class TestSchemaExamples:
 
     def test_schema_example_includes_flexible_domains(self):
         """Test that schema example shows flexible domain selection"""
-        service = LLMService(provider="openai")
-        
-        schema_example = service._build_schema_example(
+        schema_example = build_schema_example(
             week_of="10/6-10/10",
             grade="5",
             subject="Science",
@@ -421,16 +460,16 @@ class TestStudentGoalRequirements:
                 wida_objective="Students will test through reading and speaking using supports appropriate for WIDA levels 2-4 (ELD-TS.1-2.Test.Reading/Speaking).",
             )
 
-    def test_student_goal_parenthetical_disallows_duplicates(self):
-        """Test that duplicate domain labels are rejected"""
+    def test_student_goal_parenthetical_deduplicates_domains(self):
+        """Duplicate domain labels in the tag are normalized to a single entry."""
         goal = "I will read the story and write notes (reading, reading)."
 
-        with pytest.raises(ValueError, match="must not repeat"):
-            ObjectiveData(
-                content_objective="Students will learn about the story.",
-                student_goal=goal,
-                wida_objective="Students will test through reading and writing using supports appropriate for WIDA levels 2-4 (ELD-TS.1-2.Test.Reading/Writing).",
-            )
+        obj = ObjectiveData(
+            content_objective="Students will learn about the story.",
+            student_goal=goal,
+            wida_objective="Students will test through reading and writing using supports appropriate for WIDA levels 2-4 (ELD-TS.1-2.Test.Reading/Writing).",
+        )
+        assert obj.student_goal.endswith("(reading).")
 
     def test_student_goal_requires_terminal_period(self):
         """Test that student goals must end with a period after the domain tag"""

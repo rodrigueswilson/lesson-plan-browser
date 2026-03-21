@@ -27,12 +27,13 @@
 
 * **Strategy Index:** `strategies_pack_v2/_index.json` (pack_version 2.0; schema v1.7_enhanced). Use selection_rules and loading_algorithm to choose 2–4 relevant category files per lesson.  
 * **Category Files:** Resolve relative paths from the index (e.g., `strategies_pack_v2/core/language_skills.json`, `strategies_pack_v2/specialized/cultural_identity.json`) and load only the needed ones.  
-* **WIDA Framework:** `wida_framework_reference.json` (2020 Edition)  
-* **Proficiency Adaptations:** `wida_strategy_enhancements.json` (v2.0)  
-* **Key data to extract:** strategy metadata (id, strategy_name, core_principle), implementation_steps, skill alignments (primary_skill, skill_weights), delivery modes, l1_mode, applicable_contexts, cross_refs, research_foundation, category tags, WIDA proficiency adaptations  
-* **Validation check:** Confirm the index loads, all referenced category files are available, and grouped JSON data merges correctly before strategy selection**  
-* **Developmental filter:** Ensure selected strategies are appropriate for `[GRADE_LEVEL_VARIABLE]` cognitive and linguistic development**  
-* **If files unavailable:** Request file/path confirmation before proceeding**
+* **WIDA Framework:** `wida/wida_framework_reference.json` (2020 Edition)  
+* **Proficiency Adaptations:** `wida/wida_strategy_enhancements.json` (v2.0)  
+* **Key data to extract:** strategy metadata (id, strategy_name, core_principle), implementation_steps, skill alignments (primary_skill, skill_weights), delivery modes, l1_modes, applicable_contexts, cross_refs, research_foundation, category tags, WIDA proficiency adaptations  
+* **Validation check:** Confirm the index loads, all referenced category files are available, and grouped JSON data merges correctly before strategy selection.  
+* **Developmental filter:** Ensure selected strategies are appropriate for `[GRADE_LEVEL_VARIABLE]` cognitive and linguistic development.  
+* **If files unavailable:** Request file/path confirmation before proceeding.
+* **CRITICAL — `strategy_id` matches pack `id`:** Each `tailored_instruction.ell_support[].strategy_id` must **exactly** match the strategy pack JSON **`id`** field (same snake_case string as in `strategies_pack_v2/_index.json` and the category files). Do not invent alternate identifiers.
 
 ## **WIDA Framework Integration Protocol**
 
@@ -68,14 +69,14 @@
 
 1. **Grade-level appropriateness:** Strategy must be suitable for `[GRADE_LEVEL_VARIABLE]` developmental stage  
 2. **ELL developmental fit:** Strategy must align with typical English proficiency progression for `[GRADE_LEVEL_VARIABLE]` learners  
-3. **WIDA proficiency targeting:** Select appropriate proficiency adaptations from wida_strategy_enhancements.json
-4. **Delivery compatibility:** delivery_mode includes "push-in" or "whole-group"  
+3. **WIDA proficiency targeting:** Select appropriate proficiency adaptations from `wida/wida_strategy_enhancements.json`
+4. **Delivery compatibility:** `delivery_modes` includes "push-in" or "whole-group"  
 5. **Skill alignment:** Match the lesson's target language skill to the strategy's primary_skill and skill_weights  
 6. **Unit relevance:** Strategy's applicable_contexts align with lesson content  
-7. **L1 integration mode:** Select appropriate l1_mode (translanguaging, preview-review, strategic-code-switch) based on lesson structure and `[GRADE_LEVEL_VARIABLE]` capacity  
+7. **L1 integration mode:** Select appropriate value(s) from `l1_modes` (e.g. translanguaging, preview-review, strategic-code-switch) based on lesson structure and `[GRADE_LEVEL_VARIABLE]` capacity  
 8. **WIDA alignment:** Prioritize strategies supporting WIDA Key Language Uses appropriate for `[GRADE_LEVEL_VARIABLE]`
 
-**Selection limits:** Maximum 2-3 strategies per lesson to avoid cognitive overload for `[GRADE_LEVEL_VARIABLE]` learners
+**Selection limits:** The output JSON must include **3 to 5** items in `tailored_instruction.ell_support` for each generated day (schema requirement). Choosing **2–4 category JSON files** from the index only narrows which strategy definitions you consult; it does **not** change the required `ell_support` array size. Vary implementation depth across items to avoid cognitive overload for `[GRADE_LEVEL_VARIABLE]` learners where appropriate.
 **Transfer requirement:** At least 1 strategy must explicitly support Portuguese-English transfer at a developmentally appropriate level
 **Research validation:** Every selection must cite JSON evidence and cross-references
 **Immutable Tokens:** The primary teacher lesson plan may contain placeholders like `[[LINK_1]]`, `[[LINK_2]]`. These represent hyperlinks that were present in the source document. You MUST preserve these tokens exactly in your generated output. Do NOT translate the token text. Place them in the most appropriate sentence within your bilingual lesson plan to ensure students/teachers can still access the relevant resources.
@@ -195,8 +196,8 @@ Integrate the co-teaching model selection into the **Tailored Instruction** row.
 The co-teaching model should align with the bilingual strategies selected in the Enhanced Strategy Selection Algorithm:
 
 * **Station Teaching** pairs well with: explicit_vocabulary, graphic_organizers, sentence_frames, cognate_awareness
-* **Parallel Teaching** pairs well with: collaborative_learning, peer_tutoring_bilingual, differentiated_instruction
-* **Team Teaching** pairs well with: translanguaging, preview_review, strategic_code_switching, dual_language_instruction
+* **Parallel Teaching** pairs well with: collaborative_learning, think_pair_share, differentiated_instruction
+* **Team Teaching** pairs well with: translanguaging, preview_review, strategic_code_switching, calla
 * **Alternative Teaching** pairs well with: cognate_awareness, contrastive_analysis, the_bridge, heritage_language_connections
 
 Ensure the selected strategies can be effectively implemented within the chosen co-teaching model structure.
@@ -262,7 +263,7 @@ Ensure the selected strategies can be effectively implemented within the chosen 
 * Determine the main action/outcome students will demonstrate
 
 ### **Step 2: Create "Student Goal (I will...)" Version**
-* Apply WIDA student-friendly templates from wida_framework_reference.json
+* Apply WIDA student-friendly templates from `wida/wida_framework_reference.json`
 * Use grade-appropriate language for `[GRADE_LEVEL_VARIABLE]`
 * Maximum 12 words for board posting
 * Focus on the same measurable outcome as original
@@ -276,7 +277,7 @@ Ensure the selected strategies can be effectively implemented within the chosen 
   * **Argue:** "I will argue [claim] using [evidence] and [connector]"
 
 ### **Step 3: Develop WIDA Bilingual Language Objective**
-* Apply WIDA template from wida_framework_reference.json:
+* Apply WIDA template from `wida/wida_framework_reference.json`:
   **"Students will use language to [Key Language Use] [content focus] (ELD-[standard].[grade-cluster].[function].[domain]) by [bilingual strategy] using [specific supports] appropriate for WIDA levels [target range], producing [product] that demonstrates [dimension focus]."**
 * **Auto-select Key Language Use based on lesson type:**
   * Reading comprehension/analysis → **Explain**
@@ -285,7 +286,7 @@ Ensure the selected strategies can be effectively implemented within the chosen 
   * Discussion/debate/persuasion → **Argue**
 * **Generate ELD-LA standard:** ELD-LA.[grade-cluster].[function].[domain]
 * **Target proficiency levels:** Use typical ranges for `[GRADE_LEVEL_VARIABLE]`
-* **Reference proficiency adaptations:** Apply specific scaffolds from wida_strategy_enhancements.json
+* **Reference proficiency adaptations:** Apply specific scaffolds from `wida/wida_strategy_enhancements.json`
 * **Non-negotiable ELD code pattern:** Every WIDA objective must follow `ELD-[Standard].[GradeCluster].[Function].[Domains]` where `Domains` lists one or more of `Listening`, `Reading`, `Speaking`, `Writing` separated by `/`.  
   * ✅ `ELD-SS.6-8.Explain.Listening/Speaking`  
   * ✅ `ELD-LA.2-3.Inform.Reading/Writing`  
@@ -807,7 +808,7 @@ Formatting Rules:
 
 ---
 
-* **ELL Support:** 3-5 bullets citing specific JSON strategies by ID name (converted to natural language) with proficiency-responsive implementation steps from wida_strategy_enhancements.json (adapted for `[GRADE_LEVEL_VARIABLE]` developmental level)  
+* **ELL Support:** 3-5 bullets citing specific JSON strategies by ID name (converted to natural language) with proficiency-responsive implementation steps from `wida/wida_strategy_enhancements.json` (adapted for `[GRADE_LEVEL_VARIABLE]` developmental level)  
 * **Special Needs Support:** 1-2 simple accommodations appropriate for `[GRADE_LEVEL_VARIABLE]`  
 * **Material examples:** Concrete, low-prep suggestions using only classroom basics or referenced materials (age-appropriate for `[GRADE_LEVEL_VARIABLE]`)
 
@@ -855,7 +856,7 @@ Formatting Rules:
 * [ ] **Portuguese vocabulary alignment:** When English frames use vocabulary words, Portuguese frames use corresponding Portuguese vocabulary words
 * [ ] Portuguese equivalents provided for all frames/stems/questions
 * [ ] Frames aligned to lesson's target language functions
-* [ ] Maximum 2-3 strategies selected per lesson
+* [ ] `tailored_instruction.ell_support` has 3-5 items per generated day (each item grounded in pack JSON when available)
 * [ ] Co-teaching model selected based on WIDA proficiency distribution
 * [ ] Phase 3 validation checks completed (WIDA band, special conditions, equity filters)
 * [ ] Co-teaching model integrated into Tailored Instruction row (not separate row)

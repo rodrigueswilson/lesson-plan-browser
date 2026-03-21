@@ -26,7 +26,13 @@ async def load_existing_plan(
     """
     existing_lesson_json = None
     existing_plans = await asyncio.to_thread(db.get_user_plans, user_id, limit=5)
-    existing_plan = next((p for p in existing_plans if p.week_of == week_of), None)
+    from backend.utils.date_formatter import normalize_week_of_for_match
+
+    canonical = normalize_week_of_for_match(week_of)
+    existing_plan = next(
+        (p for p in existing_plans if p.week_of == week_of or (canonical and normalize_week_of_for_match(p.week_of or "") == canonical)),
+        None,
+    )
 
     if existing_plan:
         if not plan_id:
