@@ -49,6 +49,39 @@ function sanitizeFilenamePart(s: string): string {
     return s.replace(/[/\\:*?"<>|]/g, '_').replace(/\s+/g, '_');
 }
 
+type PlanJsonBackupKind = 'manual' | 'pre-delete';
+
+/** Fetches export JSON and triggers a browser download. Throws if the export fails. */
+async function downloadWeeklyPlanJsonBackup(
+    userId: string,
+    planId: string,
+    weekOf: string,
+    kind: PlanJsonBackupKind
+): Promise<void> {
+    const res = await fetch(
+        `${API_BASE}/users/${userId}/plans/${encodeURIComponent(planId)}/export`
+    );
+    if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.detail || res.statusText);
+    }
+    const data = await res.json();
+    const json = JSON.stringify(data, null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const ts = new Date().toISOString().replace(/[:.]/g, '-');
+    const safeWeek = sanitizeFilenamePart(weekOf);
+    const shortId = planId.replace(/^plan_/, '').slice(0, 12);
+    const stem = kind === 'pre-delete' ? 'plan-backup_pre-delete' : 'plan-backup';
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${stem}_${safeWeek}_${shortId}_${ts}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
 export function DatabaseSettings() {
     const { currentUser } = useStore();
     const [stats, setStats] = useState<MaintenanceStats | null>(null);
@@ -249,27 +282,7 @@ export function DatabaseSettings() {
         setExportingPlanId(planId);
         setError(null);
         try {
-            const res = await fetch(
-                `${API_BASE}/users/${currentUser.id}/plans/${encodeURIComponent(planId)}/export`
-            );
-            if (!res.ok) {
-                const err = await res.json().catch(() => ({}));
-                throw new Error(err.detail || res.statusText);
-            }
-            const data = await res.json();
-            const json = JSON.stringify(data, null, 2);
-            const blob = new Blob([json], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const ts = new Date().toISOString().replace(/[:.]/g, '-');
-            const safeWeek = sanitizeFilenamePart(weekOf);
-            const shortId = planId.replace(/^plan_/, '').slice(0, 12);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `plan-backup_${safeWeek}_${shortId}_${ts}.json`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
+            await downloadWeeklyPlanJsonBackup(currentUser.id, planId, weekOf, 'manual');
             setMessage({ type: 'success', text: `Downloaded JSON backup for plan ${planId}.` });
         } catch (err: unknown) {
             setError(err instanceof Error ? err.message : 'Export failed');
@@ -281,13 +294,23 @@ export function DatabaseSettings() {
     const handleDeletePlan = async (planId: string, weekOf: string) => {
         if (!currentUser?.id) return;
         const ok = window.confirm(
-            `Delete this plan version from the database?\n\nWeek: ${weekOf}\nPlan: ${planId}\n\nThis cannot be undone. Export a JSON backup first if you may need it.`
+            `Delete this plan version from the database?\n\nWeek: ${weekOf}\nPlan: ${planId}\n\nA JSON backup will be downloaded first (filename starts with plan-backup_pre-delete). If that download fails, nothing will be removed.`
         );
         if (!ok) return;
         setDeletingPlanId(planId);
         setError(null);
         setMessage(null);
         try {
+            try {
+                await downloadWeeklyPlanJsonBackup(currentUser.id, planId, weekOf, 'pre-delete');
+            } catch (backupErr: unknown) {
+                const msg =
+                    backupErr instanceof Error ? backupErr.message : 'Pre-delete backup failed';
+                setError(
+                    `${msg} The plan was not deleted. Fix the issue or use Backup to export manually, then try again.`
+                );
+                return;
+            }
             const res = await fetch(
                 `${API_BASE}/users/${currentUser.id}/plans/${encodeURIComponent(planId)}`,
                 { method: 'DELETE' }
@@ -296,7 +319,10 @@ export function DatabaseSettings() {
                 const err = await res.json().catch(() => ({}));
                 throw new Error(err.detail || res.statusText);
             }
-            setMessage({ type: 'success', text: `Removed plan ${planId}.` });
+            setMessage({
+                type: 'success',
+                text: `Downloaded pre-delete JSON backup and removed plan ${planId}.`,
+            });
             fetchPlansByWeek();
             setTimeout(fetchStats, 500);
         } catch (err: unknown) {
@@ -524,7 +550,7 @@ export function DatabaseSettings() {
                             </div>
                             <p className="text-xs text-muted-foreground">
                                 {weekSortMode === 'school'
-                                    ? 'Weeks follow the Aug–Jun school-year timeline (newer school years first; within a year, later weeks such as spring appear above fall).'
+                                    ? 'Weeks are ordered by real calendar (newest week first). Labels without a year: if the week is within the next few days, that upcoming date is used; otherwise the most recent past occurrence of that week (so last fall stays below this spring).'
                                     : 'Weeks are ordered by the most recent generated time of any version in that week.'}
                             </p>
                         </div>
@@ -668,7 +694,7 @@ export function DatabaseSettings() {
                             Restore from backup file
                         </h3>
                         <p className="text-sm text-muted-foreground mt-1">
-                            Deleted plans are removed from the database. If you previously used <strong>Backup</strong> to save a JSON file, you can restore that plan here. This does not restore lesson-step rows from Lesson Mode (only the weekly plan and <code className="text-xs">lesson_json</code>).
+                            Deleting a version downloads a <code className="text-xs">plan-backup_pre-delete</code> JSON file first, then removes the row. You can also use <strong>Backup</strong> anytime. Restore uses the same JSON format; it does not restore lesson-step rows from Lesson Mode (only the weekly plan and <code className="text-xs">lesson_json</code>).
                         </p>
                     </div>
                     <div className="p-6 space-y-4">
