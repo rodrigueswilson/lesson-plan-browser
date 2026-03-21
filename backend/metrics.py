@@ -1,10 +1,11 @@
 """
-Prometheus metrics for rate limiting and Redis monitoring.
+Prometheus metrics for rate limiting, Redis monitoring, and LLM transform paths.
 
 Provides metrics for:
 - Rate limit allowed/blocked requests
 - Redis connection failures and fallbacks
 - Circuit breaker status
+- LLM invalid strategy_id, transform retries, and strategy-pack injection size
 """
 
 from prometheus_client import Counter, Gauge, Histogram, generate_latest, CONTENT_TYPE_LATEST
@@ -57,6 +58,40 @@ rate_limit_check_duration = Histogram(
     'Time taken to check rate limit',
     ['limit_name', 'service', 'env'],
     buckets=[0.001, 0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1.0]
+)
+
+llm_ell_support_strategy_id_invalid_total = Counter(
+    "llm_ell_support_strategy_id_invalid_total",
+    "Times tailored_instruction.ell_support strategy_id failed pack validation",
+    ["service", "env"],
+)
+
+llm_transform_retry_total = Counter(
+    "llm_transform_retry_total",
+    "LLM lesson transform retries (parse or validation loop)",
+    ["service", "env", "reason"],
+)
+
+llm_strategy_pack_injection_chars = Histogram(
+    "llm_strategy_pack_injection_chars",
+    "Character length of injected strategy-pack context after build/truncation",
+    ["service", "env"],
+    buckets=(
+        0,
+        500,
+        1000,
+        2000,
+        4000,
+        6000,
+        8000,
+        10000,
+        12000,
+        14000,
+        16000,
+        20000,
+        30000,
+        50000,
+    ),
 )
 
 
@@ -120,6 +155,31 @@ def update_connection_failures(count: int):
         service=get_service_name(),
         env=get_env_name()
     ).set(count)
+
+
+def record_llm_strategy_id_invalid():
+    """Increment counter when ell_support strategy_id is not in the strategy pack."""
+    llm_ell_support_strategy_id_invalid_total.labels(
+        service=get_service_name(),
+        env=get_env_name(),
+    ).inc()
+
+
+def record_llm_transform_retry(reason: str):
+    """Increment counter when the transform loop takes a retry (parse or validation)."""
+    llm_transform_retry_total.labels(
+        service=get_service_name(),
+        env=get_env_name(),
+        reason=reason,
+    ).inc()
+
+
+def record_strategy_pack_injection_chars(char_len: int) -> None:
+    """Observe final injected strategy-pack block size (characters)."""
+    llm_strategy_pack_injection_chars.labels(
+        service=get_service_name(),
+        env=get_env_name(),
+    ).observe(float(max(0, char_len)))
 
 
 def get_metrics_response():

@@ -1,8 +1,83 @@
 """
 Domain analysis for lesson activities (WIDA language domains).
+
+Strategy-to-domain mapping is derived from strategies_pack_v2 category JSON
+`skill_weights` (single source of truth). Legacy lesson JSON may use older
+`strategy_id` strings; those are normalized via LEGACY_ALIASES.
 """
 
-from typing import Any, Dict, List, Optional
+from __future__ import annotations
+
+import json
+from functools import lru_cache
+from pathlib import Path
+from typing import Any, Dict, FrozenSet, List, Optional
+
+_SKILL_KEYS = ("speaking", "listening", "reading", "writing")
+# Exclude nominal weights (e.g. 0.1) so primary domains match instructional intent.
+_WEIGHT_EPSILON = 0.15
+
+_CATEGORY_FILES = (
+    "core/language_skills.json",
+    "core/frameworks_models.json",
+    "core/cross_linguistic.json",
+    "core/assessment_scaffolding.json",
+    "specialized/social_interactive.json",
+    "specialized/cultural_identity.json",
+)
+
+# Older plans / fixtures may use ids not present in v2 pack JSON.
+LEGACY_ALIASES: Dict[str, str] = {
+    "peer_tutoring": "collaborative_learning",
+    "peer_tutoring_bilingual": "think_pair_share",
+    "read_aloud": "interactive_read_alouds",
+    "oral_rehearsal": "collaborative_learning",
+    "literature_circles": "interactive_read_alouds",
+    "jigsaw": "collaborative_learning",
+    "shared_reading": "interactive_read_alouds",
+    "interactive_writing": "sentence_frames",
+    "guided_writing": "graphic_organizers",
+}
+
+
+def _project_root() -> Path:
+    return Path(__file__).resolve().parent.parent.parent
+
+
+@lru_cache(maxsize=1)
+def _pack_strategy_domains() -> Dict[str, FrozenSet[str]]:
+    """Load strategy id -> language domains from pack skill_weights."""
+    pack_dir = _project_root() / "strategies_pack_v2"
+    result: Dict[str, FrozenSet[str]] = {}
+    for rel in _CATEGORY_FILES:
+        path = pack_dir / rel
+        if not path.is_file():
+            continue
+        with open(path, encoding="utf-8") as f:
+            data = json.load(f)
+        for strat in data.get("strategies", []):
+            sid = strat.get("id")
+            weights = strat.get("skill_weights") or {}
+            if not sid or not isinstance(weights, dict):
+                continue
+            active: set[str] = set()
+            for key in _SKILL_KEYS:
+                try:
+                    w = float(weights.get(key, 0.0))
+                except (TypeError, ValueError):
+                    continue
+                if w >= _WEIGHT_EPSILON:
+                    active.add(key)
+            if active:
+                result[sid] = frozenset(active)
+    return result
+
+
+def _canonical_strategy_id(strategy_id: str) -> str:
+    raw = (strategy_id or "").strip().lower()
+    if not raw:
+        return ""
+    return LEGACY_ALIASES.get(raw, raw)
 
 
 def analyze_domains_from_activities(
@@ -28,27 +103,16 @@ def analyze_domains_from_activities(
         "writing": False,
     }
 
-    strategy_domain_map = {
-        "think_pair_share": {"listening", "speaking"},
-        "collaborative_learning": {"listening", "speaking"},
-        "sentence_frames": {"speaking", "writing"},
-        "graphic_organizers": {"reading", "writing"},
-        "cognate_awareness": {"reading", "writing"},
-        "oral_rehearsal": {"speaking", "listening"},
-        "peer_tutoring": {"listening", "speaking"},
-        "literature_circles": {"reading", "speaking", "listening"},
-        "jigsaw": {"reading", "speaking", "listening"},
-        "read_aloud": {"listening", "reading"},
-        "shared_reading": {"reading", "speaking"},
-        "interactive_writing": {"writing", "speaking"},
-        "guided_writing": {"writing", "reading"},
-    }
+    pack_map = _pack_strategy_domains()
 
     if ell_support:
         for strategy in ell_support:
-            strategy_id = strategy.get("strategy_id", "").lower()
-            if strategy_id in strategy_domain_map:
-                for domain in strategy_domain_map[strategy_id]:
+            sid = _canonical_strategy_id(strategy.get("strategy_id", ""))
+            if not sid:
+                continue
+            domain_set = pack_map.get(sid)
+            if domain_set:
+                for domain in domain_set:
                     domains[domain] = True
 
     if phase_plan:

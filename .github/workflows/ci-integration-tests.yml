@@ -1,18 +1,25 @@
 name: Integration Tests (Postgres)
 
+# Run on default branch (master) and develop; main included if you ever rename default
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ main, master, develop ]
     paths:
       - 'backend/**'
       - 'tests/**'
+      - 'strategies_pack_v2/**'
+      - 'wida/**'
+      - 'tools/verify_strategy_pack_ssot.py'
       - 'requirements.txt'
       - '.github/workflows/ci-integration-tests.yml'
   pull_request:
-    branches: [ main, develop ]
+    branches: [ main, master, develop ]
     paths:
       - 'backend/**'
       - 'tests/**'
+      - 'strategies_pack_v2/**'
+      - 'wida/**'
+      - 'tools/verify_strategy_pack_ssot.py'
       - 'requirements.txt'
       - '.github/workflows/ci-integration-tests.yml'
 
@@ -30,7 +37,7 @@ jobs:
     
     services:
       postgres:
-        image: postgres:${{ env.POSTGRES_VERSION }}
+        image: postgres:15
         env:
           POSTGRES_DB: ${{ env.POSTGRES_DB }}
           POSTGRES_USER: ${{ env.POSTGRES_USER }}
@@ -63,6 +70,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install psycopg2-binary  # PostgreSQL adapter for Python
+
+      - name: Verify strategy pack SSOT
+        run: python tools/verify_strategy_pack_ssot.py
 
       - name: Wait for Postgres to be ready
         run: |
@@ -172,6 +182,9 @@ jobs:
           print("Schema created successfully")
           EOF
 
+      # Postgres job: integration authorization only (fixtures target this DATABASE_URL).
+      # SQLite job runs `pytest -m unit` for the broader critical path; we do not duplicate
+      # that slice here to save CI time (app Settings still normalize dev DB to SQLite).
       - name: Run integration tests with Postgres
         env:
           DATABASE_URL: postgresql://${{ env.POSTGRES_USER }}:${{ env.POSTGRES_PASSWORD }}@localhost:5432/${{ env.POSTGRES_DB }}
@@ -179,13 +192,7 @@ jobs:
           USE_POSTGRES_TEST: 'True'  # Flag to use Postgres in tests
           PYTHONPATH: ${{ github.workspace }}
         run: |
-          # Note: Tests currently use SQLite fixtures
-          # To use Postgres, set USE_POSTGRES_TEST=True and use postgres fixtures
-          # For now, we run SQLite tests to ensure they pass
           pytest tests/test_integration_authorization.py -v --tb=short
-          
-          # Future: Run Postgres-specific tests when fixtures are ready
-          # pytest tests/test_integration_authorization.py -v --tb=short -k postgres || true
 
       - name: Run authorization unit tests
         env:
@@ -221,6 +228,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Verify strategy pack SSOT
+        run: python tools/verify_strategy_pack_ssot.py
+
       - name: Run integration tests with SQLite
         env:
           DATABASE_URL: sqlite:///./data/test_lesson_planner.db
@@ -229,11 +239,13 @@ jobs:
         run: |
           pytest tests/test_integration_authorization.py -v --tb=short
 
-      - name: Run authorization unit tests
+      - name: Run unit-marked critical path tests
         env:
+          DATABASE_URL: sqlite:///./data/test_lesson_planner.db
+          USE_SUPABASE: 'False'
           PYTHONPATH: ${{ github.workspace }}
         run: |
-          pytest tests/test_authorization.py -v --tb=short
+          pytest tests/ -m unit -v --tb=short
 
   test-summary:
     name: Test Summary

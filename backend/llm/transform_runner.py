@@ -8,11 +8,16 @@ from typing import Any, Callable, Dict, List, Optional, Tuple
 from backend.config import settings
 from backend.llm.post_process import normalize_sentence_frame_punctuation
 from backend.llm.sanitize_lesson_json import sanitize_lesson_json_strings
+from backend.llm.strategy_pack_context import (
+    allowed_strategy_ids_retry_suffix,
+    validate_ell_support_strategy_ids,
+)
 from backend.llm.validation import (
     parse_llm_response,
     parse_validation_errors,
     validate_structure,
 )
+from backend.metrics import record_llm_strategy_id_invalid, record_llm_transform_retry
 from backend.performance_tracker import get_tracker
 from backend.telemetry import logger
 
@@ -93,6 +98,7 @@ def run_transform_lesson(
         error_analysis = None
         response_text = ""
         usage: Dict[str, int] = {}
+        skip_instructor_path = False
 
         while retry_count <= max_retries:
             if progress_callback:
@@ -109,7 +115,11 @@ def run_transform_lesson(
                         "Calling AI service to transform lesson plan...",
                     )
 
-            if service.provider == "openai" and service.instructor_client:
+            if (
+                service.provider == "openai"
+                and service.instructor_client
+                and not skip_instructor_path
+            ):
                 try:
                     if plan_id:
                         with tracker.track_operation(
@@ -129,10 +139,30 @@ def run_transform_lesson(
                             )
                         )
 
-                    is_valid = True
-                    validation_error = None
-                    response_text = json.dumps(lesson_json)
-                    break
+                    is_valid, validation_error = validate_structure(lesson_json)
+                    if is_valid:
+                        sid_ok, sid_err, bad_ids = validate_ell_support_strategy_ids(
+                            lesson_json
+                        )
+                        if not sid_ok:
+                            is_valid = False
+                            validation_error = (sid_err or "") + (
+                                allowed_strategy_ids_retry_suffix()
+                            )
+                            logger.warning(
+                                "ell_support_strategy_id_invalid",
+                                extra={
+                                    "unknown_ids": bad_ids,
+                                    "retry_count": retry_count,
+                                    "grade": grade,
+                                    "subject": subject,
+                                },
+                            )
+                            record_llm_strategy_id_invalid()
+                    if is_valid:
+                        response_text = json.dumps(lesson_json)
+                        break
+                    skip_instructor_path = True
 
                 except Exception as e:
                     logger.warning(
@@ -231,10 +261,13 @@ def run_transform_lesson(
                         "tokens_output": usage.get("tokens_output", 0),
                         "was_truncated": was_truncated,
                         "error_analysis": error_analysis,
+                        "grade": grade,
+                        "subject": subject,
                     },
                 )
                 if retry_count < max_retries:
                     retry_count += 1
+                    record_llm_transform_retry("json_parse")
                     validation_error = (
                         f"JSON parsing failed: {json_error_msg}. "
                         "Please ensure the response is complete, valid JSON without truncation."
@@ -261,6 +294,26 @@ def run_transform_lesson(
                     is_valid, validation_error = validate_structure(lesson_json)
             else:
                 is_valid, validation_error = validate_structure(lesson_json)
+
+            if is_valid:
+                sid_ok, sid_err, bad_ids = validate_ell_support_strategy_ids(
+                    lesson_json
+                )
+                if not sid_ok:
+                    is_valid = False
+                    validation_error = (sid_err or "") + (
+                        allowed_strategy_ids_retry_suffix()
+                    )
+                    logger.warning(
+                        "ell_support_strategy_id_invalid",
+                        extra={
+                            "unknown_ids": bad_ids,
+                            "retry_count": retry_count,
+                            "grade": grade,
+                            "subject": subject,
+                        },
+                    )
+                    record_llm_strategy_id_invalid()
 
             if progress_callback:
                 if is_valid:
@@ -294,17 +347,22 @@ def run_transform_lesson(
                     "max_retries": max_retries,
                     "validation_error": validation_error,
                     "parsed_errors": parsed_validation_errors,
+                    "grade": grade,
+                    "subject": subject,
                 },
             )
 
             if retry_count < max_retries:
                 retry_count += 1
+                record_llm_transform_retry("validation")
                 logger.info(
                     "llm_retry_attempt",
                     extra={
                         "retry_count": retry_count,
                         "validation_error": validation_error,
                         "parsed_errors": parsed_validation_errors,
+                        "grade": grade,
+                        "subject": subject,
                     },
                 )
             else:
