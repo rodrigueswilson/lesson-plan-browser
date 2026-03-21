@@ -1,4 +1,5 @@
-// Shared API client that works in both Tauri and browser environments
+// Shared API client that works in both Tauri and browser environments.
+// Tablet/standalone: when VITE_ENABLE_STANDALONE_DB=true, methods used by the tablet must use local DB or safe defaults only (no request()). See docs/guides/TABLET_STANDALONE_DB.md.
 
 // Utility to safely read Vite env vars even when import.meta is undefined (tests)
 const importMetaEnv: Record<string, any> =
@@ -291,6 +292,14 @@ export const setNetworkApiBaseUrlOverride = (url?: string | null) => {
   refreshBaseUrls();
 };
 
+// Log to native (shows in adb logcat on Android) for debugging "No weeks available".
+function logToNative(message: string): void {
+  if (typeof window === 'undefined') return;
+  import('@tauri-apps/api/core')
+    .then((api) => api.invoke('log_to_native', { message }))
+    .catch(() => {});
+}
+
 // Helper to query local database via Tauri commands (for standalone mode)
 async function queryLocalDatabase<T>(sql: string, params: any[] = []): Promise<T[]> {
   try {
@@ -554,6 +563,7 @@ export interface ScheduleEntryCreate {
   plan_slot_group_id?: string | null;
 }
 
+// In standalone mode, tablet data paths should not reach request(); if this runs in standalone, see docs/guides/TABLET_STANDALONE_DB.md.
 const request = async <T>(
   method: string,
   url: string,
@@ -561,6 +571,9 @@ const request = async <T>(
   currentUserId?: string
 ): Promise<{ data: T }> => {
   try {
+    if (isStandaloneMode() && STANDALONE_DB_ENABLED) {
+      logToNative(`[LP] [API] WARNING: request() called in standalone mode; tablet should use local DB. See docs/guides/TABLET_STANDALONE_DB.md. URL: ${url}`);
+    }
     console.log(`[API] ${method} ${url}`, body ? { body } : '', currentUserId ? `[User: ${currentUserId}]` : '');
 
     const headers: Record<string, string> = {
@@ -794,31 +807,41 @@ export const userApi = {
   list: async () => {
     const userAgent = typeof navigator !== 'undefined' ? navigator.userAgent || '' : '';
     const isAndroid = userAgent.includes('Android') || /Android/i.test(userAgent);
-    const canUseLocalDb = isStandaloneMode() && STANDALONE_DB_ENABLED;
+    const standalone = isStandaloneMode();
+    const canUseLocalDb = standalone && STANDALONE_DB_ENABLED;
+
+    logToNative(
+      `userApi.list STANDALONE_DB_ENABLED=${STANDALONE_DB_ENABLED} isStandaloneMode=${standalone} canUseLocalDb=${canUseLocalDb}`
+    );
 
     console.log('[API] userApi.list() called.', {
       isAndroid,
-      standalone: isStandaloneMode(),
+      standalone,
       canUseLocalDb,
       hasWindow: typeof window !== 'undefined',
       userAgent: userAgent.substring(0, 50),
     });
 
+    // Standalone: local DB only (TABLET_STANDALONE_DB.md).
     if (canUseLocalDb) {
+      logToNative('[API] Attempting local DB query for users');
       console.log('[API] Standalone mode detected. Attempting local database query...');
       try {
         const rows = await queryLocalDatabase<Record<string, any>>(
           'SELECT id, email, first_name, last_name, name, base_path_override, template_path, signature_image_path, created_at, updated_at FROM users ORDER BY created_at DESC'
         );
         const users = rows.map(rowToUser);
+        logToNative(`[API] Local DB users count=${users.length}`);
         console.log('[API] Standalone mode query success. Found', users.length, 'users');
         return { data: users };
       } catch (error: any) {
         const errorMsg = error.message || String(error);
+        logToNative(`[API] Local DB query failed: ${errorMsg}`);
         console.error('[API] Standalone mode query failed, falling back to HTTP:', errorMsg);
       }
     }
 
+    logToNative('[API] Using HTTP API (tablet will show No weeks if no server)');
     if (isAndroid) {
       console.log('[API] Using HTTP API over network (Android remote/bridge mode)');
     } else {
@@ -845,6 +868,7 @@ export const userApi = {
 
   get: async (userId: string, currentUserId?: string) => {
     const canUseLocalDb = isStandaloneMode() && STANDALONE_DB_ENABLED;
+    // Standalone: local DB only (TABLET_STANDALONE_DB.md).
     if (canUseLocalDb) {
       try {
         const rows = await queryLocalDatabase<Record<string, any>>(
@@ -909,6 +933,7 @@ export const userApi = {
       }
     };
 
+    // Standalone: local DB only (TABLET_STANDALONE_DB.md).
     if (canUseLocalDb) {
       try {
         const rows = await queryLocalDatabase<Record<string, any>>(
@@ -922,19 +947,24 @@ export const userApi = {
           [userId, limit]
         );
 
-        return {
-          data: rows.map((row) => {
-            const weekOf = row.week_of as string;
-            return {
-              week_of: weekOf,
-              display: formatWeekDisplayLabel(weekOf),
-              folder_name: getLessonPlanDirectory(weekOf),
-              latest_created_at: row.latest_created_at as string
-            };
-          }),
-        };
+        // Do not call getLessonPlanDirectory here: it is async, expects userId, and on
+        // Android can throw (app data path). Sorting uses folder_name for calendar order;
+        // when undefined, getWeekCalendarSortKey uses week_of-based year heuristic.
+        const data = rows.map((row) => {
+          const weekOf = row.week_of as string;
+          return {
+            week_of: weekOf,
+            display: formatWeekDisplayLabel(weekOf),
+            folder_name: undefined as string | undefined,
+            latest_created_at: row.latest_created_at as string
+          };
+        });
+        logToNative(`[API] getRecentWeeks local DB weeks count=${data.length} for user=${userId}`);
+        return { data };
       } catch (error: any) {
-        console.error('[API] Local recent weeks query failed, falling back to HTTP:', error.message || error);
+        const errMsg = error.message || String(error);
+        logToNative(`[API] getRecentWeeks local DB failed: ${errMsg}`);
+        console.error('[API] Local recent weeks query failed, falling back to HTTP:', errMsg);
       }
     }
 
@@ -964,6 +994,7 @@ export const userApi = {
 export const slotApi = {
   list: async (userId: string, currentUserId?: string) => {
     const canUseLocalDb = isStandaloneMode() && STANDALONE_DB_ENABLED;
+    // Standalone: local DB only (TABLET_STANDALONE_DB.md).
     if (canUseLocalDb) {
       try {
         const rows = await queryLocalDatabase<Record<string, any>>(
@@ -999,6 +1030,7 @@ export const slotApi = {
 export const planApi = {
   list: async (userId: string, limit = 50, currentUserId?: string) => {
     const canUseLocalDb = isStandaloneMode() && STANDALONE_DB_ENABLED;
+    // Standalone: local DB only (TABLET_STANDALONE_DB.md).
     if (canUseLocalDb) {
       try {
         const rows = await queryLocalDatabase<Record<string, any>>(
@@ -1164,6 +1196,34 @@ export async function triggerSync(userId: string): Promise<SyncResult> {
   }
 }
 
+/**
+ * Classify a GET /progress/{taskId}/poll JSON body.
+ * Uses `status` or `stage` (defensive) and case-insensitive terminal detection.
+ */
+export function classifyProgressPollPayload(data: unknown): {
+  terminal: boolean;
+  normalizedStatus: string;
+  kind: 'success' | 'failure' | 'ongoing';
+} {
+  const d = data as Record<string, unknown> | null | undefined;
+  const raw = String(d?.status ?? d?.stage ?? '').trim();
+  const lower = raw.toLowerCase();
+  if (!lower) {
+    return { terminal: false, normalizedStatus: 'unknown', kind: 'ongoing' };
+  }
+  if (lower === 'complete' || lower === 'completed' || lower === 'done') {
+    return { terminal: true, normalizedStatus: 'completed', kind: 'success' };
+  }
+  if (lower === 'failed' || lower === 'error') {
+    return {
+      terminal: true,
+      normalizedStatus: lower,
+      kind: 'failure',
+    };
+  }
+  return { terminal: false, normalizedStatus: lower, kind: 'ongoing' };
+}
+
 export function createProgressStream(taskId: string, onProgress: (data: any) => void) {
   console.log('[API] Starting progress polling for task:', taskId);
 
@@ -1174,21 +1234,24 @@ export function createProgressStream(taskId: string, onProgress: (data: any) => 
 
       console.log('[API] Progress update:', data);
 
+      const cls = classifyProgressPollPayload(data);
+      const rawObj = typeof data === 'object' && data !== null ? data : {};
       onProgress({
-        status: data.status,
-        progress: data.progress || 0,
-        message: data.message || 'Processing...',
-        current: data.current || 0,
-        total: data.total || 0,
+        ...rawObj,
+        status: cls.normalizedStatus,
+        progress: (data as { progress?: number })?.progress ?? 0,
+        message: (data as { message?: string })?.message || 'Processing...',
+        current: (data as { current?: number })?.current ?? 0,
+        total: (data as { total?: number })?.total ?? 0,
       });
 
-      if (
-        data.status === 'complete' ||
-        data.status === 'error' ||
-        data.status === 'completed' ||
-        data.status === 'failed'
-      ) {
-        console.log('[API] Progress polling complete, status:', data.status);
+      if (cls.terminal) {
+        console.log(
+          '[API] Progress polling complete, status:',
+          cls.normalizedStatus,
+          'kind:',
+          cls.kind
+        );
         clearInterval(pollInterval);
       }
     } catch (error) {
@@ -1204,6 +1267,7 @@ export function createProgressStream(taskId: string, onProgress: (data: any) => 
 export const scheduleApi = {
   getSchedule: async (userId: string, dayOfWeek?: string, homeroom?: string, grade?: string) => {
     const canUseLocalDb = isStandaloneMode() && STANDALONE_DB_ENABLED;
+    // Standalone: local DB only (TABLET_STANDALONE_DB.md).
     if (canUseLocalDb) {
       try {
         let sql = `SELECT id, user_id, day_of_week, slot_number, start_time, end_time, subject, grade, homeroom, plan_slot_group_id, is_active, created_at, updated_at
@@ -1244,7 +1308,11 @@ export const scheduleApi = {
     return result.data;
   },
 
-  getCurrentLesson: (userId: string) => {
+  // Standalone: no backend; return null (TABLET_STANDALONE_DB.md).
+  getCurrentLesson: async (userId: string) => {
+    if (isStandaloneMode() && STANDALONE_DB_ENABLED) {
+      return { data: null };
+    }
     return request<ScheduleEntry | null>('GET', `${API_BASE_URL}/schedules/${userId}/current`);
   },
 
@@ -1414,6 +1482,7 @@ async function cacheLessonPlanDetailLocally(plan: LessonPlanDetail): Promise<voi
 // readLessonPlanFromStorage removed - using database lesson_json column as single source of truth
 
 export const lessonApi = {
+  // Standalone: local DB only (TABLET_STANDALONE_DB.md).
   getPlanDetail: async (planId: string, currentUserId?: string) => {
     const canUseLocalDb = isStandaloneMode() && STANDALONE_DB_ENABLED;
     if (canUseLocalDb) {
@@ -1483,6 +1552,7 @@ export const lessonApi = {
     return response;
   },
 
+  // Standalone: local DB only (TABLET_STANDALONE_DB.md).
   getLessonSteps: async (planId: string, day: string, slot: number, currentUserId?: string) => {
     const canUseLocalDb = isStandaloneMode() && STANDALONE_DB_ENABLED;
     if (canUseLocalDb) {

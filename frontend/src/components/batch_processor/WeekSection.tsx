@@ -29,6 +29,9 @@ export function WeekSection({
 }: WeekSectionProps) {
   const disabled = buttonState === 'processing' || isProcessing || !weekOf || selectedSlotsSize === 0;
 
+  // Match "Available weeks" order (folder scan, newest first). Fallback to API recent weeks when no folder path.
+  const tabWeeks = availableWeeks.length > 0 ? availableWeeks : recentWeeks;
+
   return (
     <div className="space-y-2">
       <Label htmlFor="week">Week Of (MM-DD-MM-DD or YY W##)</Label>
@@ -55,22 +58,24 @@ export function WeekSection({
         </div>
       )}
 
-      {recentWeeks.length > 0 && (
-        <div className="mb-2">
+      {tabWeeks.length > 0 && (
+        <div className="mb-2 min-w-0">
           <Label className="text-xs text-muted-foreground">Recent Weeks:</Label>
-          <div className="flex gap-2 mt-1">
-            {recentWeeks.map((week) => (
-              <Button
-                key={week.week_of}
-                variant="outline"
-                size="sm"
-                onClick={() => setWeekOf(week.week_of)}
-                disabled={isProcessing}
-                className="text-xs"
-              >
-                {week.display}
-              </Button>
-            ))}
+          <div className="mt-1 max-w-full overflow-x-auto pb-1 [scrollbar-gutter:stable]">
+            <div className="flex w-max flex-nowrap gap-2">
+              {tabWeeks.map((week) => (
+                <Button
+                  key={week.week_of}
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setWeekOf(week.week_of)}
+                  disabled={isProcessing}
+                  className="shrink-0 text-xs whitespace-nowrap"
+                >
+                  {week.display}
+                </Button>
+              ))}
+            </div>
           </div>
         </div>
       )}

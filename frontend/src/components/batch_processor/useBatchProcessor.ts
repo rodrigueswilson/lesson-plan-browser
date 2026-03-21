@@ -26,6 +26,29 @@ export interface ProcessResult {
   errors?: Array<{ slot: number; subject: string; error: string }>;
 }
 
+const BATCH_PROGRESS_WATCHDOG_MS = 3 * 60 * 1000;
+
+function isTerminalProgressStatus(status: unknown): boolean {
+  const s = String(status ?? '').toLowerCase();
+  return (
+    s === 'completed' ||
+    s === 'complete' ||
+    s === 'done' ||
+    s === 'failed' ||
+    s === 'error'
+  );
+}
+
+function isProgressSuccessStatus(status: unknown): boolean {
+  const s = String(status ?? '').toLowerCase();
+  return s === 'completed' || s === 'complete' || s === 'done';
+}
+
+function isProgressFailureStatus(status: unknown): boolean {
+  const s = String(status ?? '').toLowerCase();
+  return s === 'failed' || s === 'error';
+}
+
 export function useBatchProcessor() {
   const {
     currentUser,
@@ -150,25 +173,75 @@ export function useBatchProcessor() {
 
   useEffect(() => {
     if (currentUser?.id && weekOf && weekOf.length >= 5) {
-      fetchWeekStatus();
+      void fetchWeekStatus();
     } else {
       setWeekStatus(null);
     }
   }, [currentUser?.id, weekOf]);
 
-  const fetchWeekStatus = async () => {
-    if (!currentUser?.id || !weekOf) return;
+  const fetchWeekStatus = async (): Promise<WeekStatus | null> => {
+    if (!currentUser?.id || !weekOf) return null;
     setIsLoadingStatus(true);
     try {
       const response = await planApi.getWeekStatus(currentUser.id, weekOf);
-      setWeekStatus(response.data);
+      const data = response.data;
+      setWeekStatus((prev) => {
+        if (!data?.plan_id) {
+          return data ?? null;
+        }
+        const prevDone =
+          prev?.plan_id === data.plan_id ? (prev?.done_slots ?? []) : [];
+        const incDone = data.done_slots ?? [];
+        const merged = [...new Set([...prevDone, ...incDone])].sort(
+          (a, b) => a - b
+        );
+        const allNums = slots.map((s: ClassSlot) => s.slot_number);
+        const missing = allNums.filter((n: number) => !merged.includes(n));
+        return {
+          ...data,
+          done_slots: merged,
+          missing_slots: missing,
+          total_slots: slots.length,
+        };
+      });
       setForceSlots(new Set());
+      return data ?? null;
     } catch (err) {
       console.error('[BatchProcessor] Failed to fetch week status:', err);
       setWeekStatus(null);
+      return null;
     } finally {
       setIsLoadingStatus(false);
     }
+  };
+
+  const refreshWeekStatusAfterSuccess = async (
+    planId: string,
+    processedSlotNumbers: number[]
+  ) => {
+    setWeekStatus((prev) => {
+      const prevDone = prev?.done_slots ?? [];
+      const merged = [...new Set([...prevDone, ...processedSlotNumbers])].sort(
+        (a, b) => a - b
+      );
+      const allNums = slots.map((s: ClassSlot) => s.slot_number);
+      const missing = allNums.filter((n: number) => !merged.includes(n));
+      return {
+        plan_id: planId,
+        status: 'completed',
+        done_slots: merged,
+        missing_slots: missing,
+        total_slots: slots.length,
+      };
+    });
+    setForceSlots(new Set());
+    void loadRecentWeeks();
+    void loadAvailableWeeks();
+    await fetchWeekStatus();
+    await new Promise((r) => setTimeout(r, 400));
+    await fetchWeekStatus();
+    await new Promise((r) => setTimeout(r, 400));
+    await fetchWeekStatus();
   };
 
   const toggleForceSlot = (slotNumber: number) => {
@@ -192,6 +265,11 @@ export function useBatchProcessor() {
     setShowConfirmDialog(false);
     if (!currentUser || !weekOf || selectedSlots.size === 0) return;
 
+    const capturedSelectedIds = new Set(selectedSlots);
+    const capturedSlotNumbers = slots
+      .filter((s: ClassSlot) => capturedSelectedIds.has(String(s.id)))
+      .map((s: ClassSlot) => s.slot_number);
+
     setButtonState('processing');
     setIsProcessing(true);
     setError(null);
@@ -211,18 +289,61 @@ export function useBatchProcessor() {
       );
 
       if (response.data.plan_id) {
-        const eventSource = createProgressStream(response.data.plan_id, (data) => {
-          setProgress({
-            current: data.current || 0,
-            total: data.total || selectedSlots.size,
-            message: data.message || 'Processing...',
-          });
+        let progressCompleted = false;
+        let progressHandle: { close: () => void } | null = null;
+        let watchdogTimer: ReturnType<typeof setTimeout> | null = null;
 
-          if (data.status === 'completed' || data.status === 'complete' || data.status === 'failed' || data.status === 'error') {
-            eventSource.close();
+        const clearWatchdog = () => {
+          if (watchdogTimer !== null) {
+            clearTimeout(watchdogTimer);
+            watchdogTimer = null;
+          }
+        };
+
+        const runWatchdogRecovery = () => {
+          if (progressCompleted) return;
+          progressCompleted = true;
+          clearWatchdog();
+          progressHandle?.close();
+          setIsProcessing(false);
+          setResult({
+            ...response.data,
+            processed_slots: response.data.processed_slots ?? 0,
+            failed_slots: response.data.failed_slots ?? 0,
+          });
+          setButtonState('success');
+          setProgress({
+            current: selectedSlots.size,
+            total: selectedSlots.size,
+            message: 'Progress stalled; refreshed plan status from server.',
+          });
+          void refreshWeekStatusAfterSuccess(
+            response.data.plan_id,
+            capturedSlotNumbers
+          );
+        };
+
+        watchdogTimer = setTimeout(runWatchdogRecovery, BATCH_PROGRESS_WATCHDOG_MS);
+
+        try {
+          progressHandle = createProgressStream(response.data.plan_id, (data) => {
+            setProgress({
+              current: data.current || 0,
+              total: data.total || selectedSlots.size,
+              message: data.message || 'Processing...',
+            });
+
+            if (!isTerminalProgressStatus(data.status)) {
+              return;
+            }
+
+            if (progressCompleted) return;
+            progressCompleted = true;
+            clearWatchdog();
+            progressHandle?.close();
             setIsProcessing(false);
 
-            if (data.status === 'completed' || data.status === 'complete') {
+            if (isProgressSuccessStatus(data.status)) {
               const finalResult: ProcessResult = {
                 ...response.data,
                 processed_slots: data.processed_slots ?? response.data.processed_slots ?? 0,
@@ -237,8 +358,11 @@ export function useBatchProcessor() {
                 total: data.total || selectedSlots.size,
                 message: 'Completed successfully',
               });
-              fetchWeekStatus();
-            } else {
+              void refreshWeekStatusAfterSuccess(
+                response.data.plan_id,
+                capturedSlotNumbers
+              );
+            } else if (isProgressFailureStatus(data.status)) {
               const errorMessage = data.message || data.error || 'Processing failed';
               setError(errorMessage);
               setButtonState('error');
@@ -250,14 +374,22 @@ export function useBatchProcessor() {
               };
               setResult(finalResult);
             }
-          }
-        });
+          });
+        } catch (streamErr) {
+          clearWatchdog();
+          throw streamErr;
+        }
       } else {
         setIsProcessing(false);
         if (response.data.success) {
           setResult(response.data);
           setButtonState('success');
-          fetchWeekStatus();
+          if (response.data.plan_id) {
+            void refreshWeekStatusAfterSuccess(
+              response.data.plan_id,
+              capturedSlotNumbers
+            );
+          }
         } else {
           setError('Processing failed');
           setButtonState('error');

@@ -13,12 +13,12 @@ export interface SlotItem {
 
 interface SlotSectionProps {
   sortedSlots: SlotItem[];
-  selectedSlots: Set<number>;
+  selectedSlots: Set<string>;
   weekStatus: WeekStatus | null;
   forceSlots: Set<number>;
   isLoadingStatus: boolean;
   isProcessing: boolean;
-  toggleSlot: (id: number) => void;
+  toggleSlot: (id: string) => void;
   selectAllSlots: () => void;
   deselectAllSlots: () => void;
   toggleForceSlot: (slotNumber: number) => void;
@@ -56,19 +56,20 @@ export function SlotSection({
       </div>
       <div className="space-y-2">
         {sortedSlots.map((slot) => {
-          const isSelected = selectedSlots.has(slot.id);
+          const slotIdStr = String(slot.id);
+          const isSelected = selectedSlots.has(slotIdStr);
           return (
             <div
               key={slot.id}
               className={`flex items-center gap-3 text-sm p-2 rounded cursor-pointer transition-colors ${isSelected ? 'bg-primary/10 border border-primary/20' : 'bg-muted/50 hover:bg-muted'}`}
-              onClick={() => !isProcessing && toggleSlot(slot.id)}
+              onClick={() => !isProcessing && toggleSlot(slotIdStr)}
             >
               <input
                 type="checkbox"
                 id={`slot-checkbox-${slot.id}`}
                 name={`slot-${slot.id}`}
                 checked={isSelected}
-                onChange={() => toggleSlot(slot.id)}
+                onChange={() => toggleSlot(slotIdStr)}
                 disabled={isProcessing}
                 className="w-4 h-4 cursor-pointer"
                 onClick={(e) => e.stopPropagation()}
@@ -82,33 +83,41 @@ export function SlotSection({
                     {slot.primary_teacher_name || 'No teacher'}, Grade {slot.grade}
                   </span>
                 </div>
-                {weekStatus && weekStatus.done_slots.includes(slot.slot_number) && (
+                {weekStatus?.plan_id != null && (
                   <div className="flex items-center gap-3">
-                    <div className="flex items-center gap-1 text-green-600 text-xs font-medium bg-green-50 px-2 py-0.5 rounded-full border border-green-100">
-                      <CheckCircle2 className="w-3 h-3" />
-                      Done
-                    </div>
-                    {isSelected && (
-                      <div
-                        className={`flex items-center gap-1.5 px-2 py-0.5 rounded-full border text-[10px] uppercase tracking-wider font-bold transition-all ${forceSlots.has(slot.slot_number) ? 'bg-orange-500 text-white border-orange-600 shadow-sm' : 'bg-white text-muted-foreground border-muted-foreground/20 hover:border-orange-400 hover:text-orange-600'}`}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          toggleForceSlot(slot.slot_number);
-                        }}
-                        title="Force AI transformation for this slot"
-                      >
-                        {forceSlots.has(slot.slot_number) ? (
-                          <>
-                            <Loader2 className="w-2.5 h-2.5 animate-spin" />
-                            Recall AI
-                          </>
-                        ) : (
-                          <>
-                            <Play className="w-2.5 h-2.5" />
-                            Skip AI
-                          </>
-                        )}
-                      </div>
+                    {weekStatus.done_slots.includes(slot.slot_number) ? (
+                      <>
+                        <div className="flex items-center gap-1 text-green-600 text-xs font-medium bg-green-50 px-2 py-0.5 rounded-full border border-green-100">
+                          <CheckCircle2 className="w-3 h-3" />
+                          Done
+                        </div>
+                        <div
+                          className={`flex items-center gap-1.5 px-2 py-0.5 rounded-full border text-[10px] uppercase tracking-wider font-bold transition-all ${forceSlots.has(slot.slot_number) ? 'bg-orange-500 text-white border-orange-600 shadow-sm' : 'bg-white text-muted-foreground border-muted-foreground/20 hover:border-orange-400 hover:text-orange-600'}`}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (!isProcessing) toggleForceSlot(slot.slot_number);
+                          }}
+                          title="Force AI transformation for this slot"
+                        >
+                          {forceSlots.has(slot.slot_number) ? (
+                            <>
+                              <Loader2 className="w-2.5 h-2.5 animate-spin" />
+                              Recall AI
+                            </>
+                          ) : (
+                            <>
+                              <Play className="w-2.5 h-2.5" />
+                              Skip AI
+                            </>
+                          )}
+                        </div>
+                      </>
+                    ) : (
+                      weekStatus.missing_slots.includes(slot.slot_number) && (
+                        <div className="flex items-center gap-1 text-amber-600 text-xs font-medium bg-amber-50 px-2 py-0.5 rounded-full border border-amber-100">
+                          Missing
+                        </div>
+                      )
                     )}
                   </div>
                 )}
