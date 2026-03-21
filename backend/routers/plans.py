@@ -550,15 +550,17 @@ async def get_week_status(
         total_slots_count = len(slots_raw)
         all_slot_numbers = [s.slot_number for s in slots_raw]
 
-        from backend.utils.date_formatter import normalize_week_of_canonical, normalize_week_of_for_match
+        from backend.utils.date_formatter import normalize_week_of_for_match
 
-        try:
-            week_of = normalize_week_of_canonical(week_of)
-        except ValueError:
-            raise HTTPException(status_code=422, detail="Invalid week_of format; use MM/DD-MM/DD or MM-DD-MM-DD")
+        canonical = normalize_week_of_for_match(week_of)
+        if not canonical:
+            raise HTTPException(
+                status_code=422,
+                detail="Invalid week_of format; use MM/DD-MM/DD, MM-DD-MM-DD, or YY W## (e.g. 26 W13)",
+            )
+        week_of = canonical
 
         plans = db.get_user_plans(user_id, limit=20)
-        canonical = week_of
         plan = next(
             (p for p in plans if p.week_of == week_of or (canonical and normalize_week_of_for_match(p.week_of or "") == canonical)),
             None,

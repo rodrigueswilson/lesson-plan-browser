@@ -3,7 +3,7 @@
 import json
 import logging
 import uuid
-from datetime import datetime
+from datetime import date, datetime, timedelta, timezone
 from typing import Any, Dict, List, Optional
 
 from sqlmodel import Session, delete, desc, select
@@ -16,7 +16,7 @@ from backend.schema import (
     WeeklyPlan,
 )
 from backend.services.objectives_utils import normalize_objectives_in_lesson
-from backend.utils.metadata_utils import infer_school_year_from_date, parse_week_of_date
+from backend.utils.metadata_utils import parse_week_of_date
 
 logger = logging.getLogger(__name__)
 
@@ -327,59 +327,75 @@ def delete_original_lesson_plans(db, user_id: str, week_of: str) -> int:
         return 0
 
 
-def _school_month_rank(month: int) -> int:
-    """Order within school year: Aug=0 ... Jul=11 (later in the year = higher rank)."""
-    if month == 8:
-        return 0
-    if 9 <= month <= 12:
-        return month - 8
-    if 1 <= month <= 6:
-        return month + 4
-    if month == 7:
-        return 11
-    return -1
+def _today_date_for_school_sort() -> date:
+    """Anchor for inferring year when week_of omits it; patchable in tests."""
+    return datetime.now(timezone.utc).date()
 
 
-def _max_year_from_plan_summaries(plans: List[Dict[str, Any]]) -> Optional[int]:
-    best: Optional[int] = None
-    for p in plans:
-        ga = p.get("generated_at")
-        if not ga or not isinstance(ga, str):
-            continue
+# How far ahead a week label may still mean "this upcoming week" (no year in string).
+_AMBIGUOUS_NEAR_FUTURE_DAYS = 21
+
+
+def _ambiguous_week_start_date(month: int, day: int, ref: date) -> date:
+    """
+    Pick a calendar year for (month, day) when week_of has no year.
+
+    Candidates are (ref.year - 1) .. (ref.year + 1) for that month/day.
+
+    Pure "closest in absolute days" is wrong in spring: e.g. ref Mar 2026 would map
+    Sep to Sep 2026 (closer than Sep 2025), pushing last fall above current spring.
+
+    Instead: if some candidate falls just after ref (within a few weeks), use the
+    earliest such date (upcoming week). Otherwise use the most recent candidate on or
+    before ref (last time that calendar week occurred). If everything is far in the
+    future, use the earliest candidate.
+    """
+    candidates: List[date] = []
+    for y in range(ref.year - 1, ref.year + 2):
         try:
-            dt = datetime.fromisoformat(ga.replace("Z", "+00:00"))
-            y = dt.year
-            best = y if best is None else max(best, y)
+            candidates.append(date(y, month, day))
         except ValueError:
             continue
-    return best
+    if not candidates:
+        return ref
+    horizon = ref + timedelta(days=_AMBIGUOUS_NEAR_FUTURE_DAYS)
+    near_future = [c for c in candidates if ref < c <= horizon]
+    if near_future:
+        return min(near_future)
+    past_or_today = [c for c in candidates if c <= ref]
+    if past_or_today:
+        return max(past_or_today)
+    return min(candidates)
 
 
-def _school_week_group_sort_key(week_of: str, plans: List[Dict[str, Any]]) -> tuple:
-    """Higher tuple sorts first when reverse=True (newer school year, later in academic year)."""
+def _school_week_group_sort_key(week_of: str, _plans: List[Dict[str, Any]]) -> tuple:
+    """Sort by inferred Monday/start calendar date, descending (most recent real week first)."""
     parsed = parse_week_of_date(week_of)
     if parsed is None:
-        return (-9999, -9999, -9999)
+        return (-1,)
     m, d, y = parsed[0], parsed[1], parsed[2]
-    if y is None:
-        y = _max_year_from_plan_summaries(plans) or datetime.utcnow().year
-    sy_start, _sy_end = infer_school_year_from_date(m, d, y)
-    rank = _school_month_rank(m)
-    return (sy_start, rank, m * 100 + d)
+    if y is not None:
+        try:
+            start = date(y, m, d)
+        except ValueError:
+            return (-1,)
+    else:
+        start = _ambiguous_week_start_date(m, d, _today_date_for_school_sort())
+    return (start.toordinal(),)
 
 
 def _recent_week_group_sort_key(plans: List[Dict[str, Any]]) -> tuple:
+    """Sort key uses naive datetimes only (mixed aware/naive ISO strings from ORM/export)."""
     max_dt: Optional[datetime] = None
     for p in plans:
         ga = p.get("generated_at")
         if not ga or not isinstance(ga, str):
             continue
-        try:
-            dt = datetime.fromisoformat(ga.replace("Z", "+00:00"))
-            if max_dt is None or dt > max_dt:
-                max_dt = dt
-        except ValueError:
+        dt = parse_export_generated_at(ga)
+        if dt is None:
             continue
+        if max_dt is None or dt > max_dt:
+            max_dt = dt
     if max_dt is None:
         return (datetime.min,)
     return (max_dt,)

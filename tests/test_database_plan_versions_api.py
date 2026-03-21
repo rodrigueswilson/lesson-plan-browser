@@ -1,12 +1,14 @@
 """API tests for Settings > Database weekly plan versions (by-week, export, delete, admin backup)."""
 
-from datetime import datetime
+from datetime import date, datetime, timezone
 from pathlib import Path
 
 import pytest
 from sqlmodel import Session
 
 from backend.config import settings
+from backend.database import plans as plans_module
+from backend.database.plans import _recent_week_group_sort_key
 from backend.schema import WeeklyPlan
 
 
@@ -97,6 +99,47 @@ def test_resolve_duplicates_keep_one(client_plans, isolated_db):
     assert isolated_db.get_weekly_plan(p2) is not None
 
 
+def test_recent_week_group_sort_key_mixed_naive_and_aware_iso():
+    plans = [
+        {"generated_at": "2025-01-01T00:00:00", "id": "a"},
+        {"generated_at": "2025-06-15T00:00:00+00:00", "id": "b"},
+    ]
+    key = _recent_week_group_sort_key(plans)
+    assert key[0] > datetime(2025, 1, 1)
+    assert key[0] == datetime(2025, 6, 15)
+
+
+def test_by_week_sort_recent_mixed_timezone_iso(client_plans, isolated_db):
+    uid = isolated_db.create_user("Mixed ISO User")
+    week = "01/06-01/10"
+    p1 = isolated_db.create_weekly_plan(uid, week, "a.docx", "/w")
+    p2 = isolated_db.create_weekly_plan(uid, week, "b.docx", "/w")
+    with Session(isolated_db.engine) as s:
+        o1 = s.get(WeeklyPlan, p1)
+        o2 = s.get(WeeklyPlan, p2)
+        o1.generated_at = datetime(2025, 1, 1, 12, 0, 0)
+        o2.generated_at = datetime(2025, 6, 15, 12, 0, 0, tzinfo=timezone.utc)
+        s.add(o1)
+        s.add(o2)
+        s.commit()
+
+    r = client_plans.get(f"/api/users/{uid}/plans/by-week?sort=recent")
+    assert r.status_code == 200, r.text
+
+
+def test_week_status_accepts_yy_w_week_path(client_plans, isolated_db):
+    from urllib.parse import quote
+
+    uid = isolated_db.create_user("YY Week User")
+    week_label = "26 W13"
+    isolated_db.create_weekly_plan(uid, week_label, "x.docx", "/w")
+    enc = quote(week_label, safe="")
+    r = client_plans.get(f"/api/plans/status/{uid}/{enc}")
+    assert r.status_code == 200, r.text
+    body = r.json()
+    assert body["week_of"] == "03/23-03/27"
+
+
 def test_by_week_sort_school_vs_recent(client_plans, isolated_db):
     uid = isolated_db.create_user("Sort User")
     # Same school year (2024-25): March is later in the academic calendar than November
@@ -128,6 +171,77 @@ def test_by_week_sort_school_vs_recent(client_plans, isolated_db):
     assert r_recent.status_code == 200
     data_r = r_recent.json()
     assert _index_of_plan(data_r, p_nov) < _index_of_plan(data_r, p_mar)
+
+
+def test_school_sort_ambiguous_week_uses_calendar_not_touch_year(
+    client_plans, isolated_db, monkeypatch
+):
+    """Fall week without year must not sort above spring when both touched same day in 2026."""
+    monkeypatch.setattr(
+        plans_module, "_today_date_for_school_sort", lambda: date(2026, 3, 20)
+    )
+    uid = isolated_db.create_user("Ambiguous User")
+    w_oct = "10/20-10/24"
+    w_mar = "03/17-03/21"
+    p_oct = isolated_db.create_weekly_plan(uid, w_oct, "a.docx", "/w")
+    p_mar = isolated_db.create_weekly_plan(uid, w_mar, "b.docx", "/w")
+    touch = datetime(2026, 3, 20, 12, 0, 0)
+    with Session(isolated_db.engine) as s:
+        o_oct = s.get(WeeklyPlan, p_oct)
+        o_mar = s.get(WeeklyPlan, p_mar)
+        o_oct.generated_at = touch
+        o_mar.generated_at = touch
+        s.add(o_oct)
+        s.add(o_mar)
+        s.commit()
+
+    r = client_plans.get(f"/api/users/{uid}/plans/by-week?sort=school")
+    assert r.status_code == 200
+    data = r.json()
+
+    def _ix(pid):
+        for i, g in enumerate(data):
+            if any(p["id"] == pid for p in g["plans"]):
+                return i
+        raise AssertionError(pid)
+
+    assert _ix(p_mar) < _ix(p_oct)
+
+
+def test_school_sort_ambiguous_september_below_near_future_march(
+    client_plans, isolated_db, monkeypatch
+):
+    """
+    In spring, Sep without year must map to last fall, not next Sep (closer in raw days).
+
+    Regression: Mar 2026 ref used to rank Sep 15 as Sep 2026 above Mar 23 2026.
+    """
+    monkeypatch.setattr(
+        plans_module, "_today_date_for_school_sort", lambda: date(2026, 3, 18)
+    )
+    uid = isolated_db.create_user("SepVsMar User")
+    weeks = [
+        ("09/15-09/19", "s1.docx"),
+        ("09/08-09/12", "s2.docx"),
+        ("09/02-09/05", "s3.docx"),
+        ("03/23-03/27", "m.docx"),
+    ]
+    pids = [isolated_db.create_weekly_plan(uid, w, fn, "/w") for w, fn in weeks]
+
+    r = client_plans.get(f"/api/users/{uid}/plans/by-week?sort=school")
+    assert r.status_code == 200
+    data = r.json()
+
+    def _ix(pid):
+        for i, g in enumerate(data):
+            if any(p["id"] == pid for p in g["plans"]):
+                return i
+        raise AssertionError(pid)
+
+    ix_mar = _ix(pids[3])
+    assert ix_mar < _ix(pids[0])
+    assert ix_mar < _ix(pids[1])
+    assert ix_mar < _ix(pids[2])
 
 
 def test_plans_within_week_newest_first(client_plans, isolated_db):

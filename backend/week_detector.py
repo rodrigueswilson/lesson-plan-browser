@@ -9,6 +9,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import List, Optional, Dict
 from backend.telemetry import logger
+from backend.utils.date_formatter import parse_iso_year_week_string_to_hyphen_range
 
 
 def detect_weeks_from_folder(base_path: str, limit: int = 3) -> List[Dict[str, str]]:
@@ -88,48 +89,11 @@ def extract_week_dates_from_folder_name(folder_name: str) -> Optional[str]:
         "Week 10-06" -> None (need to scan files)
     """
     # Pattern 1: YY W## (e.g., "25 W43", "26 W02", "25W43", "25 W 43")
-    # Match at start of folder name to ensure we're matching the year-week pattern
-    # Allow optional whitespace and ensure week number is 1-2 digits
-    iso_pattern = r'^(\d{2})\s*W\s*(\d{1,2})\b'
-    match = re.search(iso_pattern, folder_name, re.IGNORECASE)
-    
-    if match:
-        year_short, week_num = match.groups()
-        year = 2000 + int(year_short)
-        week = int(week_num)
-        
-        # Validate week number is in reasonable range (1-53 for ISO weeks)
-        if week < 1 or week > 53:
-            logger.warning(f"Invalid week number {week} in folder name '{folder_name}'")
-            return None
-        
-        # Convert ISO week to date range (Monday to Friday)
-        try:
-            from datetime import datetime, timedelta
-            
-            # ISO week calculation: Week 1 is the first week with a Thursday
-            # Jan 4 is always in ISO week 1, so we can use it as a reference
-            jan_4 = datetime(year, 1, 4)
-            # Get ISO calendar info for Jan 4
-            iso_year, iso_week_num, iso_weekday = jan_4.isocalendar()
-            
-            # Find Monday of week 1
-            # iso_weekday: Monday=1, Tuesday=2, ..., Sunday=7
-            days_back_to_monday = iso_weekday - 1
-            monday_week1 = jan_4 - timedelta(days=days_back_to_monday)
-            
-            # Calculate Monday of the target week
-            monday = monday_week1 + timedelta(weeks=week - 1)
-            friday = monday + timedelta(days=4)
-            
-            # Format as MM-DD-MM-DD
-            result = f"{monday.month:02d}-{monday.day:02d}-{friday.month:02d}-{friday.day:02d}"
-            logger.debug(f"Converted '{folder_name}' (YY W##) to dates: {result}")
-            return result
-        except Exception as e:
-            logger.error(f"Error converting ISO week {year} W{week} from folder '{folder_name}': {e}", exc_info=True)
-            return None
-    
+    result = parse_iso_year_week_string_to_hyphen_range(folder_name)
+    if result:
+        logger.debug(f"Converted '{folder_name}' (YY W##) to dates: {result}")
+        return result
+
     # Pattern 2: MM-DD-MM-DD (direct format)
     date_pattern = r'(\d{1,2})-(\d{1,2})-(\d{1,2})-(\d{1,2})'
     match = re.search(date_pattern, folder_name)
@@ -238,34 +202,79 @@ def parse_week_for_sorting(week_str: str, folder_name: str = '') -> datetime:
         return datetime.min
 
 
+def _parse_week_of(week_of: str):
+    """
+    Parse week_of to (m1, d1, m2, d2) for start and end month/day.
+    Handles both MM-DD-MM-DD and MM/DD-MM/DD formats.
+    Returns None if parsing fails.
+    """
+    if not week_of:
+        return None
+    parts = week_of.split('-')
+    if len(parts) == 4:
+        try:
+            return (int(parts[0]), int(parts[1]), int(parts[2]), int(parts[3]))
+        except ValueError:
+            pass
+    if len(parts) == 2:
+        try:
+            start = parts[0].split('/')
+            end = parts[1].split('/')
+            if len(start) == 2 and len(end) == 2:
+                return (int(start[0]), int(start[1]), int(end[0]), int(end[1]))
+        except ValueError:
+            pass
+    return None
+
+
+def _iso_week_from_week_of(week_of: str) -> Optional[int]:
+    """Get ISO week number from week_of (MM-DD-MM-DD or MM/DD-MM/DD). Infers year from current date."""
+    parsed = _parse_week_of(week_of)
+    if parsed is None:
+        return None
+    month, day = parsed[0], parsed[1]
+    now = datetime.now()
+    year = now.year
+    if now.month == 12 and month <= 2:
+        year = now.year + 1
+    elif now.month == 1 and month == 12:
+        year = now.year - 1
+    try:
+        d = datetime(year, month, day)
+        _, iso_week, _ = d.isocalendar()
+        return iso_week
+    except ValueError:
+        return None
+
+
 def format_week_display(week_info: Dict[str, str]) -> str:
     """
     Format week info for display in dropdown.
-    
+
     Args:
         week_info: Dict with 'week_of' and 'folder_name'
-        
+
     Returns:
-        Display string like "W43 (10-06 to 10-10)" or "10-06 to 10-10"
+        Display string like "W12 03/16-03/20"
     """
     week_of = week_info['week_of']
     folder_name = week_info.get('folder_name', '')
-    
-    # Extract week number from folder name if present (e.g., "25 W43")
+
+    week_label = ""
     week_match = re.search(r'W(\d{1,2})', folder_name)
-    week_label = f"W{week_match.group(1)}" if week_match else ""
-    
-    try:
-        parts = week_of.split('-')
-        if len(parts) == 4:
-            start = f"{parts[0]}/{parts[1]}"
-            end = f"{parts[2]}/{parts[3]}"
-            
-            if week_label:
-                return f"{week_label} ({start}-{end})"
-            else:
-                return f"{start} to {end}"
-    except Exception:
-        pass
-    
+    if week_match:
+        week_label = f"W{int(week_match.group(1)):02d}"
+    else:
+        w = _iso_week_from_week_of(week_of)
+        if w is not None:
+            week_label = f"W{w:02d}"
+
+    parsed = _parse_week_of(week_of)
+    if parsed is not None:
+        m1, d1, m2, d2 = parsed
+        start = f"{m1:02d}/{d1:02d}"
+        end = f"{m2:02d}/{d2:02d}"
+        date_range = f"{start}-{end}"
+        return f"{week_label} {date_range}".strip() if week_label else date_range
+
     return week_of

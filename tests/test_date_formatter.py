@@ -10,7 +10,41 @@ from pathlib import Path
 # Add backend to path
 sys.path.insert(0, str(Path(__file__).parent))
 
-from backend.utils.date_formatter import format_week_dates, validate_week_format, parse_week_dates
+import pytest
+
+from backend.utils.date_formatter import (
+    format_week_dates,
+    normalize_week_of_canonical,
+    normalize_week_of_for_match,
+    parse_iso_year_week_string_to_hyphen_range,
+    parse_week_dates,
+    validate_week_format,
+)
+
+
+def test_parse_iso_year_week_string_to_hyphen_range():
+    assert parse_iso_year_week_string_to_hyphen_range("26 W13") == "03-23-03-27"
+    assert parse_iso_year_week_string_to_hyphen_range("26W13") == "03-23-03-27"
+    assert parse_iso_year_week_string_to_hyphen_range("not a week") is None
+
+
+def test_normalize_week_of_for_match_yy_w_week():
+    assert normalize_week_of_for_match("26 W13") == "03/23-03/27"
+
+
+def test_normalize_week_of_canonical():
+    """Test canonical normalizer: zero-padded MM/DD-MM/DD, accepts both formats, raises on invalid."""
+    assert normalize_week_of_canonical("10-21-10-25") == "10/21-10/25"
+    assert normalize_week_of_canonical("10/21-10/25") == "10/21-10/25"
+    assert normalize_week_of_canonical("11-17-11-21") == "11/17-11/21"
+    assert normalize_week_of_canonical("3/16-3/20") == "03/16-03/20"
+    assert normalize_week_of_canonical("03-16-03-20") == "03/16-03/20"
+    with pytest.raises(ValueError, match="Invalid week_of"):
+        normalize_week_of_canonical("invalid")
+    with pytest.raises(ValueError, match="non-empty"):
+        normalize_week_of_canonical("")
+    with pytest.raises(ValueError, match="Invalid month/day"):
+        normalize_week_of_canonical("13/01-13/05")  # invalid month
 
 
 def test_format_week_dates():
@@ -29,7 +63,7 @@ def test_format_week_dates():
         ("10-27-2025 to 10-31-2025", "10/27-10/31", "Years with 'to'"),
         ("  10/27-10/31  ", "10/27-10/31", "Extra whitespace"),
         ("10 / 27 - 10 / 31", "10/27-10/31", "Spaces in dates"),
-        ("9/15-9/19", "9/15-9/19", "Single digit months/days"),
+        ("9/15-9/19", "09/15-09/19", "Single digit months/days (zero-padded)"),
         ("", "", "Empty string"),
         ("invalid", "invalid", "Unparseable - return as-is"),
     ]
@@ -163,7 +197,7 @@ def test_real_world_examples():
     test_cases = [
         ("10-27-10-31", "10/27-10/31", "Example from requirements"),
         ("10/27-10/31", "10/27-10/31", "Example from requirements"),
-        ("9/15-9/19", "9/15-9/19", "Example from test files"),
+        ("9/15-9/19", "09/15-09/19", "Example from test files (zero-padded)"),
         ("10/06-10/10", "10/06-10/10", "Example from test files"),
     ]
     
