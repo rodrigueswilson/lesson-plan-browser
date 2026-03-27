@@ -6,6 +6,7 @@ Usage (from repo root):
   python tools/scraper/verify_curriculum_db.py
   python tools/scraper/verify_curriculum_db.py --db d:/LP/data/curriculum.db
   python tools/scraper/verify_curriculum_db.py --no-data-checks
+  python tools/scraper/verify_curriculum_db.py --ingest-report ingest_reports/<run_id>.json
 
 Second-template smoke (optional; set when you have another representative DOCX):
   CURRICULUM_VERIFY_SECOND_DOCX=path/to/file.docx CURRICULUM_VERIFY_SECOND_UNIT_ID=unit_id \\
@@ -15,10 +16,12 @@ Second-template smoke (optional; set when you have another representative DOCX):
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import re
 import sqlite3
 import sys
+from pathlib import Path
 
 # Allow running as script from repo root
 _SCRAPER_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -28,6 +31,24 @@ if _REPO_ROOT not in sys.path:
 
 from backend.database.curriculum_validation import validate_curriculum_db
 from backend.database.curriculum import CurriculumDatabase
+
+
+def _merge_verify_issues_into_ingest_report(report_path: str, issues: list[str], *, schema: bool) -> None:
+    """Update an ingest report JSON with failure codes after a failed verify run."""
+    from tools.scraper.ingest_failure_codes import (
+        apply_ingest_failure_code,
+        failure_code_for_data_integrity_issue,
+    )
+
+    p = Path(report_path)
+    report = json.loads(p.read_text(encoding="utf-8"))
+    warnings_list: list[str] = report.setdefault("warnings", [])
+    for line in issues:
+        code = "SCHEMA_GATE" if schema else failure_code_for_data_integrity_issue(line)
+        apply_ingest_failure_code(report, code)
+        if line not in warnings_list:
+            warnings_list.append(line)
+    p.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
 _STANDARDS_LEAK_PATTERNS = (
@@ -120,13 +141,26 @@ def main() -> int:
         action="store_true",
         help="Skip standards_structured / description leak checks",
     )
+    p.add_argument(
+        "--ingest-report",
+        metavar="PATH",
+        default=None,
+        help="If verify fails, merge issues into this ingest_reports/*.json (failure codes + warnings)",
+    )
     args = p.parse_args()
+    ingest_report = args.ingest_report
+    if ingest_report and not Path(ingest_report).is_file():
+        print("ingest report path not found:", ingest_report)
+        return 2
+
     CurriculumDatabase(args.db).ensure_provenance_columns()
     issues = validate_curriculum_db(args.db)
     if issues:
         print("Curriculum DB validation FAILED:")
         for line in issues:
             print(f"  - {line}")
+        if ingest_report:
+            _merge_verify_issues_into_ingest_report(ingest_report, issues, schema=True)
         return 1
     if not args.no_data_checks:
         issues = verify_curriculum_data_integrity(args.db)
@@ -134,12 +168,16 @@ def main() -> int:
             print("Curriculum DB data integrity FAILED:")
             for line in issues:
                 print(f"  - {line}")
+            if ingest_report:
+                _merge_verify_issues_into_ingest_report(ingest_report, issues, schema=False)
             return 1
         issues = maybe_verify_second_template()
         if issues:
             print("Curriculum second-template verification FAILED:")
             for line in issues:
                 print(f"  - {line}")
+            if ingest_report:
+                _merge_verify_issues_into_ingest_report(ingest_report, issues, schema=True)
             return 1
     print("Curriculum DB validation OK:", args.db)
     return 0

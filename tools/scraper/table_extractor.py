@@ -15,11 +15,19 @@ from docx.table import Table, _Cell
 from docx.text.paragraph import Paragraph
 from docx.oxml.table import CT_Tbl, CT_Row, CT_Tc
 from docx.oxml.ns import qn
-from subject_config import SubjectConfig
+try:
+    from tools.scraper.subject_config import SubjectConfig
+except ImportError:
+    from subject_config import SubjectConfig
 try:
     from tools.scraper.docs_client import DocsClient
 except ImportError:
     from docs_client import DocsClient
+
+try:
+    from tools.scraper.ingest_failure_codes import apply_ingest_failure_code
+except ImportError:
+    from ingest_failure_codes import apply_ingest_failure_code
 
 # Add parent directory to path for backend imports
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
@@ -41,6 +49,195 @@ def _extract_source_doc_id(source_url: str) -> Optional[str]:
     return m.group(1) if m else None
 
 
+_LESSON_START_TO_INGEST_WARN_RATIO = 2.0
+
+
+def _looks_like_equation_token_loss(text: str) -> bool:
+    """Heuristic: detect standards lines where math/equation placeholders appear blank."""
+    t = (text or "").lower()
+    if not t:
+        return False
+    signals = (
+        "as a multiple of .",
+        "as the product ,",
+        "by the equation .",
+        "in general, .",
+        "will eat  of a pound",
+    )
+    return any(s in t for s in signals)
+
+
+def _xml_local_name(tag: str) -> str:
+    return tag.split("}")[-1] if "}" in tag else tag
+
+
+def _omml_node_to_text(node: Any) -> str:
+    """Best-effort OMML -> text for curriculum fidelity (fractions, superscripts, roots)."""
+    name = _xml_local_name(getattr(node, "tag", ""))
+    if name in {"oMath", "oMathPara", "r", "box", "d"}:
+        return "".join(_omml_node_to_text(c) for c in node)
+    if name == "t":
+        return (node.text or "").strip()
+    if name == "f":
+        num = ""
+        den = ""
+        for c in node:
+            c_name = _xml_local_name(getattr(c, "tag", ""))
+            if c_name == "num":
+                num = _omml_node_to_text(c)
+            elif c_name == "den":
+                den = _omml_node_to_text(c)
+        if num and den:
+            return f"{num}/{den}"
+        return "".join(_omml_node_to_text(c) for c in node)
+    if name == "sSup":
+        base = ""
+        sup = ""
+        for c in node:
+            c_name = _xml_local_name(getattr(c, "tag", ""))
+            if c_name == "e":
+                base = _omml_node_to_text(c)
+            elif c_name == "sup":
+                sup = _omml_node_to_text(c)
+        if base and sup:
+            return f"{base}^{sup}"
+    if name == "sSub":
+        base = ""
+        sub = ""
+        for c in node:
+            c_name = _xml_local_name(getattr(c, "tag", ""))
+            if c_name == "e":
+                base = _omml_node_to_text(c)
+            elif c_name == "sub":
+                sub = _omml_node_to_text(c)
+        if base and sub:
+            return f"{base}_{sub}"
+    if name == "rad":
+        deg = ""
+        expr = ""
+        for c in node:
+            c_name = _xml_local_name(getattr(c, "tag", ""))
+            if c_name == "deg":
+                deg = _omml_node_to_text(c)
+            elif c_name == "e":
+                expr = _omml_node_to_text(c)
+        if expr:
+            return f"root({deg},{expr})" if deg else f"sqrt({expr})"
+    if name == "nary":
+        op = ""
+        body = ""
+        lower = ""
+        upper = ""
+        for c in node:
+            c_name = _xml_local_name(getattr(c, "tag", ""))
+            if c_name == "chr":
+                op = c.get("{http://schemas.openxmlformats.org/officeDocument/2006/math}val", "")
+            elif c_name == "sub":
+                lower = _omml_node_to_text(c)
+            elif c_name == "sup":
+                upper = _omml_node_to_text(c)
+            elif c_name == "e":
+                body = _omml_node_to_text(c)
+        if op or body:
+            lim = ""
+            if lower and upper:
+                lim = f"_({lower})^({upper})"
+            elif lower:
+                lim = f"_({lower})"
+            elif upper:
+                lim = f"^({upper})"
+            return f"{op}{lim}{body}"
+    if name == "d":
+        begin = ""
+        end = ""
+        expr = ""
+        for c in node:
+            c_name = _xml_local_name(getattr(c, "tag", ""))
+            if c_name == "begChr":
+                begin = c.get("{http://schemas.openxmlformats.org/officeDocument/2006/math}val", "")
+            elif c_name == "endChr":
+                end = c.get("{http://schemas.openxmlformats.org/officeDocument/2006/math}val", "")
+            elif c_name == "e":
+                expr = _omml_node_to_text(c)
+        if expr:
+            return f"{begin}{expr}{end}"
+    if name == "m":
+        rows: List[str] = []
+        for c in node:
+            if _xml_local_name(getattr(c, "tag", "")) == "mr":
+                cells = []
+                for cc in c:
+                    if _xml_local_name(getattr(cc, "tag", "")) == "e":
+                        cells.append(_omml_node_to_text(cc))
+                if cells:
+                    rows.append(",".join(cells))
+        if rows:
+            return "[" + ";".join(rows) + "]"
+    return "".join(_omml_node_to_text(c) for c in node)
+
+
+def _join_runs_for_paragraph_text(runs: List[Dict[str, Any]]) -> str:
+    """Join run text while avoiding token glue around recovered math expressions."""
+    out: List[str] = []
+    prev_last = ""
+    for run in runs:
+        text = run.get("text") or ""
+        if not text:
+            continue
+        cur_first = text[0]
+        # Insert a spacer when two alphanumeric boundaries collide (e.g., "a/bas").
+        if out and prev_last.isalnum() and cur_first.isalnum():
+            out.append(" ")
+        out.append(text)
+        prev_last = text[-1]
+    return "".join(out).strip()
+
+
+def _annotate_ingest_report(
+    report: Dict[str, Any],
+    ingest_stats: Dict[str, Any],
+    ingested_count: int,
+) -> None:
+    lessons_started_raw = int(ingest_stats.get("lessons_started") or 0)
+    lessons_started_unique = int(ingest_stats.get("lessons_started_unique") or lessons_started_raw)
+    report["ingest_stats"] = {
+        "lessons_started": lessons_started_raw,
+        "lessons_started_unique": lessons_started_unique,
+        "paragraphs_appended": ingest_stats.get("paragraphs_appended"),
+        "section_hits": dict(ingest_stats.get("section_hits") or {}),
+        "suspected_equation_token_loss_standards": ingest_stats.get(
+            "suspected_equation_token_loss_standards", 0
+        ),
+    }
+    if ingested_count == 0 and lessons_started_unique == 0:
+        apply_ingest_failure_code(report, "ANCHOR_MISS")
+        report["warnings"].append("Ingest: no lesson titles matched the subject lesson pattern.")
+    elif ingested_count == 0:
+        apply_ingest_failure_code(report, "EMPTY_FIELD")
+        report["warnings"].append(
+            "Ingest: lessons started in stream but none had persistable body fields."
+        )
+    elif ingested_count > 0:
+        start_to_ingest_ratio = lessons_started_unique / float(ingested_count)
+        report["ingest_stats"]["lessons_started_to_ingested_ratio"] = round(
+            start_to_ingest_ratio, 3
+        )
+        if start_to_ingest_ratio > _LESSON_START_TO_INGEST_WARN_RATIO:
+            apply_ingest_failure_code(report, "ANCHOR_MISS")
+            report["warnings"].append(
+                "Ingest: lessons_started_unique/lessons_ingested ratio exceeds "
+                f"{_LESSON_START_TO_INGEST_WARN_RATIO:.1f} "
+                f"({lessons_started_unique}/{ingested_count}); review lesson title/anchor matching."
+            )
+    eq_loss_hits = int(ingest_stats.get("suspected_equation_token_loss_standards") or 0)
+    if eq_loss_hits > 0:
+        apply_ingest_failure_code(report, "EXPORT_LOSS")
+        report["warnings"].append(
+            "Ingest: detected standards lines with likely equation-token loss "
+            f"({eq_loss_hits} hit(s)); review Docs/Export math fidelity."
+        )
+
+
 def _build_ingest_report(
     run_id: str,
     target_unit: str,
@@ -60,6 +257,8 @@ def _build_ingest_report(
         "ended_at": ended_at,
         "parser_version": parser_version,
         "lessons_ingested": lessons_ingested,
+        "primary_failure_code": None,
+        "secondary_failure_codes": [],
         "warnings": [],
         "fidelity_checks": {
             "sample_lines_checked": 0,
@@ -386,10 +585,19 @@ class RecursiveTableParser:
                         "text": run_obj.text,
                         "style": style if style else None
                     })
-            
+            elif tag in {"oMath", "oMathPara"}:
+                eq_text = _omml_node_to_text(child)
+                if eq_text:
+                    runs.append({
+                        "type": "run",
+                        "text": eq_text,
+                        "style": {"equation": True}
+                    })
+        paragraph_text = _join_runs_for_paragraph_text(runs)
         return {
             "type": "paragraph",
-            "text": p.text,
+            # Use run-composed text so OMML equations are preserved for ingest and LLM feed.
+            "text": paragraph_text or p.text,
             "is_bullet": bool(num_pr),
             "ilvl": ilvl,
             "runs": runs
@@ -440,7 +648,12 @@ class RecursiveTableParser:
         }
 
     def flatten_for_llm(self, content: List[Dict[str, Any]]) -> str:
-        """Converts structured JSON to a flattened text representation."""
+        """Converts structured JSON to a flattened text representation.
+
+        NOTE (fidelity): keep raw Unicode/math-like tokens as-is here.
+        Do not normalize/remove special characters in this path, because LLM
+        prompts rely on exact curriculum text fidelity when symbols are present.
+        """
         lines = []
         for item in content:
             if item["type"] == "paragraph":
@@ -772,9 +985,12 @@ class RecursiveTableParser:
 
         ingest_stats: Dict[str, Any] = {
             "lessons_started": 0,
+            "lessons_started_unique": 0,
             "paragraphs_appended": 0,
             "section_hits": Counter(),
+            "suspected_equation_token_loss_standards": 0,
         }
+        seen_lesson_numbers: Set[int] = set()
 
         for item in stream:
             item_type = item.get("type")
@@ -782,7 +998,13 @@ class RecursiveTableParser:
                 text = item.get("text", "").strip()
                 lesson_match = lesson_pattern.match(text)
                 if lesson_match:
+                    lnum_str = lesson_match.group(1) or lesson_match.group(2)
+                    lnum = int(lnum_str.split('.')[-1]) if '.' in lnum_str else int(lnum_str)
+                    ltitle = lesson_match.group(3).strip().split("   ")[0]
                     ingest_stats["lessons_started"] += 1
+                    if lnum not in seen_lesson_numbers:
+                        seen_lesson_numbers.add(lnum)
+                        ingest_stats["lessons_started_unique"] += 1
                     # Store current links before starting new lesson
                     lesson_links = []
                     if current_lesson:
@@ -798,9 +1020,6 @@ class RecursiveTableParser:
                         self.process_recursive_links(current_lesson, lesson_links, subject)
                     
                     if current_lesson: lessons_data.append(current_lesson)
-                    lnum_str = lesson_match.group(1) or lesson_match.group(2)
-                    lnum = int(lnum_str.split('.')[-1]) if '.' in lnum_str else int(lnum_str)
-                    ltitle = lesson_match.group(3).strip().split("   ")[0]
                     current_lesson = {
                         "id": f"{unit_id}_L{lnum}", "unit_id": unit_id, "lesson_number": lnum, "title": ltitle,
                         "subject": subject,
@@ -934,6 +1153,8 @@ class RecursiveTableParser:
                 
             # 2. Save Standards
             for code, desc in data["_standards"].items():
+                if _looks_like_equation_token_loss(desc):
+                    ingest_stats["suspected_equation_token_loss_standards"] += 1
                 try:
                     curr_db.upsert_standard(code, desc, subject)
                 except TypeError:
@@ -963,6 +1184,7 @@ class RecursiveTableParser:
             parser_version=parser_version,
             lessons_ingested=ingested_count,
         )
+        _annotate_ingest_report(report, ingest_stats, ingested_count)
         report_path = _write_ingest_report(report)
         log(f"Ingest report written: {report_path}")
         return ingested_count

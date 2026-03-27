@@ -1,0 +1,227 @@
+{
+  "profile_date": "2026-03-27",
+  "wave": "W1",
+  "entries": [
+    {
+      "lesson_key": "Math_3_U2_1hBoK4uk",
+      "grade": "3",
+      "subject": "Math",
+      "source_doc_id": "1hBoK4uk0Z_GBEixY4wFHXtFi1gLOXarytFhKamftSOE",
+      "run_id": "2026-03-27T00-36-54Z_593534ca",
+      "report_path": "ingest_reports/2026-03-27T00-36-54Z_593534ca.json",
+      "started_at": "2026-03-27T00:36:54Z",
+      "ended_at": "2026-03-27T00:39:03Z",
+      "duration_seconds": 129,
+      "parser_version": "table_extractor@v1",
+      "lessons_ingested": 15,
+      "ingest_stats": {
+        "lessons_started": 37,
+        "paragraphs_appended": 1264,
+        "section_hits": {
+          "procedure_html": 80,
+          "instructional_resources": 31,
+          "vocabulary": 16,
+          "learning_intentions": 15,
+          "objectives_student": 15,
+          "mlr": 15,
+          "purpose": 15,
+          "narrative_html": 15,
+          "materials": 17,
+          "_standards_temp": 60
+        }
+      },
+      "primary_failure_code": null,
+      "secondary_failure_codes": [],
+      "gates_result": {
+        "verify_curriculum_db": "pass",
+        "tests_test_curriculum_gaps": "pass"
+      },
+      "db_null_fields_sample": {
+        "daily_instructional_task_empty_count": 15,
+        "success_criteria_empty_count": 15,
+        "essential_questions_empty_count": 15
+      },
+      "adaptation_status": "Green",
+      "notes": [
+        "Anchor run completed with no verifier warnings and no taxonomy failure codes.",
+        "audit_curriculum.py shows three legacy fields empty across all lessons; treat as profile signal only until gates define them as required."
+      ]
+    },
+    {
+      "lesson_key": "Math_3_U1_13jAzcMR",
+      "grade": "3",
+      "subject": "Math",
+      "source_doc_id": "13jAzcMR9KqRj3P9rvgySxPWysPAGBh9GsftzT3sw8fg",
+      "run_id": "2026-03-27T00-42-36Z_1f8e40bf",
+      "report_path": "ingest_reports/2026-03-27T00-42-36Z_1f8e40bf.json",
+      "started_at": "2026-03-27T00:42:36Z",
+      "ended_at": "2026-03-27T00:45:48Z",
+      "duration_seconds": 192,
+      "parser_version": "table_extractor@v1",
+      "lessons_ingested": 21,
+      "ingest_stats": {
+        "lessons_started": 71,
+        "paragraphs_appended": 1558,
+        "section_hits": {
+          "procedure_html": 106,
+          "instructional_resources": 44,
+          "vocabulary": 22,
+          "learning_intentions": 21,
+          "objectives_student": 21,
+          "mlr": 21,
+          "purpose": 21,
+          "narrative_html": 22,
+          "materials": 21,
+          "_standards_temp": 84
+        }
+      },
+      "primary_failure_code": null,
+      "secondary_failure_codes": [],
+      "gates_result": {
+        "verify_curriculum_db": "pass",
+        "tests_test_curriculum_gaps": "pass"
+      },
+      "db_null_fields_sample": {
+        "daily_instructional_task_empty_count": 36,
+        "success_criteria_empty_count": 36,
+        "essential_questions_empty_count": 36
+      },
+      "adaptation_status": "Green",
+      "notes": [
+        "Wave 1 row #2 completed with no verifier warnings and no taxonomy failure codes.",
+        "Compared with anchor run, this unit shows higher stream complexity (lessons_started and section hits), useful for variance tracking."
+      ]
+    },
+    {
+      "lesson_key": "Math_3_U3_1W1IBU71",
+      "grade": "3",
+      "subject": "Math",
+      "source_doc_id": "1W1IBU71bwuGpP3M3NTdQXQSH8Jx8fRKF-l9I4Rdo2B4",
+      "run_id": "2026-03-27T00-55-49Z_b37e785b",
+      "report_path": "ingest_reports/2026-03-27T00-55-49Z_b37e785b.json",
+      "started_at": "2026-03-27T00:55:49Z",
+      "ended_at": "2026-03-27T00:57:32Z",
+      "duration_seconds": 103,
+      "parser_version": "table_extractor@v1",
+      "lessons_ingested": 20,
+      "ingest_stats": {
+        "lessons_started": 60,
+        "paragraphs_appended": 1530,
+        "section_hits": {
+          "procedure_html": 109,
+          "instructional_resources": 43,
+          "vocabulary": 21,
+          "learning_intentions": 20,
+          "objectives_student": 20,
+          "mlr": 20,
+          "purpose": 20,
+          "narrative_html": 20,
+          "materials": 20,
+          "_standards_temp": 80
+        }
+      },
+      "primary_failure_code": null,
+      "secondary_failure_codes": [],
+      "gates_result": {
+        "verify_curriculum_db": "pass",
+        "tests_test_curriculum_gaps": "pass"
+      },
+      "db_null_fields_sample": {
+        "daily_instructional_task_empty_count": 56,
+        "success_criteria_empty_count": 56,
+        "essential_questions_empty_count": 56
+      },
+      "adaptation_status": "Green",
+      "notes": [
+        "Wave 1 row #3 completed with no verifier warnings and no taxonomy failure codes.",
+        "Procedure and standards routing volume remains high, but run remained stable under the same gate protocol."
+      ]
+    },
+    {
+      "lesson_key": "Math_3_U3_1W1IBU71",
+      "grade": "3",
+      "subject": "Math",
+      "source_doc_id": "1W1IBU71bwuGpP3M3NTdQXQSH8Jx8fRKF-l9I4Rdo2B4",
+      "run_id": "2026-03-27T01-37-45Z_fa7edaef",
+      "report_path": "ingest_reports/2026-03-27T01-37-45Z_fa7edaef.json",
+      "started_at": "2026-03-27T01:37:45Z",
+      "ended_at": "2026-03-27T01:40:04Z",
+      "duration_seconds": 139,
+      "parser_version": "table_extractor@v1",
+      "lessons_ingested": 20,
+      "ingest_stats": {
+        "lessons_started": 60,
+        "paragraphs_appended": 1530,
+        "section_hits": {
+          "procedure_html": 109,
+          "instructional_resources": 43,
+          "vocabulary": 21,
+          "learning_intentions": 20,
+          "objectives_student": 20,
+          "mlr": 20,
+          "purpose": 20,
+          "narrative_html": 20,
+          "materials": 20,
+          "_standards_temp": 80
+        },
+        "suspected_equation_token_loss_standards": 0,
+        "lessons_started_to_ingested_ratio": 3.0
+      },
+      "primary_failure_code": "ANCHOR_MISS",
+      "secondary_failure_codes": [],
+      "gates_result": {
+        "verify_curriculum_db": "pass",
+        "tests_test_curriculum_gaps": "pass"
+      },
+      "adaptation_status": "Yellow",
+      "notes": [
+        "Post-OMML recovery and spacing-polish validation run.",
+        "Recovered fraction/equation tokens in NJSLS-MATH.CONTENT.4.NF.B.4 are now preserved in DB/API/UI path.",
+        "Run is flagged by instrumentation for lessons_started_to_ingested_ratio > 2.0; treated as non-critical follow-up for parser title/anchor matching."
+      ]
+    },
+    {
+      "lesson_key": "Math_3_U3_1W1IBU71",
+      "grade": "3",
+      "subject": "Math",
+      "source_doc_id": "1W1IBU71bwuGpP3M3NTdQXQSH8Jx8fRKF-l9I4Rdo2B4",
+      "run_id": "2026-03-27T02-00-04Z_272e6aaf",
+      "report_path": "ingest_reports/2026-03-27T02-00-04Z_272e6aaf.json",
+      "started_at": "2026-03-27T02:00:04Z",
+      "ended_at": "2026-03-27T02:02:02Z",
+      "duration_seconds": 118,
+      "parser_version": "table_extractor@v1",
+      "lessons_ingested": 20,
+      "ingest_stats": {
+        "lessons_started": 60,
+        "lessons_started_unique": 20,
+        "paragraphs_appended": 1530,
+        "section_hits": {
+          "procedure_html": 109,
+          "instructional_resources": 43,
+          "vocabulary": 21,
+          "learning_intentions": 20,
+          "objectives_student": 20,
+          "mlr": 20,
+          "purpose": 20,
+          "narrative_html": 20,
+          "materials": 20,
+          "_standards_temp": 80
+        },
+        "suspected_equation_token_loss_standards": 0,
+        "lessons_started_to_ingested_ratio": 1.0
+      },
+      "primary_failure_code": null,
+      "secondary_failure_codes": [],
+      "gates_result": {
+        "verify_curriculum_db": "pass",
+        "tests_test_curriculum_gaps": "pass"
+      },
+      "adaptation_status": "Green",
+      "notes": [
+        "Focused parser pass: ratio warning reduction using unique lesson-start counting for quality signal.",
+        "No warnings/failure codes on this run; ratio dropped from 3.0 to 1.0 while keeping lesson ingest count stable."
+      ]
+    }
+  ]
+}
