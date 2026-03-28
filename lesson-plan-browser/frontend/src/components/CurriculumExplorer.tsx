@@ -47,12 +47,50 @@ interface Lesson {
   narrative_html?: string;
   instructional_resources?: string; // JSON array of {url,label} OR HTML from DOCX ingestion
   standards_structured?: string; // JSON from high-fidelity standards parsing
+  /** Unit Summary of Key Learning matrix row (ELA ingest), JSON */
+  ela_key_learning_summary?: string;
+  /** Per-lesson detailed ELA plan table (ELA ingest), JSON */
+  ela_lesson_plan_structured?: string;
   source_doc_id?: string;
   source_url?: string;
   ingested_at?: string;
   ingest_run_id?: string;
   ingest_parser_version?: string;
   content_hash?: string;
+}
+
+/** Parsed `ela_key_learning_summary` (see tools/scraper/ela_summary_table.py). */
+interface ElaKeyLearningSummaryPayload {
+  schema_version?: number;
+  learning_intention?: string;
+  success_criteria?: string;
+  learning_intentions_success_html?: string;
+  daily_task_title?: string;
+  daily_task_body?: string;
+  content_and_strategies?: string;
+  standards_mentions?: string[];
+}
+
+/** Parsed `ela_lesson_plan_structured` (see tools/scraper/ela_lesson_plan_table.py). */
+interface ElaLessonPlanStructuredPayload {
+  schema_version?: number;
+  lesson_number?: number;
+  lesson_title?: string;
+  learning_intention_html?: string;
+  success_criteria_html?: string;
+  njsls_standards_html?: string;
+  key_questions_html?: string;
+  instructional_routines_assessments_html?: string;
+  vocabulary_cell_html?: string;
+  instructional_resources_cell_html?: string;
+  procedures_preamble_html?: string;
+  anticipatory_set_html?: string;
+  learning_procedures_html?: string;
+  engagement_with_content_html?: string;
+  daily_instructional_task_html?: string;
+  procedures_full_html?: string;
+  differentiation_html?: string;
+  addressing_misconceptions_html?: string;
 }
 
 interface VocabularyTerm {
@@ -292,6 +330,61 @@ function lessonFieldHtmlFromJsonOrHtml(
   return `<p>${emptyFallback}</p>`;
 }
 
+function parseElaKeyLearningSummary(
+  raw: string | undefined | null,
+): ElaKeyLearningSummaryPayload | null {
+  const trimmed = (raw ?? "").trim();
+  if (!trimmed) return null;
+  try {
+    const o = JSON.parse(trimmed) as unknown;
+    if (!o || typeof o !== "object") return null;
+    return o as ElaKeyLearningSummaryPayload;
+  } catch {
+    return null;
+  }
+}
+
+function parseElaLessonPlanStructured(
+  raw: string | undefined | null,
+): ElaLessonPlanStructuredPayload | null {
+  const trimmed = (raw ?? "").trim();
+  if (!trimmed) return null;
+  try {
+    const o = JSON.parse(trimmed) as unknown;
+    if (!o || typeof o !== "object") return null;
+    return o as ElaLessonPlanStructuredPayload;
+  } catch {
+    return null;
+  }
+}
+
+function elaPlanHasProcedureBuckets(plan: ElaLessonPlanStructuredPayload): boolean {
+  const keys: (keyof ElaLessonPlanStructuredPayload)[] = [
+    "anticipatory_set_html",
+    "learning_procedures_html",
+    "engagement_with_content_html",
+    "daily_instructional_task_html",
+    "procedures_preamble_html",
+    "procedures_full_html",
+  ];
+  return keys.some((k) => {
+    const v = plan[k];
+    return typeof v === "string" && v.trim().length > 0;
+  });
+}
+
+function elaPlanIsPrimaryUi(plan: ElaLessonPlanStructuredPayload | null): boolean {
+  if (!plan) return false;
+  if (
+    (plan.learning_intention_html ?? "").trim() ||
+    (plan.success_criteria_html ?? "").trim() ||
+    (plan.njsls_standards_html ?? "").trim()
+  ) {
+    return true;
+  }
+  return elaPlanHasProcedureBuckets(plan);
+}
+
 function studentObjectivesHtml(
   raw: string | undefined,
   successCriteria: string | undefined,
@@ -360,6 +453,201 @@ function CurriculumRichHtml({
       dangerouslySetInnerHTML={{ __html: safe }}
     />
   );
+}
+
+function ElaRichBlock({
+  title,
+  html,
+  titleClassName,
+}: {
+  title: string;
+  html: string | undefined;
+  titleClassName?: string;
+}) {
+  const h = (html ?? "").trim();
+  if (!h) return null;
+  return (
+    <section className="space-y-3">
+      <h4
+        className={
+          titleClassName ??
+          "text-sm font-semibold text-teal-800 border-b border-teal-200/80 pb-1"
+        }
+      >
+        {title}
+      </h4>
+      <CurriculumRichHtml
+        className="prose prose-sm max-w-none text-muted-foreground rich-html overflow-x-auto"
+        html={h}
+      />
+    </section>
+  );
+}
+
+function ElaKeyLearningSection({ summary }: { summary: ElaKeyLearningSummaryPayload }) {
+  const hasMatrixText =
+    (summary.learning_intention ?? "").trim() ||
+    (summary.success_criteria ?? "").trim() ||
+    (summary.daily_task_title ?? "").trim() ||
+    (summary.daily_task_body ?? "").trim() ||
+    (summary.content_and_strategies ?? "").trim() ||
+    (summary.learning_intentions_success_html ?? "").trim() ||
+    (summary.standards_mentions?.length ?? 0) > 0;
+  if (!hasMatrixText) return null;
+  return (
+    <section className="space-y-4 rounded-xl border border-teal-200/70 bg-teal-50/25 p-5">
+      <h3 className="flex items-center gap-2 font-bold text-lg text-teal-800">
+        <BookOpen className="w-5 h-5" />
+        Summary of Key Learning (unit matrix)
+      </h3>
+      {(summary.learning_intentions_success_html ?? "").trim() ? (
+        <ElaRichBlock title="Learning intentions and success criteria" html={summary.learning_intentions_success_html} />
+      ) : (
+        <>
+          {(summary.learning_intention ?? "").trim() ? (
+            <div className="space-y-1">
+              <h4 className="text-sm font-semibold text-teal-800">Learning intention</h4>
+              <p className="text-sm text-muted-foreground whitespace-pre-wrap">{summary.learning_intention}</p>
+            </div>
+          ) : null}
+          {(summary.success_criteria ?? "").trim() ? (
+            <div className="space-y-1">
+              <h4 className="text-sm font-semibold text-teal-800">Success criteria</h4>
+              <p className="text-sm text-muted-foreground whitespace-pre-wrap">{summary.success_criteria}</p>
+            </div>
+          ) : null}
+        </>
+      )}
+      {((summary.daily_task_title ?? "").trim() || (summary.daily_task_body ?? "").trim()) && (
+        <div className="space-y-2">
+          <h4 className="text-sm font-semibold text-teal-800">Daily instructional task</h4>
+          {(summary.daily_task_title ?? "").trim() ? (
+            <p className="text-sm font-medium text-foreground">{summary.daily_task_title}</p>
+          ) : null}
+          {(summary.daily_task_body ?? "").trim() ? (
+            <CurriculumRichHtml
+              className="prose prose-sm max-w-none text-muted-foreground rich-html"
+              html={summary.daily_task_body}
+            />
+          ) : null}
+        </div>
+      )}
+      <ElaRichBlock title="Content and learning strategies" html={summary.content_and_strategies} />
+      {summary.standards_mentions && summary.standards_mentions.length > 0 && (
+        <div className="space-y-1">
+          <h4 className="text-sm font-semibold text-teal-800">Standards mentions (from matrix)</h4>
+          <ul className="list-disc pl-5 text-sm text-muted-foreground">
+            {summary.standards_mentions.map((m) => (
+              <li key={m}>{m}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </section>
+  );
+}
+
+function ElaStructuredLessonPlanSection({ plan }: { plan: ElaLessonPlanStructuredPayload }) {
+  const procedurePairs: { title: string; html?: string }[] = [
+    { title: "Anticipatory set", html: plan.anticipatory_set_html },
+    { title: "Learning procedures", html: plan.learning_procedures_html },
+    { title: "Engagement with the content", html: plan.engagement_with_content_html },
+    { title: "Daily instructional task", html: plan.daily_instructional_task_html },
+  ];
+  const hasProcedureSubsections = procedurePairs.some((p) => (p.html ?? "").trim());
+  return (
+    <section className="space-y-5 rounded-xl border border-cyan-200/70 bg-cyan-50/20 p-5">
+      <h3 className="flex flex-wrap items-center gap-x-2 gap-y-1 font-bold text-lg text-cyan-900">
+        <Layers className="w-5 h-5 shrink-0" />
+        <span>ELA lesson plan (structured)</span>
+        {(() => {
+          const num = plan.lesson_number != null ? `Lesson ${plan.lesson_number}` : "";
+          const tit = (plan.lesson_title ?? "").trim();
+          const sub = [num, tit].filter(Boolean).join(": ");
+          return sub ? (
+            <span className="text-sm font-normal text-muted-foreground w-full sm:w-auto">{sub}</span>
+          ) : null;
+        })()}
+      </h3>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <ElaRichBlock title="Learning intention" html={plan.learning_intention_html} />
+        <ElaRichBlock title="Success criteria" html={plan.success_criteria_html} />
+      </div>
+      <ElaRichBlock title="NJSLS standards" html={plan.njsls_standards_html} />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <ElaRichBlock title="Key questions" html={plan.key_questions_html} />
+        <ElaRichBlock
+          title="Instructional routines and assessments"
+          html={plan.instructional_routines_assessments_html}
+        />
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <ElaRichBlock title="Vocabulary" html={plan.vocabulary_cell_html} />
+        <ElaRichBlock title="Instructional resources" html={plan.instructional_resources_cell_html} />
+      </div>
+      {(plan.procedures_preamble_html ?? "").trim() ? (
+        <ElaRichBlock title="Procedures (introduction)" html={plan.procedures_preamble_html} />
+      ) : null}
+      {hasProcedureSubsections ? (
+        <div className="space-y-4">
+          <h4 className="text-sm font-semibold text-cyan-900 border-b border-cyan-200/80 pb-1">
+            Instructional procedures
+          </h4>
+          <div className="space-y-4">
+            {procedurePairs.map((p) =>
+              (p.html ?? "").trim() ? (
+                <div
+                  key={p.title}
+                  className="rounded-lg border border-cyan-100/90 bg-white/60 p-4 shadow-sm"
+                >
+                  <ElaRichBlock title={p.title} html={p.html} titleClassName="text-sm font-semibold text-cyan-800 mb-2" />
+                </div>
+              ) : null,
+            )}
+          </div>
+        </div>
+      ) : (plan.procedures_full_html ?? "").trim() ? (
+        <ElaRichBlock title="Procedures (full)" html={plan.procedures_full_html} />
+      ) : null}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <ElaRichBlock title="Differentiation" html={plan.differentiation_html} />
+        <ElaRichBlock title="Addressing misconceptions" html={plan.addressing_misconceptions_html} />
+      </div>
+    </section>
+  );
+}
+
+/** Derives procedure / ELA UI flags from lesson API payload (Phase 4.2 subject-aware detail). */
+function lessonDetailPresentationFlags(selectedLesson: unknown) {
+  const sl = selectedLesson as Lesson | null | undefined;
+  const elaSummaryPayload = parseElaKeyLearningSummary(sl?.ela_key_learning_summary);
+  const elaPlanPayload = parseElaLessonPlanStructured(sl?.ela_lesson_plan_structured);
+  const useElaStructuredPrimary = elaPlanIsPrimaryUi(elaPlanPayload);
+  const skipMathProcedureBanding =
+    Boolean(elaPlanPayload) && elaPlanHasProcedureBuckets(elaPlanPayload!);
+  const procedureSections = skipMathProcedureBanding
+    ? []
+    : splitProcedureSectionsFromHtml(sl?.procedure_html);
+  const showStreamedProcedureHtml =
+    Boolean((sl?.procedure_html ?? "").trim()) && !skipMathProcedureBanding;
+  return {
+    elaSummaryPayload,
+    elaPlanPayload,
+    useElaStructuredPrimary,
+    skipMathProcedureBanding,
+    procedureSections,
+    showStreamedProcedureHtml,
+    hideTeacherObjectivesForEla:
+      useElaStructuredPrimary && Boolean((elaPlanPayload?.learning_intention_html ?? "").trim()),
+    hideStudentObjectivesForEla:
+      useElaStructuredPrimary && Boolean((elaPlanPayload?.success_criteria_html ?? "").trim()),
+    hideDailyTasksBandForEla:
+      useElaStructuredPrimary &&
+      (Boolean((elaPlanPayload?.daily_instructional_task_html ?? "").trim()) ||
+        skipMathProcedureBanding),
+    hideStandaloneSuccessCriteriaForEla:
+      useElaStructuredPrimary && Boolean((elaPlanPayload?.success_criteria_html ?? "").trim()),
+  };
 }
 
 export function CurriculumExplorer() {
@@ -553,7 +841,18 @@ export function CurriculumExplorer() {
     return <div className="flex items-center justify-center p-12">Loading Curriculum...</div>;
   }
 
-  const procedureSections = splitProcedureSectionsFromHtml(selectedLesson?.procedure_html);
+  const {
+    elaSummaryPayload,
+    elaPlanPayload,
+    useElaStructuredPrimary,
+    skipMathProcedureBanding,
+    procedureSections,
+    showStreamedProcedureHtml,
+    hideTeacherObjectivesForEla,
+    hideStudentObjectivesForEla,
+    hideDailyTasksBandForEla,
+    hideStandaloneSuccessCriteriaForEla,
+  } = lessonDetailPresentationFlags(selectedLesson);
   const procedureHeaderUi: Record<
     ProcedureSection["kind"],
     { icon: any; iconClass: string; titleClass: string; cardClass: string }
@@ -812,7 +1111,15 @@ export function CurriculumExplorer() {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
                   {/* Left: Content */}
                   <div className="lg:col-span-2 space-y-8">
+                    {elaSummaryPayload ? (
+                      <ElaKeyLearningSection summary={elaSummaryPayload} />
+                    ) : null}
+                    {useElaStructuredPrimary && elaPlanPayload ? (
+                      <ElaStructuredLessonPlanSection plan={elaPlanPayload} />
+                    ) : null}
+                    {(!hideTeacherObjectivesForEla || !hideStudentObjectivesForEla) && (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {!hideTeacherObjectivesForEla && (
                       <section className="space-y-3">
                         <h3 className="flex items-center gap-2 font-bold text-lg border-b pb-2 text-blue-600">
                           <FileText className="w-5 h-5" />
@@ -826,7 +1133,9 @@ export function CurriculumExplorer() {
                           )}
                         />
                       </section>
+                      )}
 
+                      {!hideStudentObjectivesForEla && (
                       <section className="space-y-3">
                         <h3 className="flex items-center gap-2 font-bold text-lg border-b pb-2 text-green-600">
                           <ChevronRight className="w-5 h-5" />
@@ -841,7 +1150,9 @@ export function CurriculumExplorer() {
                           )}
                         />
                       </section>
+                      )}
                     </div>
+                    )}
 
                     {selectedLesson.mlr && (
                       <section className="bg-primary/5 p-4 rounded-xl border border-primary/20 space-y-2">
@@ -869,6 +1180,7 @@ export function CurriculumExplorer() {
                       </section>
                     )}
 
+                    {!hideDailyTasksBandForEla && (
                     <section className="space-y-3">
                       <h3 className="flex items-center gap-2 font-bold text-lg border-b pb-2">
                         <Info className="w-5 h-5 text-green-500" />
@@ -884,8 +1196,9 @@ export function CurriculumExplorer() {
                         }
                       />
                     </section>
+                    )}
 
-                    {selectedLesson.success_criteria && (
+                    {selectedLesson.success_criteria && !hideStandaloneSuccessCriteriaForEla && (
                       <section className="space-y-3">
                         <h3 className="flex items-center gap-2 font-bold text-lg border-b pb-2 text-yellow-600">
                           <ChevronRight className="w-5 h-5" />
@@ -978,7 +1291,7 @@ export function CurriculumExplorer() {
                       </section>
                     )}
 
-                    {selectedLesson.procedure_html ? (
+                    {showStreamedProcedureHtml ? (
                       <section className="space-y-4">
                         <h3 className="flex items-center gap-2 font-bold text-lg border-b pb-2 text-rose-500">
                           <Clock className="w-5 h-5" />
@@ -1010,7 +1323,7 @@ export function CurriculumExplorer() {
                           />
                         )}
                       </section>
-                    ) : (() => {
+                    ) : !skipMathProcedureBanding ? (() => {
                       try {
                         const procedures = JSON.parse(selectedLesson.procedure || "[]");
                         if (!Array.isArray(procedures) || procedures.length === 0) return null;
@@ -1061,7 +1374,7 @@ export function CurriculumExplorer() {
                       } catch (e) {
                         return null;
                       }
-                    })()}
+                    })() : null}
                   </div>
 
                   {/* Right: Resources & Vocabulary */}

@@ -1,0 +1,17 @@
+﻿============================= test session starts =============================
+platform win32 -- Python 3.12.3, pytest-7.4.3, pluggy-1.6.0
+rootdir: D:\LP
+configfile: pytest.ini
+plugins: anyio-3.7.1, asyncio-0.21.1, timeout-2.4.0, typeguard-4.4.4
+asyncio: mode=Mode.AUTO
+timeout: 120.0s
+timeout method: thread
+timeout func_only: False
+collected 16 items
+
+tests\test_grade3_ela_ingest_smoke.py .                                  [  6%]
+tests\test_math_fidelity_helpers.py ....                                 [ 31%]
+tests\test_ingest_report_failure_codes.py .....                          [ 62%]
+tests\test_curriculum_gaps.py ......                                     [100%]
+
+============================= 16 passed in 3.47s ==============================
