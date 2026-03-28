@@ -77,8 +77,8 @@
 - [x] Evidence archived under `docs/curriculum/acceptance-evidence/phase-4/`
 - [x] LOC snapshot refreshed (`python tools/refactor/count_loc.py --markdown` → `loc-snapshot-phase-4-exit.txt`)
 - [ ] Refactor tracking updated if applicable (no change to `REFACTORING_PRIORITIES_AND_TOOLS.md` this session)
-- [ ] Branch merged (pending git push from environment)
-- [ ] Pushed to GitHub (pending)
+- [x] Branch merged to `master` (fast-forward 2026-03-28)
+- [x] Pushed to GitHub (`master` and `curriculum/phase-4-ela-hardening`)
 
 ## End-of-phase session wrap-up (mandatory)
 
