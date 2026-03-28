@@ -21,6 +21,7 @@ const SyncTestButton = lazy(() => import('../../../frontend/src/components/SyncT
 const SupabaseSyncToggle = lazy(() => import('../../../frontend/src/components/SupabaseSyncToggle').then(module => ({ default: module.SupabaseSyncToggle })));
 const DatabaseSettings = lazy(() => import('../../../frontend/src/components/DatabaseSettings').then(module => ({ default: module.DatabaseSettings })));
 const TabletSync = lazy(() => import('../../../frontend/src/components/TabletSync').then(module => ({ default: module.TabletSync })));
+const CurriculumExplorer = lazy(() => import('./components/CurriculumExplorer').then(module => ({ default: module.CurriculumExplorer })));
 
 // Lazy load PC-only layout components
 const DesktopLayout = lazy(() => import('../../../frontend/src/components/layouts/DesktopLayout').then(module => ({ default: module.DesktopLayout })));
@@ -35,7 +36,7 @@ if (isMobile) {
   });
 }
 
-type NavItem = 'home' | 'plans' | 'schedule' | 'browser' | 'lesson-mode' | 'history' | 'analytics' | 'settings' | 'database' | 'tablet';
+type NavItem = 'home' | 'plans' | 'schedule' | 'browser' | 'lesson-mode' | 'history' | 'analytics' | 'settings' | 'database' | 'tablet' | 'curriculum';
 type View = 'browser' | 'lesson-mode';
 
 interface LessonModeProps {
@@ -47,7 +48,7 @@ interface LessonModeProps {
 }
 
 function App() {
-  const { currentUser, users } = useStore();
+  const { currentUser } = useStore();
   const features = usePlatformFeatures();
 
   // Tablet state (browser + lesson mode only)
@@ -479,6 +480,18 @@ function App() {
               <section>
                 <Suspense fallback={<div className="p-4">Loading...</div>}>
                   <TabletSync />
+                </Suspense>
+              </section>
+            </div>
+          );
+
+        case 'curriculum':
+          return (
+            <div className="space-y-8">
+              {userSelectorSection}
+              <section>
+                <Suspense fallback={<div className="p-4">Loading...</div>}>
+                  <CurriculumExplorer />
                 </Suspense>
               </section>
             </div>

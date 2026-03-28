@@ -11,6 +11,7 @@ Usage (from repo root):
 Second-template smoke (optional; set when you have another representative DOCX):
   CURRICULUM_VERIFY_SECOND_DOCX=path/to/file.docx CURRICULUM_VERIFY_SECOND_UNIT_ID=unit_id \\
     python tools/scraper/verify_curriculum_db.py
+  Optional: CURRICULUM_VERIFY_SECOND_SUBJECT=ELA (default Math) for cross-subject ingest smoke.
 """
 
 from __future__ import annotations
@@ -103,6 +104,48 @@ def verify_curriculum_data_integrity(db_path: str) -> list[str]:
             issues.append(
                 "Math unit 2 narrative_html: no 'students compare' style merge sample detected (soft check)"
             )
+
+        ela = conn.execute(
+            """
+            SELECT u.id FROM units u
+            WHERE u.subject = 'ELA' AND u.grade = 3
+            ORDER BY u.unit_number LIMIT 1
+            """
+        ).fetchone()
+        if ela:
+            uid = ela["id"]
+            row = conn.execute(
+                """
+                SELECT COUNT(*) AS n, SUM(
+                  CASE WHEN standards_structured IS NULL OR TRIM(standards_structured) = ''
+                    OR standards_structured = '[]' THEN 1 ELSE 0 END
+                ) AS missing
+                FROM lessons l
+                WHERE l.unit_id = ?
+                """,
+                (uid,),
+            ).fetchone()
+            if row and row["n"] and row["n"] > 0 and row["missing"]:
+                issues.append(
+                    "lessons in Grade 3 ELA sample unit: some rows lack non-empty standards_structured JSON"
+                )
+        cols = {row[1] for row in conn.execute("PRAGMA table_info(lessons)").fetchall()}
+        if "ela_key_learning_summary" in cols:
+            sample_unit = "ELA_3_U8_sample"
+            row = conn.execute(
+                """
+                SELECT COUNT(*) AS n,
+                       SUM(CASE WHEN ela_key_learning_summary IS NOT NULL
+                                 AND TRIM(ela_key_learning_summary) != '' THEN 1 ELSE 0 END) AS filled
+                FROM lessons WHERE unit_id = ?
+                """,
+                (sample_unit,),
+            ).fetchone()
+            if row and row["n"] and row["n"] > 0 and (row["filled"] or 0) == 0:
+                issues.append(
+                    "warning: unit ELA_3_U8_sample has lessons but no ela_key_learning_summary "
+                    "(re-ingest with ELA ingest after Summary-of-Key-Learning extraction)"
+                )
     finally:
         conn.close()
     return issues
@@ -119,9 +162,10 @@ def maybe_verify_second_template() -> list[str]:
     sys.path.insert(0, os.path.join(_REPO_ROOT, "tools", "scraper"))
     from table_extractor import RecursiveTableParser
 
+    subject = (os.environ.get("CURRICULUM_VERIFY_SECOND_SUBJECT") or "Math").strip() or "Math"
     parser = RecursiveTableParser()
     try:
-        n = parser.ingest_to_curriculum(docx, unit_id, subject="Math")
+        n = parser.ingest_to_curriculum(docx, unit_id, subject=subject)
     except Exception as e:
         return [f"second-template ingest failed: {e}"]
     if n <= 0:
@@ -164,12 +208,16 @@ def main() -> int:
         return 1
     if not args.no_data_checks:
         issues = verify_curriculum_data_integrity(args.db)
-        if issues:
+        hard_issues = [x for x in issues if not str(x).lower().startswith("warning:")]
+        warn_issues = [x for x in issues if str(x).lower().startswith("warning:")]
+        for line in warn_issues:
+            print("Curriculum DB data integrity note:", line)
+        if hard_issues:
             print("Curriculum DB data integrity FAILED:")
-            for line in issues:
+            for line in hard_issues:
                 print(f"  - {line}")
             if ingest_report:
-                _merge_verify_issues_into_ingest_report(ingest_report, issues, schema=False)
+                _merge_verify_issues_into_ingest_report(ingest_report, hard_issues, schema=False)
             return 1
         issues = maybe_verify_second_template()
         if issues:

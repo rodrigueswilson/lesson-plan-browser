@@ -45,6 +45,7 @@ from backend.routers.schedule import router as schedule_router
 from backend.routers.settings import router as settings_router
 from backend.routers.slots import router as slots_router
 from backend.routers.users import router as users_router
+from backend.routers.curriculum import router as curriculum_router
 from backend.telemetry import logger
 
 
@@ -63,6 +64,20 @@ async def lifespan(app: FastAPI):
         logger.warning(
             f"Database initialized but test query failed: {db_test_error}",
             exc_info=True,
+        )
+    try:
+        from backend.database.curriculum_validation import validate_curriculum_db
+
+        c_issues = validate_curriculum_db()
+        if c_issues:
+            logger.warning(
+                "curriculum_db_schema_validation_failed",
+                extra={"issues": c_issues},
+            )
+    except Exception as cur_check_err:
+        logger.warning(
+            "curriculum_db_schema_check_skipped",
+            extra={"error": str(cur_check_err)},
         )
     from backend.progress import progress_tracker
 
@@ -102,6 +117,7 @@ app.include_router(plans_router, prefix="/api")
 app.include_router(process_week_router, prefix="/api")
 app.include_router(analytics_router, prefix="/api")
 app.include_router(core_router, prefix="/api")
+app.include_router(curriculum_router, prefix="/api")
 
 # Add CORS middleware for Tauri frontend
 app.add_middleware(

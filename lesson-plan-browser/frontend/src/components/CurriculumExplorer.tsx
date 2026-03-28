@@ -382,6 +382,7 @@ export function CurriculumExplorer() {
     { id: string; unit_id: string; lesson_number: number; title: string }[]
   >([]);
   const [searchLoading, setSearchLoading] = useState(false);
+  const [hierarchyError, setHierarchyError] = useState<string | null>(null);
 
   useEffect(() => {
     fetchHierarchy();
@@ -394,13 +395,40 @@ export function CurriculumExplorer() {
   }, [selectedLesson]);
 
   const fetchHierarchy = async () => {
+    setHierarchyError(null);
     try {
       const response = await fetch('/api/curriculum/explorer');
-      const data = await response.json();
-      setHierarchy(data);
+      const data: unknown = await response.json();
+      if (!response.ok) {
+        const detail =
+          typeof data === 'object' &&
+          data !== null &&
+          'detail' in data &&
+          (data as { detail?: unknown }).detail !== undefined
+            ? JSON.stringify((data as { detail: unknown }).detail)
+            : response.statusText || `HTTP ${response.status}`;
+        setHierarchy([]);
+        setHierarchyError(
+          `Could not load curriculum (${response.status}). ${detail}`,
+        );
+        setLoading(false);
+        return;
+      }
+      if (!Array.isArray(data)) {
+        console.error('Curriculum explorer: expected JSON array, got', data);
+        setHierarchy([]);
+        setHierarchyError('Curriculum server returned an unexpected response.');
+        setLoading(false);
+        return;
+      }
+      setHierarchy(data as Grade[]);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching curriculum hierarchy:', error);
+      setHierarchy([]);
+      setHierarchyError(
+        error instanceof Error ? error.message : 'Network error loading curriculum.',
+      );
       setLoading(false);
     }
   };
@@ -571,6 +599,20 @@ export function CurriculumExplorer() {
           <h2 className="font-semibold text-lg uppercase tracking-tight">Explorer</h2>
         </div>
 
+        {hierarchyError && (
+          <div
+            className="mb-3 mx-2 rounded-md border border-destructive/40 bg-destructive/10 px-2 py-2 text-xs text-destructive"
+            role="alert"
+          >
+            <p className="font-semibold mb-1">Curriculum unavailable</p>
+            <p className="break-words text-destructive/90">{hierarchyError}</p>
+            <p className="mt-2 text-[10px] text-muted-foreground">
+              Ensure the API is running (for example port 8000) and the curriculum database file exists
+              and is up to date.
+            </p>
+          </div>
+        )}
+
         <div className="mb-4 px-2 space-y-2">
           <label className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">
             Search lessons
@@ -664,9 +706,18 @@ export function CurriculumExplorer() {
       {/* Main Content Pane */}
       <div className="flex-1 overflow-y-auto bg-card">
         {!selectedUnit ? (
-          <div className="h-full flex flex-col items-center justify-center text-muted-foreground space-y-4">
+          <div className="h-full flex flex-col items-center justify-center text-muted-foreground space-y-4 px-6">
             <Book className="w-16 h-16 opacity-10" />
-            <p className="text-lg">Select a Grade and Unit to browse lessons</p>
+            {hierarchyError ? (
+              <>
+                <p className="text-lg font-medium text-center text-destructive/90">
+                  Curriculum could not be loaded
+                </p>
+                <p className="text-sm text-center max-w-md">{hierarchyError}</p>
+              </>
+            ) : (
+              <p className="text-lg">Select a Grade and Unit to browse lessons</p>
+            )}
           </div>
         ) : (
           <div className="p-8 space-y-8 animate-in fade-in duration-500">

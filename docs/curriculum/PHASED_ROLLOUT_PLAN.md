@@ -11,6 +11,25 @@ Deliver a curriculum pipeline that is:
 - robust across unit templates and subjects,
 - ready to scale through Grade 8.
 
+## Plan amendment (2026-03-28)
+
+This amendment refines **Phase 3** and **Phase 4** without renumbering later phases.
+
+- **Track A — Grade 3 Math:** Phase 3 now includes parser and `SubjectConfig` refinement **and** completion of the **full Grade 3 Math ingest corpus** (see Phase 3 for the checkable definition). Each unit run produces `ingest_reports/` artifacts, `verify_curriculum_db.py` verification where applicable, and evidence under `docs/curriculum/acceptance-evidence/`. This corpus completion is **not** the same as **program-wide** bulk ingestion across all grades and subjects (still gated at [Decision checkpoint: when to start broad ingestion](#decision-checkpoint-when-to-start-broad-ingestion)).
+
+- **Track B — ELA:** Phase 4 is expanded into **two substages**: **4.1** extraction and DB/API contract, then **4.2** navigator UI template. SSOT and code touchpoints include [docs/scrapers/CURRICULUM_EXTRACTION_ARCHITECTURE.md](../scrapers/CURRICULUM_EXTRACTION_ARCHITECTURE.md), [tools/scraper/ela_summary_table.py](../../tools/scraper/ela_summary_table.py), [tools/scraper/ela_lesson_plan_table.py](../../tools/scraper/ela_lesson_plan_table.py), and [lesson-plan-browser/frontend/src/components/CurriculumExplorer.tsx](../../lesson-plan-browser/frontend/src/components/CurriculumExplorer.tsx).
+
+- **Default sequence:** Complete **Phase 3** (including the G3 Math corpus) **before Phase 4.1**, so shared ingest and API fixes stabilize first. **ELA UI spikes** in parallel are allowed only as **non-mergeable prototypes** unless they stay behind a feature flag or branch that does not land before 4.1 exits.
+
+```mermaid
+flowchart LR
+  P3[Phase3_G3MathCorpus]
+  P4a[Phase4_4_1_ELA_ExtractSchema]
+  P4b[Phase4_4_2_ELA_UI]
+  P5[Phase5_CrossGradeSample]
+  P3 --> P4a --> P4b --> P5
+```
+
 ## Mandatory phase git and quality workflow
 
 Every phase must follow this sequence:
@@ -148,39 +167,67 @@ After that, the project transitions from "hardening" to "production expansion" (
 
 ---
 
-## Phase 3 - Template resilience (same subject ladder)
+## Phase 3 - Grade 3 Math template resilience and full corpus
 
-**Goal:** Prove robustness within same subject before cross-subject expansion.
+**Goal:** Prove robustness within Grade 3 Math, then ingest **every in-scope Grade 3 Math unit** before cross-subject ELA hardening.
+
+**Corpus definition (checkable)**  
+- **SSOT for unit tabs:** [reference_docs/scraped_registry.json](../../reference_docs/scraped_registry.json) → `Grade 3` → `Math`.  
+- At **Phase 3 kickoff**, archive a short **ingest checklist** under `docs/curriculum/acceptance-evidence/` listing each registry key targeted for full `ingest_to_curriculum` (and any explicit exclusions, e.g. benchmark-only tabs if not lesson guides).  
+- **100% corpus complete** means every checklist row has a passing ingest (or documented failure with `FAILURE_TAXONOMY` classification and owner), matching `units` rows with `grade = 3` and `subject = 'Math'` for those units.
 
 **In scope**
-- Add at least 2 additional Grade 3 Math units (different structure patterns).
+- Parser and [tools/scraper/table_extractor.py](../../tools/scraper/table_extractor.py) / [SubjectConfig](../../tools/scraper/subject_config.py) tuning for Grade 3 Math, with evidence from **multiple** unit patterns (the corpus ladder subsumes “at least 2 additional units”).
 - Expand regression checks for heading variants and section drift.
 - Tune parser heuristics only where evidence supports changes.
+- Per unit: `ingest_reports/` artifact; run `python tools/scraper/verify_curriculum_db.py --ingest-report ingest_reports/<run_id>.json` when the gate ties to that ingest; archive acceptance notes.
+- **Regression sampling after shared-parser changes:** rerun or spot-check at least **one non–Grade-3 Math** unit and **one ELA** sample so Math-only tuning does not silently break other subjects.
 
 **Out of scope**
-- Grade 3 ELA onboarding.
+- Grade 3 ELA onboarding beyond the regression smoke sample above.
+- Grade 4+ Math bulk ingest.
 
 **Exit criteria**
-- All sampled Grade 3 Math units pass gates with no critical parser regressions.
-- Branch `curriculum/phase-3-template-resilience` merged and pushed after required phase test rerun.
+- **100%** of the Phase 3 G3 Math checklist ingested per the corpus definition; critical gates pass; no unresolved critical parser regressions on the regression samples.
+- Branch `curriculum/phase-3-g3-math-corpus` merged and pushed after required phase test gate, refactor pass (if any), and second test gate per the mandatory workflow.  
+  *(Earlier branch name `curriculum/phase-3-template-resilience` is superseded by this scope.)*
 
 ---
 
-## Phase 4 - Cross-subject hardening (Grade 3 ELA first)
+## Phase 4 - ELA hardening (extraction, then UI)
 
-**Goal:** Validate subject-config separation and parser generalization.
+**Goal:** Stabilize ELA extraction into SQLite/API, then deliver a **subject-aware** curriculum navigator template for ELA (without forcing ELA into Math procedure banding).
+
+**Branching policy:** Use **one** branch `curriculum/phase-4-ela-hardening` with **two internal milestones**: complete **4.1** (test gate + evidence) before merging **4.2** UI work on the same branch, or merge 4.1 first and continue 4.2 in a follow-up commit series on that branch—either way, **two test gates** (pre/post refactor) apply to the phase as a whole before final merge.
+
+### Phase 4.1 - ELA extraction and DB contract
 
 **In scope**
-- Onboard one Grade 3 ELA unit sample set.
-- Validate standards/procedure boundaries for ELA-specific patterns.
-- Compare fidelity and section coverage against Math baseline.
+- Stabilize JSON shapes and `schema_version` for `ela_key_learning_summary` and `ela_lesson_plan_structured`; golden tests in [tests/test_ela_summary_table.py](../../tests/test_ela_summary_table.py) and [tests/test_ela_lesson_plan_table.py](../../tests/test_ela_lesson_plan_table.py).
+- Ingest **representative** Grade 3 ELA sample unit(s); validate standards/procedure boundaries for ELA-specific patterns; compare fidelity and section coverage against the Math baseline where comparable.
+- Update or add scraper SSOT under `docs/scrapers/` as needed.
 
 **Out of scope**
-- Broad multi-grade rollout.
+- Full cross-grade ELA matrix (Phase 5).
+- Navigator UI restyle beyond what is required to verify API payloads (defer to 4.2).
 
 **Exit criteria**
-- Grade 3 ELA sample passes the same quality gates.
-- Branch `curriculum/phase-4-cross-subject` merged and pushed after passing phase tests twice (before and after refactor).
+- Sample ELA unit(s) pass the same **quality gates** as Math for schema, provenance, and ELA-specific fields; no critical defects.
+- Evidence paths recorded under `docs/curriculum/acceptance-evidence/`.
+
+### Phase 4.2 - ELA navigator UI template
+
+**In scope**
+- Subject-aware lesson detail in [lesson-plan-browser/frontend/src/components/CurriculumExplorer.tsx](../../lesson-plan-browser/frontend/src/components/CurriculumExplorer.tsx): branch on subject or payload; render structured ELA sections (summary matrix JSON, detailed plan JSON) without mapping ELA into Math-only procedure segment UI unless the content truly matches.
+- Teacher-facing acceptance checklist or screenshots in `docs/curriculum/acceptance-evidence/`.
+
+**Out of scope**
+- FTS5 / full search UX (Phase 6).
+- Cross-grade ELA expansion (Phase 5).
+
+**Exit criteria**
+- UX acceptance for ELA lesson view; regression check on **one** Math lesson still renders correctly.
+- Branch `curriculum/phase-4-ela-hardening` merged and pushed after passing phase tests twice (before and after refactor) per mandatory workflow.
 
 ---
 
@@ -192,9 +239,10 @@ After that, the project transitions from "hardening" to "production expansion" (
 - Curate representative sample matrix across Grades 2-8.
 - Include high-variance templates and edge-case structures.
 - Track pass/fail rates and parser exception classes.
+- For **ELA** samples, exercise **both** the Summary of Key Learning matrix (`ela_key_learning_summary`) and per-lesson detailed table JSON (`ela_lesson_plan_structured`) where the source document provides them—plus the Phase 4.2 UI template on at least one sample per variance class.
 
 **Out of scope**
-- Bulk ingest all available units.
+- Bulk ingest all available units (program-wide).
 
 **Exit criteria**
 - Sample matrix meets target pass threshold (see below).
@@ -237,14 +285,13 @@ After that, the project transitions from "hardening" to "production expansion" (
 
 ## Representative sampling strategy
 
-## Stage A - Initial hardening sample
-- Grade 3 Math Unit 2 (anchor unit)
-- Grade 3 Math Unit X (different layout)
-- Grade 3 Math Unit Y (different layout)
+## Stage A - Initial hardening sample (culminates in full G3 Math corpus)
+- Grade 3 Math Unit 2 (anchor unit) and additional G3 Math units with different layout patterns during ladder hardening.
+- **End state:** Stage A completes when Phase 3’s **full Grade 3 Math corpus** (per Phase 3 checklist tied to `scraped_registry.json` → `Grade 3` → `Math`) is ingested—not only three sample units.
 
-## Stage B - Subject contrast
-- Grade 3 ELA Unit A
-- Grade 3 ELA Unit B (if needed for variance)
+## Stage B - Subject contrast (ELA structure + UI)
+- Grade 3 ELA unit(s) that validate **structured fields** (`ela_key_learning_summary`, `ela_lesson_plan_structured`) and the **ELA navigator UI template** (Phase 4.2), not only a single flat sample.
+- Grade 3 ELA Unit B (or additional units) if needed for template variance.
 
 ## Stage C - Vertical sample to Grade 8
 - At least one Math and one ELA unit per grade cluster:
@@ -294,9 +341,11 @@ For refactor tasks that have a plan under `docs/refactor/plans/`, follow `refact
 
 ## Decision checkpoint: when to start broad ingestion
 
-Start broad ingestion only after Phase 5 and Phase 6 exit criteria pass:
+**Grade 3 Math corpus (Phase 3)** is **allowed and expected** to complete **before** program-wide broad ingestion. Finishing all in-scope G3 Math units is **not** the same as unlocking bulk ingest for all grades and subjects.
+
+**Program-wide / all-grades bulk ingestion** (beyond curated Phase 5 samples and Phase 3’s G3 Math scope) starts only after **Phase 5 and Phase 6** exit criteria pass:
 - representative sample validated through Grade 8,
 - search/navigation UX stable,
 - provenance and regression controls fully operational.
 
-Until then, ingestion stays in curated batches only.
+Until then, ingestion outside Phase 3’s defined G3 Math corpus stays in **curated batches** only.

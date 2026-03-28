@@ -59,6 +59,14 @@ class CurriculumLessonDetail(BaseModel):
         default=None,
         description="JSON array of {panel, section, code, description_lines[]}",
     )
+    ela_key_learning_summary: Optional[str] = Field(
+        default=None,
+        description="JSON from unit Summary of Key Learning matrix (ELA ingest).",
+    )
+    ela_lesson_plan_structured: Optional[str] = Field(
+        default=None,
+        description="JSON from per-lesson detailed ELA plan table (ELA ingest).",
+    )
     source_doc_id: Optional[str] = None
     source_url: Optional[str] = None
     ingested_at: Optional[str] = None

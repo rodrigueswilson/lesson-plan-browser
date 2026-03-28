@@ -61,6 +61,8 @@ CREATE TABLE lessons (
     procedures TEXT,
     differentiation TEXT,
     standards_structured TEXT,
+    ela_key_learning_summary TEXT,
+    ela_lesson_plan_structured TEXT,
     source_doc_id TEXT,
     source_url TEXT,
     ingested_at TEXT,

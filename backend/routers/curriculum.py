@@ -1,0 +1,145 @@
+import os
+import sqlite3
+from typing import Any, Dict, List
+
+from fastapi import APIRouter, Depends, HTTPException, Query
+
+from backend.config import settings
+from backend.database.curriculum import CurriculumDatabase
+from backend.database.curriculum_validation import get_curriculum_schema_issues
+from backend.schemas.curriculum import (
+    CurriculumGapsResponse,
+    CurriculumLessonDetail,
+    CurriculumSearchHit,
+    CurriculumStandardRow,
+    CurriculumVocabularyTerm,
+    ExplorerGrade,
+)
+from backend.services.curriculum_gaps import compute_planned_and_gaps
+
+router = APIRouter(tags=["curriculum"])
+
+
+def require_curriculum_schema() -> None:
+    issues = get_curriculum_schema_issues()
+    if issues:
+        raise HTTPException(
+            status_code=503,
+            detail={"curriculum_schema_errors": issues},
+        )
+
+
+CURRICULUM_DEPS = [Depends(require_curriculum_schema)]
+
+
+@router.get("/curriculum/explorer", dependencies=CURRICULUM_DEPS, response_model=List[ExplorerGrade])
+async def get_explorer():
+    """Returns the Grade -> Subject -> Unit hierarchy."""
+    curriculum = CurriculumDatabase()
+    return curriculum.get_explorer_hierarchy()
+
+
+@router.get("/curriculum/registry-tree", dependencies=CURRICULUM_DEPS)
+async def get_registry_tree() -> Dict[str, Any]:
+    """Static Grade -> Subject -> Unit -> {doc_id: title} from scraped_registry.json (Navigator phase 1)."""
+    curriculum = CurriculumDatabase()
+    data = curriculum.load_scraped_registry()
+    if not data:
+        raise HTTPException(
+            status_code=404,
+            detail="scraped_registry.json not found or empty (set SCRAPED_REGISTRY_PATH?)",
+        )
+    return data
+
+
+@router.get("/curriculum/search", dependencies=CURRICULUM_DEPS, response_model=List[CurriculumSearchHit])
+async def search_curriculum(
+    q: str = Query(..., min_length=2, description="Substring match on title / procedure / narrative HTML"),
+    limit: int = Query(40, ge=1, le=200),
+):
+    """Interim lesson search (LIKE). FTS5 index may replace this later."""
+    curriculum = CurriculumDatabase()
+    return curriculum.search_lessons_text(q, limit=limit)
+
+
+@router.get("/curriculum/units/{unit_id}/lessons", dependencies=CURRICULUM_DEPS)
+async def get_unit_lessons(unit_id: str):
+    """Returns all lessons for a specific unit."""
+    curriculum = CurriculumDatabase()
+    return curriculum.get_unit_lessons(unit_id)
+
+
+@router.get("/curriculum/units/{unit_id}/intro", dependencies=CURRICULUM_DEPS)
+async def get_unit_intro(unit_id: str):
+    """Returns the unit introduction (overview)."""
+    curriculum = CurriculumDatabase()
+    return curriculum.get_unit_intro(unit_id)
+
+
+@router.get(
+    "/curriculum/lessons/{lesson_id}",
+    dependencies=CURRICULUM_DEPS,
+    response_model=CurriculumLessonDetail,
+)
+async def get_lesson_details(lesson_id: str):
+    """Returns full details for a single lesson."""
+    curriculum = CurriculumDatabase()
+    details = curriculum.get_lesson_details(lesson_id)
+    if not details:
+        raise HTTPException(status_code=404, detail="Lesson not found")
+    return details
+
+
+@router.get(
+    "/curriculum/lessons/{lesson_id}/vocabulary",
+    dependencies=CURRICULUM_DEPS,
+    response_model=List[CurriculumVocabularyTerm],
+)
+async def get_lesson_vocabulary(lesson_id: str):
+    """Returns enriched bilingual vocabulary for a lesson."""
+    curriculum = CurriculumDatabase()
+    return curriculum.get_lesson_vocabulary(lesson_id)
+
+
+@router.get(
+    "/curriculum/lessons/{lesson_id}/standards",
+    dependencies=CURRICULUM_DEPS,
+    response_model=List[CurriculumStandardRow],
+)
+async def get_lesson_standards(lesson_id: str):
+    """Returns curriculum standards (codes and descriptions) linked to a lesson."""
+    curriculum = CurriculumDatabase()
+    return curriculum.get_lesson_standards(lesson_id)
+
+
+@router.get(
+    "/curriculum/gaps",
+    dependencies=CURRICULUM_DEPS,
+    response_model=CurriculumGapsResponse,
+)
+async def get_curriculum_gaps():
+    """
+    Compare Google Doc links in original_lesson_plans (lesson planner DB) to scraped_registry.json.
+    Gap Manager UI can poll this endpoint; full ingestion triggers remain CLI/batch for now.
+    """
+    registry_path = str(CurriculumDatabase().scraped_registry_path())
+    db_path = str(settings.SQLITE_DB_PATH)
+    if not os.path.isfile(db_path):
+        raise HTTPException(status_code=503, detail=f"lesson planner DB not found: {db_path}")
+    try:
+        _planned, gaps, total_found, gap_count = compute_planned_and_gaps(
+            db_path, registry_path
+        )
+    except sqlite3.OperationalError as e:
+        msg = str(e).lower()
+        if "no such table" in msg:
+            raise HTTPException(
+                status_code=503,
+                detail="Gap detection requires table original_lesson_plans in the lesson planner database.",
+            ) from e
+        raise HTTPException(status_code=503, detail=str(e)) from e
+    return CurriculumGapsResponse(
+        total_planned_doc_refs=total_found,
+        gap_doc_refs=gap_count,
+        gaps=gaps,
+    )

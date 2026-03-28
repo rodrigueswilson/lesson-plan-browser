@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import { BookOpen } from 'lucide-react';
 import { DesktopNav } from '../desktop/DesktopNav';
 
-type NavItem = 'home' | 'plans' | 'schedule' | 'browser' | 'lesson-mode' | 'history' | 'analytics' | 'settings' | 'database' | 'tablet';
+type NavItem = 'home' | 'plans' | 'schedule' | 'browser' | 'lesson-mode' | 'history' | 'analytics' | 'settings' | 'database' | 'tablet' | 'curriculum';
 
 interface DesktopLayoutProps {
   children: ReactNode;

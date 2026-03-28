@@ -24,6 +24,12 @@ _LESSON_PROVENANCE_COLUMNS: Dict[str, str] = {
     "content_hash": "TEXT",
 }
 
+# Content columns required by curriculum_validation / newer schema (idempotent ALTER).
+_LESSON_EXTRA_SCHEMA_COLUMNS: Dict[str, str] = {
+    "ela_key_learning_summary": "TEXT",
+    "ela_lesson_plan_structured": "TEXT",
+}
+
 class CurriculumDatabase:
     def __init__(self, db_path: str = r"d:\LP\data\curriculum.db"):
         self.db_path = db_path
@@ -152,6 +158,9 @@ class CurriculumDatabase:
             for col, col_type in _LESSON_PROVENANCE_COLUMNS.items():
                 if col not in lessons_cols:
                     conn.execute(f"ALTER TABLE lessons ADD COLUMN {col} {col_type}")
+            for col, col_type in _LESSON_EXTRA_SCHEMA_COLUMNS.items():
+                if col not in lessons_cols:
+                    conn.execute(f"ALTER TABLE lessons ADD COLUMN {col} {col_type}")
             conn.commit()
 
     def get_lesson_details(self, lesson_id: str) -> Optional[Dict[str, Any]]:
@@ -239,6 +248,8 @@ class CurriculumDatabase:
             "purpose", "mlr", "objectives_student", "procedure_html", "narrative_html",
             "vocabulary", "practices", "procedures", "differentiation",
             "standards_structured",
+            "ela_key_learning_summary",
+            "ela_lesson_plan_structured",
             "source_doc_id", "source_url", "ingested_at", "ingest_run_id",
             "ingest_parser_version", "content_hash",
         ]

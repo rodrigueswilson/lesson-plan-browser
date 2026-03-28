@@ -1,7 +1,7 @@
-import { Home, FileText, Calendar, History, BookOpen, Settings, Tablet } from 'lucide-react';
+import { Home, FileText, Calendar, History, BookOpen, Settings, Tablet, Book } from 'lucide-react';
 import { clsx } from 'clsx';
 
-type NavItem = 'home' | 'plans' | 'schedule' | 'browser' | 'lesson-mode' | 'history' | 'analytics' | 'settings' | 'database' | 'tablet';
+type NavItem = 'home' | 'plans' | 'schedule' | 'browser' | 'lesson-mode' | 'history' | 'analytics' | 'settings' | 'database' | 'tablet' | 'curriculum';
 
 interface DesktopNavProps {
   activeItem: NavItem;
@@ -16,6 +16,7 @@ export function DesktopNav({ activeItem, onNavigate, compact = false, availableN
     { id: 'plans' as NavItem, label: 'Lesson Plans', icon: FileText },
     { id: 'schedule' as NavItem, label: 'Schedule', icon: Calendar },
     { id: 'browser' as NavItem, label: 'Browser', icon: BookOpen },
+    { id: 'curriculum' as NavItem, label: 'Curriculum', icon: Book },
     { id: 'history' as NavItem, label: 'History', icon: History },
     { id: 'settings' as NavItem, label: 'Settings', icon: Settings },
     { id: 'tablet' as NavItem, label: 'Tablet', icon: Tablet },

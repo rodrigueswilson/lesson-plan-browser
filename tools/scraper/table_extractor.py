@@ -8,7 +8,7 @@ import uuid
 from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Dict, Any, List, Optional, Set, Union
+from typing import Any, Dict, Iterator, List, Optional, Set, Union
 
 from docx import Document
 from docx.table import Table, _Cell
@@ -28,6 +28,16 @@ try:
     from tools.scraper.ingest_failure_codes import apply_ingest_failure_code
 except ImportError:
     from ingest_failure_codes import apply_ingest_failure_code
+
+try:
+    from tools.scraper.ela_summary_table import is_summary_key_learning_table, parse_summary_rows
+except ImportError:
+    from ela_summary_table import is_summary_key_learning_table, parse_summary_rows
+
+try:
+    from tools.scraper.ela_lesson_plan_table import is_ela_lesson_plan_table, parse_ela_lesson_plan_table
+except ImportError:
+    from ela_lesson_plan_table import is_ela_lesson_plan_table, parse_ela_lesson_plan_table
 
 # Add parent directory to path for backend imports
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
@@ -808,6 +818,70 @@ class RecursiveTableParser:
                 for item in self._table_to_semantic_items(table_json):
                     yield item
 
+    def _stream_docx_for_curriculum_ingest(self, docx_path: str, subject: str) -> Iterator[Dict[str, Any]]:
+        """Semantic stream for ingest_to_curriculum; ELA skips first Summary of Key Learning table."""
+        self._ela_summary_by_lesson = {}
+        self._ela_lesson_plan_by_lesson = {}
+        if subject.upper() != "ELA":
+            yield from self.parse_to_stream(docx_path)
+            return
+
+        if not os.path.exists(docx_path):
+            raise FileNotFoundError(f"File not found: {docx_path}")
+
+        doc = Document(docx_path)
+        self.doc = doc
+        summary_consumed = False
+        cfg = SubjectConfig.get_config("ELA")
+        pat = cfg["patterns"].get("standards_summary_mentions") or cfg["patterns"]["standards"]
+
+        for element in doc.element.body:
+            tag_name = element.tag.split("}")[-1] if "}" in element.tag else element.tag
+            if tag_name == "p":
+                yield self._parse_paragraph(element)
+            elif tag_name == "tbl":
+                table_json = self._parse_table(element, 0)
+                if is_summary_key_learning_table(table_json):
+                    if not summary_consumed:
+                        parsed = parse_summary_rows(
+                            table_json,
+                            lambda c: self.json_to_html(c),
+                            pat,
+                        )
+                        self._ela_summary_by_lesson.update(parsed)
+                        summary_consumed = True
+                        log(
+                            f"ELA: captured Summary of Key Learning table ({len(parsed)} lesson row(s))",
+                            "INFO",
+                        )
+                        continue
+                    log(
+                        "ELA: additional Summary of Key Learning-shaped table; "
+                        "flattening into stream (only first table is structured)",
+                        "WARNING",
+                    )
+                elif is_ela_lesson_plan_table(table_json):
+                    plan = parse_ela_lesson_plan_table(
+                        table_json,
+                        lambda c: self.json_to_html(c),
+                    )
+                    if plan:
+                        n = plan.get("lesson_number")
+                        if n is not None:
+                            if n in self._ela_lesson_plan_by_lesson:
+                                log(
+                                    f"ELA: replacing structured lesson plan for lesson {n} "
+                                    "(duplicate detailed table in DOCX)",
+                                    "WARNING",
+                                )
+                            self._ela_lesson_plan_by_lesson[n] = plan
+                            log(
+                                f"ELA: parsed detailed lesson plan table (lesson {n})",
+                                "INFO",
+                            )
+                for item in self._table_to_semantic_items(table_json):
+                    yield item
+
     def _table_to_semantic_items(self, table_json: Dict[str, Any]) -> List[Dict[str, Any]]:
         """Converts a table into a sequence of elements, handling side-by-side metadata."""
         items = []
@@ -958,11 +1032,11 @@ class RecursiveTableParser:
         parser_version: str = "table_extractor@v1",
     ):
         """Specialized ingestion using the Semantic Stream."""
-        curr_db = CurriculumDatabase()
+        curr_db = CurriculumDatabase(self.db_path)
         started_at = _utc_now_iso()
         run_id = ingest_run_id or f"{started_at.replace(':', '-').replace('.', '-')}_{uuid.uuid4().hex[:8]}"
         source_doc_id = _extract_source_doc_id(source_url or "")
-        stream = self.parse_to_stream(docx_path)
+        stream = self._stream_docx_for_curriculum_ingest(docx_path, subject)
         
         lessons_data = []
         current_lesson = None
@@ -998,9 +1072,15 @@ class RecursiveTableParser:
                 text = item.get("text", "").strip()
                 lesson_match = lesson_pattern.match(text)
                 if lesson_match:
-                    lnum_str = lesson_match.group(1) or lesson_match.group(2)
+                    # Math pattern: groups (n|x.x.x title, title); ELA pattern: (n, title) only.
+                    m = lesson_match
+                    if m.lastindex is not None and m.lastindex >= 3 and m.group(3) is not None:
+                        lnum_str = m.group(1) or m.group(2)
+                        ltitle = m.group(3).strip().split("   ")[0]
+                    else:
+                        lnum_str = m.group(1)
+                        ltitle = (m.group(2) or "").strip().split("   ")[0]
                     lnum = int(lnum_str.split('.')[-1]) if '.' in lnum_str else int(lnum_str)
-                    ltitle = lesson_match.group(3).strip().split("   ")[0]
                     ingest_stats["lessons_started"] += 1
                     if lnum not in seen_lesson_numbers:
                         seen_lesson_numbers.add(lnum)
@@ -1024,8 +1104,10 @@ class RecursiveTableParser:
                         "id": f"{unit_id}_L{lnum}", "unit_id": unit_id, "lesson_number": lnum, "title": ltitle,
                         "subject": subject,
                         "narrative_html": "", "lesson_narrative": "", "learning_intentions": "", "procedure_html": "",
-                        "instructional_resources": "", "materials": "", "objectives_student": "", "purpose": "", "mlr": "",
-                        "vocabulary": "", "standards_structured": "",
+                        "daily_instructional_task": "", "success_criteria": "", "essential_questions": "",
+                        "procedure": "", "instructional_resources": "", "materials": "", "objectives_student": "",
+                        "purpose": "", "mlr": "", "vocabulary": "", "practices": "", "procedures": "",
+                        "differentiation": "", "standards_structured": "",
                         "source_doc_id": source_doc_id,
                         "source_url": source_url,
                         "ingested_at": started_at,
@@ -1102,6 +1184,19 @@ class RecursiveTableParser:
             ),
         )
 
+        summary_map = getattr(self, "_ela_summary_by_lesson", None) or {}
+        plan_map = getattr(self, "_ela_lesson_plan_by_lesson", None) or {}
+        for le in lessons_data:
+            n = le.get("lesson_number")
+            if n in summary_map:
+                payload = {"schema_version": 1, **summary_map[n]}
+                le["ela_key_learning_summary"] = json.dumps(payload, ensure_ascii=False)
+            if n in plan_map:
+                le["ela_lesson_plan_structured"] = json.dumps(
+                    plan_map[n],
+                    ensure_ascii=False,
+                )
+
         unique_lessons = {
             l["id"]: l for l in lessons_data
             if any([
@@ -1116,9 +1211,14 @@ class RecursiveTableParser:
                 l.get("mlr"),
                 l.get("objectives_student"),
                 l.get("vocabulary"),
+                l.get("practices"),
+                l.get("procedures"),
+                l.get("differentiation"),
                 l.get("_standards"),
                 l.get("_vocabulary"),
                 l.get("_resources"),
+                l.get("ela_key_learning_summary"),
+                l.get("ela_lesson_plan_structured"),
             ])
         }
         

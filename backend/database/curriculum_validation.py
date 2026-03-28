@@ -40,6 +40,8 @@ REQUIRED_COLUMNS: Dict[str, Set[str]] = {
         "procedure_html",
         "narrative_html",
         "standards_structured",
+        "ela_key_learning_summary",
+        "ela_lesson_plan_structured",
         "source_doc_id",
         "source_url",
         "ingested_at",
@@ -79,6 +81,15 @@ def validate_curriculum_db(db_path: Optional[str] = None) -> List[str]:
     if not os.path.isfile(path):
         issues.append(f"curriculum database file not found: {path}")
         return issues
+
+    # Apply idempotent ALTERs for known lesson/unit columns before checking PRAGMA
+    # (avoids 503 curriculum routes when code expects newer schema than the DB file).
+    try:
+        from backend.database.curriculum import CurriculumDatabase
+
+        CurriculumDatabase(db_path=path).ensure_provenance_columns()
+    except Exception:
+        pass
 
     conn = sqlite3.connect(path)
     try:
