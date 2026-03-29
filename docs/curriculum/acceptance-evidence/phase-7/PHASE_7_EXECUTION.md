@@ -8,9 +8,14 @@
 
 ## In-scope (plan)
 
-- [ ] Bulk onboarding in **curated batches** with run reports and a documented rollback path.
+- [x] **Batch workflow documented** — `PHASE_7_BATCH_1_PLAN.md` (snapshot, ingest, verify, rollback); first targets = deferred Math G4/G5 matrix rows (blocked on artifacts).
+- [ ] Bulk onboarding in **curated batches** with run reports (executed per batch plan as sources land).
 - [ ] Continuous QA monitoring for newly ingested units (reuse `verify_curriculum_db.py`, `ingest_reports/*.json`, `FAILURE_TAXONOMY.md`).
 - [ ] Maintenance cadence for parser and subject configs (tie changes to gates and evidence per governance section of rollout plan).
+
+## Integration
+
+- **2026-03-29:** Branch `curriculum/phase-7-expansion-readiness` **pushed** to `origin` (open PR: `https://github.com/rodrigueswilson/lesson-plan-browser/pull/new/curriculum/phase-7-expansion-readiness`).
 
 ## Existing tooling (SSOT for batches — extend, do not duplicate)
 
@@ -38,6 +43,12 @@
 - Result: **Pass** (recorded below)
 - Evidence: `test-gate-7-1-verify_curriculum_db.txt`, `test-gate-7-1-pytest-phase-deps.txt`, `test-gate-7-1-lesson-browser-build.txt`
 
+## Test gate #2 (post–Batch 1 plan documentation)
+
+- Commands: same as gate #1.
+- Result: **Pass**
+- Evidence: `test-gate-7-2-verify_curriculum_db.txt`, `test-gate-7-2-pytest-phase-deps.txt`, `test-gate-7-2-lesson-browser-build.txt`
+
 ## Refactor pass
 
 - Deferred until a Phase 7 deliverable requires it (run template gate before/after any refactor).
@@ -53,4 +64,4 @@
 
 ### Next working goal
 
-Define **Batch 1** scope (units + doc ids or local JSON paths), pre-batch DB copy, per-unit ingest with archived `ingest_reports`, post-batch `verify_curriculum_db.py` and spot checks, then update this file and add a wrap-up when exit criteria are satisfied.
+Execute **Batch 1** ingests when **Math G4/G5** artifacts exist (see `PHASE_7_BATCH_1_PLAN.md`): pre-batch DB copy, `ingest_wave_unit.py`, archive `ingest_reports`, run `verify_curriculum_db.py --ingest-report …`, then regression commands in the batch plan. Update the plan execution log and this file; Phase 7 exit still requires operational signoff and merge.
