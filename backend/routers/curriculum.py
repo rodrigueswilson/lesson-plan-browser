@@ -1,8 +1,10 @@
 import os
+import re
 import sqlite3
 from typing import Any, Dict, List
 
 from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi.responses import FileResponse
 
 from backend.config import settings
 from backend.database.curriculum import CurriculumDatabase
@@ -10,12 +12,18 @@ from backend.database.curriculum_validation import get_curriculum_schema_issues
 from backend.schemas.curriculum import (
     CurriculumGapsResponse,
     CurriculumLessonDetail,
+    CurriculumResourceResolve,
     CurriculumSearchHit,
     CurriculumStandardRow,
     CurriculumVocabularyTerm,
     ExplorerGrade,
 )
 from backend.services.curriculum_gaps import compute_planned_and_gaps
+from backend.services.curriculum_resource_resolve import (
+    media_type_for_curriculum_path,
+    resolve_resource_open_url,
+    validated_local_file_path,
+)
 
 router = APIRouter(tags=["curriculum"])
 
@@ -119,7 +127,8 @@ async def get_lesson_standards(lesson_id: str):
 )
 async def get_curriculum_gaps():
     """
-    Compare Google Doc links in original_lesson_plans (lesson planner DB) to scraped_registry.json.
+    Compare Google Doc links in original_lesson_plans (lesson planner DB) to scraped_registry.json
+    and reference_docs/scrapped_curriculum_doc_ids.json (intentional non-targets).
     Gap Manager UI can poll this endpoint; full ingestion triggers remain CLI/batch for now.
     """
     registry_path = str(CurriculumDatabase().scraped_registry_path())
@@ -142,4 +151,42 @@ async def get_curriculum_gaps():
         total_planned_doc_refs=total_found,
         gap_doc_refs=gap_count,
         gaps=gaps,
+    )
+
+
+_GOOGLE_DOC_ID_RE = re.compile(r"^[a-zA-Z0-9_-]+$")
+
+
+@router.get(
+    "/curriculum/resources/google-id/{google_id}/resolve",
+    dependencies=CURRICULUM_DEPS,
+    response_model=CurriculumResourceResolve,
+)
+async def resolve_curriculum_google_resource(google_id: str):
+    """Local-first open URL for `data-resource-id` links in lesson HTML."""
+    if not _GOOGLE_DOC_ID_RE.match(google_id or ""):
+        raise HTTPException(status_code=400, detail="Invalid google_id")
+    curriculum = CurriculumDatabase()
+    row = curriculum.get_resource_by_id(google_id)
+    url, source = resolve_resource_open_url(google_id, row)
+    return CurriculumResourceResolve(url=url, source=source)
+
+
+@router.get(
+    "/curriculum/resources/google-id/{google_id}/file",
+    dependencies=CURRICULUM_DEPS,
+)
+async def serve_curriculum_google_resource_file(google_id: str):
+    """Stream local export when resources row and/or CURRICULUM_LOCAL_FILES_ROOT match."""
+    if not _GOOGLE_DOC_ID_RE.match(google_id or ""):
+        raise HTTPException(status_code=400, detail="Invalid google_id")
+    curriculum = CurriculumDatabase()
+    row = curriculum.get_resource_by_id(google_id)
+    path = validated_local_file_path(google_id, row)
+    if path is None:
+        raise HTTPException(status_code=404, detail="Local file not available")
+    return FileResponse(
+        path=str(path),
+        filename=path.name,
+        media_type=media_type_for_curriculum_path(path),
     )

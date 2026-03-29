@@ -138,6 +138,30 @@ def test_parse_lesson1_minimal_bands() -> None:
     assert out["schema_version"] == 1
 
 
+def test_parse_priority_standards_without_njsls_label_row() -> None:
+    """Empty title row then merged Priority Standards cell (Grade 3 Unit 8 lesson 1 pattern)."""
+    tbl = _table(
+        _row(_cell(_p("Lesson 1: Sample Title")), _cell(_p(""))),
+        _row(_cell(_p("Learning Intention")), _cell(_p("Success Criteria"))),
+        _row(_cell(_p("LI here.")), _cell(_p("SC here."))),
+        _row(_cell(_p("")), _cell(_p(""))),
+        _row(_cell(_p("Priority Standards: RI.ZZ.9.9")), _cell(_p(""))),
+        _row(_cell(_p("Key Instructional Practices")), _cell(_p(""))),
+        _row(
+            _cell(_p("Key Questions: Q?")),
+            _cell(_p("Instructional Routines: R1")),
+        ),
+        _row(
+            _cell(_p("Vocabulary: v1")),
+            _cell(_p("Instructional Resources: res1")),
+        ),
+    )
+    out = parse_ela_lesson_plan_table(tbl, _htmlize)
+    assert out is not None
+    assert "RI.ZZ.9.9" in (out.get("njsls_standards_html") or "")
+    assert "Q?" in out["key_questions_html"]
+
+
 @pytest.mark.skipif(not (_REPO_ROOT / "data" / "curriculum.db").is_file(), reason="data/curriculum.db not present")
 def test_ela_ingest_persists_ela_lesson_plan_structured(tmp_path: Path) -> None:
     db_copy = tmp_path / "curriculum_plan_test.db"

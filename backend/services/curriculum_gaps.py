@@ -1,6 +1,10 @@
 """
 Gap detection: Google Doc links in original_lesson_plans vs scraped_registry.json.
 
+Doc ids listed in reference_docs/scrapped_curriculum_doc_ids.json are treated as
+known / intentionally out of scope (same as present in scraped_registry): they
+do not count as gaps.
+
 Used by tools/scraper/gap_detect_db.py and GET /api/curriculum/gaps.
 """
 
@@ -10,7 +14,8 @@ import json
 import os
 import re
 import sqlite3
-from typing import Any, Dict, List, Tuple
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
 
 
 def normalize_grade(grade_str: Any) -> str:
@@ -79,15 +84,45 @@ def load_scraped_doc_ids(registry_path: str) -> set[str]:
     return scraped_ids
 
 
+def default_scrapped_doc_ids_path(registry_path: str) -> str:
+    """Path next to scraped_registry.json; file may be absent."""
+    return str(Path(registry_path).parent / "scrapped_curriculum_doc_ids.json")
+
+
+def load_scrapped_doc_ids(path: str) -> set[str]:
+    """Load doc ids to exclude from gap counts (object keys map to human notes)."""
+    ids: set[str] = set()
+    if not path or not os.path.isfile(path):
+        return ids
+    with open(path, encoding="utf-8") as f:
+        data = json.load(f)
+    if isinstance(data, dict):
+        for k in data.keys():
+            if isinstance(k, str) and k.strip() and not k.startswith("_"):
+                ids.add(k.strip())
+    elif isinstance(data, list):
+        for x in data:
+            if isinstance(x, str) and x.strip():
+                ids.add(x.strip())
+    return ids
+
+
 def compute_planned_and_gaps(
     db_path: str,
     registry_path: str,
+    scrapped_doc_ids_path: Optional[str] = None,
 ) -> Tuple[Dict[str, Any], Dict[str, Any], int, int]:
     """
     Returns (planned_tree, gaps_tree, total_doc_refs, gap_doc_refs_count).
     Shapes: grade -> subject -> unit -> lesson -> {doc_id: title}
     """
     scraped_ids = load_scraped_doc_ids(registry_path)
+    if scrapped_doc_ids_path is None:
+        scr_path = default_scrapped_doc_ids_path(registry_path)
+    else:
+        scr_path = scrapped_doc_ids_path
+    scrapped_ids = load_scrapped_doc_ids(scr_path)
+    known_ids = scraped_ids | scrapped_ids
     planned: Dict[str, Any] = {}
     gaps: Dict[str, Any] = {}
     total_found = 0
@@ -124,7 +159,7 @@ def compute_planned_and_gaps(
                 planned[grade][subject][unit][lesson] = {}
             planned[grade][subject][unit][lesson][doc_id] = title
             total_found += 1
-            if doc_id not in scraped_ids:
+            if doc_id not in known_ids:
                 if grade not in gaps:
                     gaps[grade] = {}
                 if subject not in gaps[grade]:

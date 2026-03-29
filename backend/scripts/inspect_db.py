@@ -40,10 +40,10 @@ def inspect_db():
             print(f"Average calc from populated: {avg}")
             
         # Top 5
-        print("\nTop 5 Plans by Duration:")
+        print("\nTop 5 Plans (with User IDs):")
         top5 = sorted(populated, key=lambda p: p.processing_time_ms or 0, reverse=True)[:5]
         for p in top5:
-            print(f"  {p.id}: {p.processing_time_ms} ms")
+            print(f"  Plan: {p.id} | User: {p.user_id} | Time: {p.processing_time_ms} ms")
 
 if __name__ == "__main__":
     inspect_db()

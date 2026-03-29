@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+import re
 import sqlite3
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Set
@@ -332,24 +333,169 @@ class CurriculumDatabase:
             conn.execute("INSERT OR IGNORE INTO lesson_vocabulary (lesson_id, vocab_item_id) VALUES (?, ?)", (lesson_id, vocab_item_id))
             conn.commit()
 
+    @staticmethod
+    def curriculum_export_search_roots() -> List[Path]:
+        """
+        Directories used to discover and (with resolve service) serve local curriculum exports.
+
+        Includes optional CURRICULUM_LOCAL_FILES_ROOT and repo reference_docs/scraped (tools/scraper
+        hierarchical layout + export_doc_ids_to_docx outputs often live here).
+        """
+        roots: List[Path] = []
+        try:
+            from backend.config import settings
+
+            configured = settings.curriculum_local_files_root
+            if configured is not None and configured.is_dir():
+                roots.append(configured.resolve())
+        except ImportError:
+            pass
+        scraped = CurriculumDatabase.repo_root() / "reference_docs" / "scraped"
+        if scraped.is_dir():
+            sr = scraped.resolve()
+            if sr not in roots:
+                roots.append(sr)
+        return roots
+
+    @staticmethod
+    def path_is_under_export_roots(candidate: Path) -> bool:
+        """True if path is under at least one export root, or if no roots are configured (legacy)."""
+        roots = CurriculumDatabase.curriculum_export_search_roots()
+        if not roots:
+            return True
+        resolved = candidate.resolve()
+        for root in roots:
+            try:
+                resolved.relative_to(root.resolve())
+                return True
+            except ValueError:
+                continue
+        return False
+
+    @staticmethod
+    def discover_local_path_for_google_doc(google_id: str) -> Optional[str]:
+        """
+        Find an on-disk export for a Google Doc id.
+
+        Resolution order:
+        1. `{google_id}.{ext}` under each search root (flat; matches CURRICULUM_LOCAL_FILES_ROOT convention).
+        2. `*_{google_id[:8]}.{ext}` up to depth 3 under each root (matches tools/scraper/export_doc_ids_to_docx.py).
+        3. Under reference_docs/scraped: `**/originals/*.json` or `**/*.docs-api.json` containing
+           documentId, with sibling exports (`{base}.docx`/`.pdf`/`.html`/`.md`) or `{base}_by_tab/*.docx`.
+        """
+        if not google_id:
+            return None
+        roots = CurriculumDatabase.curriculum_export_search_roots()
+        if not roots:
+            return None
+
+        exts = (".docx", ".pdf", ".html", ".md")
+        id8 = google_id[:8] if len(google_id) >= 8 else google_id
+        doc_id_re = re.compile(r'"documentId"\s*:\s*"' + re.escape(google_id) + r'"')
+
+        def pick_preferred(paths: List[Path]) -> Optional[Path]:
+            if not paths:
+                return None
+            paths = sorted({p.resolve() for p in paths if p.is_file()})
+            for ext in (".docx", ".pdf", ".html", ".md"):
+                for p in paths:
+                    if p.suffix.lower() == ext:
+                        return p
+            return paths[0]
+
+        for root in roots:
+            for ext in exts:
+                p = root / f"{google_id}{ext}"
+                if p.is_file():
+                    return str(p.resolve())
+
+        glob_matches: List[Path] = []
+        for root in roots:
+            for ext in exts:
+                for p in root.rglob(f"*_{id8}{ext}"):
+                    if p.is_file():
+                        glob_matches.append(p)
+        chosen = pick_preferred(glob_matches)
+        if chosen:
+            return str(chosen.resolve())
+
+        scraped = CurriculumDatabase.repo_root() / "reference_docs" / "scraped"
+        if not scraped.is_dir():
+            return None
+        _max_read = 4_000_000
+
+        def export_stem_for_sidecars(json_path: Path) -> str:
+            """Match sibling exports: main.py uses {title}.json; export script uses {stem}_{id8}.docs-api.json."""
+            name = json_path.name
+            if name.endswith(".docs-api.json"):
+                return name[: -len(".docs-api.json")]
+            return json_path.stem
+
+        for json_path in list(scraped.rglob("originals/*.json")) + list(
+            scraped.rglob("*.docs-api.json")
+        ):
+            try:
+                raw = json_path.read_text(encoding="utf-8", errors="ignore")
+            except OSError:
+                continue
+            if len(raw) > _max_read:
+                raw = raw[:_max_read]
+            if not doc_id_re.search(raw):
+                continue
+            parent = json_path.parent
+            stem = export_stem_for_sidecars(json_path)
+            for ext in (".docx", ".pdf", ".html", ".md"):
+                cand = parent / f"{stem}{ext}"
+                if cand.is_file():
+                    return str(cand.resolve())
+            tab_dir = parent / f"{stem}_by_tab"
+            if tab_dir.is_dir():
+                tab_docx = sorted(tab_dir.glob("*.docx"))
+                if tab_docx:
+                    return str(tab_docx[0].resolve())
+        return None
+
+    def get_resource_by_id(self, resource_id: str) -> Optional[Dict[str, Any]]:
+        with self._get_conn() as conn:
+            row = conn.execute(
+                "SELECT id, original_url, local_path, resource_type, metadata FROM resources WHERE id = ?",
+                (resource_id,),
+            ).fetchone()
+            return dict(row) if row else None
+
     def upsert_lesson_resource(self, lesson_id: str, res: Dict[str, Any]):
         """Upserts a resource and links it to a lesson (Double Strategy)."""
         import hashlib
         from datetime import datetime
         import json
-        
+
         res_id = res.get("google_id") or hashlib.md5(res["url"].encode()).hexdigest()
         res_type = "google_doc" if res.get("google_id") else "web"
-        
+        local_path: Optional[str] = None
+        if res.get("google_id"):
+            local_path = self.discover_local_path_for_google_doc(res["google_id"])
+
         with self._get_conn() as conn:
-            # 1. Upsert resource
-            conn.execute("""
-                INSERT INTO resources (id, original_url, resource_type, last_sync, metadata)
-                VALUES (?, ?, ?, ?, ?)
-                ON CONFLICT(id) DO UPDATE SET last_sync = excluded.last_sync
-            """, (res_id, res["url"], res_type, datetime.now().isoformat(), json.dumps({"text": res["text"]})))
-            
-            # 2. Link to lesson
-            conn.execute("INSERT OR IGNORE INTO lesson_resources (lesson_id, resource_id) VALUES (?, ?)", 
-                         (lesson_id, res_id))
+            conn.execute(
+                """
+                INSERT INTO resources (id, original_url, local_path, resource_type, last_sync, metadata)
+                VALUES (?, ?, ?, ?, ?, ?)
+                ON CONFLICT(id) DO UPDATE SET
+                    last_sync = excluded.last_sync,
+                    local_path = COALESCE(excluded.local_path, resources.local_path)
+                """,
+                (
+                    res_id,
+                    res["url"],
+                    local_path,
+                    res_type,
+                    datetime.now().isoformat(),
+                    json.dumps({"text": res["text"]}),
+                ),
+            )
+
+            conn.execute(
+                "INSERT OR IGNORE INTO lesson_resources (lesson_id, resource_id) VALUES (?, ?)",
+                (lesson_id, res_id),
+            )
             conn.commit()

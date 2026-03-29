@@ -103,6 +103,13 @@ class CurriculumGapsResponse(BaseModel):
     )
 
 
+class CurriculumResourceResolve(BaseModel):
+    """Preferred URL to open a linked Google Doc (local file route vs original URL)."""
+
+    url: str
+    source: str = Field(description="local | remote | remote_inferred")
+
+
 class UnitIntroResponse(BaseModel):
     model_config = ConfigDict(extra="allow")
 

@@ -39,6 +39,17 @@ try:
 except ImportError:
     from ela_lesson_plan_table import is_ela_lesson_plan_table, parse_ela_lesson_plan_table
 
+try:
+    from tools.scraper.cell_content_format import (
+        collect_hyperlinks_from_buffer,
+        split_leading_bold_runs_for_paragraph,
+    )
+except ImportError:
+    from cell_content_format import (  # type: ignore[no-redef]
+        collect_hyperlinks_from_buffer,
+        split_leading_bold_runs_for_paragraph,
+    )
+
 # Add parent directory to path for backend imports
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 from backend.database.sqlite_impl import SQLiteDatabase
@@ -507,6 +518,8 @@ class RecursiveTableParser:
         self._current_section = None
         self._buffer = []
         self._docs_client = None # Lazy-load docs client
+        # First top-level paragraph per json_to_html() root gets leading bold wrapped in .rich-cell-label
+        self.enrich_leading_cell_labels = True
 
     def parse_document(self, docx_path: str) -> List[Dict[str, Any]]:
         """Entry point for parsing a document."""
@@ -694,98 +707,135 @@ class RecursiveTableParser:
             lines.append("| " + " | ".join(cells) + " |")
             
         return "\n".join(lines)
-    def json_to_html(self, elements: Union[Dict[str, Any], List[Dict[str, Any]]]) -> str:
+    def json_to_html(
+        self,
+        elements: Union[Dict[str, Any], List[Dict[str, Any]]],
+        label_state: Optional[Dict[str, bool]] = None,
+    ) -> str:
         """Converts structured JSON back to basic HTML, now with nested list support."""
+        if self.enrich_leading_cell_labels and label_state is None:
+            label_state = {"used": False}
+        elif not self.enrich_leading_cell_labels:
+            label_state = None
+
         if isinstance(elements, list):
             html = ""
-            list_stack = [] # Stack of current ilvl
-            
+            list_stack = []  # Stack of current ilvl
+
             for e in elements:
                 if e.get("is_bullet"):
                     target_lvl = e.get("ilvl", 0)
-                    
-                    # Handle level changes
+
                     if not list_stack:
                         html += "<ul>"
                         list_stack.append(target_lvl)
                     elif target_lvl > list_stack[-1]:
                         while target_lvl > list_stack[-1]:
                             html += "<ul>"
-                            # Small hack to handle skips like 0 -> 2
                             list_stack.append(list_stack[-1] + 1)
-                        # Ensure the last one matches target
                         list_stack[-1] = target_lvl
                     elif target_lvl < list_stack[-1]:
                         while list_stack and target_lvl < list_stack[-1]:
                             html += "</ul>"
                             list_stack.pop()
-                        if not list_stack: # Should not happen if well-formed
+                        if not list_stack:
                             html += "<ul>"
                             list_stack.append(target_lvl)
-                    
-                    # Add List Item
-                    html += f"<li>{self._get_paragraph_inner_html(e)}</li>"
+
+                    html += f"<li>{self._get_paragraph_inner_html(e, enrich_leading=False)}</li>"
                 else:
-                    # Close all lists before non-bullet content
                     while list_stack:
                         html += "</ul>"
                         list_stack.pop()
-                    html += self.json_to_html(e)
-            
-            # Close any remaining lists
+                    html += self.json_to_html(e, label_state)
+
             while list_stack:
                 html += "</ul>"
                 list_stack.pop()
             return html
-        
-        type = elements.get("type")
-        if type == "paragraph":
-            inner = self._get_paragraph_inner_html(elements)
-            # If it's a bullet, we don't wrap it in <p> because it's in <li>
+
+        el_type = elements.get("type")
+        if el_type == "paragraph":
+            use_enrich = (
+                label_state is not None
+                and not label_state["used"]
+                and not elements.get("is_bullet")
+            )
+            inner: str
+            if use_enrich:
+                leading, _tail = split_leading_bold_runs_for_paragraph(elements)
+                if leading:
+                    inner = self._get_paragraph_inner_html(elements, enrich_leading=True)
+                    label_state["used"] = True
+                else:
+                    inner = self._get_paragraph_inner_html(elements, enrich_leading=False)
+            else:
+                inner = self._get_paragraph_inner_html(elements, enrich_leading=False)
             if elements.get("is_bullet"):
                 return inner
             return f"<p>{inner}</p>" if inner else ""
-        
-        elif type == "table":
+
+        if el_type == "table":
             html = '<table border="1">'
             for row in elements.get("rows", []):
                 html += "<tr>"
                 for cell in row.get("cells", []):
                     span = f' colspan="{cell["grid_span"]}"' if cell.get("grid_span") and cell["grid_span"] > 1 else ""
                     html += f"<td{span}>"
-                    html += self.json_to_html(cell.get("content", []))
+                    cell_state = {"used": False} if self.enrich_leading_cell_labels else None
+                    html += self.json_to_html(cell.get("content", []), cell_state)
                     html += "</td>"
                 html += "</tr>"
             html += "</table>"
             return html
-        
+
         return ""
 
-    def _get_paragraph_inner_html(self, p_json: Dict[str, Any]) -> str:
+    def _get_paragraph_inner_html(
+        self,
+        p_json: Dict[str, Any],
+        *,
+        enrich_leading: bool = False,
+    ) -> str:
         """Helper to get HTML inside a paragraph (handles runs and links)."""
+        if enrich_leading:
+            leading, tail = split_leading_bold_runs_for_paragraph(p_json)
+            if leading:
+                head_para = {**p_json, "runs": leading}
+                tail_para = {**p_json, "runs": tail}
+                inner_head = self._get_paragraph_inner_html(head_para, enrich_leading=False)
+                inner_tail = (
+                    self._get_paragraph_inner_html(tail_para, enrich_leading=False) if tail else ""
+                )
+                combined = f'<span class="rich-cell-label">{inner_head}</span>{inner_tail}'
+                if "\n" in combined:
+                    combined = combined.replace("\n", "<br>")
+                return combined
+
         inner = ""
         for run in p_json.get("runs", []):
             text = run["text"]
-            if not text: continue
+            if not text:
+                continue
             style = run.get("style") or {}
-            
-            # Apply wrapping
-            if style.get("bold"): text = f"<b>{text}</b>"
-            if style.get("italic"): text = f"<i>{text}</i>"
-            
-            # Link wrapping
+
+            if style.get("bold"):
+                text = f"<b>{text}</b>"
+            if style.get("italic"):
+                text = f"<i>{text}</i>"
+
             if style.get("link") and style.get("url"):
                 url = style["url"]
                 g_id = style.get("google_id")
-                # Add data-resource-id for the local-first logic
                 attr = f' data-resource-id="{g_id}"' if g_id else ""
-                # Open external curriculum links in a new tab (Drive, ePro, Amplify, etc.)
                 text = (
                     f'<a href="{url}" target="_blank" rel="noopener noreferrer"{attr}>'
                     f"{text}</a>"
                 )
-                
+
             inner += text
+        if inner and "\n" in inner:
+            inner = inner.replace("\n", "<br>")
         return inner
 
     def flatten_elements(self, elements: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
@@ -1007,17 +1057,10 @@ class RecursiveTableParser:
                         if current_structured_entry is not None:
                             current_structured_entry["description_lines"].append(p_text)
 
-                # Standards
-                # Links / Resources
-                for run in b.get("runs", []):
-                    style = run.get("style") or {}
-                    if style.get("link"):
-                        res = {
-                            "url": style["url"],
-                            "google_id": style.get("google_id"),
-                            "text": run["text"]
-                        }
-                        lesson_data["_resources"].append(res)
+        for res in collect_hyperlinks_from_buffer(self._buffer):
+            url = res.get("url")
+            if url:
+                lesson_data["_resources"].append(res)
         lesson_data["_standards_section"] = current_structured_section
         lesson_data["_standards_panel"] = current_structured_panel
         self._buffer.clear()

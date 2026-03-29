@@ -43,6 +43,12 @@ class Settings(BaseSettings):
         description="SQLite database path (absolute path computed from root)",
     )
 
+    # Optional: directory containing `{google_doc_id}.docx` (or `.pdf`) for local-first curriculum links
+    CURRICULUM_LOCAL_FILES_ROOT: Optional[str] = Field(
+        default=None,
+        description="If set, ingest/API resolve local Google Doc exports named {id}.docx under this directory",
+    )
+
     def __init__(self, **values):
         super().__init__(**values)
         # Force absolute paths after loading from env
@@ -300,6 +306,14 @@ class Settings(BaseSettings):
         default=100,
         description="Number of characters to capture around media for context matching",
     )
+
+    @property
+    def curriculum_local_files_root(self) -> Optional[Path]:
+        """Optional directory for `{google_doc_id}.docx` local-first curriculum links."""
+        raw = self.CURRICULUM_LOCAL_FILES_ROOT
+        if not raw:
+            return None
+        return Path(raw).expanduser().resolve()
 
     @property
     def cors_origins(self) -> List[str]:

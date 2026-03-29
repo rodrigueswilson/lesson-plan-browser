@@ -1,7 +1,11 @@
 """Unit tests for curriculum gap detection helpers."""
 
+import json
+from pathlib import Path
+
 from backend.services.curriculum_gaps import (
     extract_metadata,
+    load_scrapped_doc_ids,
     normalize_grade,
     normalize_subject,
 )
@@ -28,3 +32,18 @@ def test_extract_metadata_finds_doc_id():
     assert out[0]["id"] == "abc123xyz"
     assert out[0]["unit"] == "1"
     assert out[0]["lesson"] == "2"
+
+
+def test_load_scrapped_doc_ids_dict(tmp_path: Path):
+    p = tmp_path / "scrapped.json"
+    p.write_text(
+        json.dumps({"doc_one": "note", "doc_two": "other"}),
+        encoding="utf-8",
+    )
+    ids = load_scrapped_doc_ids(str(p))
+    assert ids == {"doc_one", "doc_two"}
+
+
+def test_load_scrapped_doc_ids_missing_file():
+    assert load_scrapped_doc_ids("") == set()
+    assert load_scrapped_doc_ids("/nonexistent/path/scrapped.json") == set()

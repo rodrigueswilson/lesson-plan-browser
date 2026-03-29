@@ -3,6 +3,9 @@ Seed one unit row, export Google Doc to DOCX, and ingest into curriculum.db.
 
 Usage (repo root):
   python tools/db/ingest_wave_unit.py --unit-id Math_3_U1_13jAzcMR --grade 3 --subject Math --unit-number 1 --title "Grade 3 Unit 1: Introducing Multiplication" --doc-id 13jAzcMR9KqRj3P9rvgySxPWysPAGBh9GsftzT3sw8fg
+
+Phase 3 Grade 3 Math batch (all units + verify after each): see ingest_g3_math_phase3_corpus.py
+and g3_math_phase3_corpus.py.
 """
 from __future__ import annotations
 
@@ -80,13 +83,10 @@ def main() -> int:
         docx_path = tmp.name
 
     try:
-        print(f"Exporting Google Doc {args.doc_id} to DOCX...", flush=True)
-        if not DocsClient().export_document(
-            args.doc_id,
-            docx_path,
-            mime_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-        ):
-            print("ERROR: export failed", flush=True)
+        print(f"Fetching Drive file {args.doc_id} as DOCX...", flush=True)
+        ok, err = DocsClient().fetch_docx_for_curriculum_result(args.doc_id, docx_path)
+        if not ok:
+            print(f"ERROR: {err}", flush=True)
             return 1
 
         parser = RecursiveTableParser(db_path=db_path)

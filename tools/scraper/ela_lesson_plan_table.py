@@ -208,6 +208,22 @@ def parse_ela_lesson_plan_table(
                 i += 1
             continue
 
+        # Body-only standards row: some lessons omit the "NJSLS Standards" label row (empty merged
+        # row above) and start directly with "Priority Standards:" in a full-width cell.
+        if (
+            "njsls_standards_html" not in out
+            and len(cells) >= 1
+            and _second_empty()
+            and len(t0.strip()) > 8
+        ):
+            head = n0[:100]
+            if head.startswith("priority standard") or (
+                "priority standard" in head[:50] and not n0.startswith("key instructional")
+            ):
+                out["njsls_standards_html"] = json_to_html(cells[0].get("content", []))
+                i += 1
+                continue
+
         # Section: Key Instructional Practices (label) then sub-row
         if n0.startswith("key instructional practices") and len(t0) < 120 and _second_empty():
             i += 1
