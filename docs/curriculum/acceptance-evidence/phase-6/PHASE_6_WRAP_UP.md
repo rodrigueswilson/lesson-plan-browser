@@ -4,7 +4,7 @@
 
 Phase 6 (curriculum navigator) is **complete** per `docs/curriculum/PHASED_ROLLOUT_PLAN.md`: FTS-backed lesson search with highlighted snippets, semantic related-units (manual table plus adjacent-grade suggestions), Explorer UI for search and “Related units” with rationale. Automated gates were re-run at closure; see test gate files below.
 
-**Branch naming:** Implementation and evidence landed on `curriculum/phase-5-cross-grade-sample` during integration. A parallel branch pointer `curriculum/phase-6-navigator-semantic-links` is created at the same commit as the Phase 6 closure commit so plan-named branches exist for review/merge. Pushing and merging to `master` remain normal repository policy.
+**Branch naming:** Work is on `curriculum/phase-5-cross-grade-sample`. The plan-named branch **`curriculum/phase-6-navigator-semantic-links`** points at the **tip** commit that includes both the **implementation** (`feat(curriculum): Phase 6 FTS search and semantic unit links`) and the **closure documentation** commit (`docs: close Phase 6 navigator …`) in history. Pushing and merging to `master` remain normal repository policy.
 
 ## Exit criteria (plan vs actual)
 
