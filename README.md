@@ -117,6 +117,7 @@ Bilingual Weekly Plan Builder/
 - **[Testing Guide](docs/guides/TESTING_GUIDE.md)** - Test suite and procedures
 - **[Contributing Guide](docs/CONTRIBUTING.md)** - Development setup and guidelines
 - **[Tech Stack ADR](docs/decisions/ADR-001-tech-stack.md)** - Technology decisions
+- **[Curriculum extraction architecture](docs/scrapers/CURRICULUM_EXTRACTION_ARCHITECTURE.md)** - Google Docs/DOCX to `curriculum.db` / API flow; **[ADR-002](docs/decisions/ADR-002-curriculum-schema-ssot.md)** - curriculum schema SSOT
 - **[Supabase Setup Guide](docs/supabase_setup.md)** - Cloud database configuration and migration
 
 ### Deployment

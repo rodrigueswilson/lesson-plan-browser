@@ -38,6 +38,7 @@ This folder contains the planning and architecture documents for the November ex
 | Pedagogical tooltips / popovers | `pedagogical_tooltips/README.md` | Research only; strategy + WIDA inline help from JSON SSOT; data inventory, UX/a11y, spikes, decision log. |
 | Cross-Platform | `CROSS_PLATFORM_TECHNOLOGY_ANALYSIS.md` | Only Windows Tauri client exists; no RN/Capacitor projects. |
 | Assessment Module | `ASSESSMENT_MODULE.md` | Not implemented; planning only. LLM-designed assessment per lesson, tool set, tablet collection; WIDA Can Do Descriptors; ODPAR. |
+| API client contract (OpenAPI) | `API_CLIENT_CONTRACT_TOOLING.md` | Not implemented; Orval + React Query recommended to align TS with FastAPI OpenAPI; see doc for alternatives. |
 
 ### Core Documents
 

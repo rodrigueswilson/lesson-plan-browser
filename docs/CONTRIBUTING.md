@@ -57,6 +57,10 @@ Thank you for your interest in contributing! This guide will help you set up you
 
 ## Development Workflow
 
+### End of session (curriculum phases and large features)
+
+For curriculum phase work, use **`docs/curriculum/END_OF_SESSION_CHECKLIST.md`**: capture PASS/BLOCKED, evidence paths (`ingest_reports/`, acceptance-evidence), tests, Git/PR/CI wrap, and a **one-line next-session trigger** (snippets live in `docs/curriculum/NEXT_SESSION_PROMPT_SNIPPETS.md`). That keeps handoffs consistent with `docs/curriculum/PHASED_ROLLOUT_PLAN.md`.
+
 ### Changes to the shared API (lesson-api)
 
 When adding or changing methods in `shared/lesson-api` that may be used by the tablet app, ensure either a **local-DB path** or a **safe default** in standalone mode (so the tablet never depends on HTTP for that method). See [docs/guides/TABLET_STANDALONE_DB.md](guides/TABLET_STANDALONE_DB.md) for the contract and audit list.

@@ -22,7 +22,7 @@ Use this matrix as execution SSOT for staged hardening.
 | W1 | 4 | 3 | Math | `Unit 7_Two-Dimensional_Shapes_and_Perimeter` | `1W0aGPyiUTW7ASQd-x2eGjwW_--e9G_GYil_3SrXrC_8` | Geometry/perimeter heading variance | Topic variance in same subject |
 | W2 | 5 | 2 | Math | `Unit 6_Geometry_Time_and_Money` | `1Sc97mZeXhUqDjDXsLcMW77JyCYiqHlTrAqjwvDSOcBA` | Vertical geometry link precursor (G2->G3) | Cross-grade math sanity |
 | W2 | 6 | 1 | Math | `Unit 7_Geometry_and_Time` | `1tgtrwHXKAP-sgNOAdi5-3yu2hvbWRTg5mpck-L1I4OU` | Earlier-grade template variation | Lower-grade template validation |
-| W3 | 7 | 3 | ELA | `Grade_3_Unit_10_-_Charlottes_Web` | `1Mn99HCsUm19VGyivXTmgJMu8u0WYclb4j9DRWRVdv2s` | First ELA unit contrast | Cross-subject hardening start |
+| W3 | 7 | 3 | ELA | `Grade_3_Unit_10_-_Charlottes_Web` | `1Mn99HCsUm19VGyivXTmgJMu8u0WYclb4j9DRWRVdv2s` | First ELA unit contrast | Phase 4 ELA hardening start |
 | W3 | 8 | 3 | ELA | Inventory-selected second full ELA unit | `TBD (from PHASE1 inventory)` | Confirm ELA variance not overfit to one unit | ELA pattern confidence |
 | W4 | 9 | 4-5 | Math + ELA | One full unit each grade/subject | `TBD` | Mid-grade complexity expansion | Cluster validation (4-5) |
 | W5 | 10 | 6-8 | Math + ELA | One full unit each grade/subject | `TBD` | Upper-grade complexity and terminology | Grade-8 readiness evidence |

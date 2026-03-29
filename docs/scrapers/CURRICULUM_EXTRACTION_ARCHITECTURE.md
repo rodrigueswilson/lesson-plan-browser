@@ -43,6 +43,7 @@ flowchart LR
 | [tools/scraper/docs_processor.py](../../tools/scraper/docs_processor.py) | Google Docs JSON to markdown; tabs and nested tabs; inline image placeholders. |
 | [tools/scraper/crawler.py](../../tools/scraper/crawler.py) | Link extraction and classification from doc JSON for recursion. |
 | [tools/scraper/table_extractor.py](../../tools/scraper/table_extractor.py) | DOCX parse: recursive tables, hyperlinks, semantic stream; `ingest_to_curriculum` (lessons/standards/vocab/resources); `ingest_to_db` (extraction cache). |
+| [tools/scraper/cell_content_format.py](../../tools/scraper/cell_content_format.py) | **Cross-subject SSOT helpers** on table cell JSON: walk runs/paragraphs, collect hyperlinks, split leading bold title vs body (shared by ELA summary and ingest tooling). |
 | [tools/scraper/subject_config.py](../../tools/scraper/subject_config.py) | Subject-specific lesson title regexes and section anchor strings. |
 | [backend/database/curriculum.py](../../backend/database/curriculum.py) | Reads/writes `curriculum.db` for explorer, lessons, unit intro, vocabulary, resources. |
 | [backend/database/curriculum_validation.py](../../backend/database/curriculum_validation.py) | Validates required tables/columns before curriculum routes run. |
@@ -103,6 +104,13 @@ The **Vocabulary** section populates the lesson’s **`vocabulary`** HTML field 
 - [tools/db/recreate_and_ingest_sample.py](../../tools/db/recreate_and_ingest_sample.py) — recreate DB, seed unit, ingest sample Math Unit 2 DOCX.  
 - [backend/routers/curriculum.py](../../backend/routers/curriculum.py) — REST surface for explorer hierarchy and lesson detail.  
 - [backend/database/curriculum_validation.py](../../backend/database/curriculum_validation.py) — schema gate for curriculum routes.
+
+### Cross-subject cell JSON and display (Math + ELA)
+
+- **Structural SSOT:** Parsed DOCX table cells are lists of elements (`paragraph` with `runs` / `is_bullet` / `ilvl`, nested `table`). Math and ELA both use the same model from `RecursiveTableParser._parse_paragraph` / `_parse_table`. Do not re-derive structure by regex-parsing stored HTML for ingestion or shared algorithms.
+- **HTML SSOT:** `RecursiveTableParser.json_to_html` is the primary emitter for lesson HTML fields. Optional **leading bold label** enrichment wraps the first bold run sequence of the first paragraph in each cell-level `json_to_html` call in `<span class="rich-cell-label">` for UI styling (see `.rich-html` in the lesson-plan-browser stylesheet).
+- **Document layouts (reference only):** [math_unit_structure_analysis.md](math_unit_structure_analysis.md) (math grid anchors and in-cell bold labels); [ELA_SUMMARY_OF_KEY_LEARNING_STRUCTURE.md](ELA_SUMMARY_OF_KEY_LEARNING_STRUCTURE.md) (unit matrix + column C bold task title).
+- **Local-first curriculum links:** Google Doc hyperlinks are emitted as `<a href="…" data-resource-id="…">`. The `resources` table may store `local_path` when a file exists under `CURRICULUM_LOCAL_FILES_ROOT` (see `backend.config.Settings`). The API exposes `GET /api/curriculum/resources/google-id/{id}/resolve` (preferred URL for open) and `GET /api/curriculum/resources/google-id/{id}/file` (serve local file when present). The curriculum explorer rewrites or intercepts `data-resource-id` links to use the resolver.
 
 ## Related docs
 

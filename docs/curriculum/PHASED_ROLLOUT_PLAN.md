@@ -19,6 +19,8 @@ This amendment refines **Phase 3** and **Phase 4** without renumbering later pha
 
 - **Track B — ELA:** Phase 4 is expanded into **two substages**: **4.1** extraction and DB/API contract, then **4.2** navigator UI template. SSOT and code touchpoints include [docs/scrapers/CURRICULUM_EXTRACTION_ARCHITECTURE.md](../scrapers/CURRICULUM_EXTRACTION_ARCHITECTURE.md), [tools/scraper/ela_summary_table.py](../../tools/scraper/ela_summary_table.py), [tools/scraper/ela_lesson_plan_table.py](../../tools/scraper/ela_lesson_plan_table.py), and [lesson-plan-browser/frontend/src/components/CurriculumExplorer.tsx](../../lesson-plan-browser/frontend/src/components/CurriculumExplorer.tsx).
 
+- **Tooling vs curriculum git hygiene:** Optional cross-app build/TS tweaks for the lesson-plan browser ship from a dedicated tooling branch; phase branches merge on ingest/API/UI scope. See [Addendum: lesson-plan-browser build and branch hygiene (2026-03-29)](#addendum-lesson-plan-browser-build-and-branch-hygiene-2026-03-29).
+
 - **Default sequence:** Complete **Phase 3** (including the G3 Math corpus) **before Phase 4.1**, so shared ingest and API fixes stabilize first. **ELA UI spikes** in parallel are allowed only as **non-mergeable prototypes** unless they stay behind a feature flag or branch that does not land before 4.1 exits.
 
 ```mermaid
@@ -49,6 +51,35 @@ Every phase must follow this sequence:
    - push to GitHub only after both test passes are green
 
 If step 3 fails, do not proceed to refactor or merge.
+
+## Addendum: lesson-plan-browser build and branch hygiene (2026-03-29)
+
+This addendum records **repository practices** that support phased curriculum work but are **not** themselves phase-scoped curriculum features. They complement [PHASE_EXECUTION_TEMPLATE.md](./PHASE_EXECUTION_TEMPLATE.md).
+
+### Keep phase branches current
+
+- Periodically **merge or rebase** from `master` (or the agreed integration branch) into active `curriculum/phase-*` branches so work does not drift behind unrelated commits and comparisons stay fair.
+
+### Clean commits and noise control
+
+- Phase PRs should include **in-scope** source, tests, and `docs/curriculum/acceptance-evidence/` entries (and registry/docs SSOT updates) only when the phase calls for them.
+- Do **not** commit throwaway scripts, local database or WAL files, informal one-off `ingest_reports/` JSON, or scratch artifacts unless a phase checklist explicitly names them as evidence. When a clutter pattern repeats, extend [`.gitignore`](../../.gitignore).
+
+### Cross-cutting tooling branch (optional)
+
+- **Cross-app TypeScript / npm build defaults** under `lesson-plan-browser/frontend/` (for example: default `npm run build` = `vite build`, optional `npm run build:typecheck` = `tsc && vite build`, `package.json` overrides such as pinned `csstype`, `tsconfig` `types` alignment) may ship from a **dedicated** branch (e.g. `tooling/lesson-plan-browser-typescript-graph`) and merge via a **small PR to `master`**, separate from a `curriculum/phase-*` PR so curriculum reviews stay focused on ingest, API, and explorer behavior.
+
+### Lesson-plan-browser build commands (SSOT for this repo)
+
+| Command | Purpose |
+|--------|---------|
+| `npm run build` | **Supported production bundle** for `lesson-plan-browser/frontend` (`vite build`). Use for manual regression and desktop packaging flows that invoke this script. |
+| `npm run build:typecheck` | Optional: runs `tsc && vite build`. A green full-project `tsc` across `shared/*`, cross-imported `frontend/*`, and multiple `node_modules` layouts is **follow-up technical debt**; it is **not** a mandatory curriculum phase gate in this plan unless a future amendment adds it to CI. |
+
+### Working tree discipline when switching branches
+
+- Git uses a **single** working tree. Before `git checkout` between `curriculum/phase-*` and `tooling/*` (or whenever the tree mixes large unrelated WIP), **commit** in logical slices or use **`git stash push`** with a clear message so a tooling branch checkout does not show phase-only edits as modified tracked files.
+- Periodically review **`git stash list`** and drop or apply stale entries so old stashes do not mask real state.
 
 ## Mandatory end-of-phase wrap-up
 
@@ -198,7 +229,7 @@ After that, the project transitions from "hardening" to "production expansion" (
 
 **Goal:** Stabilize ELA extraction into SQLite/API, then deliver a **subject-aware** curriculum navigator template for ELA (without forcing ELA into Math procedure banding).
 
-**Branching policy:** Use **one** branch `curriculum/phase-4-ela-hardening` with **two internal milestones**: complete **4.1** (test gate + evidence) before merging **4.2** UI work on the same branch, or merge 4.1 first and continue 4.2 in a follow-up commit series on that branch—either way, **two test gates** (pre/post refactor) apply to the phase as a whole before final merge.
+**Branching policy:** Use **one** branch `curriculum/phase-4-ela-hardening` with **two internal milestones**: complete **4.1** (test gate + evidence) before merging **4.2** UI work on the same branch, or merge 4.1 first and continue 4.2 in a follow-up commit series on that branch—either way, **two test gates** (pre/post refactor) apply to the phase as a whole before final merge. Older session notes may mention `curriculum/phase-4-cross-subject`; that name is obsolete—use `curriculum/phase-4-ela-hardening`.
 
 ### Phase 4.1 - ELA extraction and DB contract
 
@@ -206,6 +237,11 @@ After that, the project transitions from "hardening" to "production expansion" (
 - Stabilize JSON shapes and `schema_version` for `ela_key_learning_summary` and `ela_lesson_plan_structured`; golden tests in [tests/test_ela_summary_table.py](../../tests/test_ela_summary_table.py) and [tests/test_ela_lesson_plan_table.py](../../tests/test_ela_lesson_plan_table.py).
 - Ingest **representative** Grade 3 ELA sample unit(s); validate standards/procedure boundaries for ELA-specific patterns; compare fidelity and section coverage against the Math baseline where comparable.
 - Update or add scraper SSOT under `docs/scrapers/` as needed.
+
+**Design guardrail (modular ingest)**
+- Keep a **single** `ingest_to_curriculum` orchestration path; extend behavior via [SubjectConfig](../../tools/scraper/subject_config.py) and **subject-specific modules** (e.g. [ela_summary_table.py](../../tools/scraper/ela_summary_table.py), [ela_lesson_plan_table.py](../../tools/scraper/ela_lesson_plan_table.py)).
+- Prefer **new or extracted subject modules** over large subject-specific branches inside [table_extractor.py](../../tools/scraper/table_extractor.py) when adding parsers.
+- **Presentation:** subject-specific Curriculum Explorer rendering stays in dedicated branches/components in the UI; shared types come from API payloads only.
 
 **Out of scope**
 - Full cross-grade ELA matrix (Phase 5).
@@ -228,6 +264,7 @@ After that, the project transitions from "hardening" to "production expansion" (
 **Exit criteria**
 - UX acceptance for ELA lesson view; regression check on **one** Math lesson still renders correctly.
 - Branch `curriculum/phase-4-ela-hardening` merged and pushed after passing phase tests twice (before and after refactor) per mandatory workflow.
+- For manual verification of the explorer bundle, run `npm run build` under `lesson-plan-browser/frontend` (see [Addendum: lesson-plan-browser build and branch hygiene (2026-03-29)](#addendum-lesson-plan-browser-build-and-branch-hygiene-2026-03-29)).
 
 ---
 
@@ -349,3 +386,21 @@ For refactor tasks that have a plan under `docs/refactor/plans/`, follow `refact
 - provenance and regression controls fully operational.
 
 Until then, ingestion outside Phase 3’s defined G3 Math corpus stays in **curated batches** only.
+
+---
+
+## Revisit: local-first document links (end of navigator implementation)
+
+**Do not treat as a phase blocker for extraction/schema work** until Phase **4.2** (Explorer UI) is ready for integrated desktop testing.
+
+Some environments still open **Google Drive** instead of a local export when clicking curriculum links, even after backend discovery and frontend intercept work. That is **documented as an open backlog** with hypotheses and a verification checklist:
+
+- **[LOCAL_FIRST_LINKS_BACKLOG.md](LOCAL_FIRST_LINKS_BACKLOG.md)**
+
+At the **end of the curriculum navigator implementation plan** (after Phase 4.2 stabilizes and real Tauri/proxy behavior can be measured), run the backlog checklist: confirm `/resolve` from the actual app origin, add diagnostics if needed, consider an ingest-time id→path index, and add Tauri “open with Word” only if still required after verifying `/file` behavior.
+
+### Revisit: Math lesson portal URL vs. teacher guide PDF
+
+**Separate from** the Google Drive local-first backlog: for **Math**, each lesson often exposes **two** links — (1) the **lesson title** pointing at the **live curriculum website** (e.g. IM / district portal), which must open **directly** and is **out of scope for scraping**, and (2) the **teacher guide** (often **PDF**), which should be **easy to find**, opened locally when already downloaded, and is a candidate for **future structured extraction** for pacing and generated plans.
+
+Full requirements and future-work notes: **[MATH_LESSON_PORTAL_AND_TEACHER_GUIDE_UX.md](MATH_LESSON_PORTAL_AND_TEACHER_GUIDE_UX.md)**. Implement and acceptance-test in the **same integration pass** as other end-of-plan link and navigator work (not as a one-off during extraction-only phases).

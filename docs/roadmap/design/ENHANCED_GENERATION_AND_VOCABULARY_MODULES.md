@@ -568,25 +568,25 @@ Retrieval results are stored for:
 See [Database Schema Changes](#database-schema-changes) for complete schema.
 
 **Key Tables**:
-- `vocabulary_items`: Shared vocabulary bank (SSOT for words)
-- `vocabulary_teacher_approvals`: Per-teacher approval and image preferences
-- `vocabulary_usages`: Links words to specific lesson plans
-- `image_normalization_cache`: Caches normalized image versions
+-   `vocabulary_items`: Shared vocabulary bank (SSOT for words)
+-   `vocabulary_teacher_approvals`: Per-teacher approval and image preferences
+-   `vocabulary_usages`: Links words to specific lesson plans
+-   `image_normalization_cache`: Caches normalized image versions
 
 ### Vocabulary bank: categorization and external glossaries
 
 The vocabulary module will generate and maintain a **vocabulary table** in the database. Vocabulary is **categorized** for retrieval by lesson slot:
 
-- **Subject** (e.g. ELA, Math, Science, Social Studies)
-- **Grade cluster / school year** (e.g. K–2, 3–5, 6–8, 9–12, or grade-level bands used by curriculum)
-- **Language** (e.g. English plus L1: Spanish, Haitian, Portuguese, etc. for bilingual support)
+-   **Subject** (e.g. ELA, Math, Science, Social Studies)
+-   **Grade cluster / school year** (e.g. K–2, 3–5, 6–8, 9–12, or grade-level bands used by curriculum)
+-   **Language** (e.g. English plus L1: Spanish, Haitian, Portuguese, etc. for bilingual support)
 
 **Retrieval for lesson slots:** For a given slot (grade, subject, language), the app filters vocabulary by `(subject, grade_cluster, language)` and returns a focused set (e.g. for word walls, glossary suggestions, or LLM context). This keeps the vocabulary bank queryable and avoids loading the full corpus.
 
 **External glossary sources (optional import):** WIDA Language Charts (2025) and similar documents point educators to **state-approved bilingual glossaries and cognates** for content assessments. These can be used as **import sources** for the vocabulary bank:
 
-- **[NYU Steinhardt – Bilingual Glossaries and Cognates](https://steinhardt.nyu.edu/metrocenter/statewide-rbern/resources/bilingual-glossaries-and-cognates)** (NYS Statewide RBERN): ELA, Math, Science, Social Studies glossaries and cognates by language (e.g. English–Spanish, English–Haitian). Sorted by subject and grade band (e.g. Elementary Math, High School Living Environment). Downloadable and disseminable for ELLs/MLLs.
-- **Massachusetts Department of Education – Bilingual Word-to-Word Dictionaries and Glossaries:** Similar state-approved resources; link and structure to be added when we integrate.
+-   **[NYU Steinhardt – Bilingual Glossaries and Cognates](https://steinhardt.nyu.edu/metrocenter/statewide-rbern/resources/bilingual-glossaries-and-cognates)** (NYS Statewide RBERN): ELA, Math, Science, Social Studies glossaries and cognates by language (e.g. English–Spanish, English–Haitian). Sorted by subject and grade band (e.g. Elementary Math, High School Living Environment). Downloadable and disseminable for ELLs/MLLs.
+-   **Massachusetts Department of Education – Bilingual Word-to-Word Dictionaries and Glossaries:** Similar state-approved resources; link and structure to be added when we integrate.
 
 **Import strategy for external glossaries:**
 
@@ -611,14 +611,17 @@ The existing `vocabulary_items` table already has `word_text`, `language`, `grad
 
 **Optional later:** Tag vocabulary with WIDA alignment (e.g. `eld_standard`, `key_language_use`, `domain_or_mode`) for ELD-aligned word lists; only if we see clear value (YAGNI until then).
 
-### Dictionary APIs, translations, and levelled definitions
+### Dictionary APIs, translations, and 6-level proficiency definitions
 
-The vocabulary module will **dialogue with external dictionary APIs and image search APIs** so that each word can have **definitions, translations, and illustrations** that support multilingual learners at different proficiency levels.
+The vocabulary module will **dialogue with the Merriam-Webster API and image search APIs** to generate contextually relevant, leveled definitions for every student.
 
-- **Portuguese translations:** For each vocabulary item, the module should attempt to retrieve a **Portuguese translation** (and later other L1s) from one or more dictionary APIs. This complements glossary imports: `definition_pt` (or translations in `vocabulary_translations`) can come from either **state glossaries** or **dictionary APIs**, with `source` tracking which.
-- **Definitions by proficiency level:** Where dictionary APIs (or our own templates) support it, store or generate **leveled English definitions** (e.g. “simple”, “intermediate”, “advanced” explanations) aligned to **ELD proficiency bands**. These are not one-to-one with WIDA levels but should roughly target students’ **zone of proximal development**—simple language plus visuals for lower levels, richer academic language for higher levels.
-- **API orchestration:** A thin **dictionary service** can wrap multiple APIs (e.g. monolingual EN, EN–PT, EN–ES) and apply rate limiting, caching, and normalization so the rest of the app just asks for “definitions + translations for this `vocabulary_item`.” Follow SSOT: the database record is the **authoritative source** after retrieval, not the external APIs.
-- **Pedagogical use:** Lesson-plan prompts can choose definitions and translations appropriate to a learner’s **current ELD level** (e.g. Level 1–2 → simpler definitions and more visuals; Level 3–4 → intermediate definitions; Level 5–6 → fuller academic definitions) while still allowing the teacher to override or edit wording.
+- **Portuguese translations:** For each vocabulary item, the module should attempt to retrieve a **Portuguese translation** (and later other L1s) from one or more dictionary APIs.
+- **Context-Aware Vocabulary Filtering**: AI agents will use Merriam-Webster as a primary source but will **filter and select** only the definition relevant to the specific **Curriculum Subject and Unit Topic**.
+- **6-Level Proficiency Definitions**: For every vocabulary word, the system stores **six distinct English definitions** mapped to WIDA Levels 1-6.
+- **Content Scaffolding (Pedagogical Protection)**: For lower proficiency levels, the agent MUST use **Content-based Scaffolding** (diagrams, graphs, visuals) to maintain the lesson's cognitive complexity without over-simplifying the content.
+- **Per-Student Mastery State**: The system tracks the student's mastery of each word (e.g., Level 3 mastered → Level 4 active). This state is used by the **cmi5 Package Architect** to auto-select the initial definition level for each student.
+- **SSOT (Single Source of Truth)**: The database records the complete Merriam-Webster definition for reference, but uses the **6 generated leveled definitions** for student-facing activities and **cmi5 packages**.
+- **API orchestration:** A thin **dictionary service** wraps multiple APIs (Merriam-Webster, EN-PT) and apply rate limiting, caching, and normalization.
 
 ### WIDA vocabulary categories and instructional guidelines (from analyzed sources)
 

@@ -1,6 +1,6 @@
 # Implementation Status - Bilingual Weekly Plan Builder
 
-**Last Updated:** 2026-02-07  
+**Last Updated:** 2026-03-28  
 **Current Version:** v1.0.0 (Production Ready)
 
 ---
@@ -65,6 +65,12 @@
 - ✅ **Current Lesson & Today** - Lesson Plan Browser: fetchCurrentLesson, Today button, current-lesson highlighting
 - ✅ **Schedule-Based Navigation** - Browser: schedule-order filtering, next/previous lesson
 
+### Curriculum reference (explorer) — MVP
+
+- ✅ **`curriculum.db` + FastAPI curriculum routes** — Grade → Subject → Unit → Lesson hierarchy, unit intro, lesson detail, linked standards, vocabulary, and resources under `/api/curriculum/*`.
+- ✅ **Lesson-plan-browser `CurriculumExplorer`** — DB-backed reference lessons with structured standards (when `standards_structured` is present), procedure cards, and rich HTML for narrative/resources.
+- **Note:** This is an **MVP reference explorer**, not the full **Curriculum Navigator** roadmap item (registry-driven hierarchy, FTS across the whole corpus, planning integration). See [docs/roadmap/design/CURRICULUM_NAVIGATOR_MODULE.md](roadmap/design/CURRICULUM_NAVIGATOR_MODULE.md) and [docs/scrapers/CURRICULUM_EXTRACTION_ARCHITECTURE.md](scrapers/CURRICULUM_EXTRACTION_ARCHITECTURE.md).
+
 ### Document & Output Enhancements
 - ✅ **Equal Table Widths** - normalize_table_column_widths in docx_utils, used in renderer
 - ✅ **No School Day Handling** - is_no_school_day() in parser, used in batch_processor
@@ -104,6 +110,7 @@ All core features are complete and tested. System is ready for deployment.
 | **Slot Checkboxes** | ✅ Complete | v1.0 | BatchProcessor selectedSlots |
 | **File Open/Show in Folder** | ✅ Complete | v1.0 | PlanHistory + Tauri commands |
 | **Current Lesson / Today** | ✅ Complete | v1.0 | Lesson Plan Browser |
+| **Curriculum explorer / reference lessons** | ✅ MVP | v1.0 | `curriculum.db`, `/api/curriculum/*`, lesson-plan-browser CurriculumExplorer; full Navigator still planned |
 | **Table Widths / No School / Timestamps** | ✅ Complete | v1.0 | docx_utils, parser, file_manager |
 
 ---
@@ -429,6 +436,7 @@ All implemented features working as expected.
 - **Operations Runbook:** `docs/runbooks/json_pipeline_toggle.md`
 - **Architecture:** `docs/architecture_001.md`
 - **Main README:** `README.md`
+- **Curriculum phased rollout & Explorer:** `docs/curriculum/PHASED_ROLLOUT_PLAN.md`, `docs/curriculum/README.md`, end-of-session checklist `docs/curriculum/END_OF_SESSION_CHECKLIST.md`
 
 ---
 
