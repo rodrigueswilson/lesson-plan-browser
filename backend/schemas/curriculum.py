@@ -92,6 +92,27 @@ class CurriculumSearchHit(BaseModel):
     unit_id: str
     lesson_number: int
     title: str
+    snippet_html: Optional[str] = Field(
+        default=None,
+        description="FTS5 snippet with <mark> around hits (body column); null when using LIKE fallback.",
+    )
+    fts_rank: Optional[float] = Field(
+        default=None,
+        description="BM25 rank when FTS used (lower is better); null for LIKE fallback.",
+    )
+
+
+class SemanticUnitLinkRow(BaseModel):
+    """Manual curator link and/or adjacent-grade suggestion for cross-unit navigation."""
+
+    id: Optional[str] = Field(default=None, description="Primary key when source=manual.")
+    to_unit_id: str
+    to_unit_title: str
+    to_grade: Optional[int] = None
+    to_unit_number: Optional[int] = None
+    link_kind: str
+    rationale: str
+    source: str = Field(description="manual | suggested")
 
 
 class CurriculumGapsResponse(BaseModel):

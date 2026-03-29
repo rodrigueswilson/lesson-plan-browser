@@ -1019,9 +1019,27 @@ export function CurriculumExplorer() {
   const detailsRef = useRef<HTMLDivElement>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<
-    { id: string; unit_id: string; lesson_number: number; title: string }[]
+    {
+      id: string;
+      unit_id: string;
+      lesson_number: number;
+      title: string;
+      snippet_html?: string | null;
+    }[]
   >([]);
   const [searchLoading, setSearchLoading] = useState(false);
+  const [semanticLinks, setSemanticLinks] = useState<
+    {
+      id: string | null;
+      to_unit_id: string;
+      to_unit_title: string;
+      to_grade?: number | null;
+      to_unit_number?: number | null;
+      link_kind: string;
+      rationale: string;
+      source: string;
+    }[]
+  >([]);
   const [hierarchyError, setHierarchyError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -1080,15 +1098,23 @@ export function CurriculumExplorer() {
     setUnitIntro(null);
     setVocabulary([]);
     setLessonStandards([]);
+    setSemanticLinks([]);
     try {
       const resp1 = await fetch(`/api/curriculum/units/${unit.id}/lessons`);
       const data1 = await resp1.json();
       setLessons(data1);
 
-      const resp2 = await fetch(`/api/curriculum/units/${unit.id}/intro`);
+      const [resp2, respLinks] = await Promise.all([
+        fetch(`/api/curriculum/units/${unit.id}/intro`),
+        fetch(`/api/curriculum/units/${unit.id}/semantic-links`),
+      ]);
       if (resp2.ok) {
         const data2 = await resp2.json();
         setUnitIntro(data2);
+      }
+      if (respLinks.ok) {
+        const links = await respLinks.json();
+        setSemanticLinks(Array.isArray(links) ? links : []);
       }
     } catch (error) {
       console.error('Error fetching lessons or intro:', error);
@@ -1122,6 +1148,7 @@ export function CurriculumExplorer() {
     unit_id: string;
     lesson_number: number;
     title: string;
+    snippet_html?: string | null;
   }) => {
     let unit: Unit | null = null;
     for (const g of hierarchy) {
@@ -1289,16 +1316,24 @@ export function CurriculumExplorer() {
             </button>
           </div>
           {searchResults.length > 0 && (
-            <ul className="max-h-36 overflow-y-auto text-xs space-y-1 border border-border rounded-md p-1 bg-background">
+            <ul className="max-h-52 overflow-y-auto text-xs space-y-1 border border-border rounded-md p-1 bg-background">
               {searchResults.map((hit) => (
                 <li key={hit.id}>
                   <button
                     type="button"
                     onClick={() => void openSearchHit(hit)}
-                    className="w-full text-left px-1 py-0.5 rounded hover:bg-muted truncate"
+                    className="w-full text-left px-1 py-0.5 rounded hover:bg-muted"
                     title={hit.title}
                   >
-                    L{hit.lesson_number}: {hit.title}
+                    <span className="block truncate font-medium">
+                      L{hit.lesson_number}: {hit.title}
+                    </span>
+                    {hit.snippet_html ? (
+                      <span
+                        className="block text-[10px] text-muted-foreground line-clamp-2 [&_mark]:bg-amber-200/80 dark:[&_mark]:bg-amber-600/50"
+                        dangerouslySetInnerHTML={{ __html: hit.snippet_html }}
+                      />
+                    ) : null}
                   </button>
                 </li>
               ))}
@@ -1380,6 +1415,56 @@ export function CurriculumExplorer() {
               </div>
               <h1 className="text-3xl font-bold tracking-tight">{selectedUnit.title}</h1>
             </div>
+
+            {semanticLinks.length > 0 && (
+              <section
+                className="rounded-xl border border-border bg-muted/20 px-4 py-3 space-y-2"
+                aria-label="Related units"
+              >
+                <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  <Link className="w-3.5 h-3.5" aria-hidden />
+                  Related units
+                </div>
+                <ul className="space-y-2 text-sm">
+                  {semanticLinks.map((link) => (
+                    <li
+                      key={`${link.to_unit_id}-${link.source}-${link.link_kind}-${link.id ?? 'sug'}`}
+                      className="flex flex-col gap-0.5 border-l-2 border-primary/30 pl-3"
+                    >
+                      <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0">
+                        <button
+                          type="button"
+                          className="font-medium text-primary hover:underline text-left"
+                          onClick={() => {
+                            let target: Unit | null = null;
+                            for (const g of hierarchy) {
+                              for (const s of g.subjects) {
+                                const u = s.units.find((x) => x.id === link.to_unit_id);
+                                if (u) {
+                                  target = u;
+                                  break;
+                                }
+                              }
+                              if (target) break;
+                            }
+                            if (target) void fetchLessons(target);
+                          }}
+                        >
+                          {link.to_unit_title}
+                        </button>
+                        <span className="text-[10px] uppercase text-muted-foreground">
+                          {link.source === 'manual' ? 'Curated' : 'Suggested'}
+                          {link.to_grade != null ? ` · G${link.to_grade}` : ''}
+                        </span>
+                      </div>
+                      {link.rationale ? (
+                        <p className="text-xs text-muted-foreground leading-snug">{link.rationale}</p>
+                      ) : null}
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
 
             {/* Lessons Grid/List */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

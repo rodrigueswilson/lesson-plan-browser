@@ -8,6 +8,23 @@ from typing import Any, Dict, List, Optional, Set
 
 logger = logging.getLogger(__name__)
 
+
+def _fts5_prefix_query(raw: str) -> Optional[str]:
+    """
+    Build a conservative FTS5 MATCH string (AND of prefix tokens).
+    Returns None if nothing usable remains (caller should fall back to LIKE).
+    """
+    parts: List[str] = []
+    for token in (raw or "").split():
+        cleaned = "".join(c for c in token if c.isalnum() or c in "-_'")
+        if len(cleaned) < 2:
+            continue
+        esc = cleaned.replace('"', '""')
+        parts.append(f'"{esc}"*')
+    if not parts:
+        return None
+    return " AND ".join(parts)
+
 _UNIT_PROVENANCE_COLUMNS: Dict[str, str] = {
     "source_doc_id": "TEXT",
     "source_url": "TEXT",
@@ -54,23 +71,55 @@ class CurriculumDatabase:
             return json.load(f)
 
     def search_lessons_text(self, query: str, limit: int = 40) -> List[Dict[str, Any]]:
-        """Substring search over title and main HTML fields (interim; FTS5 planned)."""
+        """Full-text search (FTS5) with HTML snippet highlights; falls back to LIKE."""
         q = (query or "").strip()
         if len(q) < 2:
             return []
         if limit < 1 or limit > 200:
             limit = 40
-        pat = f"%{q}%"
-        sql = """
-        SELECT id, unit_id, lesson_number, title
-        FROM lessons
-        WHERE title LIKE ? OR IFNULL(procedure_html, '') LIKE ?
-           OR IFNULL(narrative_html, '') LIKE ?
-        ORDER BY unit_id, lesson_number
-        LIMIT ?
-        """
+        self.ensure_lessons_fts_index()
+        fts_q = _fts5_prefix_query(q)
         with self._get_conn() as conn:
-            rows = conn.execute(sql, (pat, pat, pat, limit)).fetchall()
+            fts_ready = conn.execute(
+                "SELECT 1 FROM sqlite_master WHERE type='table' AND name='lessons_fts'"
+            ).fetchone()
+            if fts_q and fts_ready:
+                try:
+                    sql_fts = """
+                    SELECT
+                        l.id,
+                        l.unit_id,
+                        l.lesson_number,
+                        l.title,
+                        snippet(
+                            lessons_fts,
+                            2,
+                            '<mark>',
+                            '</mark>',
+                            ' … ',
+                            20
+                        ) AS snippet_html,
+                        bm25(lessons_fts) AS fts_rank
+                    FROM lessons_fts
+                    JOIN lessons l ON l.id = lessons_fts.lesson_id
+                    WHERE lessons_fts MATCH ?
+                    ORDER BY fts_rank
+                    LIMIT ?
+                    """
+                    rows = conn.execute(sql_fts, (fts_q, limit)).fetchall()
+                    return [dict(r) for r in rows]
+                except sqlite3.OperationalError as exc:
+                    logger.warning("FTS search failed, using LIKE fallback: %s", exc)
+            pat = f"%{q}%"
+            sql_like = """
+            SELECT id, unit_id, lesson_number, title, NULL AS snippet_html, NULL AS fts_rank
+            FROM lessons
+            WHERE title LIKE ? OR IFNULL(procedure_html, '') LIKE ?
+               OR IFNULL(narrative_html, '') LIKE ?
+            ORDER BY unit_id, lesson_number
+            LIMIT ?
+            """
+            rows = conn.execute(sql_like, (pat, pat, pat, limit)).fetchall()
             return [dict(r) for r in rows]
 
     def _get_conn(self):
@@ -163,6 +212,175 @@ class CurriculumDatabase:
                 if col not in lessons_cols:
                     conn.execute(f"ALTER TABLE lessons ADD COLUMN {col} {col_type}")
             conn.commit()
+        self.ensure_lessons_fts_index()
+        self.ensure_unit_semantic_links_table()
+
+    def ensure_lessons_fts_index(self) -> None:
+        """Create or rebuild FTS5 index over lesson title + HTML body (Phase 6 navigator).
+
+        Rows are synchronized from ``upsert_lesson`` (no DB triggers; SQLite FTS5 + ON CONFLICT
+        UPDATE paths proved brittle with AFTER UPDATE/DELETE triggers on this schema).
+        """
+        fts_ddl = """
+        CREATE VIRTUAL TABLE IF NOT EXISTS lessons_fts USING fts5(
+            lesson_id UNINDEXED,
+            title,
+            body
+        );
+        """
+        with self._get_conn() as conn:
+            tables = {
+                row[0]
+                for row in conn.execute(
+                    "SELECT name FROM sqlite_master WHERE type='table'"
+                ).fetchall()
+            }
+            if "lessons" not in tables:
+                return
+            for trg in ("lessons_fts_ai", "lessons_fts_ad", "lessons_fts_au"):
+                conn.execute(f"DROP TRIGGER IF EXISTS {trg}")
+            conn.executescript(fts_ddl)
+            n_lessons = conn.execute("SELECT COUNT(*) FROM lessons").fetchone()[0]
+            n_fts = conn.execute("SELECT COUNT(*) FROM lessons_fts").fetchone()[0]
+            if n_lessons != n_fts:
+                conn.execute("DELETE FROM lessons_fts")
+                conn.execute(
+                    """
+                    INSERT INTO lessons_fts(lesson_id, title, body)
+                    SELECT
+                        id,
+                        COALESCE(title, ''),
+                        COALESCE(procedure_html, '') || ' ' || COALESCE(narrative_html, '')
+                    FROM lessons
+                    """
+                )
+            conn.commit()
+
+    def _replace_lesson_fts_row(self, conn: sqlite3.Connection, lesson_id: str) -> None:
+        if not conn.execute(
+            "SELECT 1 FROM sqlite_master WHERE type='table' AND name='lessons_fts'"
+        ).fetchone():
+            return
+        conn.execute("DELETE FROM lessons_fts WHERE lesson_id = ?", (lesson_id,))
+        row = conn.execute(
+            """
+            SELECT
+                id,
+                COALESCE(title, '') AS title,
+                COALESCE(procedure_html, '') || ' ' || COALESCE(narrative_html, '') AS body
+            FROM lessons
+            WHERE id = ?
+            """,
+            (lesson_id,),
+        ).fetchone()
+        if row:
+            conn.execute(
+                "INSERT INTO lessons_fts(lesson_id, title, body) VALUES (?, ?, ?)",
+                (row["id"], row["title"], row["body"]),
+            )
+
+    def ensure_unit_semantic_links_table(self) -> None:
+        """Curator/staff links between units (manual) plus API-level grade-band suggestions."""
+        with self._get_conn() as conn:
+            conn.execute(
+                """
+                CREATE TABLE IF NOT EXISTS unit_semantic_links (
+                    id TEXT PRIMARY KEY,
+                    from_unit_id TEXT NOT NULL,
+                    to_unit_id TEXT NOT NULL,
+                    link_kind TEXT NOT NULL DEFAULT 'related',
+                    rationale TEXT NOT NULL DEFAULT '',
+                    source TEXT NOT NULL DEFAULT 'manual',
+                    FOREIGN KEY (from_unit_id) REFERENCES units(id),
+                    FOREIGN KEY (to_unit_id) REFERENCES units(id),
+                    UNIQUE (from_unit_id, to_unit_id, link_kind)
+                )
+                """
+            )
+            conn.commit()
+
+    def get_unit_semantic_links(self, unit_id: str) -> List[Dict[str, Any]]:
+        """Manual links from DB merged with cross-grade suggestions (same subject, adjacent grade)."""
+        out: List[Dict[str, Any]] = []
+        seen_to: Set[str] = set()
+        with self._get_conn() as conn:
+            rows = conn.execute(
+                """
+                SELECT
+                    l.id AS link_id,
+                    l.to_unit_id,
+                    l.link_kind,
+                    l.rationale,
+                    l.source,
+                    u.title AS to_unit_title,
+                    u.grade AS to_grade,
+                    u.unit_number AS to_unit_number
+                FROM unit_semantic_links l
+                JOIN units u ON u.id = l.to_unit_id
+                WHERE l.from_unit_id = ?
+                ORDER BY l.source, l.link_kind, u.grade, u.unit_number
+                """,
+                (unit_id,),
+            ).fetchall()
+            for r in rows:
+                d = dict(r)
+                tid = d["to_unit_id"]
+                seen_to.add(tid)
+                out.append(
+                    {
+                        "id": d["link_id"],
+                        "to_unit_id": tid,
+                        "to_unit_title": d["to_unit_title"],
+                        "to_grade": d["to_grade"],
+                        "to_unit_number": d["to_unit_number"],
+                        "link_kind": d["link_kind"],
+                        "rationale": d["rationale"] or "",
+                        "source": d["source"] or "manual",
+                    }
+                )
+
+            cur = conn.execute(
+                "SELECT grade, subject FROM units WHERE id = ?",
+                (unit_id,),
+            ).fetchone()
+            if not cur:
+                return out
+            grade, subject = cur["grade"], cur["subject"]
+            if grade is None or not subject:
+                return out
+            for delta in (-1, 1):
+                ng = int(grade) + delta
+                if ng < 0:
+                    continue
+                peers = conn.execute(
+                    """
+                    SELECT id, title, unit_number, grade
+                    FROM units
+                    WHERE subject = ? AND grade = ? AND id != ?
+                    ORDER BY unit_number, title
+                    """,
+                    (subject, ng, unit_id),
+                ).fetchall()
+                for p in peers:
+                    pid = p["id"]
+                    if pid in seen_to:
+                        continue
+                    seen_to.add(pid)
+                    out.append(
+                        {
+                            "id": None,
+                            "to_unit_id": pid,
+                            "to_unit_title": p["title"],
+                            "to_grade": p["grade"],
+                            "to_unit_number": p["unit_number"],
+                            "link_kind": "vertical_band",
+                            "rationale": (
+                                f"Same {subject} in Grade {ng} (suggested adjacent band)."
+                            ),
+                            "source": "suggested",
+                        }
+                    )
+        return out
 
     def get_lesson_details(self, lesson_id: str) -> Optional[Dict[str, Any]]:
         """Returns full details for a single lesson."""
@@ -284,9 +502,11 @@ class CurriculumDatabase:
         VALUES ({placeholders})
         ON CONFLICT(id) DO UPDATE SET {updates}
         """
-        
+        lesson_id = valid_data.get("id")
         with self._get_conn() as conn:
             conn.execute(query, list(valid_data.values()))
+            if lesson_id:
+                self._replace_lesson_fts_row(conn, str(lesson_id))
             conn.commit()
 
     def update_unit_intro(self, unit_id: str, data: Dict[str, Any]):

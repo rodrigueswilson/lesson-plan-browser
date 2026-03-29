@@ -17,6 +17,7 @@ from backend.schemas.curriculum import (
     CurriculumStandardRow,
     CurriculumVocabularyTerm,
     ExplorerGrade,
+    SemanticUnitLinkRow,
 )
 from backend.services.curriculum_gaps import compute_planned_and_gaps
 from backend.services.curriculum_resource_resolve import (
@@ -62,12 +63,23 @@ async def get_registry_tree() -> Dict[str, Any]:
 
 @router.get("/curriculum/search", dependencies=CURRICULUM_DEPS, response_model=List[CurriculumSearchHit])
 async def search_curriculum(
-    q: str = Query(..., min_length=2, description="Substring match on title / procedure / narrative HTML"),
+    q: str = Query(..., min_length=2, description="FTS5 match on title / procedure / narrative HTML"),
     limit: int = Query(40, ge=1, le=200),
 ):
-    """Interim lesson search (LIKE). FTS5 index may replace this later."""
+    """Lesson search via FTS5 (snippet + highlights) with LIKE fallback if FTS fails."""
     curriculum = CurriculumDatabase()
     return curriculum.search_lessons_text(q, limit=limit)
+
+
+@router.get(
+    "/curriculum/units/{unit_id}/semantic-links",
+    dependencies=CURRICULUM_DEPS,
+    response_model=List[SemanticUnitLinkRow],
+)
+async def get_unit_semantic_links(unit_id: str):
+    """Manual cross-unit links plus same-subject adjacent-grade suggestions."""
+    curriculum = CurriculumDatabase()
+    return curriculum.get_unit_semantic_links(unit_id)
 
 
 @router.get("/curriculum/units/{unit_id}/lessons", dependencies=CURRICULUM_DEPS)
