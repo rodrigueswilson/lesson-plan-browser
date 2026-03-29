@@ -324,6 +324,9 @@ Phase 6 is **closed**. Deliverables: `lessons_fts` FTS5 index synced from `upser
 - Transition to continuous ingestion mode approved.
 - Branch `curriculum/phase-7-expansion-readiness` merged and pushed with operational signoff.
 
+**Kickoff (2026-03-29)**  
+Branch `curriculum/phase-7-expansion-readiness` is open with test gate #1 recorded under `docs/curriculum/acceptance-evidence/phase-7/`. Phase 7 remains **in progress** until operational signoff and merge satisfy the exit criteria above.
+
 ---
 
 ## Representative sampling strategy
