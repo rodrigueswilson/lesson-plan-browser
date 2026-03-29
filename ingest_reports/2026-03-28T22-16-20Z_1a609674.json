@@ -1,0 +1,30 @@
+{
+  "run_id": "2026-03-28T22-16-20Z_1a609674",
+  "target_unit": "ELA_3_U8_sample",
+  "source_doc_id": "1_yHvguDhJIZmrIwY3ZcW-BIhfQH5VtH2xs1KtKlnNVY",
+  "source_url": "https://docs.google.com/document/d/1_yHvguDhJIZmrIwY3ZcW-BIhfQH5VtH2xs1KtKlnNVY/edit?tab=t.2plykckkv6ev",
+  "started_at": "2026-03-28T22:16:20Z",
+  "ended_at": "2026-03-28T22:16:22Z",
+  "parser_version": "table_extractor@v1",
+  "lessons_ingested": 12,
+  "primary_failure_code": null,
+  "secondary_failure_codes": [],
+  "warnings": [],
+  "fidelity_checks": {
+    "sample_lines_checked": 0,
+    "mismatches": 0
+  },
+  "ingest_stats": {
+    "lessons_started": 12,
+    "lessons_started_unique": 12,
+    "paragraphs_appended": 157,
+    "section_hits": {
+      "learning_intentions": 12,
+      "success_criteria": 12,
+      "practices": 12,
+      "_vocab_temp": 2
+    },
+    "suspected_equation_token_loss_standards": 0,
+    "lessons_started_to_ingested_ratio": 1.0
+  }
+}

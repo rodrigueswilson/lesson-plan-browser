@@ -10,7 +10,7 @@
 
 ## In-scope
 
-- [x] Onboard one Grade 3 ELA unit sample set (stable unit id `ELA_3_U8_sample`, seed + reingest tooling; ingest requires an exported teacher-guide DOCX supplied by the operator)
+- [x] Onboard one Grade 3 ELA unit sample set (stable unit id `ELA_3_U8_sample`, seed + reingest tooling; ingest via synthesized Unit 8 tab DOCX from `.docs-api.json`, 2026-03-28)
 - [x] Validate standards/procedure boundaries for ELA-specific patterns (parser: ELA lesson title groups, ELA section keys on lesson payload, `unique_lessons` considers ELA fields; verify: optional Grade 3 ELA `standards_structured` gate when such a unit exists)
 - [x] Compare fidelity and section coverage against Math baseline (shared `standards_structured` expectation in verify for the first Grade 3 ELA unit when present; Math unit 2 checks unchanged)
 - [x] **4.2** Subject-aware lesson detail in `lesson-plan-browser/frontend/src/components/CurriculumExplorer.tsx` (`ela_key_learning_summary`, `ela_lesson_plan_structured`); see [PHASE_4_UI_ELA_ACCEPTANCE.md](./PHASE_4_UI_ELA_ACCEPTANCE.md)
@@ -57,9 +57,10 @@
 
 ## 4.1 operator ingest (real DOCX)
 
-- [ ] **Not executed in this session:** no operator-supplied Grade 3 ELA teacher-guide DOCX path was available in the workspace to run  
-  `python tools/db/reingest_grade3_ela_sample.py --docx <path>`.  
-  When a DOCX is provided, run reingest, then re-run `verify_curriculum_db.py` and archive output here.
+- [x] **Executed 2026-03-28:** synthesized Unit 8 DOCX from Docs API JSON (`gdoc_tab_to_docx.py`, tab `t.2plykckkv6ev`) → `reference_docs/scraped/grade3_ela_exports/Grade3_ELA_Unit8_from_api_tab.docx`, then `reingest_grade3_ela_sample.py` into `data/curriculum.db` (`ELA_3_U8_sample`, 12 lessons). Provenance URL includes Unit 8 tab.
+- Ingest report: `ingest_reports/2026-03-28T22-16-20Z_1a609674.json`
+- Post-ingest verify + pytest slice: archived in `verify-after-unit8-reingest-2026-03-28.txt`
+- **Note:** Artifact is API-synthesized DOCX, not a browser-native Word download; refresh JSON + regenerate if the live Google Doc changes materially.
 
 ## Rules compliance check (.cursor/rules)
 
@@ -82,10 +83,10 @@
 
 ## End-of-phase session wrap-up (mandatory)
 
-- Result: `PASS` (4.2 + quality gates; operator DOCX reingest still optional follow-up)
-- One-line completion summary: Phase 4.2 delivers ELA-aware lesson detail in Curriculum Explorer; verify and phase pytest slice pass twice (gate #1 evidence on file + gate #2 post-refactor).
+- Result: `PASS` (4.2 + quality gates; Unit 8 sample re-ingested from synthesized DOCX 2026-03-28)
+- One-line completion summary: Phase 4.2 delivers ELA-aware lesson detail in Curriculum Explorer; verify and phase pytest slice pass twice (gate #1 evidence on file + gate #2 post-refactor); `ELA_3_U8_sample` refreshed from tab `t.2plykckkv6ev` via `gdoc_tab_to_docx` + reingest.
 - Blockers (max 3 bullets):
-  - Real production DOCX reingest into `data/curriculum.db` still requires an operator-supplied export path when ready.
+  - None for sample ingest; optional follow-up is a browser-native DOCX spot-check for layout fidelity vs synthesis.
 - Evidence paths:
   - `docs/curriculum/acceptance-evidence/phase-4/test-gate-1-verify_curriculum_db-pre.txt`
   - `docs/curriculum/acceptance-evidence/phase-4/test-gate-1-verify_curriculum_db-post.txt`
@@ -96,6 +97,9 @@
   - `docs/curriculum/acceptance-evidence/phase-4/loc-snapshot-phase-4-exit.txt`
   - `docs/curriculum/acceptance-evidence/phase-4/PHASE_4_UI_ELA_ACCEPTANCE.md`
   - `lesson-plan-browser/frontend/src/components/CurriculumExplorer.tsx`
+  - `docs/curriculum/acceptance-evidence/phase-4/verify-after-unit8-reingest-2026-03-28.txt`
+  - `ingest_reports/2026-03-28T22-16-20Z_1a609674.json`
+  - `reference_docs/scraped/grade3_ela_exports/Grade3_ELA_Unit8_from_api_tab.docx` (local synthesized input; see evidence file for regenerate command)
 
 ### Very short prompt for next phase
 

@@ -1,0 +1,41 @@
+Grade 3 ELA Unit 8 re-ingest (synthesized DOCX) — 2026-03-28
+
+## Inputs
+
+- JSON snapshot: reference_docs/scraped/grade3_ela_exports/Grade_3_ELA_All_Units_including_8_1_yHvguD.docs-api.json
+- Tab: t.2plykckkv6ev (Grade 3 Unit 8)
+- Synthesized DOCX: reference_docs/scraped/grade3_ela_exports/Grade3_ELA_Unit8_from_api_tab.docx (~62 KB)
+- Source URL (provenance): https://docs.google.com/document/d/1_yHvguDhJIZmrIwY3ZcW-BIhfQH5VtH2xs1KtKlnNVY/edit?tab=t.2plykckkv6ev
+
+## Ingest
+
+- Command: python tools/db/reingest_grade3_ela_sample.py --docx (path above) --source-url (URL above)
+- Unit: ELA_3_U8_sample
+- Result: 12 lesson row(s) upserted
+- Ingest report: ingest_reports/2026-03-28T22-16-20Z_1a609674.json
+- Parser log (summary): Summary of Key Learning captured (12 rows); detailed lesson plan tables parsed for lessons 1–12
+
+## verify_curriculum_db.py
+
+Command: python tools/scraper/verify_curriculum_db.py
+
+Output:
+Curriculum DB validation OK: d:\LP\data\curriculum.db
+
+Exit code: 0
+
+## Pytest (phase slice)
+
+Command:
+python -m pytest tests/test_grade3_ela_ingest_smoke.py tests/test_math_fidelity_helpers.py tests/test_ingest_report_failure_codes.py tests/test_curriculum_gaps.py -q
+
+Output:
+16 passed in ~1–3s (Windows)
+
+Exit code: 0
+
+## Git / binary policy
+
+Synthesized DOCX is a local build artifact under reference_docs/scraped/grade3_ela_exports/; commit only if repo policy allows curriculum binaries. Regenerate anytime with:
+
+python tools/scraper/gdoc_tab_to_docx.py --json-path reference_docs/scraped/grade3_ela_exports/Grade_3_ELA_All_Units_including_8_1_yHvguD.docs-api.json --tab-id t.2plykckkv6ev --out reference_docs/scraped/grade3_ela_exports/Grade3_ELA_Unit8_from_api_tab.docx
