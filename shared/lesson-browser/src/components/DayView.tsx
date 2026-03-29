@@ -5,10 +5,30 @@ import { useStore } from '../store/useStore';
 import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { getSubjectColors, meetingPeriodColors } from '../utils/scheduleColors';
-import { dedupeScheduleEntries, formatEntryDisplay, isMeetingPeriod, isNonClassPeriod } from '../utils/scheduleEntries';
+import {
+  dedupeScheduleEntries,
+  formatEntryDisplay,
+  isMeetingPeriod,
+  isNonClassPeriod,
+  normalizeSubject,
+} from '../utils/scheduleEntries';
 import { buildSlotDataMap } from '../utils/planMatching';
 
 const MEETING_CLASSES = `${meetingPeriodColors.bg} ${meetingPeriodColors.border} ${meetingPeriodColors.text}`;
+
+const normalizeTime = (time: string | null | undefined): string => {
+  if (!time) return '';
+  const parts = time.split(':');
+  if (parts.length === 2) {
+    const hours = parts[0].padStart(2, '0');
+    const minutes = parts[1].padStart(2, '0');
+    return `${hours}:${minutes}`;
+  }
+  return time;
+};
+
+const createTimeSlotKey = (start: string, end: string): string =>
+  `${normalizeTime(start)}-${normalizeTime(end)}`;
 
 interface DayViewProps {
   weekOf: string;
@@ -39,6 +59,12 @@ export function DayView({ weekOf, day, onLessonClick, onDaySwitch }: DayViewProp
   const [nonClassPeriods, setNonClassPeriods] = useState<ScheduleEntry[]>([]);
   const [lessonData, setLessonData] = useState<Record<number, LessonSlotData>>({});
   const [loading, setLoading] = useState(true);
+  const [subjectFilter, setSubjectFilter] = useState('');
+  const [gradeFilter, setGradeFilter] = useState('');
+  const [timeFilter, setTimeFilter] = useState('');
+  const [filterSubjects, setFilterSubjects] = useState<string[]>([]);
+  const [filterGrades, setFilterGrades] = useState<string[]>([]);
+  const [filterTimes, setFilterTimes] = useState<string[]>([]);
 
   const dayLabels: Record<string, string> = {
     monday: 'Monday',
@@ -95,12 +121,48 @@ export function DayView({ weekOf, day, onLessonClick, onDaySwitch }: DayViewProp
         
         // Deduplicate entries
         const uniqueEntries = dedupeScheduleEntries(allEntries);
-        
+
+        const subs = new Set<string>();
+        const grades = new Set<string>();
+        const times = new Set<string>();
+        uniqueEntries.forEach((e) => {
+          if (e.subject) subs.add(normalizeSubject(e.subject));
+          if (e.grade?.trim()) grades.add(e.grade.trim());
+          if (e.start_time && e.end_time) {
+            times.add(
+              createTimeSlotKey(
+                normalizeTime(e.start_time),
+                normalizeTime(e.end_time)
+              )
+            );
+          }
+        });
+        setFilterSubjects([...subs].sort((a, b) => a.localeCompare(b)));
+        setFilterGrades([...grades].sort((a, b) => a.localeCompare(b)));
+        setFilterTimes([...times].sort());
+
+        const entryMatchesFilters = (e: ScheduleEntry) => {
+          if (subjectFilter) {
+            if (normalizeSubject(e.subject || '') !== subjectFilter) return false;
+          }
+          if (gradeFilter && (e.grade || '').trim() !== gradeFilter) return false;
+          if (timeFilter) {
+            const k = createTimeSlotKey(
+              normalizeTime(e.start_time || ''),
+              normalizeTime(e.end_time || '')
+            );
+            if (k !== timeFilter) return false;
+          }
+          return true;
+        };
+
+        const filteredEntries = uniqueEntries.filter(entryMatchesFilters);
+
         // Separate lessons from non-class periods
         // Only show active entries as lessons, but include all non-class periods (even inactive) as reference
         // Defensive: Check isNonClassPeriod first to ensure non-class periods never end up in lessons array
-        const lessonsOnly = uniqueEntries.filter(e => !isNonClassPeriod(e.subject) && e.is_active);
-        const nonClassOnly = uniqueEntries.filter(e => isNonClassPeriod(e.subject));
+        const lessonsOnly = filteredEntries.filter(e => !isNonClassPeriod(e.subject) && e.is_active);
+        const nonClassOnly = filteredEntries.filter(e => isNonClassPeriod(e.subject));
         
         setLessons(lessonsOnly);
         setNonClassPeriods(nonClassOnly);
@@ -133,7 +195,7 @@ export function DayView({ weekOf, day, onLessonClick, onDaySwitch }: DayViewProp
     };
 
     loadDayData();
-  }, [currentUser, day, weekOf]);
+  }, [currentUser, day, weekOf, subjectFilter, gradeFilter, timeFilter]);
 
   if (loading) {
     return <div className="text-center py-8">Loading lessons...</div>;
@@ -141,6 +203,51 @@ export function DayView({ weekOf, day, onLessonClick, onDaySwitch }: DayViewProp
 
   return (
     <div className="h-full w-full flex flex-col min-h-0">
+      <div className="flex flex-wrap items-center gap-2 px-2 py-2 text-xs border-b border-border bg-muted/30">
+        <span className="text-muted-foreground font-medium">Schedule filters</span>
+        <select
+          value={subjectFilter}
+          onChange={(e) => setSubjectFilter(e.target.value)}
+          className="rounded border border-border bg-background px-2 py-1 max-w-[140px]"
+          aria-label="Filter by subject"
+        >
+          <option value="">All subjects</option>
+          {filterSubjects.map((s) => (
+            <option key={s} value={s}>
+              {s}
+            </option>
+          ))}
+        </select>
+        <select
+          value={gradeFilter}
+          onChange={(e) => setGradeFilter(e.target.value)}
+          className="rounded border border-border bg-background px-2 py-1 max-w-[100px]"
+          aria-label="Filter by grade"
+        >
+          <option value="">All grades</option>
+          {filterGrades.map((g) => (
+            <option key={g} value={g}>
+              {g}
+            </option>
+          ))}
+        </select>
+        <select
+          value={timeFilter}
+          onChange={(e) => setTimeFilter(e.target.value)}
+          className="rounded border border-border bg-background px-2 py-1 max-w-[160px]"
+          aria-label="Filter by time slot"
+        >
+          <option value="">All times</option>
+          {filterTimes.map((t) => {
+            const [a, b] = t.split('-');
+            return (
+              <option key={t} value={t}>
+                {a} - {b}
+              </option>
+            );
+          })}
+        </select>
+      </div>
       {/* Day Header with Navigation */}
       <div className="flex items-center justify-between mb-1 px-2 flex-shrink-0 h-8">
         <div className="flex items-center gap-2">

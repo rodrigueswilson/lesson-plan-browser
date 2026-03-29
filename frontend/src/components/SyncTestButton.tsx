@@ -6,12 +6,13 @@
 import { useState } from 'react';
 import { triggerSync } from '@lesson-api';
 import { useStore } from '@lesson-browser';
+import type { AppState } from '@lesson-browser';
 
 export function SyncTestButton() {
   const [syncing, setSyncing] = useState(false);
   const [result, setResult] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const currentUser = useStore((state) => state.currentUser);
+  const currentUser = useStore((state: AppState) => state.currentUser);
 
   const handleSync = async () => {
     if (!currentUser?.id) {

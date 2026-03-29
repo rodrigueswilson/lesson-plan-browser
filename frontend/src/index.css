@@ -154,3 +154,177 @@ td.schedule-cell-meeting > div {
     }
   }
 }
+
+/*
+ * Curriculum rich HTML: OUTSIDE @layer so links beat Tailwind Typography (.prose)
+ * and utilities like text-muted-foreground on the same node.
+ * SSOT: keep this block identical to lesson-plan-browser/frontend/src/index.css (.rich-html through .curriculum-resource-link, including .rich-cell-label).
+ */
+.rich-html {
+  line-height: 1.6;
+  color: hsl(var(--foreground));
+}
+
+.rich-html table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font-size: 0.875rem;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+}
+
+.rich-html th,
+.rich-html td {
+  padding: 0.75rem 1rem;
+  border: 1px solid hsl(var(--border));
+  text-align: left;
+  vertical-align: top;
+}
+
+.rich-html th {
+  background-color: hsl(var(--muted) / 0.5);
+  font-weight: 700;
+}
+
+.rich-html tr:nth-child(even) {
+  background-color: hsl(var(--muted) / 0.2);
+}
+
+.rich-html tr:hover {
+  background-color: hsl(var(--muted) / 0.4);
+}
+
+.rich-html p {
+  margin-bottom: 1rem;
+  /* Word often puts soft breaks in one DOCX paragraph -> single <p> with \n; HTML collapses those without this */
+  white-space: pre-line;
+}
+
+.prose.rich-html p {
+  white-space: pre-line;
+}
+
+.rich-html .rich-cell-label {
+  display: block;
+  font-weight: 700;
+  margin-bottom: 0.35rem;
+  color: hsl(var(--foreground));
+}
+
+/* In-cell section labels (br-separated lines) enriched in CurriculumRichHtml */
+.rich-html .rich-inline-title {
+  font-weight: 700 !important;
+  color: hsl(var(--foreground));
+}
+
+.rich-html .rich-inline-title-spaced {
+  display: block;
+  margin-top: 0.85em;
+}
+
+/* Teacher Note(s): label line italic in source DOCX, not bold */
+.rich-html .rich-inline-teacher-note {
+  font-style: italic !important;
+  font-weight: 400 !important;
+  color: hsl(var(--foreground));
+}
+
+/* DOCX HTML uses <b>; match <strong> so bold survives Tailwind preflight + muted parents */
+.rich-html b,
+.rich-html strong {
+  font-weight: 700;
+  color: hsl(var(--foreground));
+}
+
+/*
+ * List markers: Tailwind preflight sets list-style: none on ul/ol. Restore markers for
+ * curriculum HTML (DOCX -> json_to_html). !important beats any later utility or prose variant.
+ */
+.rich-html ul,
+.rich-html ol {
+  margin-left: 0 !important;
+  margin-bottom: 1rem;
+  padding-left: 1.5rem !important;
+  list-style-position: outside !important;
+}
+
+.rich-html ul {
+  list-style-type: disc !important;
+}
+
+.rich-html ol {
+  list-style-type: decimal !important;
+}
+
+.rich-html ul ul {
+  list-style-type: circle;
+  margin-top: 0.35rem;
+}
+
+.rich-html li {
+  margin-bottom: 0.5rem;
+  display: list-item;
+}
+
+.rich-html h5,
+.rich-html h4 {
+  font-weight: 700;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  color: hsl(var(--primary));
+}
+
+.rich-html a,
+.prose.rich-html a {
+  color: #2563eb !important;
+  text-decoration: underline !important;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-underline-position: from-font;
+  font-weight: 500;
+  word-break: break-word;
+}
+
+.rich-html a::before,
+.prose.rich-html a::before {
+  content: "";
+  display: inline-block;
+  width: 0.95em;
+  height: 0.95em;
+  margin-right: 0.35em;
+  vertical-align: -0.12em;
+  background-color: #2563eb;
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z'/%3E%3C/svg%3E");
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+}
+
+.rich-html a:hover,
+.prose.rich-html a:hover {
+  color: #1d4ed8 !important;
+  text-decoration-thickness: 1.5px;
+}
+
+.rich-html a:hover::before,
+.prose.rich-html a:hover::before {
+  background-color: #1d4ed8;
+}
+
+.curriculum-resource-link {
+  color: #2563eb !important;
+  text-decoration: underline !important;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.curriculum-resource-link:hover {
+  color: #1d4ed8 !important;
+  text-decoration-thickness: 1.5px;
+}

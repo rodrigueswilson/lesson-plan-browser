@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, Fragment, useMemo, type MouseEvent } from 'react';
+import { enrichRichHtmlInlineTitles } from '../utils/enrichRichHtmlTitles';
 import { 
   ChevronRight, 
   ChevronDown, 
@@ -125,6 +126,93 @@ interface ProcedureSection {
   kind: "warmup" | "activity" | "cooldown" | "synthesis" | "other";
   title: string;
   bodyHtml: string;
+}
+
+/** Google Doc id from a docs.google.com URL (matches backend `_extract_source_doc_id`). */
+function extractGoogleDocIdFromUrl(url: string): string | null {
+  const m = url.match(/\/document\/d\/([a-zA-Z0-9_-]+)/);
+  return m ? m[1] : null;
+}
+
+function SourceUrlOpenRow({
+  sourceUrl,
+  sourceDocId,
+}: {
+  sourceUrl: string;
+  sourceDocId?: string;
+}) {
+  const gid =
+    (sourceDocId && sourceDocId.trim()) || extractGoogleDocIdFromUrl(sourceUrl) || null;
+  const [resolveSource, setResolveSource] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!gid) {
+      setResolveSource(null);
+      return;
+    }
+    let cancelled = false;
+    fetch(`/api/curriculum/resources/google-id/${encodeURIComponent(gid)}/resolve`)
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
+      .then((data: { source?: string }) => {
+        if (!cancelled) setResolveSource(data?.source ?? null);
+      })
+      .catch(() => {
+        if (!cancelled) setResolveSource(null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [gid]);
+
+  const openPreferred = async (e: MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    if (gid) {
+      try {
+        const r = await fetch(
+          `/api/curriculum/resources/google-id/${encodeURIComponent(gid)}/resolve`,
+        );
+        if (r.ok) {
+          const data = (await r.json()) as { url?: string };
+          if (data?.url) {
+            window.open(data.url, "_blank", "noopener,noreferrer");
+            return;
+          }
+        }
+      } catch {
+        /* fall through to Drive URL */
+      }
+    }
+    window.open(sourceUrl, "_blank", "noopener,noreferrer");
+  };
+
+  const badgeLabel =
+    resolveSource === "local"
+      ? "local export"
+      : resolveSource === "remote"
+        ? "Google Drive (registered)"
+        : resolveSource === "remote_inferred"
+          ? "Google Drive"
+          : null;
+
+  return (
+    <div className="break-all">
+      <span className="font-semibold text-slate-700">Source URL:</span>{" "}
+      <a
+        href={sourceUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-blue-700 underline"
+        onClick={openPreferred}
+      >
+        {sourceUrl}
+      </a>
+      {badgeLabel ? (
+        <span className="ml-2 inline-block rounded bg-slate-200/80 px-1.5 py-0.5 text-[10px] font-medium text-slate-600">
+          Opens: {badgeLabel}
+        </span>
+      ) : null}
+    </div>
+  );
 }
 
 function splitDescriptionLines(description: string | null): string[] {
@@ -428,11 +516,40 @@ function CurriculumRichHtml({
   className?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
-  const safe = html ?? '';
+  const safe = useMemo(() => enrichRichHtmlInlineTitles(html ?? ''), [html]);
 
   useEffect(() => {
     const root = ref.current;
     if (!root) return;
+
+    const onClickCapture = (ev: Event) => {
+      const el = ev.target as HTMLElement | null;
+      const a = el?.closest?.('a[href]') as HTMLAnchorElement | null;
+      if (!a) return;
+      const href = (a.getAttribute('href') || '').trim();
+      if (!href || href.startsWith('#')) return;
+      const fromAttr = (a.getAttribute('data-resource-id') || '').trim();
+      const m = href.match(/\/document\/d\/([a-zA-Z0-9_-]+)/);
+      const gid = fromAttr || (m ? m[1] : '');
+      if (!gid) return;
+      /* Resolve local export for any Google Doc link, not only anchors with data-resource-id (ingest varies). */
+      if (!href.includes('docs.google.com/document')) return;
+
+      ev.preventDefault();
+      ev.stopPropagation();
+      const enc = encodeURIComponent(gid);
+      fetch(`/api/curriculum/resources/google-id/${enc}/resolve`)
+        .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
+        .then((data: { url?: string }) => {
+          if (data?.url) window.open(data.url, '_blank', 'noopener,noreferrer');
+          else window.open(href, '_blank', 'noopener,noreferrer');
+        })
+        .catch(() => {
+          window.open(href, '_blank', 'noopener,noreferrer');
+        });
+    };
+
+    root.addEventListener('click', onClickCapture, true);
     root.querySelectorAll('a[href]').forEach((node) => {
       const a = node as HTMLAnchorElement;
       const href = a.getAttribute('href');
@@ -442,6 +559,7 @@ function CurriculumRichHtml({
         a.rel = 'noopener noreferrer';
       }
     });
+    return () => root.removeEventListener('click', onClickCapture, true);
   }, [safe]);
 
   if (!safe) return null;
@@ -453,6 +571,57 @@ function CurriculumRichHtml({
       dangerouslySetInnerHTML={{ __html: safe }}
     />
   );
+}
+
+/** Strip tags but keep line breaks from block-level HTML (for LI/SC split fallback). */
+function htmlToPlainWithLineBreaks(html: string): string {
+  return html
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<\/p>\s*/gi, "\n")
+    .replace(/<\/div>\s*/gi, "\n")
+    .replace(/<\/tr>\s*/gi, "\n")
+    .replace(/<[^>]+>/g, "")
+    .replace(/\r\n/g, "\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
+type LearningIntentionSuccessDisplay =
+  | { kind: "blocks"; li: string; sc: string }
+  | { kind: "html"; html: string };
+
+/** Match source matrix: bold labels and separate blocks for Learning Intention vs Success Criteria. */
+function resolveLearningIntentionSuccessDisplay(
+  summary: ElaKeyLearningSummaryPayload,
+): LearningIntentionSuccessDisplay | null {
+  const htmlRaw = (summary.learning_intentions_success_html ?? "").trim();
+  const liPlain = (summary.learning_intention ?? "").trim();
+  const scPlain = (summary.success_criteria ?? "").trim();
+
+  /* Prefer column B HTML when ingest preserved structure (lists, bold, links); plain fields are a lossy split. */
+  if (htmlRaw && /<(p|ul|ol|li|b|strong|a|span|br|table)\b/i.test(htmlRaw)) {
+    return { kind: "html", html: htmlRaw };
+  }
+
+  if (liPlain || scPlain) {
+    return { kind: "blocks", li: liPlain, sc: scPlain };
+  }
+
+  if (!htmlRaw) return null;
+
+  const plain = htmlToPlainWithLineBreaks(htmlRaw);
+  const idx = plain.search(/\bSuccess\s+Criteria\s*:/i);
+  if (idx !== -1) {
+    let before = plain.slice(0, idx).trim();
+    let after = plain.slice(idx).trim();
+    before = before.replace(/^\s*Learning\s+Intentions?\s*:\s*/i, "").trim();
+    after = after.replace(/^\s*Success\s+Criteria\s*:\s*/i, "").trim();
+    if (before || after) {
+      return { kind: "blocks", li: before, sc: after };
+    }
+  }
+
+  return { kind: "html", html: htmlRaw };
 }
 
 function ElaRichBlock({
@@ -500,29 +669,45 @@ function ElaKeyLearningSection({ summary }: { summary: ElaKeyLearningSummaryPayl
         <BookOpen className="w-5 h-5" />
         Summary of Key Learning (unit matrix)
       </h3>
-      {(summary.learning_intentions_success_html ?? "").trim() ? (
-        <ElaRichBlock title="Learning intentions and success criteria" html={summary.learning_intentions_success_html} />
-      ) : (
-        <>
-          {(summary.learning_intention ?? "").trim() ? (
-            <div className="space-y-1">
-              <h4 className="text-sm font-semibold text-teal-800">Learning intention</h4>
-              <p className="text-sm text-muted-foreground whitespace-pre-wrap">{summary.learning_intention}</p>
+      {(() => {
+        const liScDisp = resolveLearningIntentionSuccessDisplay(summary);
+        if (!liScDisp) return null;
+        if (liScDisp.kind === "blocks") {
+          return (
+            <div className="space-y-4">
+              <h4 className="text-sm font-semibold text-teal-800 border-b border-teal-200/80 pb-1">
+                Learning intentions and success criteria
+              </h4>
+              {liScDisp.li ? (
+                <div className="space-y-1.5">
+                  <p className="text-sm font-semibold text-foreground">Learning Intention:</p>
+                  <p className="text-sm text-muted-foreground whitespace-pre-wrap leading-relaxed">
+                    {liScDisp.li}
+                  </p>
+                </div>
+              ) : null}
+              {liScDisp.sc ? (
+                <div
+                  className={`space-y-1.5 ${liScDisp.li ? "mt-5 pt-4 border-t border-teal-200/60" : ""}`}
+                >
+                  <p className="text-sm font-semibold text-foreground">Success Criteria:</p>
+                  <p className="text-sm text-muted-foreground whitespace-pre-wrap leading-relaxed">
+                    {liScDisp.sc}
+                  </p>
+                </div>
+              ) : null}
             </div>
-          ) : null}
-          {(summary.success_criteria ?? "").trim() ? (
-            <div className="space-y-1">
-              <h4 className="text-sm font-semibold text-teal-800">Success criteria</h4>
-              <p className="text-sm text-muted-foreground whitespace-pre-wrap">{summary.success_criteria}</p>
-            </div>
-          ) : null}
-        </>
-      )}
+          );
+        }
+        return (
+          <ElaRichBlock title="Learning intentions and success criteria" html={liScDisp.html} />
+        );
+      })()}
       {((summary.daily_task_title ?? "").trim() || (summary.daily_task_body ?? "").trim()) && (
         <div className="space-y-2">
           <h4 className="text-sm font-semibold text-teal-800">Daily instructional task</h4>
           {(summary.daily_task_title ?? "").trim() ? (
-            <p className="text-sm font-medium text-foreground">{summary.daily_task_title}</p>
+            <p className="text-sm font-semibold text-foreground">{summary.daily_task_title}</p>
           ) : null}
           {(summary.daily_task_body ?? "").trim() ? (
             <CurriculumRichHtml
@@ -547,72 +732,240 @@ function ElaKeyLearningSection({ summary }: { summary: ElaKeyLearningSummaryPayl
   );
 }
 
-function ElaStructuredLessonPlanSection({ plan }: { plan: ElaLessonPlanStructuredPayload }) {
-  const procedurePairs: { title: string; html?: string }[] = [
-    { title: "Anticipatory set", html: plan.anticipatory_set_html },
-    { title: "Learning procedures", html: plan.learning_procedures_html },
-    { title: "Engagement with the content", html: plan.engagement_with_content_html },
-    { title: "Daily instructional task", html: plan.daily_instructional_task_html },
-  ];
-  const hasProcedureSubsections = procedurePairs.some((p) => (p.html ?? "").trim());
+/** One content cell in the ELA detailed-lesson table (matches DOCX table body cells). */
+function ElaPlanBodyTd({ html }: { html?: string }) {
+  const h = (html ?? "").trim();
   return (
-    <section className="space-y-5 rounded-xl border border-cyan-200/70 bg-cyan-50/20 p-5">
-      <h3 className="flex flex-wrap items-center gap-x-2 gap-y-1 font-bold text-lg text-cyan-900">
+    <td className="border border-slate-300 bg-white p-3 align-top text-muted-foreground">
+      {h ? (
+        <CurriculumRichHtml className="prose prose-sm max-w-none rich-html" html={h} />
+      ) : (
+        <span className="text-muted-foreground/40 text-xs">&nbsp;</span>
+      )}
+    </td>
+  );
+}
+
+const ELA_PROCEDURE_BANDS: {
+  key: keyof ElaLessonPlanStructuredPayload;
+  banner: string;
+}[] = [
+  { key: "anticipatory_set_html", banner: "Anticipatory Set" },
+  { key: "learning_procedures_html", banner: "Learning Procedures" },
+  { key: "engagement_with_content_html", banner: "Engagement with the Content" },
+  { key: "daily_instructional_task_html", banner: "Daily Instructional Task" },
+];
+
+/**
+ * Renders `ela_lesson_plan_structured` as HTML tables aligned to the teacher-guide grid:
+ * title row (1 col), LI|SC headers + body (2 col), optional NJSLS banner + body (1 col),
+ * Key Instructional Practices banner + two columns, Vocabulary|Resources headers + body,
+ * then full-width procedure bands, then Differentiation|Addressing Misconceptions.
+ */
+function ElaStructuredLessonPlanSection({ plan }: { plan: ElaLessonPlanStructuredPayload }) {
+  const preamble = (plan.procedures_preamble_html ?? "").trim();
+  const hasProcedureBucket = ELA_PROCEDURE_BANDS.some(
+    (b) => ((plan[b.key] as string | undefined) ?? "").trim().length > 0,
+  );
+  const proceduresFull = (plan.procedures_full_html ?? "").trim();
+  const showProceduresFullFallback = Boolean(proceduresFull) && !hasProcedureBucket && !preamble;
+  const njsls = (plan.njsls_standards_html ?? "").trim();
+  const diffL = (plan.differentiation_html ?? "").trim();
+  const diffR = (plan.addressing_misconceptions_html ?? "").trim();
+  const showDifferentiation = Boolean(diffL || diffR);
+
+  const lessonHead =
+    plan.lesson_number != null
+      ? `Lesson ${plan.lesson_number}${(plan.lesson_title ?? "").trim() ? `: ${(plan.lesson_title ?? "").trim()}` : ""}`
+      : (plan.lesson_title ?? "").trim() || "Lesson plan";
+
+  const tableShell =
+    "w-full border-collapse border border-slate-300 text-sm shadow-sm rounded-md overflow-hidden";
+
+  return (
+    <section className="space-y-3 rounded-xl border border-cyan-200/70 bg-cyan-50/20 p-4">
+      <div className="flex items-center gap-2 text-cyan-900">
         <Layers className="w-5 h-5 shrink-0" />
-        <span>ELA lesson plan (structured)</span>
-        {(() => {
-          const num = plan.lesson_number != null ? `Lesson ${plan.lesson_number}` : "";
-          const tit = (plan.lesson_title ?? "").trim();
-          const sub = [num, tit].filter(Boolean).join(": ");
-          return sub ? (
-            <span className="text-sm font-normal text-muted-foreground w-full sm:w-auto">{sub}</span>
-          ) : null;
-        })()}
-      </h3>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <ElaRichBlock title="Learning intention" html={plan.learning_intention_html} />
-        <ElaRichBlock title="Success criteria" html={plan.success_criteria_html} />
+        <span className="text-sm font-semibold uppercase tracking-wide">
+          ELA detailed lesson plan
+        </span>
       </div>
-      <ElaRichBlock title="NJSLS standards" html={plan.njsls_standards_html} />
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <ElaRichBlock title="Key questions" html={plan.key_questions_html} />
-        <ElaRichBlock
-          title="Instructional routines and assessments"
-          html={plan.instructional_routines_assessments_html}
-        />
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <ElaRichBlock title="Vocabulary" html={plan.vocabulary_cell_html} />
-        <ElaRichBlock title="Instructional resources" html={plan.instructional_resources_cell_html} />
-      </div>
-      {(plan.procedures_preamble_html ?? "").trim() ? (
-        <ElaRichBlock title="Procedures (introduction)" html={plan.procedures_preamble_html} />
-      ) : null}
-      {hasProcedureSubsections ? (
-        <div className="space-y-4">
-          <h4 className="text-sm font-semibold text-cyan-900 border-b border-cyan-200/80 pb-1">
-            Instructional procedures
-          </h4>
-          <div className="space-y-4">
-            {procedurePairs.map((p) =>
-              (p.html ?? "").trim() ? (
-                <div
-                  key={p.title}
-                  className="rounded-lg border border-cyan-100/90 bg-white/60 p-4 shadow-sm"
+
+      <table className={tableShell}>
+        <tbody>
+          <tr>
+            <td
+              colSpan={2}
+              className="border border-slate-300 bg-sky-800 py-2.5 px-4 text-center text-sm font-semibold text-white"
+            >
+              {lessonHead}
+            </td>
+          </tr>
+          <tr>
+            <th
+              scope="col"
+              className="w-1/2 border border-slate-300 bg-sky-100 py-2 px-3 text-center text-sm font-semibold text-foreground"
+            >
+              Learning Intention
+            </th>
+            <th
+              scope="col"
+              className="w-1/2 border border-slate-300 bg-sky-100 py-2 px-3 text-center text-sm font-semibold text-foreground"
+            >
+              Success Criteria
+            </th>
+          </tr>
+          <tr>
+            <ElaPlanBodyTd html={plan.learning_intention_html} />
+            <ElaPlanBodyTd html={plan.success_criteria_html} />
+          </tr>
+
+          {njsls ? (
+            <>
+              <tr>
+                <td
+                  colSpan={2}
+                  className="border border-slate-300 bg-sky-100 py-2 px-3 text-center text-sm font-semibold text-foreground"
                 >
-                  <ElaRichBlock title={p.title} html={p.html} titleClassName="text-sm font-semibold text-cyan-800 mb-2" />
-                </div>
-              ) : null,
-            )}
-          </div>
-        </div>
-      ) : (plan.procedures_full_html ?? "").trim() ? (
-        <ElaRichBlock title="Procedures (full)" html={plan.procedures_full_html} />
+                  NJSLS Standards
+                </td>
+              </tr>
+              <tr>
+                <td colSpan={2} className="border border-slate-300 bg-white p-3 align-top">
+                  <CurriculumRichHtml
+                    className="prose prose-sm max-w-none text-muted-foreground rich-html"
+                    html={njsls}
+                  />
+                </td>
+              </tr>
+            </>
+          ) : null}
+
+          <tr>
+            <td
+              colSpan={2}
+              className="border border-slate-300 bg-sky-100 py-2 px-3 text-center text-sm font-semibold text-foreground"
+            >
+              Key Instructional Practices
+            </td>
+          </tr>
+          <tr>
+            <ElaPlanBodyTd html={plan.key_questions_html} />
+            <ElaPlanBodyTd html={plan.instructional_routines_assessments_html} />
+          </tr>
+
+          <tr>
+            <th
+              scope="col"
+              className="border border-slate-300 bg-sky-100 py-2 px-3 text-center text-sm font-semibold text-foreground"
+            >
+              Vocabulary
+            </th>
+            <th
+              scope="col"
+              className="border border-slate-300 bg-sky-100 py-2 px-3 text-center text-sm font-semibold text-foreground"
+            >
+              Instructional Resources
+            </th>
+          </tr>
+          <tr>
+            <ElaPlanBodyTd html={plan.vocabulary_cell_html} />
+            <ElaPlanBodyTd html={plan.instructional_resources_cell_html} />
+          </tr>
+
+          {preamble ? (
+            <>
+              <tr>
+                <td
+                  colSpan={2}
+                  className="border border-slate-300 bg-sky-100 py-2 px-3 text-center text-sm font-semibold text-foreground"
+                >
+                  Procedures
+                </td>
+              </tr>
+              <tr>
+                <td colSpan={2} className="border border-slate-300 bg-white p-3 align-top">
+                  <CurriculumRichHtml
+                    className="prose prose-sm max-w-none text-muted-foreground rich-html"
+                    html={preamble}
+                  />
+                </td>
+              </tr>
+            </>
+          ) : null}
+
+          {ELA_PROCEDURE_BANDS.map(({ key, banner }) => {
+            const html = ((plan[key] as string | undefined) ?? "").trim();
+            if (!html) return null;
+            return (
+              <Fragment key={banner}>
+                <tr>
+                  <td
+                    colSpan={2}
+                    className="border border-slate-300 bg-sky-100 py-2 px-3 text-sm font-semibold text-foreground"
+                  >
+                    {banner}
+                  </td>
+                </tr>
+                <tr>
+                  <td colSpan={2} className="border border-slate-300 bg-white p-3 align-top">
+                    <CurriculumRichHtml
+                      className="prose prose-sm max-w-none text-muted-foreground rich-html"
+                      html={html}
+                    />
+                  </td>
+                </tr>
+              </Fragment>
+            );
+          })}
+
+          {showProceduresFullFallback ? (
+            <>
+              <tr>
+                <td
+                  colSpan={2}
+                  className="border border-slate-300 bg-sky-100 py-2 px-3 text-center text-sm font-semibold text-foreground"
+                >
+                  Instructional procedures
+                </td>
+              </tr>
+              <tr>
+                <td colSpan={2} className="border border-slate-300 bg-white p-3 align-top">
+                  <CurriculumRichHtml
+                    className="prose prose-sm max-w-none text-muted-foreground rich-html"
+                    html={proceduresFull}
+                  />
+                </td>
+              </tr>
+            </>
+          ) : null}
+        </tbody>
+      </table>
+
+      {showDifferentiation ? (
+        <table className={`${tableShell} mt-4`}>
+          <tbody>
+            <tr>
+              <th
+                scope="col"
+                className="w-1/2 border border-slate-300 bg-sky-100 py-2 px-3 text-center text-sm font-semibold text-foreground"
+              >
+                Differentiation
+              </th>
+              <th
+                scope="col"
+                className="w-1/2 border border-slate-300 bg-sky-100 py-2 px-3 text-center text-sm font-semibold text-foreground"
+              >
+                Addressing Misconceptions
+              </th>
+            </tr>
+            <tr>
+              <ElaPlanBodyTd html={plan.differentiation_html} />
+              <ElaPlanBodyTd html={plan.addressing_misconceptions_html} />
+            </tr>
+          </tbody>
+        </table>
       ) : null}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <ElaRichBlock title="Differentiation" html={plan.differentiation_html} />
-        <ElaRichBlock title="Addressing misconceptions" html={plan.addressing_misconceptions_html} />
-      </div>
     </section>
   );
 }
@@ -663,7 +1016,6 @@ export function CurriculumExplorer() {
   const [lessonStandards, setLessonStandards] = useState<LessonStandardRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadingDetails, setLoadingDetails] = useState(false);
-  const [language, setLanguage] = useState<'en' | 'pt'>('en');
   const detailsRef = useRef<HTMLDivElement>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<
@@ -1085,28 +1437,10 @@ export function CurriculumExplorer() {
                    </div>
                 ) : (
                   <>
-                  <div className="flex justify-between items-start">
-                    <div className="space-y-1">
-                      <h2 className="text-2xl font-bold">{selectedLesson?.title || "Untitled Lesson"}</h2>
-                      <p className="text-muted-foreground text-sm">Detailed Lesson Plan & Vocabulary</p>
-                    </div>
-                  
-                  {/* Bilingual Toggle */}
-                  <div className="flex bg-muted p-1 rounded-lg">
-                    <button 
-                      onClick={() => setLanguage('en')}
-                      className={`px-3 py-1 text-xs font-semibold rounded-md transition-all ${language === 'en' ? 'bg-white shadow-sm text-primary' : 'text-muted-foreground'}`}
-                    >
-                      EN
-                    </button>
-                    <button 
-                      onClick={() => setLanguage('pt')}
-                      className={`px-3 py-1 text-xs font-semibold rounded-md transition-all ${language === 'pt' ? 'bg-white shadow-sm text-primary' : 'text-muted-foreground'}`}
-                    >
-                      PT
-                    </button>
+                  <div className="space-y-1">
+                    <h2 className="text-2xl font-bold">{selectedLesson?.title || "Untitled Lesson"}</h2>
+                    <p className="text-muted-foreground text-sm">Detailed Lesson Plan & Vocabulary</p>
                   </div>
-                </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
                   {/* Left: Content */}
@@ -1391,17 +1725,10 @@ export function CurriculumExplorer() {
                         </h3>
                         <div className="text-xs bg-slate-50/60 border border-slate-200 rounded-xl p-4 space-y-2">
                           {selectedLesson.source_url && (
-                            <div className="break-all">
-                              <span className="font-semibold text-slate-700">Source URL:</span>{" "}
-                              <a
-                                href={selectedLesson.source_url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-blue-700 underline"
-                              >
-                                {selectedLesson.source_url}
-                              </a>
-                            </div>
+                            <SourceUrlOpenRow
+                              sourceUrl={selectedLesson.source_url}
+                              sourceDocId={selectedLesson.source_doc_id}
+                            />
                           )}
                           {selectedLesson.source_doc_id && (
                             <div>
@@ -1499,17 +1826,11 @@ export function CurriculumExplorer() {
                         ) : (
                           vocabulary.map((vocab) => (
                             <div key={vocab.term} className="p-4 bg-muted/40 rounded-xl border border-transparent hover:border-orange-200 transition-colors">
-                              <div className="flex justify-between items-center mb-1">
+                              <div className="mb-1">
                                 <span className="font-bold text-sm tracking-tight">{vocab.term}</span>
-                                <span className="text-[10px] font-bold text-orange-600 uppercase bg-orange-100 px-2 py-0.5 rounded-full">
-                                  {language === 'en' ? 'English' : 'Português'}
-                                </span>
                               </div>
                               <div className="text-xs text-muted-foreground leading-relaxed">
-                                {language === 'en' 
-                                  ? vocab.leveled_definitions?.[5]?.definition || "No definition available."
-                                  : vocab.translated_term + ": " + (vocab.leveled_definitions?.[5]?.definition_pt || "Sem definição disponível.")
-                                }
+                                {vocab.leveled_definitions?.[5]?.definition || "No definition available."}
                               </div>
                             </div>
                           ))

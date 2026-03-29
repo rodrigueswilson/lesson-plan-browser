@@ -1,3 +1,5 @@
+import typography from '@tailwindcss/typography';
+
 /** @type {import('tailwindcss').Config} */
 export default {
   darkMode: ['class'],
@@ -5,6 +7,9 @@ export default {
     './index.html',
     './src/**/*.{js,ts,jsx,tsx}',
     '../shared/**/*.{js,ts,jsx,tsx}',
+    /* App re-exports lesson-plan-browser/src/App.tsx; scan it so `prose` and utilities used there are generated */
+    '../lesson-plan-browser/frontend/index.html',
+    '../lesson-plan-browser/frontend/src/**/*.{js,ts,jsx,tsx}',
   ],
   safelist: [
     // Use patterns to ensure all variations are included
@@ -126,5 +131,5 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [typography],
 };

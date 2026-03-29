@@ -6,6 +6,7 @@ import { Button } from './ui/Button';
 import { formatDate, formatWeekOf } from '../lib/utils';
 import { isDesktop } from '../lib/platform';
 import { getNetworkApiBaseUrl } from '@lesson-api';
+import type { WeeklyPlan } from '@lesson-api';
 
 export const PlanHistory: React.FC = () => {
   const { currentUser, plans } = useStore();
@@ -163,9 +164,9 @@ export const PlanHistory: React.FC = () => {
   const statusCounts = useMemo(() => {
     return {
       all: plans.length,
-      completed: plans.filter(p => p.status === 'completed').length,
-      failed: plans.filter(p => p.status === 'failed').length,
-      processing: plans.filter(p => p.status === 'processing').length,
+      completed: plans.filter((p: WeeklyPlan) => p.status === 'completed').length,
+      failed: plans.filter((p: WeeklyPlan) => p.status === 'failed').length,
+      processing: plans.filter((p: WeeklyPlan) => p.status === 'processing').length,
     };
   }, [plans]);
 
