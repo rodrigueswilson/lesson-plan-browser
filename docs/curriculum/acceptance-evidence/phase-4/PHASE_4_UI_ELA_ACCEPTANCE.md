@@ -18,3 +18,10 @@
 2. Open a lesson with populated `ela_key_learning_summary` / `ela_lesson_plan_structured` (e.g. ELA sample unit after ingest): confirm teal “Summary of Key Learning” and cyan “ELA lesson plan (structured)” blocks.
 
 Screenshots were not captured in this automated session; add under this folder if needed for audit.
+
+## Manual sign-off — Phase 4.2 closure (2026-03-29)
+
+| Check | Result | Lesson / unit identifiers |
+|-------|--------|---------------------------|
+| Grade 3 Math — banded “Instructional Steps & Activities” from `procedure_html` | **PASS** | Unit `Math_3_U1_13jAzcMR` (“Introducing Multiplication …”). Lesson `Math_3_U1_13jAzcMR_L1`. `procedure_html` length in DB: 3575 chars. Dev session: `GET /api/curriculum/lessons/Math_3_U1_13jAzcMR_L1` returned 200 with explorer UI navigation. |
+| ELA — “Summary of Key Learning” + “ELA lesson plan (structured)” when matrix fields present | **PASS** | Unit `ELA_3_U8_sample`. Lesson `ELA_3_U8_sample_L1`. `ela_key_learning_summary` ~1702 chars; `ela_lesson_plan_structured` ~11343 chars. Dev session: lesson detail and resource resolve endpoints returned 200 from unified app (`start-app-with-logs.ps1`, Vite `localhost:1420`). |
