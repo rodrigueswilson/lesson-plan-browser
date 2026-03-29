@@ -17,8 +17,7 @@
     "jsx": "react-jsx",
     "types": [
       "vite/client",
-      "node",
-      "react"
+      "node"
     ],
     "strict": true,
     "noUnusedLocals": true,
