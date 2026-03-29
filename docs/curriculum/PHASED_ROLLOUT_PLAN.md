@@ -285,6 +285,9 @@ After that, the project transitions from "hardening" to "production expansion" (
 - Sample matrix meets target pass threshold (see below).
 - Branch `curriculum/phase-5-cross-grade-sample` merged and pushed only when all sampled rows meet gate policy.
 
+**Addendum — Phase 5 closure (2026-03-29)**  
+Phase 5 was **closed by operator decision** without ingesting the Stage C matrix’s two **Math Grades 4–5** representative doc IDs (`Math_4_5_sample_U4` / `Math_4_5_sample_U5`; see `docs/curriculum/acceptance-evidence/phase-5/PHASE_5_SAMPLE_MATRIX.md`). All **other** curated matrix rows for the phase were ingested, gated, and archived. Deferred rows remain valid for a future ingest batch; they are **not** Phase 5 blockers. The **program-wide bulk ingestion** checkpoint below still requires Phase 5 **and** Phase 6 exit criteria in the sense of **completed phase work and evidence**—not matrix 100% row-count parity in DB for every listed registry doc.
+
 ---
 
 ## Phase 6 - Navigator and semantic progression features
@@ -302,6 +305,9 @@ After that, the project transitions from "hardening" to "production expansion" (
 **Exit criteria**
 - Teacher can navigate lesson progression and grade-to-grade progression clearly.
 - Branch `curriculum/phase-6-navigator-semantic-links` merged and pushed after stable UX and regression tests.
+
+**Addendum — Phase 6 closure (2026-03-29)**  
+Phase 6 is **closed**. Deliverables: `lessons_fts` FTS5 index synced from `upsert_lesson`; `GET /api/curriculum/search` with `snippet_html` highlights; `unit_semantic_links` plus `GET /api/curriculum/units/{unit_id}/semantic-links` (manual rows merged with same-subject adjacent-grade suggestions); Explorer UI search and “Related units” with rationale. Evidence: `docs/curriculum/acceptance-evidence/phase-6/PHASE_6_WRAP_UP.md` and `test-gate-6-close-*.txt`. The named branch **`curriculum/phase-6-navigator-semantic-links`** exists as a pointer at the closure commit alongside integration on `curriculum/phase-5-cross-grade-sample`; pushing/merging to `master` follows repository workflow. Curator writes to `unit_semantic_links` are SQL-only unless a future phase adds an API.
 
 ---
 

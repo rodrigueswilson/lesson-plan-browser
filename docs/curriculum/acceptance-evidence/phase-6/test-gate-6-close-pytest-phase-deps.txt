@@ -1,0 +1,20 @@
+============================= test session starts =============================
+platform win32 -- Python 3.12.3, pytest-7.4.3, pluggy-1.6.0
+rootdir: D:\LP
+configfile: pytest.ini
+plugins: anyio-4.13.0, Faker-40.11.1, asyncio-0.21.1, timeout-2.4.0, typeguard-4.4.4
+asyncio: mode=Mode.AUTO
+timeout: 120.0s
+collected 28 items
+
+tests\test_grade3_ela_ingest_smoke.py .                                  [  3%]
+tests\test_math_fidelity_helpers.py ....                                 [ 17%]
+tests\test_ingest_report_failure_codes.py .....                          [ 35%]
+tests\test_curriculum_gaps.py ......                                     [ 57%]
+tests\test_curriculum_resource_resolve.py .........                      [ 89%]
+tests\test_curriculum_fts_and_links.py ...                               [100%]
+
+============================= 28 passed in 7.04s ==============================
+
+Commands (Phase 6 closure, 2026-03-29):
+pytest tests/test_grade3_ela_ingest_smoke.py tests/test_math_fidelity_helpers.py tests/test_ingest_report_failure_codes.py tests/test_curriculum_gaps.py tests/test_curriculum_resource_resolve.py tests/test_curriculum_fts_and_links.py -q
