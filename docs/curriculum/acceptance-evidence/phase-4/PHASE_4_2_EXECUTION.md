@@ -66,7 +66,7 @@ Per [PHASE_EXECUTION_TEMPLATE.md](../../PHASE_EXECUTION_TEMPLATE.md): same comma
 
 ## Merge and push checklist
 
-- [ ] Phase exit merge/push per team process
+- [x] Phase exit merge/push per team process (`curriculum/phase-4-ela-hardening` merged to `master`, 2026-03-29)
 - [x] Evidence archived under this folder
 
 ## End-of-phase session wrap-up (mandatory)
