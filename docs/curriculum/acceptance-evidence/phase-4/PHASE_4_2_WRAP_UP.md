@@ -22,7 +22,7 @@ Test gate #1 and **gate #2** (same commands on the final branch) passed; `npm ru
   - [test-gate-4-2-2-lesson-browser-build.txt](./test-gate-4-2-2-lesson-browser-build.txt)
 - [PHASE_4_UI_ELA_ACCEPTANCE.md](./PHASE_4_UI_ELA_ACCEPTANCE.md) (manual sign-off table)
 - [PHASE_4_2_EXECUTION.md](./PHASE_4_2_EXECUTION.md)
-- [loc-snapshot-phase-4-exit.txt](./loc-snapshot-phase-4-exit.txt) (optional ritual — updated on closure if present)
+- [loc-snapshot-phase-4-exit.txt](./loc-snapshot-phase-4-exit.txt) (`python tools/refactor/count_loc.py --markdown`, 2026-03-29 closure)
 - `lesson-plan-browser/frontend/src/components/CurriculumExplorer.tsx`
 
 ## Code notes (this session)
