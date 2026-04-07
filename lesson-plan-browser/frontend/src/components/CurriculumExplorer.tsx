@@ -166,6 +166,16 @@ function SourceUrlOpenRow({
 
   const openPreferred = async (e: MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
+    // Open a tab synchronously so popup blockers do not drop async opens.
+    const popup = window.open("", "_blank");
+    if (popup) popup.opener = null;
+    const navigatePopup = (url: string) => {
+      if (popup) {
+        popup.location.href = url;
+      } else {
+        window.open(url, "_blank", "noopener,noreferrer");
+      }
+    };
     if (gid) {
       try {
         const r = await fetch(
@@ -174,7 +184,7 @@ function SourceUrlOpenRow({
         if (r.ok) {
           const data = (await r.json()) as { url?: string };
           if (data?.url) {
-            window.open(data.url, "_blank", "noopener,noreferrer");
+            navigatePopup(data.url);
             return;
           }
         }
@@ -182,7 +192,7 @@ function SourceUrlOpenRow({
         /* fall through to Drive URL */
       }
     }
-    window.open(sourceUrl, "_blank", "noopener,noreferrer");
+    navigatePopup(sourceUrl);
   };
 
   const badgeLabel =
@@ -529,23 +539,34 @@ function CurriculumRichHtml({
       const href = (a.getAttribute('href') || '').trim();
       if (!href || href.startsWith('#')) return;
       const fromAttr = (a.getAttribute('data-resource-id') || '').trim();
-      const m = href.match(/\/document\/d\/([a-zA-Z0-9_-]+)/);
-      const gid = fromAttr || (m ? m[1] : '');
-      if (!gid) return;
+      // Only intercept links explicitly annotated by ingest with a stable resource id.
+      // Unannotated links fall back to native anchor behavior (target=_blank).
+      if (!fromAttr) return;
+      const gid = fromAttr;
       /* Resolve local export for any Google Doc link, not only anchors with data-resource-id (ingest varies). */
       if (!href.includes('docs.google.com/document')) return;
 
       ev.preventDefault();
       ev.stopPropagation();
+      // Open a tab in the click gesture to avoid popup blocking on async resolve.
+      const popup = window.open("", "_blank");
+      if (popup) popup.opener = null;
+      const navigatePopup = (url: string) => {
+        if (popup) {
+          popup.location.href = url;
+        } else {
+          window.open(url, '_blank', 'noopener,noreferrer');
+        }
+      };
       const enc = encodeURIComponent(gid);
       fetch(`/api/curriculum/resources/google-id/${enc}/resolve`)
         .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
         .then((data: { url?: string }) => {
-          if (data?.url) window.open(data.url, '_blank', 'noopener,noreferrer');
-          else window.open(href, '_blank', 'noopener,noreferrer');
+          if (data?.url) navigatePopup(data.url);
+          else navigatePopup(href);
         })
         .catch(() => {
-          window.open(href, '_blank', 'noopener,noreferrer');
+          navigatePopup(href);
         });
     };
 
@@ -584,6 +605,70 @@ function htmlToPlainWithLineBreaks(html: string): string {
     .replace(/\r\n/g, "\n")
     .replace(/\n{3,}/g, "\n\n")
     .trim();
+}
+
+/** Filter link titles and resource labels mistaken for vocabulary during ingest. */
+function isLikelyJunkVocabLabel(t: string): boolean {
+  const s = t.trim();
+  if (s.length < 2 || s.length > 48) return true;
+  if (/https?:\/\//i.test(s)) return true;
+  const low = s.toLowerCase();
+  const junkNeedles = [
+    "rubric",
+    "slide deck",
+    "screencast",
+    ".pptx",
+    "vocabulary boxes",
+    "notice/wonder",
+    "notice and wonder",
+    "preview chart",
+    "instructional resources",
+    "primary source",
+    "partner discussion",
+    "discussion rubric",
+    "questions",
+    " video",
+    "video",
+    "read aloud",
+    "google.com",
+    "docs.google",
+    "presentation",
+  ];
+  if (junkNeedles.some((n) => low.includes(n))) return true;
+  const wordCount = (s.match(/\s+/g) || []).length + 1;
+  if (wordCount > 6) return true;
+  return false;
+}
+
+/**
+ * Parse comma-/semicolon-separated vocabulary from the ELA structured plan vocabulary cell
+ * (e.g. "Vocabulary: Constitution, protest, representatives").
+ */
+function extractElaVocabularyTermsFromStructuredCell(
+  html: string | undefined | null,
+): string[] {
+  const raw = (html ?? "").trim();
+  if (!raw) return [];
+  const plain = htmlToPlainWithLineBreaks(raw).replace(/\s+/g, " ").trim();
+  let segment = plain;
+  const vi = plain.search(/\bvocabulary\s*:/i);
+  if (vi !== -1) {
+    segment = plain.slice(vi).replace(/^\s*vocabulary\s*:\s*/i, "").trim();
+  }
+  const parts = segment
+    .split(/[,;\n]+/)
+    .map((p) => p.replace(/\s*[.,;:]+$/g, "").trim())
+    .filter(Boolean);
+  const out: string[] = [];
+  const seen = new Set<string>();
+  for (const p of parts) {
+    if (isLikelyJunkVocabLabel(p)) continue;
+    const key = p.toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push(p);
+  }
+  return out;
 }
 
 type LearningIntentionSuccessDisplay =
@@ -1000,6 +1085,8 @@ function lessonDetailPresentationFlags(selectedLesson: unknown) {
         skipMathProcedureBanding),
     hideStandaloneSuccessCriteriaForEla:
       useElaStructuredPrimary && Boolean((elaPlanPayload?.success_criteria_html ?? "").trim()),
+    hideStandardsSectionForElaStructured:
+      useElaStructuredPrimary && Boolean(elaPlanPayload),
   };
 }
 
@@ -1216,6 +1303,36 @@ export function CurriculumExplorer() {
     setExpandedSubjects(newExpanded);
   };
 
+  const lessonDetailFlags = useMemo(
+    () => lessonDetailPresentationFlags(selectedLesson),
+    [selectedLesson],
+  );
+
+  const elaVocabTermList = useMemo(() => {
+    if (!lessonDetailFlags.useElaStructuredPrimary) return [];
+    return extractElaVocabularyTermsFromStructuredCell(
+      lessonDetailFlags.elaPlanPayload?.vocabulary_cell_html,
+    );
+  }, [
+    lessonDetailFlags.useElaStructuredPrimary,
+    lessonDetailFlags.elaPlanPayload?.vocabulary_cell_html,
+  ]);
+
+  const displayVocabulary = useMemo(() => {
+    if (elaVocabTermList.length === 0) return vocabulary;
+    return elaVocabTermList.map((term) => {
+      const hit = vocabulary.find(
+        (v) => v.term.trim().toLowerCase() === term.toLowerCase(),
+      );
+      if (hit) return hit;
+      return {
+        term,
+        translated_term: term,
+        leveled_definitions: [] as VocabularyTerm["leveled_definitions"],
+      };
+    });
+  }, [elaVocabTermList, vocabulary]);
+
   if (loading) {
     return <div className="flex items-center justify-center p-12">Loading Curriculum...</div>;
   }
@@ -1231,7 +1348,8 @@ export function CurriculumExplorer() {
     hideStudentObjectivesForEla,
     hideDailyTasksBandForEla,
     hideStandaloneSuccessCriteriaForEla,
-  } = lessonDetailPresentationFlags(selectedLesson);
+    hideStandardsSectionForElaStructured,
+  } = lessonDetailFlags;
   const procedureHeaderUi: Record<
     ProcedureSection["kind"],
     { icon: any; iconClass: string; titleClass: string; cardClass: string }
@@ -1530,7 +1648,7 @@ export function CurriculumExplorer() {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
                   {/* Left: Content */}
                   <div className="lg:col-span-2 space-y-8">
-                    {elaSummaryPayload ? (
+                    {elaSummaryPayload && !useElaStructuredPrimary ? (
                       <ElaKeyLearningSection summary={elaSummaryPayload} />
                     ) : null}
                     {useElaStructuredPrimary && elaPlanPayload ? (
@@ -1641,7 +1759,9 @@ export function CurriculumExplorer() {
                       </section>
                     )}
 
-                    {(lessonStandards.length > 0 || (selectedLesson.standards_structured || "").trim()) && (() => {
+                    {(lessonStandards.length > 0 || (selectedLesson.standards_structured || "").trim()) &&
+                      !hideStandardsSectionForElaStructured &&
+                      (() => {
                       const structuredFromDb = parseStructuredStandards(selectedLesson.standards_structured);
                       const sections = structuredFromDb.length > 0
                         ? structuredFromDb
@@ -1906,19 +2026,35 @@ export function CurriculumExplorer() {
                         Vocabulary
                       </h3>
                       <div className="space-y-4">
-                        {vocabulary.length === 0 ? (
+                        {displayVocabulary.length === 0 ? (
                           <p className="text-xs text-muted-foreground italic">No vocabulary terms identified for this lesson.</p>
+                        ) : useElaStructuredPrimary && elaVocabTermList.length > 0 ? (
+                          <div className="p-4 bg-muted/40 rounded-xl border border-transparent hover:border-orange-200 transition-colors">
+                            <ul className="list-disc pl-5 space-y-1">
+                              {displayVocabulary.map((vocab) => (
+                                <li key={vocab.term}>
+                                  <span className="font-bold text-sm tracking-tight">{vocab.term}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
                         ) : (
-                          vocabulary.map((vocab) => (
+                          displayVocabulary.map((vocab) => {
+                            const def = vocab.leveled_definitions?.[5]?.definition;
+                            const hasGlossaryRows =
+                              Array.isArray(vocab.leveled_definitions) &&
+                              vocab.leveled_definitions.length > 0;
+                            return (
                             <div key={vocab.term} className="p-4 bg-muted/40 rounded-xl border border-transparent hover:border-orange-200 transition-colors">
                               <div className="mb-1">
                                 <span className="font-bold text-sm tracking-tight">{vocab.term}</span>
                               </div>
                               <div className="text-xs text-muted-foreground leading-relaxed">
-                                {vocab.leveled_definitions?.[5]?.definition || "No definition available."}
+                                {def ? def : hasGlossaryRows ? "No definition available." : null}
                               </div>
                             </div>
-                          ))
+                            );
+                          })
                         )}
                       </div>
                     </section>

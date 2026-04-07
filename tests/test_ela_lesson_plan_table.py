@@ -72,6 +72,24 @@ def test_is_lesson_plan_detects_typical_grid() -> None:
     assert is_ela_lesson_plan_table(tbl) is True
 
 
+def test_is_lesson_plan_detects_grid_with_blank_row_after_title() -> None:
+    """Grade 2 Unit 8 tab export: spacer row between Lesson N title and LI|SC headers."""
+    tbl = _table(
+        _row(_cell(_p("Lesson 1: The U.S. Constitution")), _cell(_p(""))),
+        _row(_cell(_p("")), _cell(_p(""))),
+        _row(_cell(_p("Learning Intention")), _cell(_p("Success Criteria"))),
+        _row(_cell(_p("I am learning to define key words.")), _cell(_p("I can define X."))),
+        _row(_cell(_p("NJSLS Standards")), _cell(_p(""))),
+        _row(_cell(_p("Priority Standards: RI.CR.2.1")), _cell(_p(""))),
+    )
+    assert is_ela_lesson_plan_table(tbl) is True
+    out = parse_ela_lesson_plan_table(tbl, _htmlize)
+    assert out is not None
+    assert out["lesson_number"] == 1
+    assert "define key words" in out["learning_intention_html"]
+    assert "I can define" in out["success_criteria_html"]
+
+
 def test_is_lesson_plan_rejects_summary_shape() -> None:
     tbl = _table(
         _row(_cell(_p("Summary of Key Learning"))),
@@ -160,6 +178,134 @@ def test_parse_priority_standards_without_njsls_label_row() -> None:
     assert out is not None
     assert "RI.ZZ.9.9" in (out.get("njsls_standards_html") or "")
     assert "Q?" in out["key_questions_html"]
+
+
+def test_parser_normalizes_heading_prefix_and_star_bullets() -> None:
+    sys.path.insert(0, _SCRAPER_DIR)
+    from tools.scraper.ela_lesson_plan_table import _normalize_docx_export_html
+
+    raw = (
+        "<p>"
+        "Anticipatory Set: Unit Introduction<br>"
+        "* First item<br>"
+        "* Second item"
+        "</p>"
+    )
+    got = _normalize_docx_export_html(raw)
+    assert "<b>Anticipatory Set:</b> Unit Introduction" in got
+    assert "<ul>" in got and "</ul>" in got
+    assert "<li>First item</li>" in got
+    assert "<li>Second item</li>" in got
+
+
+def test_parser_normalizes_heading_prefix_and_linebreak_bullets() -> None:
+    sys.path.insert(0, _SCRAPER_DIR)
+    from tools.scraper.ela_lesson_plan_table import _normalize_docx_export_html
+
+    raw = (
+        "<p>"
+        "Anticipatory Set: Unit Introduction<br>"
+        "Introduce essential question.<br>"
+        "Invite partner discussion.<br>"
+        "Learning Procedures: Plan<br>"
+        "Model vocabulary.<br>"
+        "Read aloud pages."
+        "</p>"
+    )
+    got = _normalize_docx_export_html(raw)
+    assert "<b>Anticipatory Set:</b> Unit Introduction" in got
+    assert "<b>Learning Procedures:</b> Plan" in got
+    assert got.count("<ul>") >= 2
+    assert "<li>Introduce essential question.</li>" in got
+    assert "<li>Invite partner discussion.</li>" in got
+    assert "<li>Model vocabulary.</li>" in got
+
+
+def test_parser_splits_read_aloud_heading_and_standards_codes() -> None:
+    sys.path.insert(0, _SCRAPER_DIR)
+    from tools.scraper.ela_lesson_plan_table import _normalize_docx_export_html
+
+    raw = (
+        "<p>"
+        "Read Aloud and Text Dependent Questions RI.IT.2.3, RI.CR.2.1, RI.CI.2.2, "
+        "SL.PE.2.1, 6.1.2.HistoryCC.3, 6.1.2.HistoryUP.1, 6.1.2.CivicsPI.6:"
+        "</p>"
+    )
+    got = _normalize_docx_export_html(raw)
+    assert "<b>Read Aloud and Text Dependent Questions:</b>" in got
+    assert "<li>RI.IT.2.3, RI.CR.2.1, RI.CI.2.2, SL.PE.2.1, 6.1.2.HistoryCC.3, 6.1.2.HistoryUP.1, 6.1.2.CivicsPI.6:</li>" in got
+    # Standards line should remain normal text inside li, not bolded.
+    assert "<li><b>RI.IT.2.3" not in got
+
+
+def test_parser_splits_daily_instructional_task_heading_and_standards_codes() -> None:
+    sys.path.insert(0, _SCRAPER_DIR)
+    from tools.scraper.ela_lesson_plan_table import _normalize_docx_export_html
+
+    raw = (
+        "<p>"
+        "<b>Daily Instructional Task:</b> Partner Discussions RI.CR.2.1, RI.IT.2.3, "
+        "SL.PE.2.1A-C, SL.II.2.2, SL.ES.2.3, 6.1.2.HistoryUP.1:"
+        "</p>"
+    )
+    got = _normalize_docx_export_html(raw)
+    assert "<b>Daily Instructional Task:</b>" in got
+    assert (
+        "<li>Partner Discussions RI.CR.2.1, RI.IT.2.3, SL.PE.2.1A-C, "
+        "SL.II.2.2, SL.ES.2.3, 6.1.2.HistoryUP.1:</li>"
+    ) in got
+    assert "<li><b>Partner Discussions" not in got
+
+
+def test_collects_all_cells_links_for_resource_persistence() -> None:
+    sys.path.insert(0, _SCRAPER_DIR)
+    import table_extractor as te
+
+    plan = {
+        "instructional_resources_cell_html": (
+            '<p><a href="https://docs.google.com/document/d/AAA/edit">Resource Doc</a></p>'
+        ),
+        "key_questions_html": (
+            '<p>See <a href="https://example.org/q1">Question Guide</a></p>'
+        ),
+        "learning_procedures_html": (
+            '<p>Warm-up video: <a href="https://watch.screencastify.com/v/VID">Video</a></p>'
+        ),
+    }
+    links = te._collect_links_from_ela_structured_plan(plan)
+    urls = {x["url"] for x in links}
+    assert "https://docs.google.com/document/d/AAA/edit" in urls
+    assert "https://example.org/q1" in urls
+    assert "https://watch.screencastify.com/v/VID" in urls
+
+    lesson_data = {"_resources": []}
+    te._merge_links_into_resources(lesson_data, links)
+    assert len(lesson_data["_resources"]) == 3
+    doc_res = next(r for r in lesson_data["_resources"] if "docs.google.com/document/d/AAA" in r["url"])
+    assert doc_res.get("google_id") == "AAA"
+    # Dedupe behavior: re-merging same links should not duplicate.
+    te._merge_links_into_resources(lesson_data, links)
+    assert len(lesson_data["_resources"]) == 3
+
+
+def test_collects_links_from_structured_json_string() -> None:
+    sys.path.insert(0, _SCRAPER_DIR)
+    import table_extractor as te
+
+    raw = json.dumps(
+        {
+            "instructional_resources_cell_html": (
+                '<p><a href="https://docs.google.com/document/d/ABC/edit">Doc A</a></p>'
+            ),
+            "key_questions_html": (
+                '<p><a href="https://example.org/guide">Guide</a></p>'
+            ),
+        }
+    )
+    links = te._collect_links_from_ela_structured_json(raw)
+    urls = {x["url"] for x in links}
+    assert "https://docs.google.com/document/d/ABC/edit" in urls
+    assert "https://example.org/guide" in urls
 
 
 @pytest.mark.skipif(not (_REPO_ROOT / "data" / "curriculum.db").is_file(), reason="data/curriculum.db not present")
