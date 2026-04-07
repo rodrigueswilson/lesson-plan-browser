@@ -26,6 +26,8 @@
   - `tests/test_ela_lesson_plan_table.py`
     - Added assertions for `google_id` persistence in merged resources.
     - Added coverage for structured JSON link extraction helper.
+    - Added regression for `NJSLS Priority Standards` header-row parsing.
+    - Added regression for nested-anchor `href` collection safety.
 
 ## Key results
 - Baseline units:
@@ -34,6 +36,11 @@
 - Wave 2 units:
   - `ELA_2_U7_wave2`: PASS after targeted link persistence fix (`missing resources rows: 14 -> 0`)
   - `ELA_3_U7_wave2`: PASS
+- Additional autonomous pairs:
+  - `ELA_2_U6_wave3`: PASS
+  - `ELA_3_U6_wave3`: PASS
+  - `ELA_2_U5_wave4`: PASS after nested-anchor collector fix (`missing resources rows: 1 -> 0`)
+  - `ELA_3_U5_wave4`: PASS
 - Verifier:
   - `python tools/scraper/verify_curriculum_db.py`: PASS
 
@@ -43,6 +50,12 @@
 - Ingest reports:
   - `ingest_reports/2026-04-07T18-56-42Z_260a3c92.json`
   - `ingest_reports/2026-04-07T18-59-26Z_59acc651.json`
+  - `ingest_reports/2026-04-07T19-17-15Z_f168f8a5.json`
+  - `ingest_reports/2026-04-07T19-17-16Z_2dd02d0f.json`
+  - `ingest_reports/2026-04-07T19-27-28Z_ccad2c5d.json`
+  - `ingest_reports/2026-04-07T19-30-31Z_ddbef882.json`
+  - `ingest_reports/2026-04-07T19-33-01Z_b6267f52.json`
+  - `ingest_reports/2026-04-07T19-34-29Z_44e17d9f.json`
 
 ## Test plan (for reviewer)
 - [ ] `python -m pytest tests/test_ela_lesson_plan_table.py -q --tb=short`
@@ -50,7 +63,13 @@
 - [ ] `python tools/db/wave1_ela_unit8_compare.py --unit-id ELA_3_U8_sample`
 - [ ] `python tools/db/wave1_ela_unit8_compare.py --unit-id ELA_2_U7_wave2`
 - [ ] `python tools/db/wave1_ela_unit8_compare.py --unit-id ELA_3_U7_wave2`
+- [ ] `python tools/db/wave1_ela_unit8_compare.py --unit-id ELA_2_U6_wave3`
+- [ ] `python tools/db/wave1_ela_unit8_compare.py --unit-id ELA_3_U6_wave3`
+- [ ] `python tools/db/wave1_ela_unit8_compare.py --unit-id ELA_2_U5_wave4`
+- [ ] `python tools/db/wave1_ela_unit8_compare.py --unit-id ELA_3_U5_wave4`
 - [ ] `python tools/db/wave2_ui_spotcheck.py --units ELA_2_U7_wave2 ELA_3_U7_wave2`
+- [ ] `python tools/db/wave2_ui_spotcheck.py --units ELA_2_U6_wave3 ELA_3_U6_wave3`
+- [ ] `python tools/db/wave2_ui_spotcheck.py --units ELA_2_U5_wave4 ELA_3_U5_wave4`
 - [ ] `python tools/scraper/verify_curriculum_db.py`
 
 ## Risk notes

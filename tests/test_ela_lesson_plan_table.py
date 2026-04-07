@@ -180,6 +180,22 @@ def test_parse_priority_standards_without_njsls_label_row() -> None:
     assert "Q?" in out["key_questions_html"]
 
 
+def test_parse_njsls_priority_standards_label_row_merges_following_body() -> None:
+    tbl = _table(
+        _row(_cell(_p("Lesson 6: Freedom")), _cell(_p(""))),
+        _row(_cell(_p("Learning Intention")), _cell(_p("Success Criteria"))),
+        _row(_cell(_p("LI body")), _cell(_p("SC body"))),
+        _row(_cell(_p("NJSLS Priority Standards")), _cell(_p(""))),
+        _row(_cell(_p("RI.CR.3.1")), _cell(_p(""))),
+        _row(_cell(_p("Key Instructional Practices")), _cell(_p(""))),
+        _row(_cell(_p("Key Questions: Q?")), _cell(_p("Instructional Routines and Assessments: R?"))),
+    )
+    out = parse_ela_lesson_plan_table(tbl, _htmlize)
+    assert out is not None
+    assert "RI.CR.3.1" in out["njsls_standards_html"]
+    assert "NJSLS Priority Standards" not in out["njsls_standards_html"]
+
+
 def test_parser_normalizes_heading_prefix_and_star_bullets() -> None:
     sys.path.insert(0, _SCRAPER_DIR)
     from tools.scraper.ela_lesson_plan_table import _normalize_docx_export_html
@@ -306,6 +322,23 @@ def test_collects_links_from_structured_json_string() -> None:
     urls = {x["url"] for x in links}
     assert "https://docs.google.com/document/d/ABC/edit" in urls
     assert "https://example.org/guide" in urls
+
+
+def test_collects_nested_anchor_inner_href_safety_net() -> None:
+    sys.path.insert(0, _SCRAPER_DIR)
+    import table_extractor as te
+
+    plan = {
+        "instructional_resources_cell_html": (
+            '<p><a href="https://docs.google.com/document/d/OUTER/edit">'
+            '<a href="https://docs.google.com/document/d/INNER/edit">Nested</a>'
+            "</a></p>"
+        )
+    }
+    links = te._collect_links_from_ela_structured_plan(plan)
+    urls = {x["url"] for x in links}
+    assert "https://docs.google.com/document/d/OUTER/edit" in urls
+    assert "https://docs.google.com/document/d/INNER/edit" in urls
 
 
 @pytest.mark.skipif(not (_REPO_ROOT / "data" / "curriculum.db").is_file(), reason="data/curriculum.db not present")

@@ -388,7 +388,8 @@ def parse_ela_lesson_plan_table(
             return len(t1.strip()) == 0
 
         # Section: NJSLS Standards (short label row + body row, or one merged cell)
-        if n0.startswith("njsls standards"):
+        # Some exports label this row as "NJSLS Priority Standards".
+        if n0.startswith("njsls standards") or n0.startswith("njsls priority standards"):
             short_label = len(t0.strip()) < 50 and _second_empty()
             if short_label and i + 1 < len(rows):
                 i += 1

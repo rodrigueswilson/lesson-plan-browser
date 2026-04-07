@@ -689,6 +689,16 @@ def _collect_links_from_ela_structured_plan(plan: Dict[str, Any]) -> List[Dict[s
                 continue
             seen.add(identity)
             out.append({"url": url, "text": label or url})
+        # Safety net: capture any href attributes, including malformed/nested anchors.
+        for m in re.finditer(r'href="([^"]+)"', value, re.IGNORECASE):
+            url = (m.group(1) or "").strip()
+            if not url:
+                continue
+            identity = (url, url.lower())
+            if identity in seen:
+                continue
+            seen.add(identity)
+            out.append({"url": url, "text": url})
     return out
 
 
@@ -735,6 +745,16 @@ def _collect_links_from_lesson_html_fields(lesson_data: Dict[str, Any]) -> List[
                 continue
             seen.add(identity)
             out.append({"url": url, "text": label or url})
+        # Safety net for malformed HTML where nested anchors hide inner hrefs.
+        for m in re.finditer(r'href="([^"]+)"', html, re.IGNORECASE):
+            url = (m.group(1) or "").strip()
+            if not url:
+                continue
+            identity = (url, url.lower())
+            if identity in seen:
+                continue
+            seen.add(identity)
+            out.append({"url": url, "text": url})
     return out
 
 

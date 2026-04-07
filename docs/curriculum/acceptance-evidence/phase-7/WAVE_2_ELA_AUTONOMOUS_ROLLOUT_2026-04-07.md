@@ -100,5 +100,39 @@
 - Some exports encode special characters inconsistently (legacy source text issue), but did not break ingest gates.
 - `learning_procedures_html`, `engagement_with_content_html`, `daily_instructional_task_html` remain `0/x` for these tab families; this is expected for current template shape and fallback rendering paths.
 
+## Additional pairwise waves (post-wave-2)
+
+### Wave 3 targets
+- `ELA_2_U6_wave3` (Grade 2 Unit 6)
+- `ELA_3_U6_wave3` (Grade 3 Unit 6)
+
+### Wave 4 targets
+- `ELA_2_U5_wave4` (Grade 2 Unit 5)
+- `ELA_3_U5_wave4` (Grade 3 Unit 5)
+
+### Post-wave-2 parser hardening
+- G3 U7 lesson 6 standards fix:
+  - parser now treats `NJSLS Priority Standards` as a standards header row and merges the following body row.
+  - `ELA_3_U7_wave2` re-ingested; lesson 6 `njsls_standards_html` now contains full standards list.
+- Nested-anchor link persistence fix:
+  - structured link collector now captures all `href` attributes as a safety net for malformed/nested anchors.
+  - `ELA_2_U5_wave4` re-ingested; missing `resources` rows dropped from `1` to `0`.
+
+### Additional ingest reports
+- `ingest_reports/2026-04-07T19-17-15Z_f168f8a5.json` (G2 U6 wave3)
+- `ingest_reports/2026-04-07T19-17-16Z_2dd02d0f.json` (G3 U6 wave3)
+- `ingest_reports/2026-04-07T19-30-31Z_ddbef882.json` (G2 U5 wave4 initial)
+- `ingest_reports/2026-04-07T19-33-01Z_b6267f52.json` (G3 U5 wave4)
+- `ingest_reports/2026-04-07T19-34-29Z_44e17d9f.json` (G2 U5 wave4 re-ingest after nested-anchor fix)
+- `ingest_reports/2026-04-07T19-27-28Z_ccad2c5d.json` (G3 U7 wave2 re-ingest after standards-row fix)
+
+### Gate outcomes (waves 3 and 4)
+- `ELA_2_U6_wave3`: PASS (`missing resources rows for Google Doc IDs: 0`)
+- `ELA_3_U6_wave3`: PASS
+- `ELA_2_U5_wave4`: PASS after nested-anchor fix (`missing resources rows: 1 -> 0`)
+- `ELA_3_U5_wave4`: PASS
+- Global verifier remains PASS after each re-ingest.
+
 ## Conclusion
-- Wave 2 autonomous rollout for selected Grade 2 and Grade 3 ELA units is complete and passes deterministic ingest/SSOT/link gates after one targeted ingest fix.
+- Wave 2 rollout and two additional autonomous pairs (waves 3 and 4) pass deterministic ingest/SSOT/link gates after targeted parser/collector fixes.
+- Exit criteria are now met for moving from pairwise expansion to broader Grade 2/3 ELA rollout.
