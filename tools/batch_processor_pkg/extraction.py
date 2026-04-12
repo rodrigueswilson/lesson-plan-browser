@@ -318,6 +318,7 @@ async def extract_slots_parallel_db(
     user_base_path: Optional[str],
     plan_id: Optional[str],
     progress_tracker_ref: Any,
+    refresh_source_documents: bool = False,
 ) -> List[SlotProcessingContext]:
     """Parallel extraction using DB cache and file grouping. Delegates from orchestrator."""
     file_to_slots = {}
@@ -335,7 +336,14 @@ async def extract_slots_parallel_db(
         file_path = None if file_path_key == "None" else file_path_key
         tasks.append(
             processor._process_file_group(
-                file_path, group, week_of, week_folder_path, user_base_path, plan_id, semaphore
+                file_path,
+                group,
+                week_of,
+                week_folder_path,
+                user_base_path,
+                plan_id,
+                semaphore,
+                refresh_source_documents=refresh_source_documents,
             )
         )
 

@@ -18,6 +18,7 @@ async def run_parallel_path(
     existing_lesson_json: Optional[Dict],
     force_slots: Optional[List[int]],
     user_id: str,
+    refresh_source_documents: bool = False,
 ) -> tuple:
     """
     Run parallel extract -> originals docx -> skip-LLM optimization -> transform -> collect.
@@ -34,6 +35,7 @@ async def run_parallel_path(
         processor._user_base_path,
         plan_id,
         progress_tracker,
+        refresh_source_documents=refresh_source_documents,
     )
 
     try:

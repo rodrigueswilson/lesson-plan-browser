@@ -99,6 +99,7 @@ class BatchProcessor:
         partial: bool = False,
         missing_only: bool = False,
         force_slots: Optional[List[int]] = None,
+        refresh_source_documents: bool = False,
     ) -> Dict[str, Any]:
         """Process all class slots for a user's week. Delegates to week_flow.run_process_user_week."""
         return await week_flow_module.run_process_user_week(
@@ -112,6 +113,7 @@ class BatchProcessor:
             partial=partial,
             missing_only=missing_only,
             force_slots=force_slots,
+            refresh_source_documents=refresh_source_documents,
         )
 
     def _sanitize_value(self, value: Any) -> Any:
@@ -226,6 +228,7 @@ class BatchProcessor:
         processing_weight: float = 0.8,
         existing_lesson_json: Optional[Dict[str, Any]] = None,
         force_ai: bool = False,
+        refresh_source_documents: bool = False,
     ) -> Dict[str, Any]:
         """Process a single class slot. Delegates to slot_flow.process_one_slot."""
         return await slot_flow_module.process_one_slot(
@@ -241,6 +244,7 @@ class BatchProcessor:
             processing_weight=processing_weight,
             existing_lesson_json=existing_lesson_json,
             force_ai=force_ai,
+            refresh_source_documents=refresh_source_documents,
         )
 
     def _resolve_primary_file(
@@ -344,10 +348,18 @@ class BatchProcessor:
         user_base_path: Optional[str],
         plan_id: Optional[str],
         progress_tracker: Any,
+        refresh_source_documents: bool = False,
     ) -> List[SlotProcessingContext]:
         """Parallel extraction using DB cache and file grouping. Delegates to extraction module."""
         return await extraction_module.extract_slots_parallel_db(
-            self, slots, week_of, week_folder_path, user_base_path, plan_id, progress_tracker
+            self,
+            slots,
+            week_of,
+            week_folder_path,
+            user_base_path,
+            plan_id,
+            progress_tracker,
+            refresh_source_documents=refresh_source_documents,
         )
 
     async def _process_file_group(
@@ -359,6 +371,7 @@ class BatchProcessor:
         user_base_path: Optional[str],
         plan_id: Optional[str],
         semaphore: asyncio.Semaphore,
+        refresh_source_documents: bool = False,
     ) -> List[SlotProcessingContext]:
         """Process a group of slots that share the same source file. Delegates to combined_original module."""
         return await combined_original_module.process_file_group(
@@ -370,6 +383,7 @@ class BatchProcessor:
             user_base_path,
             plan_id,
             semaphore,
+            refresh_source_documents=refresh_source_documents,
         )
 
     def _convert_originals_to_json(

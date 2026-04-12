@@ -31,6 +31,7 @@ async def run_process_user_week(
     partial: bool = False,
     missing_only: bool = False,
     force_slots: Optional[List[int]] = None,
+    refresh_source_documents: bool = False,
 ) -> Dict[str, Any]:
     """Process all class slots for a user's week. Delegates to processor for DB, tracker, and slot/combine methods."""
     originals_docx = None
@@ -141,6 +142,7 @@ async def run_process_user_week(
             existing_lesson_json,
             force_slots,
             user_id,
+            refresh_source_documents=refresh_source_documents,
         )
     else:
         lessons, errors = await week_flow_sequential.run_sequential_path(
@@ -153,6 +155,7 @@ async def run_process_user_week(
             existing_lesson_json,
             force_slots,
             processing_weight,
+            refresh_source_documents=refresh_source_documents,
         )
 
     # AUTO-GENERATE ORIGINALS AUDIT DOCX (Sequential/Fallback Path)

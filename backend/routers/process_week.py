@@ -176,6 +176,7 @@ async def process_week(
                     partial=batch_request.partial,
                     missing_only=batch_request.missing_only,
                     force_slots=batch_request.force_slots or [],
+                    refresh_source_documents=True,
                 )
 
                 if result["success"]:

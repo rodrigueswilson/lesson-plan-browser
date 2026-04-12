@@ -18,6 +18,7 @@ async def run_sequential_path(
     existing_lesson_json: Optional[Dict],
     force_slots: Optional[List[int]],
     processing_weight: float,
+    refresh_source_documents: bool = False,
 ) -> tuple:
     """
     Run sequential loop over slots: sanitize, _process_slot, collect lessons and errors.
@@ -97,6 +98,7 @@ async def run_sequential_path(
                 processing_weight,
                 existing_lesson_json=existing_lesson_json,
                 force_ai=slot.get("slot_number") in (force_slots or []),
+                refresh_source_documents=refresh_source_documents,
             )
 
             hyperlinks_in_json = lesson_json.get("_hyperlinks", [])

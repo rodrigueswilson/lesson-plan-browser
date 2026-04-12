@@ -33,6 +33,7 @@ async def process_one_slot(
     processing_weight: float = 0.8,
     existing_lesson_json: Optional[Dict[str, Any]] = None,
     force_ai: bool = False,
+    refresh_source_documents: bool = False,
 ) -> Dict[str, Any]:
     """Process a single class slot. Resolve file, extract, transform, persist.
 
@@ -49,6 +50,7 @@ async def process_one_slot(
         processing_weight: Weight for processing phase (0-1)
         existing_lesson_json: Existing multi-slot JSON for cache reuse
         force_ai: If True, force LLM transformation even when cache is valid
+        refresh_source_documents: If True, skip DB extraction cache; always parse DOCX
 
     Returns:
         Lesson plan JSON for this slot
@@ -115,7 +117,11 @@ async def process_one_slot(
         slot["slot_number"],
     )
     cache_hit = False
-    if db_record and db_record.source_file_path == primary_file:
+    if (
+        db_record
+        and db_record.source_file_path == primary_file
+        and not refresh_source_documents
+    ):
         path_obj = Path(primary_file)
         if path_obj.exists():
             current_mtime = path_obj.stat().st_mtime

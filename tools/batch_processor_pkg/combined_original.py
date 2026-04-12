@@ -26,6 +26,7 @@ async def process_file_group(
     user_base_path: Optional[str],
     plan_id: Optional[str],
     semaphore: asyncio.Semaphore,
+    refresh_source_documents: bool = False,
 ) -> List[SlotProcessingContext]:
     """Process a group of slots that share the same source file."""
     contexts = []
@@ -45,6 +46,12 @@ async def process_file_group(
 
     async with processor._file_locks[file_path]:
         remaining_group = []
+
+        if refresh_source_documents:
+            logger.info(
+                "refresh_source_documents_skip_extraction_cache",
+                extra={"file_path": file_path},
+            )
 
         path_obj = Path(file_path)
         current_mtime = 0
@@ -67,7 +74,11 @@ async def process_file_group(
                 slot["slot_number"],
             )
 
-            if db_record and db_record.source_file_path == file_path:
+            if (
+                db_record
+                and db_record.source_file_path == file_path
+                and not refresh_source_documents
+            ):
                 if path_obj.exists():
                     if db_record.extracted_at.timestamp() > (current_mtime + 2):
                         logger.info(
