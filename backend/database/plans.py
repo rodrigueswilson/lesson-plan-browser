@@ -225,12 +225,16 @@ def create_original_lesson_plan(db, plan_data: Dict[str, Any]) -> str:
 def get_original_lesson_plan(
     db, user_id: str, week_of: str, slot_number: int
 ) -> Optional[OriginalLessonPlan]:
-    """Get original lesson plan content for a specific slot."""
+    """Get original lesson plan content for a specific slot (newest extraction if duplicates exist)."""
     with Session(db.engine) as session:
-        statement = select(OriginalLessonPlan).where(
-            OriginalLessonPlan.user_id == user_id,
-            OriginalLessonPlan.week_of == week_of,
-            OriginalLessonPlan.slot_number == slot_number,
+        statement = (
+            select(OriginalLessonPlan)
+            .where(
+                OriginalLessonPlan.user_id == user_id,
+                OriginalLessonPlan.week_of == week_of,
+                OriginalLessonPlan.slot_number == slot_number,
+            )
+            .order_by(desc(OriginalLessonPlan.extracted_at))
         )
         plan = session.exec(statement).first()
 

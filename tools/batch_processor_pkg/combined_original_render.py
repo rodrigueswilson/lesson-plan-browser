@@ -7,10 +7,22 @@ import os
 import traceback
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Callable, List, Optional
+from typing import Any, Callable, Dict, List, Optional, Tuple
 
 from backend.config import settings
 from backend.telemetry import logger
+
+
+def _plan_recency_timestamp(plan: Any) -> float:
+    """Prefer newest row when duplicate original_lesson_plans share the same slot/file key."""
+    for attr in ("extracted_at", "updated_at", "created_at"):
+        v = getattr(plan, attr, None)
+        if v is not None and hasattr(v, "timestamp"):
+            try:
+                return float(v.timestamp())
+            except (OSError, ValueError, OverflowError):
+                continue
+    return 0.0
 
 
 def render_combined_originals_sync(
@@ -67,25 +79,29 @@ def render_combined_originals_sync(
 
         style_master = Document(settings.DOCX_TEMPLATE_PATH)
 
-        unique_slot_files = set()
-        deduplicated_plans = []
-        removed_plans = []
-
+        by_key: Dict[Tuple[Any, Any, Any], List[Any]] = {}
         for plan in plans:
             source_key = getattr(plan, "source_file_path", None)
             slot_key = plan.slot_number
             subject_key = plan.subject
             dedup_key = (source_key, slot_key, subject_key)
+            by_key.setdefault(dedup_key, []).append(plan)
 
-            if dedup_key not in unique_slot_files:
-                unique_slot_files.add(dedup_key)
-                deduplicated_plans.append(plan)
-            else:
-                removed_plans.append({
-                    "slot_number": plan.slot_number,
-                    "subject": plan.subject,
-                    "source_file_name": plan.source_file_name,
-                })
+        deduplicated_plans = []
+        removed_plans = []
+        for dedup_key, group in by_key.items():
+            best = max(group, key=_plan_recency_timestamp)
+            deduplicated_plans.append(best)
+            for p in group:
+                if p is not best:
+                    removed_plans.append({
+                        "slot_number": p.slot_number,
+                        "subject": p.subject,
+                        "source_file_name": p.source_file_name,
+                    })
+
+        deduplicated_plans.sort(key=lambda p: p.slot_number)
+        unique_slot_files = set(by_key.keys())
 
         logger.info(
             "combined_originals_deduplication",

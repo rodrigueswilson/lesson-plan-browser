@@ -5,7 +5,6 @@ Extracted from orchestrator.
 """
 
 import asyncio
-import uuid
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Tuple
@@ -15,6 +14,7 @@ from tools.batch_processor_pkg.combined_original_render import (
     render_combined_originals_sync,
 )
 from tools.batch_processor_pkg.context import SlotProcessingContext
+from tools.batch_processor_pkg.persistence import stable_original_lesson_plan_id
 
 
 async def process_file_group(
@@ -268,7 +268,12 @@ async def process_file_group(
                                     )
 
                         plan_data = {
-                            "id": f"orig_{uuid.uuid4()}",
+                            "id": stable_original_lesson_plan_id(
+                                user_id,
+                                week_of,
+                                slot["slot_number"],
+                                slot["subject"],
+                            ),
                             "user_id": user_id,
                             "week_of": week_of,
                             "slot_number": slot["slot_number"],
