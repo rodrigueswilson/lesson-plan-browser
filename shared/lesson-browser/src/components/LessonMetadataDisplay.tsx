@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import type { ScheduleEntry } from '@lesson-api';
+import { parseWeekOfMondayLocalDate, type ScheduleEntry } from '@lesson-api';
 
 interface LessonMetadataDisplayProps {
   // Can accept either a ScheduleEntry directly or pre-formatted metadata
@@ -65,19 +65,20 @@ export function LessonMetadataDisplay({
       }
     }
 
-    // Otherwise, calculate from weekOf and day if available
-    if (!weekOf || !day) return null;
+    // Otherwise, calculate from weekOf and day if available (use SSOT week_of parsing from @lesson-api)
+    const sourceWeek = weekOf || scheduleEntry?.week_of;
+    if (!sourceWeek || !day) return null;
 
     try {
       let mondayDate: Date;
-      
+
       // Check if weekOf is in "W47" format (week number)
-      if (weekOf.startsWith('W') || weekOf.startsWith('w')) {
-        const weekNumber = parseInt(weekOf.substring(1), 10);
+      if (sourceWeek.startsWith('W') || sourceWeek.startsWith('w')) {
+        const weekNumber = parseInt(sourceWeek.substring(1), 10);
         if (isNaN(weekNumber) || weekNumber < 1 || weekNumber > 53) {
           return null;
         }
-        
+
         const year = new Date().getFullYear();
         const jan1 = new Date(year, 0, 1);
         const dayOfWeek = jan1.getDay();
@@ -88,40 +89,12 @@ export function LessonMetadataDisplay({
         mondayOfTargetWeek.setDate(mondayOfWeek1.getDate() + (weekNumber - 1) * 7);
         mondayDate = mondayOfTargetWeek;
       } else {
-        // weekOf format is "MM-DD-MM-DD" (Monday to Friday)
-        const parts = weekOf.split('-');
-        if (parts.length < 2) {
+        const ref = new Date();
+        const parsedMonday = parseWeekOfMondayLocalDate(sourceWeek, ref);
+        if (!parsedMonday || isNaN(parsedMonday.getTime())) {
           return null;
         }
-        
-        const [startMonth, startDay] = parts.slice(0, 2).map(Number);
-        if (isNaN(startMonth) || isNaN(startDay) || startMonth < 1 || startMonth > 12 || startDay < 1 || startDay > 31) {
-          return null;
-        }
-        
-        // Smart year detection: if the date is in the past (more than 30 days), assume next year
-        // This handles cases where lesson plans are for future dates
-        const currentYear = new Date().getFullYear();
-        const currentDate = new Date();
-        const testDate = new Date(currentYear, startMonth - 1, startDay);
-        
-        // If the date is more than 30 days in the past, it's likely for next year
-        // (e.g., if today is Dec 2024 and weekOf is "11-20", it's probably Nov 2025)
-        const daysDiff = (testDate.getTime() - currentDate.getTime()) / (1000 * 60 * 60 * 24);
-        const year = daysDiff < -30 ? currentYear + 1 : currentYear;
-        
-        mondayDate = new Date(year, startMonth - 1, startDay);
-        
-        // Log for debugging
-        console.log('[LessonMetadataDisplay] Year calculation:', {
-          weekOf,
-          startMonth,
-          startDay,
-          currentYear,
-          calculatedYear: year,
-          daysDiff: Math.round(daysDiff),
-          reasoning: daysDiff < -30 ? 'Date is more than 30 days in past, using next year' : 'Using current year'
-        });
+        mondayDate = parsedMonday;
       }
       
       const dayIndex = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'].indexOf(day.toLowerCase());
@@ -168,9 +141,12 @@ export function LessonMetadataDisplay({
         return null;
       }
 
-      // Try to get the actual lesson date
+      // Try to get the actual lesson date — never fall back to "today" or we mis-label Mon lessons as past on Sat.
       const lessonDate = getLessonDateObject();
-      const baseDate = lessonDate || now;
+      if (!lessonDate || isNaN(lessonDate.getTime())) {
+        return null;
+      }
+      const baseDate = lessonDate;
 
       const start = new Date(baseDate);
       start.setHours(startH, startM, 0, 0);
