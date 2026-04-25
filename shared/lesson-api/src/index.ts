@@ -1252,7 +1252,26 @@ export function classifyProgressPollPayload(data: unknown): {
   return { terminal: false, normalizedStatus: lower, kind: 'ongoing' };
 }
 
-export function createProgressStream(taskId: string, onProgress: (data: any) => void) {
+export interface ProgressPollData {
+  status: string;
+  stage?: string;
+  stage_label?: string;
+  message: string;
+  progress: number;
+  progress_percent: number;
+  current: number;
+  total: number;
+  completed_slots: number;
+  total_slots: number;
+  processed_slots?: number;
+  failed_slots?: number;
+  output_file?: string;
+  errors?: Array<{ slot?: number; subject?: string; error?: string } | string>;
+  result?: Record<string, unknown> | null;
+  last_update_at?: string | null;
+}
+
+export function createProgressStream(taskId: string, onProgress: (data: ProgressPollData) => void) {
   console.log('[API] Starting progress polling for task:', taskId);
 
   const pollInterval = setInterval(async () => {
@@ -1263,14 +1282,35 @@ export function createProgressStream(taskId: string, onProgress: (data: any) => 
       console.log('[API] Progress update:', data);
 
       const cls = classifyProgressPollPayload(data);
-      const rawObj = typeof data === 'object' && data !== null ? data : {};
+      const rawObj = (typeof data === 'object' && data !== null ? data : {}) as Record<string, unknown>;
+      const progressPercent = Number(rawObj.progress_percent ?? rawObj.progress ?? 0) || 0;
+      const completedSlots = Number(rawObj.completed_slots ?? rawObj.processed_slots ?? 0) || 0;
+      const totalSlots = Number(rawObj.total_slots ?? 0) || 0;
+      const current = Number(rawObj.current ?? progressPercent) || 0;
+      const total = Number(rawObj.total ?? 100) || 100;
       onProgress({
-        ...rawObj,
         status: cls.normalizedStatus,
-        progress: (data as { progress?: number })?.progress ?? 0,
-        message: (data as { message?: string })?.message || 'Processing...',
-        current: (data as { current?: number })?.current ?? 0,
-        total: (data as { total?: number })?.total ?? 0,
+        stage: String(rawObj.stage ?? ''),
+        stage_label: String(rawObj.stage_label ?? ''),
+        message: String(rawObj.message ?? 'Processing...'),
+        progress: progressPercent,
+        progress_percent: progressPercent,
+        current,
+        total,
+        completed_slots: completedSlots,
+        total_slots: totalSlots,
+        processed_slots: Number(rawObj.processed_slots ?? completedSlots) || 0,
+        failed_slots: Number(rawObj.failed_slots ?? 0) || 0,
+        output_file: typeof rawObj.output_file === 'string' ? rawObj.output_file : undefined,
+        errors: Array.isArray(rawObj.errors)
+          ? (rawObj.errors as Array<{ slot?: number; subject?: string; error?: string } | string>)
+          : [],
+        result:
+          rawObj.result && typeof rawObj.result === 'object'
+            ? (rawObj.result as Record<string, unknown>)
+            : null,
+        last_update_at:
+          typeof rawObj.last_update_at === 'string' ? rawObj.last_update_at : null,
       });
 
       if (cls.terminal) {

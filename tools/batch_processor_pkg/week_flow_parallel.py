@@ -26,6 +26,7 @@ async def run_parallel_path(
     """
     lessons = []
     errors = []
+    error_slots = set()
     originals_docx = None
 
     contexts = await processor._extract_slots_parallel_db(
@@ -51,9 +52,12 @@ async def run_parallel_path(
 
     for ctx in contexts:
         if ctx.error:
-            errors.append(
-                f"Failed slot {ctx.slot_index}/{ctx.total_slots}: {ctx.error}"
-            )
+            slot_key = ctx.slot.get("slot_number") if isinstance(ctx.slot, dict) else ctx.slot_index
+            if slot_key not in error_slots:
+                error_slots.add(slot_key)
+                errors.append(
+                    f"Failed slot {ctx.slot_index}/{ctx.total_slots}: {ctx.error}"
+                )
 
     if existing_lesson_json:
         existing_slot_plans = processor._reconstruct_slots_from_json(
@@ -74,9 +78,13 @@ async def run_parallel_path(
     )
     progress_tracker.update(
         plan_id,
-        "processing",
+        "transforming",
         20,
         f"Transforming {transform_count} slots with AI in parallel...",
+        metadata={
+            "completed_slots": len([c for c in contexts if c.lesson_json]),
+            "total_slots": len(slots),
+        },
     )
 
     contexts = await processor._process_slots_parallel_llm(
@@ -85,9 +93,12 @@ async def run_parallel_path(
 
     for context in contexts:
         if context.error:
-            errors.append(
-                f"Failed slot {context.slot_index}/{context.total_slots}: {context.error}"
-            )
+            slot_key = context.slot.get("slot_number") if isinstance(context.slot, dict) else context.slot_index
+            if slot_key not in error_slots:
+                error_slots.add(slot_key)
+                errors.append(
+                    f"Failed slot {context.slot_index}/{context.total_slots}: {context.error}"
+                )
         elif context.lesson_json:
             hyperlinks_in_json = context.lesson_json.get("_hyperlinks", [])
             logger.info(
@@ -137,5 +148,13 @@ async def run_parallel_path(
                     "slot_data": slot_data,
                 }
             )
+
+    progress_tracker.update(
+        plan_id,
+        "finalizing",
+        80,
+        f"Finished slot transformations: {len(lessons)}/{len(slots)} ready for rendering.",
+        metadata={"completed_slots": len(lessons), "total_slots": len(slots)},
+    )
 
     return (lessons, errors, originals_docx)

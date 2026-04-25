@@ -1,6 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
 import { useStore } from '@lesson-browser';
-import { planApi, createProgressStream, userApi, type ClassSlot } from '@lesson-api';
+import {
+  planApi,
+  createProgressStream,
+  userApi,
+  type ClassSlot,
+  type ProgressPollData,
+} from '@lesson-api';
 
 export type ButtonState = 'idle' | 'processing' | 'success' | 'error';
 
@@ -23,7 +29,7 @@ export interface ProcessResult {
   processed_slots?: number;
   failed_slots?: number;
   output_file?: string;
-  errors?: Array<{ slot: number; subject: string; error: string }>;
+  errors?: Array<{ slot?: number; subject?: string; error?: string } | string>;
 }
 
 const BATCH_PROGRESS_WATCHDOG_MS = 3 * 60 * 1000;
@@ -72,10 +78,16 @@ export function useBatchProcessor() {
   const [buttonState, setButtonState] = useState<ButtonState>('idle');
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [partial, setPartial] = useState(true);
-  const [missingOnly, setMissingOnly] = useState(false);
+  const [missingOnly, setMissingOnly] = useState(true);
+  const [recallAiForSelected, setRecallAiForSelected] = useState(false);
   const [forceSlots, setForceSlots] = useState<Set<number>>(new Set());
   const [weekStatus, setWeekStatus] = useState<WeekStatus | null>(null);
   const [isLoadingStatus, setIsLoadingStatus] = useState(false);
+  const [progressPercent, setProgressPercent] = useState(0);
+  const [progressStageLabel, setProgressStageLabel] = useState('Queued');
+  const [progressSlotCounts, setProgressSlotCounts] = useState({ completed: 0, total: 0 });
+  const [progressLastUpdateAt, setProgressLastUpdateAt] = useState<string | null>(null);
+  const [progressStalled, setProgressStalled] = useState(false);
   const appliedAutoDeselectRef = useRef<string | null>(null);
 
   useEffect(() => {
@@ -275,6 +287,11 @@ export function useBatchProcessor() {
     setError(null);
     setResult(null);
     setProgress({ current: 0, total: selectedSlots.size, message: 'Starting...' });
+    setProgressPercent(0);
+    setProgressStageLabel('Queued');
+    setProgressSlotCounts({ completed: 0, total: capturedSlotNumbers.length || selectedSlots.size });
+    setProgressLastUpdateAt(null);
+    setProgressStalled(false);
 
     try {
       const selectedSlotIds = Array.from(selectedSlots).map(String);
@@ -285,7 +302,7 @@ export function useBatchProcessor() {
         selectedSlotIds,
         partial,
         missingOnly,
-        Array.from(forceSlots)
+        recallAiForSelected ? capturedSlotNumbers : Array.from(forceSlots)
       );
 
       if (response.data.plan_id) {
@@ -302,34 +319,33 @@ export function useBatchProcessor() {
 
         const runWatchdogRecovery = () => {
           if (progressCompleted) return;
-          progressCompleted = true;
-          clearWatchdog();
-          progressHandle?.close();
-          setIsProcessing(false);
-          setResult({
-            ...response.data,
-            processed_slots: response.data.processed_slots ?? 0,
-            failed_slots: response.data.failed_slots ?? 0,
-          });
-          setButtonState('success');
+          setProgressStalled(true);
+          setProgressStageLabel('Waiting for backend progress update');
           setProgress({
-            current: selectedSlots.size,
-            total: selectedSlots.size,
-            message: 'Progress stalled; refreshed plan status from server.',
+            current: progressSlotCounts.completed,
+            total: progressSlotCounts.total || selectedSlots.size,
+            message: 'Progress stream stalled. Waiting for backend completion signal...',
           });
-          void refreshWeekStatusAfterSuccess(
-            response.data.plan_id,
-            capturedSlotNumbers
-          );
+          watchdogTimer = setTimeout(runWatchdogRecovery, BATCH_PROGRESS_WATCHDOG_MS);
         };
 
         watchdogTimer = setTimeout(runWatchdogRecovery, BATCH_PROGRESS_WATCHDOG_MS);
 
         try {
-          progressHandle = createProgressStream(response.data.plan_id, (data) => {
+          progressHandle = createProgressStream(response.data.plan_id, (data: ProgressPollData) => {
+            setProgressStalled(false);
+            const slotTotal = data.total_slots > 0 ? data.total_slots : selectedSlots.size;
+            const slotCompleted = Math.min(data.completed_slots ?? 0, slotTotal);
+            const progressPct = Math.max(0, Math.min(100, data.progress_percent ?? data.progress ?? 0));
+            setProgressPercent(progressPct);
+            setProgressStageLabel(data.stage_label || data.stage || 'Processing');
+            setProgressSlotCounts({ completed: slotCompleted, total: slotTotal });
+            if (data.last_update_at) {
+              setProgressLastUpdateAt(data.last_update_at);
+            }
             setProgress({
-              current: data.current || 0,
-              total: data.total || selectedSlots.size,
+              current: slotCompleted,
+              total: slotTotal,
               message: data.message || 'Processing...',
             });
 
@@ -354,23 +370,25 @@ export function useBatchProcessor() {
               setResult(finalResult);
               setButtonState('success');
               setProgress({
-                current: data.total || selectedSlots.size,
-                total: data.total || selectedSlots.size,
+                current: slotTotal,
+                total: slotTotal,
                 message: 'Completed successfully',
               });
+              setProgressPercent(100);
+              setProgressStageLabel('Completed');
               void refreshWeekStatusAfterSuccess(
                 response.data.plan_id,
                 capturedSlotNumbers
               );
             } else if (isProgressFailureStatus(data.status)) {
-              const errorMessage = data.message || data.error || 'Processing failed';
+              const errorMessage = data.message || 'Processing failed';
               setError(errorMessage);
               setButtonState('error');
               const finalResult: ProcessResult = {
                 ...response.data,
                 processed_slots: data.processed_slots ?? 0,
                 failed_slots: data.failed_slots ?? 0,
-                errors: data.errors ?? (data.errors && Array.isArray(data.errors) ? data.errors : []),
+                errors: data.errors ?? [],
               };
               setResult(finalResult);
             }
@@ -434,11 +452,17 @@ export function useBatchProcessor() {
     setPartial,
     missingOnly,
     setMissingOnly,
+    recallAiForSelected,
+    setRecallAiForSelected,
     forceSlots,
     weekStatus,
     isLoadingStatus,
     progress,
-    progressPercentage,
+    progressPercentage: progressPercent || progressPercentage,
+    progressStageLabel,
+    progressSlotCounts,
+    progressLastUpdateAt,
+    progressStalled,
     sortedSlots,
     toggleSlot,
     selectAllSlots,

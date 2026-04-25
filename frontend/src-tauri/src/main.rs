@@ -3,6 +3,7 @@
 
 mod bridge;
 mod db_commands;
+mod tablet_adb;
 
 use bridge::{PythonMessage, RustMessage, SidecarBridge};
 use std::collections::HashMap;
@@ -379,116 +380,13 @@ fn push_tablet_db(db_path: String) -> Result<serde_json::Value, String> {
     use std::path::PathBuf;
 
     let package_name = "com.lessonplanner.browser";
-    let temp_remote = "/data/local/tmp/lesson_planner.db";
-    let activity = "com.lessonplanner.browser/.MainActivity";
-
-    let p = PathBuf::from(db_path.clone());
+    let p = PathBuf::from(&db_path);
     if !p.exists() {
-        return Err(format!("Database file does not exist: {}", db_path));
+        return Err(format!("Database file does not exist: {db_path}"));
     }
-
-    // Ensure adb is available and exactly one device is connected.
     let device = detect_single_adb_device()?;
     ensure_package_installed(&device, package_name)?;
-    let mut steps: Vec<serde_json::Value> = Vec::new();
-
-    let record_ok = |name: &str, output: String| -> serde_json::Value {
-        serde_json::json!({ "step": name, "ok": true, "output": output })
-    };
-    let record_err = |name: &str, output: String| -> serde_json::Value {
-        serde_json::json!({ "step": name, "ok": false, "output": output })
-    };
-
-    // 1) push
-    let mut adb_push_cmd = Command::new("adb");
-    adb_push_cmd
-        .arg("-s")
-        .arg(&device)
-        .arg("push")
-        .arg(&db_path)
-        .arg(temp_remote);
-    match run_command_capture(adb_push_cmd) {
-        Ok(out) => steps.push(record_ok("adb_push", out)),
-        Err(out) => {
-            steps.push(record_err("adb_push", out.clone()));
-            return Err(format!("ADB push failed: {}", out));
-        }
-    }
-
-    // 2) stop app
-    let mut adb_stop_cmd = Command::new("adb");
-    adb_stop_cmd
-        .arg("-s")
-        .arg(&device)
-        .args(["shell", "am", "force-stop", package_name]);
-    let _ = run_command_capture(adb_stop_cmd)
-        .map(|out| steps.push(record_ok("force_stop", out)))
-        .map_err(|out| {
-            steps.push(record_err("force_stop", out.clone()));
-            out
-        });
-
-    // 3) Copy into app dir: run separate shell commands to avoid Windows quoting issues.
-    for (step_name, shell_cmd) in [
-        ("run_as_mkdir", format!("run-as {} sh -c 'mkdir -p databases'", package_name)),
-        ("run_as_cp", format!("run-as {} sh -c 'cp {} databases/lesson_planner.db'", package_name, temp_remote)),
-        ("run_as_rm_wal", format!("run-as {} sh -c 'rm -f databases/lesson_planner.db-shm databases/lesson_planner.db-wal'", package_name)),
-    ] {
-        let mut cmd = Command::new("adb");
-        cmd.arg("-s").arg(&device).args(["shell", &shell_cmd]);
-        match run_command_capture(cmd) {
-            Ok(out) => steps.push(record_ok(step_name, out)),
-            Err(out) => {
-                steps.push(record_err(step_name, out.clone()));
-                return Err(format!("{} failed (is the app debuggable?): {}", step_name, out));
-            }
-        }
-    }
-
-    // 4) Verify the copied file (for debugging).
-    let verify_cmd = format!("run-as {} sh -c 'ls -la databases/lesson_planner.db 2>&1'", package_name);
-    let mut adb_verify = Command::new("adb");
-    adb_verify
-        .arg("-s")
-        .arg(&device)
-        .args(["shell", &verify_cmd]);
-    if let Ok(out) = run_command_capture(adb_verify) {
-        steps.push(record_ok("verify_db_file", out));
-    }
-
-    // 5) cleanup temp
-    let mut adb_rm_cmd = Command::new("adb");
-    adb_rm_cmd
-        .arg("-s")
-        .arg(&device)
-        .args(["shell", "rm", temp_remote]);
-    let _ = run_command_capture(adb_rm_cmd)
-        .map(|out| steps.push(record_ok("rm_temp", out)))
-        .map_err(|out| {
-            steps.push(record_err("rm_temp", out.clone()));
-            out
-        });
-
-    // 6) restart app
-    let mut adb_start_cmd = Command::new("adb");
-    adb_start_cmd
-        .arg("-s")
-        .arg(&device)
-        .args(["shell", "am", "start", "-n", activity]);
-    match run_command_capture(adb_start_cmd) {
-        Ok(out) => steps.push(record_ok("start_app", out)),
-        Err(out) => {
-            steps.push(record_err("start_app", out.clone()));
-            return Err(format!("Failed to restart app: {}", out));
-        }
-    }
-
-    Ok(serde_json::json!({
-        "device_id": device,
-        "package": package_name,
-        "db_path": db_path,
-        "steps": steps
-    }))
+    tablet_adb::push_tablet_database(&device, p.as_path())
 }
 
 #[tauri::command]

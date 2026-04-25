@@ -149,6 +149,12 @@ class Settings(BaseSettings):
     LLM_MODEL: str = "gpt-4"
     LLM_API_KEY: Optional[str] = None
     OPENAI_API_KEY: Optional[str] = None
+    # Optional: separate OpenAI keys for pytest / smokes (see backend.llm.api_key.get_openai_api_key_for_tests)
+    OPENAI_API_KEY_TESTS: Optional[str] = None
+    GPT5_API_KEY_TESTS: Optional[str] = None
+    # Research-only LangExtract spike (.env); not used by core API paths (see docs/research/spikes/langextract_curriculum_smoke/)
+    LANGEXTRACT_API_KEY: Optional[str] = None
+    LANGEXTRACT_SMOKE_MODEL: Optional[str] = None
     ANTHROPIC_API_KEY: Optional[str] = None
 
     # Parallel Processing Configuration

@@ -10,6 +10,8 @@ interface ConfirmDialogProps {
   setPartial: (value: boolean) => void;
   missingOnly: boolean;
   setMissingOnly: (value: boolean) => void;
+  recallAiForSelected: boolean;
+  setRecallAiForSelected: (value: boolean) => void;
   selectedCount: number;
   totalSlots: number;
   onConfirm: () => void;
@@ -24,6 +26,8 @@ export function ConfirmDialog({
   setPartial,
   missingOnly,
   setMissingOnly,
+  recallAiForSelected,
+  setRecallAiForSelected,
   selectedCount,
   totalSlots,
   onConfirm,
@@ -71,11 +75,27 @@ export function ConfirmDialog({
                   onChange={(e) => setMissingOnly(e.target.checked)}
                   className="w-4 h-4"
                 />
-                Missing Only
+                Skip already-processed slots (recommended)
               </label>
             </div>
             <p className="text-[10px] text-muted-foreground mt-1">
               {missingOnly ? 'Will only process slots not yet in the plan.' : partial ? 'Will merge new slots into the existing plan.' : 'Will create a fresh plan (overwriting existing).'}
+            </p>
+          </div>
+
+          <div>
+            <p className="text-sm font-medium">AI Reprocessing:</p>
+            <label className="flex items-center gap-2 text-sm cursor-pointer mt-2">
+              <input
+                type="checkbox"
+                checked={recallAiForSelected}
+                onChange={(e) => setRecallAiForSelected(e.target.checked)}
+                className="w-4 h-4"
+              />
+              Re-run AI for selected slots
+            </label>
+            <p className="text-[10px] text-muted-foreground mt-1">
+              Off by default. Turn this on only when you want to regenerate selected slots with a new AI call.
             </p>
           </div>
 

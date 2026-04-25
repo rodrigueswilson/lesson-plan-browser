@@ -20,6 +20,7 @@ REQUIRED_TABLES: Tuple[str, ...] = (
     "lesson_vocabulary",
     "resources",
     "lesson_resources",
+    "science_lesson_day_segments",
 )
 
 # Minimum columns expected by backend/database/curriculum.py
@@ -42,6 +43,8 @@ REQUIRED_COLUMNS: Dict[str, Set[str]] = {
         "standards_structured",
         "ela_key_learning_summary",
         "ela_lesson_plan_structured",
+        "science_doc_lesson_number",
+        "science_li_sc_day_structured",
         "source_doc_id",
         "source_url",
         "ingested_at",
@@ -59,6 +62,18 @@ REQUIRED_COLUMNS: Dict[str, Set[str]] = {
         "translated_term",
         "level_1_def",
         "level_5_def",
+    },
+    "science_lesson_day_segments": {
+        "id",
+        "lesson_id",
+        "segment_index",
+        "day_label",
+        "science_doc_lesson_number",
+        "learning_intention_html",
+        "success_criteria_html",
+        "brief_overview_html",
+        "lesson_in_action_html",
+        "experimental_splits_json",
     },
 }
 

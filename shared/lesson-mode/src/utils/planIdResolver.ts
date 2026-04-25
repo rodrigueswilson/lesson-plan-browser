@@ -21,8 +21,8 @@ export async function resolvePlanIdFromScheduleEntry(
       return null;
     }
 
-    // Get the current week based on the schedule entry's day
-    const currentWeekOf = getWeekOfForDay(scheduleEntry.day_of_week);
+    // Use schedule week when available (SSOT); fallback to derived "current" week.
+    const currentWeekOf = scheduleEntry.week_of || getWeekOfForDay(scheduleEntry.day_of_week);
     const canonicalCurrent = normalizeWeekOfForMatch(currentWeekOf);
 
     // Try to find a plan that matches the week (exact or canonical, e.g. 3/2-03/06 vs 03/02-03/06)
@@ -39,21 +39,21 @@ export async function resolvePlanIdFromScheduleEntry(
       });
 
       if (candidatePlans.length > 0) {
-        // Sort by week_of descending (most recent first)
-        candidatePlans.sort((a, b) => {
-          if (!a.week_of || !b.week_of) return 0;
-          return b.week_of.localeCompare(a.week_of);
-        });
+        // Prefer most recently generated plan for overlapping week candidates.
+        candidatePlans.sort(
+          (a, b) =>
+            new Date(b.generated_at ?? 0).getTime() - new Date(a.generated_at ?? 0).getTime()
+        );
         matchingPlan = candidatePlans[0];
       }
     }
 
     // If still no match, use the most recent plan as fallback
     if (!matchingPlan) {
-      const sortedPlans = [...availablePlans].sort((a, b) => {
-        if (!a.week_of || !b.week_of) return 0;
-        return b.week_of.localeCompare(a.week_of);
-      });
+      const sortedPlans = [...availablePlans].sort(
+        (a, b) =>
+          new Date(b.generated_at ?? 0).getTime() - new Date(a.generated_at ?? 0).getTime()
+      );
       matchingPlan = sortedPlans[0];
     }
 
@@ -65,7 +65,13 @@ export async function resolvePlanIdFromScheduleEntry(
     try {
       const planDetail = await lessonApi.getPlanDetail(matchingPlan.id, userId);
       if (planDetail.data && planDetail.data.lesson_json) {
-        const dayData = planDetail.data.lesson_json.days?.[scheduleEntry.day_of_week];
+        const dayKey = (scheduleEntry.day_of_week || '').toLowerCase();
+        const days = planDetail.data.lesson_json.days || {};
+        const dayData =
+          days[dayKey] ??
+          days[
+            Object.keys(days).find((k) => k.toLowerCase() === dayKey) || ''
+          ];
         if (dayData && dayData.slots) {
           // Find the matching slot in the plan
           const matchingSlot = findMatchingSlot(dayData.slots, scheduleEntry);

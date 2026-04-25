@@ -170,7 +170,7 @@ function App() {
       return (
         <div className="min-h-screen p-4">
           <div className="max-w-md mx-auto mt-8">
-            <UserSelector autoSelect="first" />
+            <UserSelector autoSelect="single" />
           </div>
         </div>
       );
@@ -487,8 +487,7 @@ function App() {
 
         case 'curriculum':
           return (
-            <div className="space-y-8">
-              {userSelectorSection}
+            <div>
               <section>
                 <Suspense fallback={<div className="p-4">Loading...</div>}>
                   <CurriculumExplorer />

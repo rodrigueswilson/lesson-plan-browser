@@ -66,7 +66,21 @@ async def process_one_slot(
                 slot_progress / 100 * (1 / total_slots) * processing_weight * 100
             )
             overall_progress = base_progress + current_slot_progress
-            progress_tracker.update(plan_id, stage, overall_progress, message)
+            normalized_stage = stage
+            if stage == "processing":
+                if slot_progress < 30:
+                    normalized_stage = "extracting"
+                elif slot_progress < 80:
+                    normalized_stage = "transforming"
+                else:
+                    normalized_stage = "finalizing"
+            progress_tracker.update(
+                plan_id,
+                normalized_stage,
+                overall_progress,
+                message,
+                metadata={"completed_slots": slot_index - 1, "total_slots": total_slots},
+            )
 
     print(
         f"DEBUG: _process_slot - Resolving primary file for slot {slot['slot_number']}"

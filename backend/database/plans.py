@@ -169,6 +169,7 @@ def update_weekly_plan(
     error_message: Optional[str] = None,
     lesson_json: Optional[Dict[str, Any]] = None,
     total_slots: Optional[int] = None,
+    generated_at: Optional[datetime] = None,
 ) -> bool:
     """Update weekly plan status or lesson_json."""
     try:
@@ -188,6 +189,8 @@ def update_weekly_plan(
                 plan.lesson_json = lesson_json
             if total_slots is not None:
                 plan.total_slots = total_slots
+            if generated_at is not None:
+                plan.generated_at = generated_at
 
             session.add(plan)
             session.commit()
@@ -419,6 +422,11 @@ def _group_plans_by_week(
         )
     by_week: Dict[str, List[Dict[str, Any]]] = {}
     for p in all_plans:
+        auto_backup_file: Optional[str] = None
+        if isinstance(p.lesson_json, dict):
+            metadata = p.lesson_json.get("metadata")
+            if isinstance(metadata, dict):
+                auto_backup_file = metadata.get("auto_backup_file")
         w = p.week_of or ""
         if w not in by_week:
             by_week[w] = []
@@ -427,6 +435,8 @@ def _group_plans_by_week(
                 "id": p.id,
                 "generated_at": p.generated_at.isoformat() if p.generated_at else None,
                 "status": p.status or "pending",
+                "output_file": p.output_file,
+                "auto_backup_file": auto_backup_file,
             }
         )
     groups = [{"week_of": week_of, "plans": plans} for week_of, plans in by_week.items()]

@@ -5,6 +5,7 @@ Defines the common interface that all database implementations must follow.
 
 from abc import ABC, abstractmethod
 from contextlib import contextmanager
+from datetime import datetime
 from typing import Any, Dict, List, Optional, Tuple
 
 from backend.schema import (
@@ -170,6 +171,7 @@ class DatabaseInterface(ABC):
         error_message: Optional[str] = None,
         lesson_json: Optional[Dict[str, Any]] = None,
         total_slots: Optional[int] = None,
+        generated_at: Optional[datetime] = None,
     ) -> bool:
         """Update plan state."""
         pass

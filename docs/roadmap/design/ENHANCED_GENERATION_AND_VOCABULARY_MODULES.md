@@ -552,6 +552,7 @@ Retrieval results are stored for:
 ### Vocabulary Lifecycle
 
 ```
+0. (Optional) Unit pass → aggregate vocabulary across the unit (grade/subject/unit) for backbone/priority terms
 1. Curriculum Query → Identify essential vocabulary for grade/subject
 2. Lesson Plan Generation → Extract vocabulary from plan + RAG context
 3. Check Database → Does word exist?
@@ -622,6 +623,14 @@ The vocabulary module will **dialogue with the Merriam-Webster API and image sea
 - **Per-Student Mastery State**: The system tracks the student's mastery of each word (e.g., Level 3 mastered → Level 4 active). This state is used by the **cmi5 Package Architect** to auto-select the initial definition level for each student.
 - **SSOT (Single Source of Truth)**: The database records the complete Merriam-Webster definition for reference, but uses the **6 generated leveled definitions** for student-facing activities and **cmi5 packages**.
 - **API orchestration:** A thin **dictionary service** wraps multiple APIs (Merriam-Webster, EN-PT) and apply rate limiting, caching, and normalization.
+
+#### Vocabulary agent orchestration and multi-API enrichment
+
+As the module grows, it will connect to **many** APIs and online resources (not only commercial dictionaries and image search): e.g. additional **EN–L1** and future L1s, **phonological / phonetic** data where available (IPA, syllables), **cognate** reference data, and planned use of open lexical sources such as **Wiktionary** (or equivalents) under each provider’s **license and terms**, with **caching, deduplication, and provenance** in the database. A **vocabulary orchestrator** coordinates **skills** along dimensions: unit- vs lesson-scoped vocabulary, **six WIDA-level definitions** per term, media attachment, and persistence. Most of the long-term build effort is expected in **agents/skills + data model** rather than a single monolithic prompt.
+
+- **Unit vs lesson:** The system may first derive **unit-aggregate** vocabulary (whole unit), then **per-lesson** sets (tight list per day), using **structured queries** as default and **optional semantic** search only with strong metadata pre-filters.
+- **Storage:** The vocabulary **bank** remains the SSOT for teacher-facing data; **raw API payloads** should live in a separate **artifact** or snapshot pattern (see planning doc).
+- **Full design:** [VOCABULARY_AGENT_AND_HYBRID_DATA.md](./VOCABULARY_AGENT_AND_HYBRID_DATA.md). Database engine choice (including hybrid relational + vector) remains under [LP2_DATABASE_DECISION_GATES.md](./LP2_DATABASE_DECISION_GATES.md).
 
 ### WIDA vocabulary categories and instructional guidelines (from analyzed sources)
 

@@ -20,6 +20,7 @@ if sys.platform == "win32":
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.gzip import GZipMiddleware
 
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -127,6 +128,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Compress large JSON/HTML API responses (curriculum lesson bundles, etc.)
+app.add_middleware(GZipMiddleware, minimum_size=500)
 
 # Register error handlers
 app.add_exception_handler(ValidationError, validation_error_handler)

@@ -70,9 +70,10 @@ async def run_sequential_path(
             progress_pct = int((i - 1) / len(slots) * processing_weight * 100)
             progress_tracker.update(
                 plan_id,
-                "processing",
+                "extracting",
                 progress_pct,
                 f"Processing slot {i}/{len(slots)}: {slot.get('subject', 'Unknown')} ({slot.get('primary_teacher_name', 'No teacher')})",
+                metadata={"completed_slots": i - 1, "total_slots": len(slots)},
             )
 
             logger.info(
@@ -151,9 +152,10 @@ async def run_sequential_path(
             progress_pct = int(i / len(slots) * processing_weight * 100)
             progress_tracker.update(
                 plan_id,
-                "processing",
+                "finalizing",
                 progress_pct,
                 f"Completed slot {i}/{len(slots)}: {slot.get('subject', 'Unknown')}",
+                metadata={"completed_slots": i, "total_slots": len(slots)},
             )
         except Exception as e:
             traceback.print_exc()
@@ -181,9 +183,10 @@ async def run_sequential_path(
             )
             progress_tracker.update(
                 plan_id,
-                "error",
+                "failed",
                 int(i / len(slots) * processing_weight * 100),
                 f"Failed slot {i}/{len(slots)}: {error_msg}",
+                metadata={"completed_slots": i - 1, "total_slots": len(slots)},
             )
 
     return (lessons, errors)

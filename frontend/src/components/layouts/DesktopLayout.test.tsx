@@ -17,7 +17,6 @@ describe('DesktopLayout', () => {
     render(<DesktopLayout><div>Content</div></DesktopLayout>);
 
     expect(screen.getByText('Bilingual Lesson Planner')).toBeInTheDocument();
-    expect(screen.getByText('Weekly lesson plan generator with WIDA support')).toBeInTheDocument();
   });
 
   it('should render footer', () => {

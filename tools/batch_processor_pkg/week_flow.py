@@ -20,6 +20,44 @@ from tools.batch_processor_pkg import (
 )
 
 
+def _calibrate_progress_weights(
+    processor: Any, user_id: str, default_processing: float, default_rendering: float
+) -> tuple[float, float]:
+    """Calibrate progress weights from recent operation telemetry when available."""
+    try:
+        op_stats = processor.tracker.get_operation_stats(days=14, user_id=user_id) or []
+        if not isinstance(op_stats, list) or not op_stats:
+            return default_processing, default_rendering
+        processing_ms = 0.0
+        rendering_ms = 0.0
+        for row in op_stats:
+            operation_name = str(row.get("operation_type", "")).lower()
+            duration = float(row.get("avg_duration_ms") or 0)
+            if duration <= 0:
+                continue
+            if "render" in operation_name or "combine" in operation_name:
+                rendering_ms += duration
+            else:
+                processing_ms += duration
+        total = processing_ms + rendering_ms
+        if total <= 0:
+            return default_processing, default_rendering
+        calibrated_processing = max(0.6, min(0.92, processing_ms / total))
+        calibrated_rendering = 1.0 - calibrated_processing
+        logger.info(
+            "progress_weights_calibrated",
+            extra={
+                "user_id": user_id,
+                "processing_weight": calibrated_processing,
+                "rendering_weight": calibrated_rendering,
+            },
+        )
+        return calibrated_processing, calibrated_rendering
+    except Exception as exc:
+        logger.warning("progress_weights_calibration_skipped", extra={"error": str(exc)})
+        return default_processing, default_rendering
+
+
 async def run_process_user_week(
     processor: Any,
     user_id: str,
@@ -108,8 +146,12 @@ async def run_process_user_week(
     except Exception as e:
         print(f"WARNING: Failed to start batch tracking: {e}")
 
-    processing_weight = settings.PROGRESS_PROCESSING_WEIGHT
-    rendering_weight = settings.PROGRESS_RENDERING_WEIGHT
+    processing_weight, rendering_weight = _calibrate_progress_weights(
+        processor,
+        user_id,
+        settings.PROGRESS_PROCESSING_WEIGHT,
+        settings.PROGRESS_RENDERING_WEIGHT,
+    )
 
     # Ensure weights sum to 1 for progress tracking
     if abs((processing_weight + rendering_weight) - 1.0) > 1e-6:
@@ -124,7 +166,11 @@ async def run_process_user_week(
     print(f"DEBUG: About to start processing {len(slots)} slots")
     # Update progress: starting
     progress_tracker.update(
-        plan_id, "processing", 0, f"Starting to process {len(slots)} slots..."
+        plan_id,
+        "queued",
+        0,
+        f"Starting to process {len(slots)} slots...",
+        metadata={"completed_slots": 0, "total_slots": len(slots)},
     )
     print("DEBUG: Progress tracker updated - starting")
 

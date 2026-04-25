@@ -40,6 +40,11 @@ except ImportError:
     from ela_lesson_plan_table import is_ela_lesson_plan_table, parse_ela_lesson_plan_table
 
 try:
+    from tools.scraper.science_lesson_tables import merge_science_li_sc_into_lessons
+except ImportError:
+    from science_lesson_tables import merge_science_li_sc_into_lessons  # type: ignore[no-redef]
+
+try:
     from tools.scraper.cell_content_format import (
         collect_hyperlinks_from_buffer,
         split_leading_bold_runs_for_paragraph,
@@ -347,6 +352,146 @@ def _resolve_field_from_anchors(
             best_field = field
     return best_field
 
+
+_VOCAB_SECTION_FIELDS = frozenset({"_vocab_temp", "vocabulary"})
+
+
+def _resolve_section_header_after_false_vocab_run(
+    normalized_paragraph: str,
+    field_map: Dict[str, str],
+    max_len: int = 120,
+) -> Optional[str]:
+    """
+    When _current_section is vocabulary, long paragraphs no longer match anchors via
+    _resolve_field_from_anchors (120-char guard), so the parser never leaves vocabulary
+    and ingests procedure/DIT prose as fake terms. Detect a leading section label before
+    the first ':' or the first line and switch section when it maps to a non-vocabulary field.
+    """
+    if len(normalized_paragraph) <= max_len:
+        return None
+    if ":" in normalized_paragraph:
+        head = normalized_paragraph.split(":", 1)[0].strip()
+        if head and len(head) <= max_len:
+            r = _resolve_field_from_anchors(head, field_map, max_len_for_substring=max_len)
+            if r and r not in _VOCAB_SECTION_FIELDS:
+                return r
+    first = normalized_paragraph.split("\n", 1)[0].strip()
+    if first and first != normalized_paragraph and len(first) <= max_len:
+        r = _resolve_field_from_anchors(first, field_map, max_len_for_substring=max_len)
+        if r and r not in _VOCAB_SECTION_FIELDS:
+            return r
+    return None
+
+
+_JUNK_VOCAB_EXACT_LOW = frozenset(
+    {
+        "materials",
+        "storytelling",
+        "editing",
+        "cultural meaning",
+    }
+)
+
+
+def _strip_vocab_token_noise(s: str) -> str:
+    """Strip BOM/zero-width and wrapping quotes from split fragments."""
+    t = (s or "").strip().strip("\ufeff\u200b\u200c\u200d")
+    t = t.strip('"\'' "\u201c\u201d\u2018\u2019")
+    return t.strip()
+
+
+def _should_drop_vocab_token(term: str) -> bool:
+    """
+    Drop comma-/semicolon-split fragments that are lesson prose, not glossary terms.
+    Mirrors lesson-plan-browser CurriculumExplorer isLikelyJunkVocabLabel plus ELA anchors.
+    """
+    s = _strip_vocab_token_noise(term or "")
+    if len(s) < 2 or len(s) > 48:
+        return True
+    if re.search(r"https?://", s, re.IGNORECASE):
+        return True
+    low = s.lower()
+    junk_needles = (
+        "rubric",
+        "slide deck",
+        "screencast",
+        ".pptx",
+        "vocabulary boxes",
+        "notice/wonder",
+        "notice and wonder",
+        "preview chart",
+        "instructional resources",
+        "primary source",
+        "partner discussion",
+        "discussion rubric",
+        "read aloud",
+        "google.com",
+        "docs.google",
+        "presentation",
+        "culminating task",
+        "portfolio artifact",
+        "daily instructional",
+        "anticipatory set",
+        "engagement with the content",
+        "learning procedures",
+        "addressing misconceptions",
+        "differentiation",
+    )
+    if any(n in low for n in junk_needles):
+        return True
+    if low in _JUNK_VOCAB_EXACT_LOW:
+        return True
+    if "and techniques" in low:
+        return True
+    word_count = len(s.split())
+    if word_count > 6:
+        return True
+    instructional_prefixes = (
+        "article:",
+        "students will",
+        "student will",
+        "think about",
+        "work with",
+        "cite evidence",
+        "include:",
+        "share as",
+        "revisit essential",
+        "identify key",
+        "clearly compare",
+        "comparing and contrasting",
+        "how are they",
+        "what role",
+        "who is responsible",
+        "a body with",
+        "a conclusion",
+        "an introduction",
+        "first draft",
+        "publish final",
+        "or independently",
+        "support as",
+        "or review",
+        "editing and revising",
+        "if students",
+        "if working",
+        "use correct",
+        "launch the lesson",
+        "for the daily",
+        "the teacher",
+        "in their writing",
+        "notebook",
+        "unit 1 ",
+        "unit 2 ",
+        "and ",
+        "correct spelling",
+    )
+    if any(low.startswith(p) for p in instructional_prefixes):
+        return True
+    st = s.strip()
+    if st.endswith(")") and "(" not in st:
+        return True
+    return False
+
+
 def _extract_vocab_terms(text: str) -> List[str]:
     cleaned = (text or "").strip()
     if not cleaned:
@@ -354,7 +499,18 @@ def _extract_vocab_terms(text: str) -> List[str]:
     # Remove common bullet glyphs/prefixes and split lightweight term lists.
     cleaned = re.sub(r"^[\u2022\-\*\u25CF\u25A0\s]+", "", cleaned)
     parts = re.split(r"[,\n;]+", cleaned)
-    return [p.strip() for p in parts if p and p.strip()]
+    out: List[str] = []
+    seen: Set[str] = set()
+    for p in parts:
+        s = _strip_vocab_token_noise(p)
+        if not s or _should_drop_vocab_token(s):
+            continue
+        key = s.lower()
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append(s)
+    return out
 
 def _is_procedure_subheader(text: str) -> bool:
     t = (text or "").strip().lower()
@@ -366,6 +522,32 @@ def _is_procedure_subheader(text: str) -> bool:
             t,
         )
     )
+
+
+def _science_lesson_title_too_weak(title: str) -> bool:
+    """TOC-style lines like 'Lesson 1:' match the shared regex but should not open a lesson."""
+    t = (title or "").strip()
+    if len(t) < 2:
+        return True
+    return t == ":"
+
+
+_SCIENCE_STRUCTURAL_NOISE_LESSON_TITLES = frozenset({"resources", "days", "vocabulary"})
+
+
+def _science_lesson_title_is_structural_noise(title: str) -> bool:
+    """
+    Headings like 'Lesson 9: Resources' or 'Lesson 11: Days' are section labels in the
+    compendium, not distinct teaching modules. Treat like weak titles: fold into prior lesson.
+    """
+    t = (title or "").strip().casefold()
+    return t in _SCIENCE_STRUCTURAL_NOISE_LESSON_TITLES
+
+
+def _is_science_subject(subject: str) -> bool:
+    u = (subject or "").strip().upper()
+    return u in ("SCIENCE", "SCI")
+
 
 def _is_non_standard_heading(text: str) -> bool:
     t = (text or "").strip().lower()
@@ -1692,6 +1874,7 @@ class RecursiveTableParser:
             "suspected_equation_token_loss_standards": 0,
         }
         seen_lesson_numbers: Set[int] = set()
+        science_lesson_seq = 0
 
         for item in stream:
             item_type = item.get("type")
@@ -1708,6 +1891,26 @@ class RecursiveTableParser:
                         lnum_str = m.group(1)
                         ltitle = (m.group(2) or "").strip().split("   ")[0]
                     lnum = int(lnum_str.split('.')[-1]) if '.' in lnum_str else int(lnum_str)
+                    if _is_science_subject(subject):
+                        if _science_lesson_title_too_weak(ltitle):
+                            if current_lesson:
+                                self._buffer.append(item)
+                                ingest_stats["paragraphs_appended"] += 1
+                            continue
+                        if _science_lesson_title_is_structural_noise(ltitle):
+                            if current_lesson:
+                                self._buffer.append(item)
+                                ingest_stats["paragraphs_appended"] += 1
+                            continue
+                        if (
+                            current_lesson
+                            and current_lesson.get("_science_doc_lnum") == lnum
+                        ):
+                            self.flush_buffer(current_lesson)
+                            current_lesson["_current_section"] = "procedure_html"
+                            self._buffer.append(item)
+                            ingest_stats["paragraphs_appended"] += 1
+                            continue
                     ingest_stats["lessons_started"] += 1
                     if lnum not in seen_lesson_numbers:
                         seen_lesson_numbers.add(lnum)
@@ -1727,8 +1930,18 @@ class RecursiveTableParser:
                         self.process_recursive_links(current_lesson, lesson_links, subject)
                     
                     if current_lesson: lessons_data.append(current_lesson)
+                    if _is_science_subject(subject):
+                        science_lesson_seq += 1
+                        row_lesson_number = science_lesson_seq
+                        lesson_row_id = f"{unit_id}_L{row_lesson_number}"
+                    else:
+                        row_lesson_number = lnum
+                        lesson_row_id = f"{unit_id}_L{lnum}"
                     current_lesson = {
-                        "id": f"{unit_id}_L{lnum}", "unit_id": unit_id, "lesson_number": lnum, "title": ltitle,
+                        "id": lesson_row_id,
+                        "unit_id": unit_id,
+                        "lesson_number": row_lesson_number,
+                        "title": ltitle,
                         "subject": subject,
                         "narrative_html": "", "lesson_narrative": "", "learning_intentions": "", "procedure_html": "",
                         "daily_instructional_task": "", "success_criteria": "", "essential_questions": "",
@@ -1742,13 +1955,23 @@ class RecursiveTableParser:
                         "ingest_parser_version": parser_version,
                         "_current_section": None, "_standards": {}, "_standards_structured": [], "_vocabulary": [], "_resources": [],
                         "_standards_section": "", "_standards_panel": "",
-                        "_standards_temp": "", "_vocab_temp": ""
+                        "_standards_temp": "", "_vocab_temp": "",
                     }
+                    if _is_science_subject(subject):
+                        current_lesson["_science_doc_lnum"] = lnum
+                        current_lesson["science_doc_lesson_number"] = lnum
                     continue
 
                 if not current_lesson: continue
                 low_text = _normalize_anchor_text(text)
                 new_section = _resolve_field_from_anchors(low_text, FIELD_MAP)
+                if (
+                    not new_section
+                    and current_lesson.get("_current_section") in _VOCAB_SECTION_FIELDS
+                ):
+                    new_section = _resolve_section_header_after_false_vocab_run(
+                        low_text, FIELD_MAP
+                    )
                 if not new_section and _is_procedure_subheader(text):
                     new_section = "procedure_html"
                 if new_section:
@@ -1764,7 +1987,7 @@ class RecursiveTableParser:
                         self._buffer.append(item)
                         ingest_stats["paragraphs_appended"] += 1
                     continue
-                if current_lesson.get("_current_section") in {"_vocab_temp", "vocabulary"}:
+                if current_lesson.get("_current_section") in _VOCAB_SECTION_FIELDS:
                     current_lesson["_vocabulary"].extend(_extract_vocab_terms(text))
                     continue
                 self._buffer.append(item)
@@ -1839,6 +2062,8 @@ class RecursiveTableParser:
                     ensure_ascii=False,
                 )
 
+        merge_science_li_sc_into_lessons(self, docx_path, lessons_data, subject)
+
         unique_lessons = {
             l["id"]: l for l in lessons_data
             if any([
@@ -1861,6 +2086,7 @@ class RecursiveTableParser:
                 l.get("_resources"),
                 l.get("ela_key_learning_summary"),
                 l.get("ela_lesson_plan_structured"),
+                l.get("science_li_sc_day_structured"),
             ])
         }
         
@@ -1937,6 +2163,10 @@ class RecursiveTableParser:
             # 5. Save Lesson Core
             clean_data = {k: v for k, v in data.items() if not k.startswith("_")}
             curr_db.upsert_lesson(clean_data)
+            curr_db.replace_science_lesson_day_segments(
+                str(data["id"]),
+                clean_data.get("science_li_sc_day_structured"),
+            )
             ingested_count += 1
         ended_at = _utc_now_iso()
         report = _build_ingest_report(
@@ -1995,7 +2225,17 @@ class RecursiveTableParser:
         return db.create_original_lesson_plan(plan_data)
 
     def process_recursive_links(self, lesson: Dict[str, Any], links: List[str], subject: str):
-        """Processes external links to fetch detailed content."""
+        """Processes external links to fetch detailed content.
+
+        Set ``CURRICULUM_INGEST_SKIP_RECURSION=1`` (or ``true``/``yes``) to skip nested
+        Google Doc exports during ``ingest_to_curriculum`` (faster CI or very large guides).
+        """
+        if os.environ.get("CURRICULUM_INGEST_SKIP_RECURSION", "").strip().lower() in (
+            "1",
+            "true",
+            "yes",
+        ):
+            return
         if not self._docs_client:
             try:
                 self._docs_client = DocsClient()

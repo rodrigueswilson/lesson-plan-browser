@@ -35,8 +35,10 @@ Known skips and optional gates are summarized in [test_suite_status.md](test_sui
 | Variable | Effect |
 |----------|--------|
 | `RUN_ACTUAL_PROCESSING=1` | Enables `tests/test_actual_processing.py` (batch + live processing). |
-| `RUN_STRUCTURED_OUTPUTS_API=1` | Enables `tests/test_structured_outputs.py::test_integration_with_real_api` (live OpenAI transform; slow, uses quota). Requires `OPENAI_API_KEY` or `LLM_API_KEY`. |
+| `RUN_STRUCTURED_OUTPUTS_API=1` | Enables `tests/test_structured_outputs.py::test_integration_with_real_api` (live OpenAI transform; slow, uses quota). Prefer `OPENAI_API_KEY_TESTS` (and `GPT5_API_KEY_TESTS` for `gpt-5*`) so lesson generation keeps using `OPENAI_API_KEY` / `GPT5_API_KEY`; if unset, falls back to the same keys as the app. |
 | `RUN_LLM_GOLDEN=1` | Enables `tests/test_llm_golden.py` (all `tests/fixtures/llm_golden/*.json`; `ell_support[].strategy_id` checks against the strategy pack; no API calls). |
+
+**Maintainer evidence (2026-04-06):** With `RUN_STRUCTURED_OUTPUTS_API=1` and valid OpenAI credentials (test-prefer keys per table above), `python -m pytest tests/test_structured_outputs.py::test_integration_with_real_api -v` **passed** in approximately three minutes; no secrets logged. See also [wave_2_evidence.md](../research/repos/wave_2_evidence.md) (Run G).
 
 ## Legacy strategy id grep policy
 

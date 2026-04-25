@@ -16,6 +16,8 @@ interface PlanVersionRow {
     id: string;
     generated_at: string | null;
     status: string;
+    output_file?: string | null;
+    auto_backup_file?: string | null;
 }
 
 interface WeekPlanGroup {
@@ -103,6 +105,7 @@ export function DatabaseSettings() {
     const [restoreReplaceExisting, setRestoreReplaceExisting] = useState(false);
     const [restoreLoading, setRestoreLoading] = useState(false);
     const [restoreFileName, setRestoreFileName] = useState<string | null>(null);
+    const [copiedBackupPath, setCopiedBackupPath] = useState<string | null>(null);
 
     useEffect(() => {
         fetchStats();
@@ -329,6 +332,16 @@ export function DatabaseSettings() {
             setError(err instanceof Error ? err.message : 'Delete failed');
         } finally {
             setDeletingPlanId(null);
+        }
+    };
+
+    const handleCopyBackupPath = async (pathValue: string) => {
+        try {
+            await navigator.clipboard.writeText(pathValue);
+            setCopiedBackupPath(pathValue);
+            setTimeout(() => setCopiedBackupPath((prev) => (prev === pathValue ? null : prev)), 1500);
+        } catch {
+            setError('Could not copy backup path to clipboard');
         }
     };
 
@@ -607,6 +620,7 @@ export function DatabaseSettings() {
                                                         <th className="p-2 font-medium">Plan ID</th>
                                                         <th className="p-2 font-medium whitespace-nowrap">Generated</th>
                                                         <th className="p-2 font-medium">Status</th>
+                                                        <th className="p-2 font-medium">Auto backup file</th>
                                                         <th className="p-2 font-medium text-right whitespace-nowrap">Actions</th>
                                                     </tr>
                                                 </thead>
@@ -621,6 +635,27 @@ export function DatabaseSettings() {
                                                             </td>
                                                             <td className="p-2 align-top">
                                                                 <span className="text-xs px-2 py-0.5 rounded bg-muted">{plan.status}</span>
+                                                            </td>
+                                                            <td className="p-2 align-top">
+                                                                {plan.auto_backup_file ? (
+                                                                    <div className="flex flex-col gap-1">
+                                                                        <code className="text-[11px] break-all">{plan.auto_backup_file}</code>
+                                                                        <button
+                                                                            type="button"
+                                                                            onClick={() => handleCopyBackupPath(plan.auto_backup_file as string)}
+                                                                            className="px-2 py-1 text-xs border rounded-md hover:bg-muted w-fit inline-flex items-center gap-1"
+                                                                        >
+                                                                            {copiedBackupPath === plan.auto_backup_file ? (
+                                                                                <CheckCircle className="w-3 h-3" />
+                                                                            ) : (
+                                                                                <Copy className="w-3 h-3" />
+                                                                            )}
+                                                                            {copiedBackupPath === plan.auto_backup_file ? 'Copied' : 'Copy path'}
+                                                                        </button>
+                                                                    </div>
+                                                                ) : (
+                                                                    <span className="text-xs text-muted-foreground">Not available</span>
+                                                                )}
                                                             </td>
                                                             <td className="p-2 align-top">
                                                                 <div className="flex flex-wrap justify-end gap-1.5">

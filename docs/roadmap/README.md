@@ -32,7 +32,7 @@ The Bilingual Weekly Plan Builder is production-ready for core lesson plan gener
 | **WIDA framework ingestion**             | Planned | [design/WIDA_FRAMEWORK_INGESTION_AND_USE.md](design/WIDA_FRAMEWORK_INGESTION_AND_USE.md) – Extract/scrape WIDA PDFs; convert to database, Markdown; optionally later embeddings/vector DB. WIDA as "operating system" for lesson plans. |
 | **Lesson planning balance (domains + key uses)** | Planned | [design/LESSON_PLANNING_BALANCE.md](design/LESSON_PLANNING_BALANCE.md) – Balance four domains and four Key Language Uses by subject across weekly, unit, period, school year; planner memory and prediction. |
 | **Assessment module**                     | Planned | [design/ASSESSMENT_MODULE.md](design/ASSESSMENT_MODULE.md) – LLM-designed assessment per lesson, tool set (checklist, tally, etc.), tablet data collection; WIDA Can Do Descriptors; ODPAR cycle. Legal/privacy: FERPA and state/federal student privacy; anonymization; no student names on internet; USB/local transfer preferred; LLM never receives PII. |
-| **Vocabulary module**                     | Planned | [design/ENHANCED_GENERATION_AND_VOCABULARY_MODULES.md](design/ENHANCED_GENERATION_AND_VOCABULARY_MODULES.md)                                                                                    |
+| **Vocabulary module**                     | Planned | [design/ENHANCED_GENERATION_AND_VOCABULARY_MODULES.md](design/ENHANCED_GENERATION_AND_VOCABULARY_MODULES.md); [design/VOCABULARY_AGENT_AND_HYBRID_DATA.md](design/VOCABULARY_AGENT_AND_HYBRID_DATA.md) (vocabulary agent, multi-API, hybrid data; planned linguistic-dimensions/language-functions study + source evaluation for multilingual enrichment) |
 | **Agent Skills / MCP**                    | Planned | [design/AGENT_SKILLS_AND_CODE_EXECUTION.md](design/AGENT_SKILLS_AND_CODE_EXECUTION.md), [design/IMPLEMENTATION_ROADMAP.md](design/IMPLEMENTATION_ROADMAP.md) (Phase 3)                          |
 | **API client contract (OpenAPI codegen)** | Planning | [design/API_CLIENT_CONTRACT_TOOLING.md](design/API_CLIENT_CONTRACT_TOOLING.md) – Typed HTTP client from FastAPI OpenAPI; **Orval** + TanStack React Query recommended; incremental adoption vs [shared/lesson-api](../../shared/lesson-api/). |
 | **Browser: Subject/Grade/Time filter UI** | Planned | [design/LESSON_PLAN_BROWSER_MODULE.md](design/LESSON_PLAN_BROWSER_MODULE.md)                                                                                                                    |
@@ -68,6 +68,31 @@ All detailed design and architecture docs for the above are under **[design/](de
 - **Lesson planning balance:** [design/LESSON_PLANNING_BALANCE.md](design/LESSON_PLANNING_BALANCE.md) — Balance of the four domains (Listening, Reading, Speaking, Writing) and four Key Language Uses (Narrate, Argue, Inform, Explain) by subject across four layers: weekly (5 days), by unit, by period, by school year; planner memory and prediction to maintain balance.
 - **Pedagogical tooltips and popovers:** [design/pedagogical_tooltips/README.md](design/pedagogical_tooltips/README.md) — Research for in-app strategy and WIDA glosses from existing JSON SSOT; gate criteria before implementation.
 - **API client contract (OpenAPI codegen):** [design/API_CLIENT_CONTRACT_TOOLING.md](design/API_CLIENT_CONTRACT_TOOLING.md) — Orval + TanStack React Query recommended; OpenAPI from FastAPI as SSOT.
+- **Vocabulary agent and hybrid data (multi-API, unit vs lesson):** [design/VOCABULARY_AGENT_AND_HYBRID_DATA.md](design/VOCABULARY_AGENT_AND_HYBRID_DATA.md) — orchestrator, skills, structured vs semantic queries, API artifact storage, phonology/cognate planning.
+  - Includes a planned study to map linguistic dimensions and language functions to database fields, and to evaluate libraries/dictionaries/APIs for robust multilingual vocabulary enrichment.
+
+## Architecture gate docs (MariaDB + embeddings research)
+
+Use this bundle for the architecture reflection gate on relational + vector strategy:
+
+- **Source brief (official evidence):** [design/ARCHITECTURE_GATE_SOURCE_BRIEF.md](design/ARCHITECTURE_GATE_SOURCE_BRIEF.md)
+- **Option matrix (Pattern A/B/C):** [design/ARCHITECTURE_GATE_OPTION_MATRIX.md](design/ARCHITECTURE_GATE_OPTION_MATRIX.md)
+- **Benchmark protocol (metrics + thresholds):** [design/ARCHITECTURE_GATE_BENCHMARK_PROTOCOL.md](design/ARCHITECTURE_GATE_BENCHMARK_PROTOCOL.md)
+- **Risk register (migration + model lifecycle):** [design/ARCHITECTURE_GATE_RISK_REGISTER.md](design/ARCHITECTURE_GATE_RISK_REGISTER.md)
+- **Decision memo (go/no-go + fallback):** [design/ARCHITECTURE_GATE_DECISION_MEMO.md](design/ARCHITECTURE_GATE_DECISION_MEMO.md)
+
+## LP2 transition docs (research and next-cycle readiness)
+
+Use this bundle for LP2 planning, portability, and decision gates. This bundle is intended to support research and stakeholder reflection before any LP2 clone execution:
+
+- **Program charter (LP vs LP2 governance):** [design/LP2_PROGRAM_CHARTER.md](design/LP2_PROGRAM_CHARTER.md)
+- **Containerization and portability strategy:** [design/LP2_CONTAINERIZATION_AND_PORTABILITY_STRATEGY.md](design/LP2_CONTAINERIZATION_AND_PORTABILITY_STRATEGY.md)
+- **Environment portability specification:** [design/LP2_ENVIRONMENT_PORTABILITY_SPEC.md](design/LP2_ENVIRONMENT_PORTABILITY_SPEC.md)
+- **Database decision gates (relational + vector):** [design/LP2_DATABASE_DECISION_GATES.md](design/LP2_DATABASE_DECISION_GATES.md)
+- **8-week execution roadmap (no clone during reflection):** [design/LP2_EXECUTION_ROADMAP_8_WEEKS.md](design/LP2_EXECUTION_ROADMAP_8_WEEKS.md)
+- **Stakeholder review checklist (one-page):** [design/LP2_STAKEHOLDER_REVIEW_CHECKLIST.md](design/LP2_STAKEHOLDER_REVIEW_CHECKLIST.md)
+
+Current planning direction: prefer major database migration execution in the summer window (before next school year), after gate approval. **Current `LP` stays available** if the agentic line is not ready by then. Use recent curriculum ingestion (Math, ELA, Science) plus upcoming WIDA/Newark-style document storage design to **inform** the database and agentic architecture; treat containers and MCP as **after** that evidence is clear (see [design/LP2_EXECUTION_ROADMAP_8_WEEKS.md](design/LP2_EXECUTION_ROADMAP_8_WEEKS.md)).
 
 ---
 

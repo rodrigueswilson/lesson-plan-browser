@@ -64,7 +64,9 @@ export function BatchAlerts({ error, result, onDownload }: BatchAlertsProps) {
             <div className="space-y-1">
               {result.errors.map((err, idx) => (
                 <div key={idx} className="text-sm">
-                  Slot {err.slot} ({err.subject}): {err.error}
+                  {typeof err === 'string'
+                    ? err
+                    : `Slot ${err.slot ?? 'Unknown'} (${err.subject ?? 'Unknown'}): ${err.error ?? 'Unknown error'}`}
                 </div>
               ))}
             </div>

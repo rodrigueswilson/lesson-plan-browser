@@ -36,7 +36,19 @@ export function LessonPlanDisplay({ lessonPlanData, day, slot }: LessonPlanDispl
 
       const days = lessonJson.days || {};
       const dayKey = day?.toLowerCase() || '';
-      const dayData = days[dayKey];
+      let dayData = days[dayKey];
+      if (!dayData && dayKey) {
+        const matchedKey = Object.keys(days).find((k) => k.toLowerCase() === dayKey);
+        if (matchedKey) {
+          dayData = days[matchedKey];
+        }
+      }
+      if (!dayData) {
+        const firstDayWithSlots = Object.keys(days).find((k) => Array.isArray(days[k]?.slots) && days[k].slots.length > 0);
+        if (firstDayWithSlots) {
+          dayData = days[firstDayWithSlots];
+        }
+      }
 
       if (!dayData || typeof dayData !== 'object') {
         return null;

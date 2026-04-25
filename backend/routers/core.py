@@ -26,7 +26,13 @@ from backend.models import (
     ValidationResponse,
 )
 from backend.models import ValidationError as ValidationErrorModel
-from backend.progress import simulate_render_progress, stream_render_progress
+from backend.progress import (
+    canonical_status,
+    normalize_stage,
+    simulate_render_progress,
+    stage_label,
+    stream_render_progress,
+)
 from backend.services.objectives_utils import normalize_objectives_in_lesson
 from backend.tablet_db_export import TabletDbExportError, export_user_tablet_db
 from backend.telemetry import logger
@@ -263,27 +269,61 @@ async def poll_task_progress(task_id: str):
         return {
             "status": "not_found",
             "progress": 0,
+            "progress_percent": 0,
             "message": "Task not found. It may have completed, expired, or the server was restarted.",
             "stage": "unknown",
+            "stage_label": "Unknown",
             "current": 0,
             "total": 0,
+            "progress_unit": "percent",
+            "completed_slots": 0,
+            "total_slots": 0,
+            "processed_slots": 0,
+            "failed_slots": 0,
+            "result": None,
+            "last_update_at": None,
         }
 
-    progress_pct = task.get("progress", 0)
-    current = int(progress_pct)
+    progress_pct = int(task.get("progress", 0) or 0)
+    current = progress_pct
     total = 100
+    status = canonical_status(task.get("status") or task.get("stage"))
+    stage = normalize_stage(task.get("stage"))
+    result = task.get("result") or {}
+    updates = task.get("updates") or []
+    last_update_at = updates[-1].get("timestamp") if updates else None
+    completed_slots = int(
+        task.get("completed_slots")
+        or result.get("processed_slots")
+        or task.get("processed_slots")
+        or 0
+    )
+    total_slots = int(task.get("total_slots") or result.get("total_slots") or 0)
+    processed_slots = int(result.get("processed_slots") or completed_slots or 0)
+    failed_slots = int(result.get("failed_slots") or task.get("failed_slots") or 0)
 
     print(
-        f"DEBUG: Task {task_id} status: {task.get('stage')}, progress: {progress_pct}%"
+        f"DEBUG: Task {task_id} status: {status}, progress: {progress_pct}%"
     )
 
     return {
-        "status": task.get("stage", "unknown"),
+        "status": status,
         "progress": progress_pct,
+        "progress_percent": progress_pct,
         "message": task.get("message", ""),
-        "stage": task.get("stage", "unknown"),
+        "stage": stage,
+        "stage_label": stage_label(stage),
         "current": current,
         "total": total,
+        "progress_unit": "percent",
+        "completed_slots": completed_slots,
+        "total_slots": total_slots,
+        "processed_slots": processed_slots,
+        "failed_slots": failed_slots,
+        "output_file": result.get("output_file"),
+        "errors": result.get("errors") or [],
+        "result": result or None,
+        "last_update_at": last_update_at,
     }
 
 

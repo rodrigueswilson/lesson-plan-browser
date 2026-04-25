@@ -125,7 +125,13 @@ async def transform_slot_with_llm(
             phase2_progress = phase2_min + int(
                 (llm_progress - 10) / 80 * (phase2_max - phase2_min)
             )
-            progress_tracker.update(plan_id, stage, phase2_progress, message)
+            progress_tracker.update(
+                plan_id,
+                "transforming",
+                phase2_progress,
+                message,
+                metadata={"total_slots": total_slots},
+            )
 
     try:
         success, lesson_json, error = await asyncio.to_thread(

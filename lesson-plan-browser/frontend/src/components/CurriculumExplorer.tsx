@@ -1,6 +1,21 @@
-import { useState, useEffect, useRef, Fragment, useMemo, type MouseEvent } from 'react';
+import {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  Fragment,
+  useMemo,
+  startTransition,
+  type MouseEvent,
+} from 'react';
+import {
+  getCachedBundle,
+  setCachedBundle,
+  saveDataPreferred,
+} from '../lib/curriculumBundleCache';
 import { enrichRichHtmlInlineTitles } from '../utils/enrichRichHtmlTitles';
 import { 
+  ChevronLeft,
   ChevronRight, 
   ChevronDown, 
   Book, 
@@ -11,7 +26,8 @@ import {
   Clock,
   Hammer,
   Link,
-  BookOpen
+  BookOpen,
+  BookCopy,
 } from 'lucide-react';
 
 interface Unit {
@@ -28,6 +44,88 @@ interface Subject {
 interface Grade {
   name: string;
   subjects: Subject[];
+}
+
+const PREFETCH_ADJACENCY_RADIUS = 2;
+const HOVER_PREFETCH_DELAY_MS = 200;
+const LAST_LESSON_BY_UNIT_STORAGE_KEY = 'lp_curriculum_last_lesson_by_unit_v1';
+
+function readLastLessonIdForUnit(unitId: string): string | null {
+  if (typeof localStorage === 'undefined') return null;
+  try {
+    const raw = localStorage.getItem(LAST_LESSON_BY_UNIT_STORAGE_KEY);
+    if (!raw) return null;
+    const map = JSON.parse(raw) as unknown;
+    if (!map || typeof map !== 'object') return null;
+    const id = (map as Record<string, unknown>)[unitId];
+    return typeof id === 'string' && id.trim() ? id.trim() : null;
+  } catch {
+    return null;
+  }
+}
+
+function writeLastLessonIdForUnit(unitId: string, lessonId: string): void {
+  if (typeof localStorage === 'undefined') return;
+  try {
+    const raw = localStorage.getItem(LAST_LESSON_BY_UNIT_STORAGE_KEY);
+    const map: Record<string, string> =
+      raw && typeof raw === 'string'
+        ? (JSON.parse(raw) as Record<string, string>)
+        : {};
+    if (typeof map !== 'object' || map === null) return;
+    if (map[unitId] === lessonId) return;
+    map[unitId] = lessonId;
+    localStorage.setItem(LAST_LESSON_BY_UNIT_STORAGE_KEY, JSON.stringify(map));
+  } catch {
+    /* ignore quota / private mode */
+  }
+}
+
+function normalizeGradeLabel(raw: string): string {
+  const s = (raw || "").trim();
+  const m = s.match(/grade\s*(\d+)/i);
+  if (m) return `Grade ${m[1]}`;
+  return s || "Grade";
+}
+
+function normalizeSubjectLabel(raw: string): string {
+  const s = (raw || "").trim();
+  if (!s) return "Subject";
+  if (/^ela$/i.test(s)) return "ELA";
+  return s.toUpperCase();
+}
+
+/** Grade 2 Science canonical modules use ids like ``Science_2_Mod1_PropertiesOfMatter``. */
+function usesModuleNodeLabel(unit: Unit): boolean {
+  return /_Mod\d+_/i.test(unit.id);
+}
+
+function moduleNumberFromCanonicalUnitId(unitId: string): number | null {
+  const m = unitId.match(/_Mod(\d+)_/i);
+  if (!m) return null;
+  const n = parseInt(m[1], 10);
+  return Number.isFinite(n) ? n : null;
+}
+
+/** "Module" or "Unit" for explorer copy (TOC heading, overview title, breadcrumbs). */
+function explorerCurriculumNodeNoun(unit: Unit | null): "Module" | "Unit" {
+  if (unit && usesModuleNodeLabel(unit)) return "Module";
+  return "Unit";
+}
+
+function normalizeUnitLabel(unit: Unit): string {
+  if (usesModuleNodeLabel(unit)) {
+    const fromId = moduleNumberFromCanonicalUnitId(unit.id);
+    if (fromId != null) return `Module ${fromId}`;
+    if (Number.isFinite(unit.number)) return `Module ${unit.number}`;
+    const mm = (unit.title || "").match(/\bmodule\s*(\d+)\b/i);
+    if (mm) return `Module ${mm[1]}`;
+    return "Module";
+  }
+  if (Number.isFinite(unit.number)) return `Unit ${unit.number}`;
+  const m = (unit.title || "").match(/\bunit\s*(\d+)\b/i);
+  if (m) return `Unit ${m[1]}`;
+  return "Unit";
 }
 
 interface Lesson {
@@ -52,12 +150,41 @@ interface Lesson {
   ela_key_learning_summary?: string;
   /** Per-lesson detailed ELA plan table (ELA ingest), JSON */
   ela_lesson_plan_structured?: string;
+  /** Science overview: Learning intention / Success criteria by day label (JSON) */
+  science_li_sc_day_structured?: string;
+  /** DOCX curriculum-writer lesson number (Science), for multi-module guides */
+  science_doc_lesson_number?: number | null;
   source_doc_id?: string;
   source_url?: string;
   ingested_at?: string;
   ingest_run_id?: string;
   ingest_parser_version?: string;
   content_hash?: string;
+}
+
+/**
+ * Resolve `selected` to an index in `lessons` for prev/next and list highlighting.
+ * Unit list and full-lesson payloads can disagree on `id` type (string vs number from JSON/SQLite),
+ * so ids are compared as strings; if that fails, a unique `lesson_number` match is used.
+ */
+function lessonIndexInUnitList(
+  lessons: Lesson[],
+  selected: { id?: string | number; lesson_number?: number } | null | undefined,
+): number {
+  if (!lessons.length || !selected) return -1;
+  if (selected.id != null && selected.id !== '') {
+    const sid = String(selected.id);
+    const byId = lessons.findIndex((l) => String(l.id) === sid);
+    if (byId >= 0) return byId;
+  }
+  const num = selected.lesson_number;
+  if (num != null && Number.isFinite(Number(num))) {
+    const hits = lessons.filter((l) => l.lesson_number === num);
+    if (hits.length === 1) {
+      return lessons.findIndex((l) => l.lesson_number === num);
+    }
+  }
+  return -1;
 }
 
 /** Parsed `ela_key_learning_summary` (see tools/scraper/ela_summary_table.py). */
@@ -94,6 +221,196 @@ interface ElaLessonPlanStructuredPayload {
   addressing_misconceptions_html?: string;
 }
 
+/** Parsed `science_li_sc_day_structured` (see tools/scraper/science_lesson_tables.py). */
+interface ScienceLiScDayStructuredPayload {
+  schema_version?: number;
+  source?: string;
+  doc_lesson_number?: number;
+  segments?: Array<{
+    label: string;
+    learning_intention_html?: string;
+    success_criteria_html?: string;
+    /** Summary of Key Learning for this segment (Science); may be empty until ingest extracts it. */
+    brief_overview?: string;
+    /** Full THE LESSON IN ACTION table HTML for this day band (Science), when scraped. */
+    lesson_in_action_html?: string;
+    /** Optional four-way split; only present when scraper validation passed. */
+    experimental_splits?: {
+      opening_html?: string;
+      during_html?: string;
+      closing_html?: string;
+      online_html?: string;
+    };
+  }>;
+}
+
+function parseScienceLiScDayStructured(
+  raw: string | null | undefined,
+): ScienceLiScDayStructuredPayload | null {
+  if (!raw || !String(raw).trim()) return null;
+  try {
+    const o = JSON.parse(raw) as ScienceLiScDayStructuredPayload;
+    if (!o || !Array.isArray(o.segments) || o.segments.length === 0) return null;
+    return o;
+  } catch {
+    return null;
+  }
+}
+
+/** One row from GET .../bundle `science_day_segments` (relational mirror of JSON segments). */
+interface CurriculumScienceDaySegment {
+  id: string;
+  lesson_id: string;
+  segment_index: number;
+  day_label: string;
+  science_doc_lesson_number?: number | null;
+  learning_intention_html?: string | null;
+  success_criteria_html?: string | null;
+  brief_overview_html?: string | null;
+  lesson_in_action_html?: string | null;
+  experimental_splits_json?: string | null;
+}
+
+function isCurriculumScienceDaySegment(v: unknown): v is CurriculumScienceDaySegment {
+  if (!v || typeof v !== 'object') return false;
+  const o = v as Record<string, unknown>;
+  return (
+    typeof o.id === 'string' &&
+    typeof o.lesson_id === 'string' &&
+    typeof o.segment_index === 'number' &&
+    typeof o.day_label === 'string'
+  );
+}
+
+function sciencePayloadFromBundleSegments(
+  rows: CurriculumScienceDaySegment[],
+): ScienceLiScDayStructuredPayload | null {
+  if (!rows.length) return null;
+  const sorted = [...rows].sort((a, b) => a.segment_index - b.segment_index);
+  const doc = sorted[0]?.science_doc_lesson_number;
+  return {
+    schema_version: 2,
+    doc_lesson_number:
+      doc != null && Number.isFinite(Number(doc)) ? Number(doc) : undefined,
+    segments: sorted.map((r) => {
+      let experimental_splits:
+        | NonNullable<
+            NonNullable<ScienceLiScDayStructuredPayload['segments']>[number]['experimental_splits']
+          >
+        | undefined;
+      const raw = r.experimental_splits_json;
+      if (raw && String(raw).trim()) {
+        try {
+          experimental_splits = JSON.parse(String(raw)) as typeof experimental_splits;
+        } catch {
+          experimental_splits = undefined;
+        }
+      }
+      return {
+        label: r.day_label,
+        learning_intention_html: r.learning_intention_html ?? undefined,
+        success_criteria_html: r.success_criteria_html ?? undefined,
+        brief_overview: (r.brief_overview_html || '').trim() || undefined,
+        lesson_in_action_html: r.lesson_in_action_html ?? undefined,
+        experimental_splits,
+      };
+    }),
+  };
+}
+
+function normalizeBundleScienceSegments(raw: unknown): CurriculumScienceDaySegment[] {
+  if (!Array.isArray(raw)) return [];
+  return raw.filter(isCurriculumScienceDaySegment);
+}
+
+/** Grade 2 Science student workbook PDF page from bundle `book_page_extracts`. */
+interface CurriculumBookPageExtract {
+  id: string;
+  lesson_id: string;
+  page_number: number;
+  body_text: string;
+  char_count?: number | null;
+  content_sha256?: string | null;
+  alignment_confidence: string;
+  alignment_ambiguous: number;
+  source_pdf_label: string;
+  ingest_parser_version: string;
+  ingested_at?: string | null;
+}
+
+function isCurriculumBookPageExtract(v: unknown): v is CurriculumBookPageExtract {
+  if (!v || typeof v !== 'object') return false;
+  const o = v as Record<string, unknown>;
+  const amb = o.alignment_ambiguous;
+  return (
+    typeof o.id === 'string' &&
+    typeof o.lesson_id === 'string' &&
+    typeof o.page_number === 'number' &&
+    typeof o.body_text === 'string' &&
+    typeof o.source_pdf_label === 'string' &&
+    typeof o.ingest_parser_version === 'string' &&
+    typeof o.alignment_confidence === 'string' &&
+    typeof amb === 'number'
+  );
+}
+
+function normalizeBookPageExtracts(raw: unknown): CurriculumBookPageExtract[] {
+  if (!Array.isArray(raw)) return [];
+  return [...raw.filter(isCurriculumBookPageExtract)].sort(
+    (a, b) => a.page_number - b.page_number,
+  );
+}
+
+function shouldRequestGrade2ScienceBookBundle(lessonId: string): boolean {
+  return lessonId.startsWith('Science_2_');
+}
+
+function curriculumLessonBundleUrl(lessonId: string): string {
+  const base = `/api/curriculum/lessons/${encodeURIComponent(lessonId)}/bundle`;
+  if (shouldRequestGrade2ScienceBookBundle(lessonId)) {
+    return `${base}?include_book_extracts=true&book_extract_max_pages=60`;
+  }
+  return base;
+}
+
+/** Response from GET /api/curriculum/units/{id}/science-day-outline */
+interface ScienceUnitDayOutline {
+  unit_id: string;
+  total_writer_bands: number;
+  lessons: Array<{
+    lesson_id: string;
+    lesson_number: number;
+    title: string;
+    segments: Array<{ segment_index: number; day_label: string }>;
+  }>;
+}
+
+function isScienceUnitDayOutline(v: unknown): v is ScienceUnitDayOutline {
+  if (!v || typeof v !== 'object') return false;
+  const o = v as Record<string, unknown>;
+  if (typeof o.unit_id !== 'string' || typeof o.total_writer_bands !== 'number') return false;
+  if (!Array.isArray(o.lessons)) return false;
+  return true;
+}
+
+function buildScienceModuleOutlineDisplay(outline: ScienceUnitDayOutline | null) {
+  if (!outline?.lessons?.length) return [];
+  let moduleBand = 0;
+  return outline.lessons.map((lesson) => ({
+    lesson_id: lesson.lesson_id,
+    lesson_number: lesson.lesson_number,
+    title: lesson.title,
+    segmentRows: lesson.segments.map((seg) => {
+      moduleBand += 1;
+      return {
+        key: `${lesson.lesson_id}-${seg.segment_index}`,
+        moduleBandNumber: moduleBand,
+        dayLabel: seg.day_label,
+      };
+    }),
+  }));
+}
+
 interface VocabularyTerm {
   term: string;
   translated_term: string;
@@ -104,6 +421,15 @@ interface LessonStandardRow {
   code: string;
   description: string | null;
   subject: string | null;
+}
+
+interface CachedLessonPayload {
+  details: Lesson;
+  vocabulary: VocabularyTerm[];
+  standards: LessonStandardRow[];
+  science_day_segments?: CurriculumScienceDaySegment[];
+  book_page_extracts?: CurriculumBookPageExtract[];
+  etag?: string | null;
 }
 
 interface StandardItem {
@@ -607,12 +933,65 @@ function htmlToPlainWithLineBreaks(html: string): string {
     .trim();
 }
 
+/**
+ * For LI/SC cells: if ingest didn't preserve list markup, promote topic-like
+ * multi-line content into bullets for readability.
+ */
+function normalizeLiScTopicsToBulletsHtml(html: string | undefined): string | undefined {
+  const raw = (html ?? "").trim();
+  if (!raw) return html;
+  // Respect existing list markup from ingest.
+  if (/<(ul|ol|li)\b/i.test(raw)) return raw;
+
+  const plain = htmlToPlainWithLineBreaks(raw);
+  if (!plain) return raw;
+
+  // Split on line breaks first; if still one line, allow semicolon-delimited topics.
+  let topics = plain
+    .split(/\r?\n+/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+  if (topics.length <= 1 && plain.includes(";")) {
+    topics = plain
+      .split(/\s*;\s*/)
+      .map((s) => s.trim())
+      .filter(Boolean);
+  }
+
+  // Keep single-line prose as paragraph; bullet only real topic collections.
+  if (topics.length <= 1) return raw;
+
+  const li = topics
+    .map((t) => t.replace(/^\s*[-*•]\s*/, "").trim())
+    .filter(Boolean)
+    .map((t) => `<li>${t}</li>`)
+    .join("");
+  if (!li) return raw;
+  return `<ul>${li}</ul>`;
+}
+
+/** Strip BOM/zero-width and wrapping quotes so filters match ingest-normalized labels. */
+function normalizeVocabLabelNoise(t: string): string {
+  let s = t.trim().replace(/^\ufeff|\u200b|\u200c|\u200d/g, "");
+  s = s.replace(/^["'\u201c\u201d\u2018\u2019]+|["'\u201c\u201d\u2018\u2019]+$/g, "").trim();
+  return s;
+}
+
+const JUNK_VOCAB_EXACT_LOW = new Set([
+  "materials",
+  "storytelling",
+  "editing",
+  "cultural meaning",
+]);
+
 /** Filter link titles and resource labels mistaken for vocabulary during ingest. */
 function isLikelyJunkVocabLabel(t: string): boolean {
-  const s = t.trim();
+  const s = normalizeVocabLabelNoise(t);
   if (s.length < 2 || s.length > 48) return true;
   if (/https?:\/\//i.test(s)) return true;
   const low = s.toLowerCase();
+  if (JUNK_VOCAB_EXACT_LOW.has(low)) return true;
+  if (low.includes("and techniques")) return true;
   const junkNeedles = [
     "rubric",
     "slide deck",
@@ -633,10 +1012,59 @@ function isLikelyJunkVocabLabel(t: string): boolean {
     "google.com",
     "docs.google",
     "presentation",
+    "culminating task",
+    "portfolio artifact",
+    "daily instructional",
+    "anticipatory set",
+    "engagement with the content",
+    "learning procedures",
+    "addressing misconceptions",
+    "differentiation",
   ];
   if (junkNeedles.some((n) => low.includes(n))) return true;
   const wordCount = (s.match(/\s+/g) || []).length + 1;
   if (wordCount > 6) return true;
+  const instructionalPrefixes = [
+    "article:",
+    "students will",
+    "student will",
+    "think about",
+    "work with",
+    "cite evidence",
+    "include:",
+    "share as",
+    "revisit essential",
+    "identify key",
+    "clearly compare",
+    "comparing and contrasting",
+    "how are they",
+    "what role",
+    "who is responsible",
+    "a body with",
+    "a conclusion",
+    "an introduction",
+    "first draft",
+    "publish final",
+    "or independently",
+    "support as",
+    "or review",
+    "editing and revising",
+    "if students",
+    "if working",
+    "use correct",
+    "launch the lesson",
+    "for the daily",
+    "the teacher",
+    "in their writing",
+    "notebook",
+    "unit 1 ",
+    "unit 2 ",
+    "and ",
+    "correct spelling",
+  ];
+  if (instructionalPrefixes.some((p) => low.startsWith(p))) return true;
+  const st = s.trim();
+  if (st.endsWith(")") && !st.includes("(")) return true;
   return false;
 }
 
@@ -657,7 +1085,7 @@ function extractElaVocabularyTermsFromStructuredCell(
   }
   const parts = segment
     .split(/[,;\n]+/)
-    .map((p) => p.replace(/\s*[.,;:]+$/g, "").trim())
+    .map((p) => normalizeVocabLabelNoise(p.replace(/\s*[.,;:]+$/g, "")))
     .filter(Boolean);
   const out: string[] = [];
   const seen = new Set<string>();
@@ -843,9 +1271,10 @@ const ELA_PROCEDURE_BANDS: {
 
 /**
  * Renders `ela_lesson_plan_structured` as HTML tables aligned to the teacher-guide grid:
- * title row (1 col), LI|SC headers + body (2 col), optional NJSLS banner + body (1 col),
- * Key Instructional Practices banner + two columns, Vocabulary|Resources headers + body,
- * then full-width procedure bands, then Differentiation|Addressing Misconceptions.
+ * title row (1 col), LI|SC headers + body (2 col), Key Instructional Practices banner + two columns,
+ * Vocabulary|Resources headers + body, full-width procedure bands, then a second table for
+ * Differentiation|Addressing Misconceptions when present, then optional NJSLS banner + body (1 col)
+ * as the final table so it always appears last.
  */
 function ElaStructuredLessonPlanSection({ plan }: { plan: ElaLessonPlanStructuredPayload }) {
   const preamble = (plan.procedures_preamble_html ?? "").trim();
@@ -901,30 +1330,9 @@ function ElaStructuredLessonPlanSection({ plan }: { plan: ElaLessonPlanStructure
             </th>
           </tr>
           <tr>
-            <ElaPlanBodyTd html={plan.learning_intention_html} />
-            <ElaPlanBodyTd html={plan.success_criteria_html} />
+            <ElaPlanBodyTd html={normalizeLiScTopicsToBulletsHtml(plan.learning_intention_html)} />
+            <ElaPlanBodyTd html={normalizeLiScTopicsToBulletsHtml(plan.success_criteria_html)} />
           </tr>
-
-          {njsls ? (
-            <>
-              <tr>
-                <td
-                  colSpan={2}
-                  className="border border-slate-300 bg-sky-100 py-2 px-3 text-center text-sm font-semibold text-foreground"
-                >
-                  NJSLS Standards
-                </td>
-              </tr>
-              <tr>
-                <td colSpan={2} className="border border-slate-300 bg-white p-3 align-top">
-                  <CurriculumRichHtml
-                    className="prose prose-sm max-w-none text-muted-foreground rich-html"
-                    html={njsls}
-                  />
-                </td>
-              </tr>
-            </>
-          ) : null}
 
           <tr>
             <td
@@ -1051,15 +1459,45 @@ function ElaStructuredLessonPlanSection({ plan }: { plan: ElaLessonPlanStructure
           </tbody>
         </table>
       ) : null}
+
+      {njsls ? (
+        <table className={`${tableShell} mt-4`}>
+          <tbody>
+            <tr>
+              <td
+                colSpan={2}
+                className="border border-slate-300 bg-sky-100 py-2 px-3 text-center text-sm font-semibold text-foreground"
+              >
+                NJSLS Standards
+              </td>
+            </tr>
+            <tr>
+              <td colSpan={2} className="border border-slate-300 bg-white p-3 align-top">
+                <CurriculumRichHtml
+                  className="prose prose-sm max-w-none text-muted-foreground rich-html"
+                  html={njsls}
+                />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      ) : null}
     </section>
   );
 }
 
 /** Derives procedure / ELA UI flags from lesson API payload (Phase 4.2 subject-aware detail). */
-function lessonDetailPresentationFlags(selectedLesson: unknown) {
+function lessonDetailPresentationFlags(
+  selectedLesson: unknown,
+  scienceDaySegmentsFromBundle: CurriculumScienceDaySegment[] = [],
+) {
   const sl = selectedLesson as Lesson | null | undefined;
   const elaSummaryPayload = parseElaKeyLearningSummary(sl?.ela_key_learning_summary);
   const elaPlanPayload = parseElaLessonPlanStructured(sl?.ela_lesson_plan_structured);
+  const fromBundle = sciencePayloadFromBundleSegments(scienceDaySegmentsFromBundle);
+  const scienceDayPayload =
+    fromBundle ?? parseScienceLiScDayStructured(sl?.science_li_sc_day_structured);
+  const useScienceDayStructuredPrimary = Boolean(scienceDayPayload?.segments?.length);
   const useElaStructuredPrimary = elaPlanIsPrimaryUi(elaPlanPayload);
   const skipMathProcedureBanding =
     Boolean(elaPlanPayload) && elaPlanHasProcedureBuckets(elaPlanPayload!);
@@ -1071,6 +1509,8 @@ function lessonDetailPresentationFlags(selectedLesson: unknown) {
   return {
     elaSummaryPayload,
     elaPlanPayload,
+    scienceDayPayload,
+    useScienceDayStructuredPrimary,
     useElaStructuredPrimary,
     skipMathProcedureBanding,
     procedureSections,
@@ -1085,6 +1525,8 @@ function lessonDetailPresentationFlags(selectedLesson: unknown) {
         skipMathProcedureBanding),
     hideStandaloneSuccessCriteriaForEla:
       useElaStructuredPrimary && Boolean((elaPlanPayload?.success_criteria_html ?? "").trim()),
+    hideStandaloneSuccessCriteriaForScience: useScienceDayStructuredPrimary,
+    hideObjectivesWhenScienceStructured: useScienceDayStructuredPrimary,
     hideStandardsSectionForElaStructured:
       useElaStructuredPrimary && Boolean(elaPlanPayload),
   };
@@ -1098,12 +1540,19 @@ export function CurriculumExplorer() {
   const [unitIntro, setUnitIntro] = useState<any>(null);
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [selectedLesson, setSelectedLesson] = useState<any>(null);
+  const [scienceDaySegmentsBundle, setScienceDaySegmentsBundle] = useState<
+    CurriculumScienceDaySegment[]
+  >([]);
+  const [bookPageExtractsBundle, setBookPageExtractsBundle] = useState<CurriculumBookPageExtract[]>(
+    [],
+  );
+  const [scienceUnitOutline, setScienceUnitOutline] = useState<ScienceUnitDayOutline | null>(null);
   const [showUnitIntro, setShowUnitIntro] = useState(false);
   const [vocabulary, setVocabulary] = useState<VocabularyTerm[]>([]);
   const [lessonStandards, setLessonStandards] = useState<LessonStandardRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadingDetails, setLoadingDetails] = useState(false);
-  const detailsRef = useRef<HTMLDivElement>(null);
+  const mainContentScrollRef = useRef<HTMLDivElement>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<
     {
@@ -1115,27 +1564,31 @@ export function CurriculumExplorer() {
     }[]
   >([]);
   const [searchLoading, setSearchLoading] = useState(false);
-  const [semanticLinks, setSemanticLinks] = useState<
-    {
-      id: string | null;
-      to_unit_id: string;
-      to_unit_title: string;
-      to_grade?: number | null;
-      to_unit_number?: number | null;
-      link_kind: string;
-      rationale: string;
-      source: string;
-    }[]
-  >([]);
   const [hierarchyError, setHierarchyError] = useState<string | null>(null);
+  const lessonDetailsCacheRef = useRef<Map<string, CachedLessonPayload>>(new Map());
+  const hoverPrefetchTimerRef = useRef<number | null>(null);
+  /** While set, auto-restore last lesson for the unit is suppressed (e.g. opening a search result). */
+  const explicitOpenLessonIdRef = useRef<string | null>(null);
+  const fetchLessonDetailsRef = useRef<((lesson: Lesson) => Promise<void>) | null>(null);
+  const activeLessonListItemRef = useRef<HTMLButtonElement | null>(null);
+  const preambleListButtonRef = useRef<HTMLButtonElement | null>(null);
+  const scienceBookSectionRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (hoverPrefetchTimerRef.current != null) {
+        window.clearTimeout(hoverPrefetchTimerRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     fetchHierarchy();
   }, []);
 
   useEffect(() => {
-    if (selectedLesson && detailsRef.current) {
-      detailsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (selectedLesson && mainContentScrollRef.current) {
+      mainContentScrollRef.current.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }, [selectedLesson]);
 
@@ -1181,27 +1634,36 @@ export function CurriculumExplorer() {
   const fetchLessons = async (unit: Unit) => {
     setSelectedUnit(unit);
     setSelectedLesson(null);
+    setScienceDaySegmentsBundle([]);
+    setBookPageExtractsBundle([]);
+    setScienceUnitOutline(null);
     setShowUnitIntro(false);
     setUnitIntro(null);
     setVocabulary([]);
     setLessonStandards([]);
-    setSemanticLinks([]);
     try {
       const resp1 = await fetch(`/api/curriculum/units/${unit.id}/lessons`);
       const data1 = await resp1.json();
       setLessons(data1);
 
-      const [resp2, respLinks] = await Promise.all([
-        fetch(`/api/curriculum/units/${unit.id}/intro`),
-        fetch(`/api/curriculum/units/${unit.id}/semantic-links`),
-      ]);
+      const resp2 = await fetch(`/api/curriculum/units/${unit.id}/intro`);
       if (resp2.ok) {
         const data2 = await resp2.json();
         setUnitIntro(data2);
       }
-      if (respLinks.ok) {
-        const links = await respLinks.json();
-        setSemanticLinks(Array.isArray(links) ? links : []);
+
+      if (usesModuleNodeLabel(unit)) {
+        try {
+          const resp3 = await fetch(
+            `/api/curriculum/units/${encodeURIComponent(unit.id)}/science-day-outline`,
+          );
+          if (resp3.ok) {
+            const raw: unknown = await resp3.json();
+            setScienceUnitOutline(isScienceUnitDayOutline(raw) ? raw : null);
+          }
+        } catch (outlineErr) {
+          console.error('Error fetching science module day outline:', outlineErr);
+        }
       }
     } catch (error) {
       console.error('Error fetching lessons or intro:', error);
@@ -1252,40 +1714,212 @@ export function CurriculumExplorer() {
       console.warn('Search hit unit not in explorer tree:', hit.unit_id);
       return;
     }
-    await fetchLessons(unit);
-    await fetchLessonDetails({
-      id: hit.id,
-      lesson_number: hit.lesson_number,
-      title: hit.title,
+    explicitOpenLessonIdRef.current = hit.id;
+    try {
+      await fetchLessons(unit);
+      await fetchLessonDetails({
+        id: hit.id,
+        lesson_number: hit.lesson_number,
+        title: hit.title,
+      });
+    } finally {
+      explicitOpenLessonIdRef.current = null;
+    }
+  };
+
+  const applyCachedLessonToUi = (p: CachedLessonPayload) => {
+    setSelectedLesson(p.details);
+    setScienceDaySegmentsBundle(p.science_day_segments ?? []);
+    setBookPageExtractsBundle(
+      shouldRequestGrade2ScienceBookBundle(p.details.id)
+        ? normalizeBookPageExtracts(p.book_page_extracts as unknown)
+        : [],
+    );
+    startTransition(() => {
+      setVocabulary(p.vocabulary);
+      setLessonStandards(p.standards);
     });
   };
 
   const fetchLessonDetails = async (lesson: Lesson) => {
     try {
-      setLoadingDetails(true);
-      console.log('Fetching details for lesson:', lesson.id);
-      const resp1 = await fetch(`/api/curriculum/lessons/${lesson.id}`);
-      if (!resp1.ok) throw new Error('Failed to fetch lesson details');
-      const details = await resp1.json();
-      setSelectedLesson(details);
-
-      const [vocabResp, standardsResp] = await Promise.all([
-        fetch(`/api/curriculum/lessons/${lesson.id}/vocabulary`),
-        fetch(`/api/curriculum/lessons/${lesson.id}/standards`),
-      ]);
-      if (!vocabResp.ok) throw new Error('Failed to fetch vocabulary');
-      const vocab = await vocabResp.json();
-      setVocabulary(Array.isArray(vocab) ? vocab : []);
-      if (standardsResp.ok) {
-        const std = await standardsResp.json();
-        setLessonStandards(Array.isArray(std) ? std : []);
-      } else {
-        setLessonStandards([]);
+      const memory = lessonDetailsCacheRef.current.get(lesson.id);
+      if (memory) {
+        const staleWithoutBookBundle =
+          shouldRequestGrade2ScienceBookBundle(lesson.id) &&
+          memory.book_page_extracts === undefined;
+        if (!staleWithoutBookBundle) {
+          applyCachedLessonToUi(memory);
+          return;
+        }
       }
+
+      setLoadingDetails(true);
+      const disk = await getCachedBundle(lesson.id);
+
+      let revalidateEtag: string | null = null;
+      if (disk) {
+        const details = disk.lesson as Lesson;
+        const vocab = (Array.isArray(disk.vocabulary) ? disk.vocabulary : []) as VocabularyTerm[];
+        const std = (Array.isArray(disk.standards) ? disk.standards : []) as LessonStandardRow[];
+        const diskSeg = normalizeBundleScienceSegments(disk.science_day_segments);
+        const diskBook = normalizeBookPageExtracts(disk.book_page_extracts);
+        const diskEtag =
+          typeof disk.etag === 'string' && disk.etag.trim() ? disk.etag.trim() : null;
+        applyCachedLessonToUi({
+          details,
+          vocabulary: vocab,
+          standards: std,
+          science_day_segments: diskSeg,
+          book_page_extracts: diskBook,
+          etag: diskEtag ?? undefined,
+        });
+        revalidateEtag =
+          shouldRequestGrade2ScienceBookBundle(lesson.id) ? null : diskEtag;
+        setLoadingDetails(false);
+      }
+
+      const headers: HeadersInit = {};
+      if (revalidateEtag && !shouldRequestGrade2ScienceBookBundle(lesson.id)) {
+        headers['If-None-Match'] = revalidateEtag;
+      }
+
+      const r = await fetch(curriculumLessonBundleUrl(lesson.id), { headers });
+
+      if (r.status === 304) {
+        if (disk) {
+          const details = disk.lesson as Lesson;
+          const vocab = (Array.isArray(disk.vocabulary) ? disk.vocabulary : []) as VocabularyTerm[];
+          const std = (Array.isArray(disk.standards) ? disk.standards : []) as LessonStandardRow[];
+          const diskSeg304 = normalizeBundleScienceSegments(disk.science_day_segments);
+          const diskBook304 = normalizeBookPageExtracts(disk.book_page_extracts);
+          lessonDetailsCacheRef.current.set(lesson.id, {
+            details,
+            vocabulary: vocab,
+            standards: std,
+            science_day_segments: diskSeg304,
+            book_page_extracts: diskBook304,
+            etag: revalidateEtag ?? undefined,
+          });
+        } else {
+          setLoadingDetails(false);
+        }
+        return;
+      }
+
+      if (!r.ok) {
+        setLoadingDetails(false);
+        throw new Error('Failed to fetch lesson bundle');
+      }
+
+      const bundle = (await r.json()) as {
+        lesson: Lesson;
+        vocabulary: VocabularyTerm[];
+        standards: LessonStandardRow[];
+        science_day_segments?: unknown[];
+        book_page_extracts?: unknown[];
+      };
+
+      const nextEtagHeader = r.headers.get('etag');
+      const nextEtag =
+        typeof nextEtagHeader === 'string' && nextEtagHeader.trim()
+          ? nextEtagHeader.trim()
+          : null;
+      const vocabList = Array.isArray(bundle.vocabulary) ? bundle.vocabulary : [];
+      const stdList = Array.isArray(bundle.standards) ? bundle.standards : [];
+      const segList = normalizeBundleScienceSegments(bundle.science_day_segments);
+      const bookList = normalizeBookPageExtracts(bundle.book_page_extracts);
+      const payload: CachedLessonPayload = {
+        details: bundle.lesson,
+        vocabulary: vocabList,
+        standards: stdList,
+        science_day_segments: segList,
+        book_page_extracts: bookList,
+        etag: nextEtag ?? undefined,
+      };
+      applyCachedLessonToUi(payload);
+      lessonDetailsCacheRef.current.set(lesson.id, payload);
+      const ch = String(bundle.lesson?.content_hash ?? '').trim();
+      void setCachedBundle(lesson.id, {
+        lesson: bundle.lesson,
+        vocabulary: vocabList,
+        standards: stdList,
+        science_day_segments: segList,
+        book_page_extracts: bookList,
+        etag: nextEtag ?? '',
+        contentHash: ch,
+      });
       setLoadingDetails(false);
     } catch (error) {
       console.error('Error fetching lesson details:', error);
       setLoadingDetails(false);
+    }
+  };
+
+  fetchLessonDetailsRef.current = fetchLessonDetails;
+
+  const prefetchLessonDetails = useCallback(async (lesson: Lesson | undefined) => {
+    if (!lesson) return;
+    if (lessonDetailsCacheRef.current.has(lesson.id)) return;
+    try {
+      const r = await fetch(curriculumLessonBundleUrl(lesson.id));
+      if (!r.ok) return;
+      const bundle = (await r.json()) as {
+        lesson: Lesson;
+        vocabulary: VocabularyTerm[];
+        standards: LessonStandardRow[];
+        science_day_segments?: unknown[];
+        book_page_extracts?: unknown[];
+      };
+      const nextEtagHeader = r.headers.get('etag');
+      const nextEtag =
+        typeof nextEtagHeader === 'string' && nextEtagHeader.trim()
+          ? nextEtagHeader.trim()
+          : null;
+      const vocabList = Array.isArray(bundle.vocabulary) ? bundle.vocabulary : [];
+      const stdList = Array.isArray(bundle.standards) ? bundle.standards : [];
+      const segListPrefetch = normalizeBundleScienceSegments(bundle.science_day_segments);
+      const bookPrefetch = normalizeBookPageExtracts(bundle.book_page_extracts);
+      const payload: CachedLessonPayload = {
+        details: bundle.lesson,
+        vocabulary: vocabList,
+        standards: stdList,
+        science_day_segments: segListPrefetch,
+        book_page_extracts: bookPrefetch,
+        etag: nextEtag ?? undefined,
+      };
+      lessonDetailsCacheRef.current.set(lesson.id, payload);
+      const ch = String(bundle.lesson?.content_hash ?? '').trim();
+      void setCachedBundle(lesson.id, {
+        lesson: bundle.lesson,
+        vocabulary: vocabList,
+        standards: stdList,
+        science_day_segments: segListPrefetch,
+        book_page_extracts: bookPrefetch,
+        etag: nextEtag ?? '',
+        contentHash: ch,
+      });
+    } catch {
+      // Prefetch is best-effort; ignore failures.
+    }
+  }, []);
+
+  const scheduleLessonHoverPrefetch = (lesson: Lesson) => {
+    if (saveDataPreferred()) return;
+    if (lessonDetailsCacheRef.current.has(lesson.id)) return;
+    if (hoverPrefetchTimerRef.current != null) {
+      window.clearTimeout(hoverPrefetchTimerRef.current);
+    }
+    hoverPrefetchTimerRef.current = window.setTimeout(() => {
+      hoverPrefetchTimerRef.current = null;
+      void prefetchLessonDetails(lesson);
+    }, HOVER_PREFETCH_DELAY_MS);
+  };
+
+  const clearLessonHoverPrefetch = () => {
+    if (hoverPrefetchTimerRef.current != null) {
+      window.clearTimeout(hoverPrefetchTimerRef.current);
+      hoverPrefetchTimerRef.current = null;
     }
   };
 
@@ -1304,9 +1938,17 @@ export function CurriculumExplorer() {
   };
 
   const lessonDetailFlags = useMemo(
-    () => lessonDetailPresentationFlags(selectedLesson),
-    [selectedLesson],
+    () => lessonDetailPresentationFlags(selectedLesson, scienceDaySegmentsBundle),
+    [selectedLesson, scienceDaySegmentsBundle],
   );
+  const selectedLessonHasScienceBook = Boolean(
+    selectedLesson && shouldRequestGrade2ScienceBookBundle(selectedLesson.id),
+  );
+
+  const jumpToScienceBookSection = useCallback(() => {
+    if (!selectedLessonHasScienceBook) return;
+    scienceBookSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, [selectedLessonHasScienceBook]);
 
   const elaVocabTermList = useMemo(() => {
     if (!lessonDetailFlags.useElaStructuredPrimary) return [];
@@ -1318,10 +1960,16 @@ export function CurriculumExplorer() {
     lessonDetailFlags.elaPlanPayload?.vocabulary_cell_html,
   ]);
 
+  const elaVocabTermsSanitized = useMemo(
+    () => elaVocabTermList.filter((t) => !isLikelyJunkVocabLabel(t)),
+    [elaVocabTermList],
+  );
+
   const displayVocabulary = useMemo(() => {
-    if (elaVocabTermList.length === 0) return vocabulary;
-    return elaVocabTermList.map((term) => {
-      const hit = vocabulary.find(
+    const voc = vocabulary.filter((v) => !isLikelyJunkVocabLabel(v.term));
+    if (elaVocabTermsSanitized.length === 0) return voc;
+    return elaVocabTermsSanitized.map((term) => {
+      const hit = voc.find(
         (v) => v.term.trim().toLowerCase() === term.toLowerCase(),
       );
       if (hit) return hit;
@@ -1331,7 +1979,190 @@ export function CurriculumExplorer() {
         leveled_definitions: [] as VocabularyTerm["leveled_definitions"],
       };
     });
-  }, [elaVocabTermList, vocabulary]);
+  }, [elaVocabTermsSanitized, vocabulary]);
+
+  const selectedHierarchyPath = useMemo(() => {
+    if (!selectedUnit) return null;
+    for (const grade of hierarchy) {
+      for (const subject of grade.subjects) {
+        const match = subject.units.find((u) => u.id === selectedUnit.id);
+        if (match) {
+          return {
+            gradeLabel: normalizeGradeLabel(grade.name),
+            subjectLabel: normalizeSubjectLabel(subject.name),
+            unitLabel: normalizeUnitLabel(match),
+          };
+        }
+      }
+    }
+    return null;
+  }, [hierarchy, selectedUnit]);
+
+  const hasScienceModuleWriterBands = useMemo(() => {
+    if (!selectedUnit || !usesModuleNodeLabel(selectedUnit)) return false;
+    return (scienceUnitOutline?.total_writer_bands ?? 0) > 0;
+  }, [selectedUnit, scienceUnitOutline]);
+
+  const hasUnitOverviewNav = Boolean(unitIntro) || hasScienceModuleWriterBands;
+
+  const currentLessonIndex = useMemo(
+    () => lessonIndexInUnitList(lessons, selectedLesson),
+    [lessons, selectedLesson?.id, selectedLesson?.lesson_number],
+  );
+
+  const navigateToLessonByIndex = (index: number) => {
+    if (index < 0 || index >= lessons.length) return;
+    const lesson = lessons[index];
+    setShowUnitIntro(false);
+    void fetchLessonDetails(lesson);
+  };
+
+  const navigateToPreviousLesson = () => {
+    if (currentLessonIndex <= 0) return;
+    navigateToLessonByIndex(currentLessonIndex - 1);
+  };
+
+  const navigateToNextLesson = () => {
+    if (currentLessonIndex < 0 || currentLessonIndex >= lessons.length - 1) return;
+    navigateToLessonByIndex(currentLessonIndex + 1);
+  };
+
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement | null;
+      const tag = (target?.tagName || '').toLowerCase();
+      const isTypingContext =
+        tag === 'input' || tag === 'textarea' || target?.isContentEditable;
+      if (isTypingContext) return;
+
+      const scrollerActive =
+        Boolean(selectedUnit) &&
+        (lessons.length > 0 || Boolean(unitIntro) || hasScienceModuleWriterBands);
+
+      if (scrollerActive && e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (!lessons.length && !unitIntro && !hasScienceModuleWriterBands) return;
+        if (showUnitIntro && (unitIntro || hasScienceModuleWriterBands)) return;
+        if (
+          (unitIntro || hasScienceModuleWriterBands) &&
+          !showUnitIntro &&
+          currentLessonIndex === 0
+        ) {
+          setSelectedLesson(null);
+          setScienceDaySegmentsBundle([]);
+          setBookPageExtractsBundle([]);
+          setShowUnitIntro(true);
+          return;
+        }
+        navigateToPreviousLesson();
+        return;
+      }
+
+      if (scrollerActive && e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (!lessons.length && !unitIntro && !hasScienceModuleWriterBands) return;
+        if (showUnitIntro && (unitIntro || hasScienceModuleWriterBands)) {
+          navigateToLessonByIndex(0);
+          return;
+        }
+        navigateToNextLesson();
+        return;
+      }
+
+      if (!selectedLesson) return;
+      if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        navigateToPreviousLesson();
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        navigateToNextLesson();
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [
+    selectedUnit,
+    unitIntro,
+    hasScienceModuleWriterBands,
+    lessons,
+    selectedLesson,
+    showUnitIntro,
+    currentLessonIndex,
+  ]);
+
+  useEffect(() => {
+    if (currentLessonIndex < 0) return;
+    for (let d = -PREFETCH_ADJACENCY_RADIUS; d <= PREFETCH_ADJACENCY_RADIUS; d++) {
+      if (d === 0) continue;
+      void prefetchLessonDetails(lessons[currentLessonIndex + d]);
+    }
+  }, [currentLessonIndex, lessons, prefetchLessonDetails]);
+
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => {
+      if (showUnitIntro && (unitIntro || hasScienceModuleWriterBands)) {
+        preambleListButtonRef.current?.scrollIntoView({
+          block: 'center',
+          inline: 'nearest',
+          behavior: 'smooth',
+        });
+        return;
+      }
+      if (currentLessonIndex < 0) return;
+      activeLessonListItemRef.current?.scrollIntoView({
+        block: 'center',
+        inline: 'nearest',
+        behavior: 'smooth',
+      });
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [
+    currentLessonIndex,
+    showUnitIntro,
+    unitIntro,
+    hasScienceModuleWriterBands,
+    lessons.length,
+    selectedLesson?.id,
+    selectedLesson?.lesson_number,
+  ]);
+
+  useEffect(() => {
+    if (!selectedUnit || lessons.length === 0) return;
+    if (explicitOpenLessonIdRef.current) return;
+    if (showUnitIntro) return;
+    if (selectedLesson) return;
+    const lastId = readLastLessonIdForUnit(selectedUnit.id);
+    const remembered = lastId ? lessons.find((l) => l.id === lastId) : undefined;
+    const defaultFirst =
+      lessons.find((l) => l.lesson_number === 1) ?? lessons[0];
+    const toOpen = remembered ?? defaultFirst;
+    if (toOpen && fetchLessonDetailsRef.current) {
+      void fetchLessonDetailsRef.current(toOpen);
+    }
+  }, [selectedUnit, lessons, selectedLesson, showUnitIntro]);
+
+  useEffect(() => {
+    if (!selectedUnit?.id || !selectedLesson?.id) return;
+    writeLastLessonIdForUnit(selectedUnit.id, selectedLesson.id);
+  }, [selectedUnit?.id, selectedLesson?.id]);
+
+  useEffect(() => {
+    if (lessons.length === 0) return;
+    if (saveDataPreferred()) return;
+
+    const run = () => {
+      for (const lesson of lessons) {
+        void prefetchLessonDetails(lesson);
+      }
+    };
+
+    const idle = window.requestIdleCallback?.(run, { timeout: 5000 });
+    if (idle !== undefined) {
+      return () => window.cancelIdleCallback?.(idle);
+    }
+    const t = window.setTimeout(run, 0);
+    return () => window.clearTimeout(t);
+  }, [lessons, prefetchLessonDetails]);
 
   if (loading) {
     return <div className="flex items-center justify-center p-12">Loading Curriculum...</div>;
@@ -1340,6 +2171,8 @@ export function CurriculumExplorer() {
   const {
     elaSummaryPayload,
     elaPlanPayload,
+    scienceDayPayload,
+    useScienceDayStructuredPrimary,
     useElaStructuredPrimary,
     skipMathProcedureBanding,
     procedureSections,
@@ -1348,6 +2181,8 @@ export function CurriculumExplorer() {
     hideStudentObjectivesForEla,
     hideDailyTasksBandForEla,
     hideStandaloneSuccessCriteriaForEla,
+    hideStandaloneSuccessCriteriaForScience,
+    hideObjectivesWhenScienceStructured,
     hideStandardsSectionForElaStructured,
   } = lessonDetailFlags;
   const procedureHeaderUi: Record<
@@ -1466,7 +2301,7 @@ export function CurriculumExplorer() {
               className="w-full flex items-center gap-2 px-2 py-1.5 hover:bg-muted rounded-md text-sm font-medium transition-colors"
             >
               {expandedGrades.has(grade.name) ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
-              <span>{grade.name}</span>
+              <span>{normalizeGradeLabel(grade.name)}</span>
             </button>
             
             {expandedGrades.has(grade.name) && (
@@ -1480,7 +2315,7 @@ export function CurriculumExplorer() {
                         className="w-full flex items-center gap-2 px-2 py-1.5 hover:bg-muted rounded-md text-xs font-semibold text-muted-foreground transition-colors"
                       >
                         {expandedSubjects.has(key) ? <ChevronDown className="w-3 h-3" /> : <ChevronRight className="w-3 h-3" />}
-                        <span>{subject.name}</span>
+                        <span>{normalizeSubjectLabel(subject.name)}</span>
                       </button>
                       
                       {expandedSubjects.has(key) && (
@@ -1493,7 +2328,7 @@ export function CurriculumExplorer() {
                                 selectedUnit?.id === unit.id ? 'bg-primary text-primary-foreground font-medium' : 'hover:bg-muted text-muted-foreground'
                               }`}
                             >
-                              {unit.title}
+                              <span className="block">{normalizeUnitLabel(unit)}</span>
                             </button>
                           ))}
                         </div>
@@ -1508,7 +2343,7 @@ export function CurriculumExplorer() {
       </div>
 
       {/* Main Content Pane */}
-      <div className="flex-1 overflow-y-auto bg-card">
+      <div className="flex-1 flex flex-col min-h-0 overflow-hidden bg-card">
         {!selectedUnit ? (
           <div className="h-full flex flex-col items-center justify-center text-muted-foreground space-y-4 px-6">
             <Book className="w-16 h-16 opacity-10" />
@@ -1520,130 +2355,231 @@ export function CurriculumExplorer() {
                 <p className="text-sm text-center max-w-md">{hierarchyError}</p>
               </>
             ) : (
-              <p className="text-lg">Select a Grade and Unit to browse lessons</p>
+              <p className="text-lg">
+                Select a grade, subject, and module or unit to browse lessons
+              </p>
             )}
           </div>
         ) : (
-          <div className="p-8 space-y-8 animate-in fade-in duration-500">
-            {/* Unit Header */}
-            <div className="space-y-2">
-              <div className="flex items-center gap-2 text-primary font-semibold uppercase tracking-widest text-xs">
-                <Book className="w-4 h-4" />
-                <span>Unit {selectedUnit.number}</span>
-              </div>
-              <h1 className="text-3xl font-bold tracking-tight">{selectedUnit.title}</h1>
-            </div>
-
-            {semanticLinks.length > 0 && (
-              <section
-                className="rounded-xl border border-border bg-muted/20 px-4 py-3 space-y-2"
-                aria-label="Related units"
-              >
-                <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                  <Link className="w-3.5 h-3.5" aria-hidden />
-                  Related units
-                </div>
-                <ul className="space-y-2 text-sm">
-                  {semanticLinks.map((link) => (
-                    <li
-                      key={`${link.to_unit_id}-${link.source}-${link.link_kind}-${link.id ?? 'sug'}`}
-                      className="flex flex-col gap-0.5 border-l-2 border-primary/30 pl-3"
+          <div className="flex flex-col flex-1 min-h-0 animate-in fade-in duration-500">
+            {/* Fixed header: does not scroll with lesson content */}
+            <div className="flex-shrink-0 z-20 border-b border-border bg-card px-4 py-2 shadow-sm">
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-3">
+                {lessons.length > 0 || hasUnitOverviewNav ? (
+                  <div
+                    className="flex w-full shrink-0 flex-col gap-1.5 sm:max-w-[min(100%,260px)] sm:w-[min(40vw,260px)]"
+                  >
+                    <div
+                      className="rounded-md border border-border bg-background"
+                      aria-label="Lesson list"
                     >
-                      <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0">
+                      <div className="max-h-[min(5rem,40vh)] overflow-y-auto divide-y divide-border">
+                        {hasUnitOverviewNav && (
+                          <button
+                            type="button"
+                            ref={preambleListButtonRef}
+                            onClick={() => {
+                              setSelectedLesson(null);
+                              setScienceDaySegmentsBundle([]);
+                              setBookPageExtractsBundle([]);
+                              setShowUnitIntro(true);
+                            }}
+                            className={`flex w-full items-center justify-between gap-2 px-2 py-1 text-left text-xs transition-colors ${
+                              showUnitIntro ? 'bg-primary/10 text-primary' : 'hover:bg-muted/60'
+                            }`}
+                          >
+                            <span className="truncate font-medium">
+                              {explorerCurriculumNodeNoun(selectedUnit)} Overview &amp; TOC
+                            </span>
+                            <span className="shrink-0 text-[10px] uppercase text-muted-foreground">
+                              Preamble
+                            </span>
+                          </button>
+                        )}
+                        {lessons.map((lesson, lessonIdx) => (
+                          <button
+                            key={lesson.id}
+                            ref={
+                              !showUnitIntro && lessonIdx === currentLessonIndex
+                                ? activeLessonListItemRef
+                                : undefined
+                            }
+                            type="button"
+                            onMouseEnter={() => scheduleLessonHoverPrefetch(lesson)}
+                            onMouseLeave={clearLessonHoverPrefetch}
+                            onClick={() => {
+                              setShowUnitIntro(false);
+                              void fetchLessonDetails(lesson);
+                            }}
+                            className={`flex w-full items-center gap-1.5 px-2 py-1 text-left text-xs transition-colors ${
+                              !showUnitIntro && lessonIdx === currentLessonIndex
+                                ? 'bg-primary/10 text-primary'
+                                : 'hover:bg-muted/60'
+                            }`}
+                          >
+                            <span className="min-w-0 flex-1 truncate font-medium">
+                              {`Lesson ${lesson.lesson_number}: ${lesson.title}`}
+                            </span>
+                            <ChevronRight className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <button
+                        type="button"
+                        onClick={navigateToPreviousLesson}
+                        disabled={currentLessonIndex <= 0 || lessons.length === 0}
+                        className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-md border border-border bg-background disabled:opacity-40"
+                        title="Previous lesson (Left Arrow)"
+                      >
+                        <ChevronLeft className="w-3.5 h-3.5" />
+                        Previous
+                      </button>
+                      <button
+                        type="button"
+                        onClick={navigateToNextLesson}
+                        disabled={
+                          currentLessonIndex < 0 ||
+                          currentLessonIndex >= lessons.length - 1 ||
+                          lessons.length === 0
+                        }
+                        className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-md border border-border bg-background disabled:opacity-40"
+                        title="Next lesson (Right Arrow)"
+                      >
+                        Next
+                        <ChevronRight className="w-3.5 h-3.5" />
+                      </button>
+                      {selectedLessonHasScienceBook && !showUnitIntro && (
                         <button
                           type="button"
-                          className="font-medium text-primary hover:underline text-left"
-                          onClick={() => {
-                            let target: Unit | null = null;
-                            for (const g of hierarchy) {
-                              for (const s of g.subjects) {
-                                const u = s.units.find((x) => x.id === link.to_unit_id);
-                                if (u) {
-                                  target = u;
-                                  break;
-                                }
-                              }
-                              if (target) break;
-                            }
-                            if (target) void fetchLessons(target);
-                          }}
+                          onClick={jumpToScienceBookSection}
+                          className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-md border border-amber-300/70 dark:border-amber-900/50 bg-amber-50/70 dark:bg-amber-950/30 text-amber-900 dark:text-amber-200 hover:bg-amber-100/70 dark:hover:bg-amber-900/40"
+                          title="Jump to Science Book section"
                         >
-                          {link.to_unit_title}
+                          <BookCopy className="w-3.5 h-3.5" />
+                          Science Book
                         </button>
-                        <span className="text-[10px] uppercase text-muted-foreground">
-                          {link.source === 'manual' ? 'Curated' : 'Suggested'}
-                          {link.to_grade != null ? ` · G${link.to_grade}` : ''}
-                        </span>
-                      </div>
-                      {link.rationale ? (
-                        <p className="text-xs text-muted-foreground leading-snug">{link.rationale}</p>
-                      ) : null}
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            )}
-
-            {/* Lessons Grid/List */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {unitIntro && (
-                <button
-                  onClick={() => {
-                    setSelectedLesson(null);
-                    setShowUnitIntro(true);
-                  }}
-                  className={`flex flex-col text-left p-4 border rounded-xl transition-all ${
-                    showUnitIntro ? 'border-primary ring-1 ring-primary bg-primary/5' : 'hover:border-primary/50 hover:bg-muted/50'
+                      )}
+                    </div>
+                  </div>
+                ) : null}
+                <div
+                  className={`min-w-0 flex flex-col gap-1 ${
+                    lessons.length > 0 || hasUnitOverviewNav
+                      ? 'flex-1 sm:items-end sm:text-right'
+                      : 'flex-1'
                   }`}
                 >
-                  <span className="text-[10px] font-bold text-primary uppercase mb-1">Unit Preamble</span>
-                  <span className="font-semibold text-sm">Unit Overview & TOC</span>
-                </button>
-              )}
-              {lessons.map((lesson) => (
-                <button
-                  key={lesson.id}
-                  onClick={() => {
-                    setShowUnitIntro(false);
-                    fetchLessonDetails(lesson);
-                  }}
-                  className={`flex flex-col text-left p-4 border rounded-xl transition-all ${
-                    !showUnitIntro && selectedLesson?.id === lesson.id ? 'border-primary ring-1 ring-primary bg-primary/5' : 'hover:border-primary/50 hover:bg-muted/50'
-                  }`}
-                >
-                  <span className="text-[10px] font-bold text-muted-foreground uppercase mb-1">Lesson {lesson.lesson_number}</span>
-                  <span className="font-semibold text-sm line-clamp-2">{lesson.title}</span>
-                </button>
-              ))}
+                  <div className="text-sm font-medium text-muted-foreground leading-tight">
+                    {selectedHierarchyPath
+                      ? `${selectedHierarchyPath.gradeLabel} - ${selectedHierarchyPath.unitLabel}`
+                      : normalizeUnitLabel(selectedUnit)}
+                  </div>
+                  <div className="text-lg font-semibold leading-snug text-foreground line-clamp-2 sm:max-w-2xl">
+                    {loadingDetails && selectedLesson
+                      ? 'Loading lesson...'
+                      : selectedLesson
+                        ? `Lesson ${selectedLesson.lesson_number}: ${selectedLesson.title || 'Untitled Lesson'}`
+                        : showUnitIntro && hasUnitOverviewNav
+                          ? `${explorerCurriculumNodeNoun(selectedUnit)} Overview & TOC`
+                          : 'Select a lesson'}
+                  </div>
+                </div>
+              </div>
             </div>
 
+            <div
+              ref={mainContentScrollRef}
+              className="flex-1 min-h-0 overflow-y-auto px-6 py-6 space-y-8"
+            >
             {/* Content Display (Lesson or Unit Intro) */}
-            {(showUnitIntro && unitIntro) && (
-              <div ref={detailsRef} className="mt-12 space-y-12 border-t pt-12 animate-in slide-in-from-bottom-4 duration-500">
+            {showUnitIntro && selectedUnit && hasUnitOverviewNav && (
+              <div className="space-y-6 border-t border-border pt-6">
                 <div className="space-y-4">
-                  <h2 className="text-2xl font-bold">Unit Overview</h2>
-                  <CurriculumRichHtml
-                    className="prose prose-sm max-w-none text-muted-foreground rich-html overflow-x-auto"
-                    html={unitIntro.procedure_html}
-                  />
+                  <h2 className="text-2xl font-bold">
+                    {explorerCurriculumNodeNoun(selectedUnit)} Overview
+                  </h2>
+                  {unitIntro && String(unitIntro.procedure_html || '').trim() ? (
+                    <CurriculumRichHtml
+                      className="prose prose-sm max-w-none text-muted-foreground rich-html overflow-x-auto"
+                      html={unitIntro.procedure_html}
+                    />
+                  ) : unitIntro ? (
+                    <p className="text-sm text-muted-foreground">
+                      No overview text is available for this unit.
+                    </p>
+                  ) : null}
+                  {usesModuleNodeLabel(selectedUnit) &&
+                    scienceUnitOutline &&
+                    scienceUnitOutline.total_writer_bands > 0 && (
+                      <section
+                        className="space-y-3 rounded-lg border border-border bg-muted/5 p-4"
+                        aria-label="Writer day bands for this module"
+                      >
+                        <h3 className="text-base font-semibold text-foreground">
+                          Writer day bands ({scienceUnitOutline.total_writer_bands} in this{' '}
+                          {explorerCurriculumNodeNoun(selectedUnit).toLowerCase()})
+                        </h3>
+                        <p className="text-xs text-muted-foreground">
+                          Author clusters from the source guide. This is not mapped to your school
+                          calendar; use it for pacing context only.
+                        </p>
+                        <div className="space-y-4">
+                          {buildScienceModuleOutlineDisplay(scienceUnitOutline).map((lesson) => (
+                            <div key={lesson.lesson_id} className="text-sm">
+                              <p className="font-medium text-foreground">
+                                Lesson {lesson.lesson_number}
+                                {lesson.title ? `: ${lesson.title}` : ''}
+                              </p>
+                              <ul className="mt-1 list-disc pl-5 text-muted-foreground">
+                                {lesson.segmentRows.map((row) => (
+                                  <li key={row.key}>
+                                    <span className="font-medium text-foreground/90">
+                                      Band {row.moduleBandNumber}
+                                    </span>
+                                    {' \u2014 '}
+                                    {row.dayLabel}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          ))}
+                        </div>
+                      </section>
+                    )}
                 </div>
               </div>
             )}
 
             {/* Lesson Detail Pane */}
             {(selectedLesson || loadingDetails) && (
-              <div ref={detailsRef} className="mt-12 space-y-12 border-t pt-12 animate-in slide-in-from-bottom-4 duration-500">
+              <div className="space-y-8 border-t border-border pt-6">
                 {loadingDetails ? (
-                   <div className="flex items-center justify-center py-20 text-muted-foreground animate-pulse">
-                     <Book className="w-8 h-8 mr-3 animate-bounce" />
-                     <p className="text-xl font-medium">Loading Lesson Content...</p>
-                   </div>
+                  <div
+                    className="space-y-4 py-8"
+                    role="status"
+                    aria-live="polite"
+                    aria-label="Loading lesson content"
+                  >
+                    <div className="flex items-center gap-3 text-muted-foreground">
+                      <Book className="h-8 w-8 shrink-0 animate-pulse" />
+                      <div className="min-w-0 flex-1 space-y-2">
+                        <div className="h-4 w-3/5 max-w-md rounded bg-muted animate-pulse" />
+                        <div className="h-3 w-4/5 max-w-lg rounded bg-muted/80 animate-pulse" />
+                        <div className="h-3 w-2/5 max-w-sm rounded bg-muted/70 animate-pulse" />
+                      </div>
+                    </div>
+                    <div className="space-y-3 rounded-lg border border-border bg-muted/20 p-4">
+                      <div className="h-3 w-full rounded bg-muted animate-pulse" />
+                      <div className="h-3 w-[92%] rounded bg-muted animate-pulse" />
+                      <div className="h-3 w-[88%] rounded bg-muted animate-pulse" />
+                      <div className="h-24 w-full rounded-md bg-muted/60 animate-pulse" />
+                    </div>
+                  </div>
                 ) : (
                   <>
-                  <div className="space-y-1">
-                    <h2 className="text-2xl font-bold">{selectedLesson?.title || "Untitled Lesson"}</h2>
-                    <p className="text-muted-foreground text-sm">Detailed Lesson Plan & Vocabulary</p>
-                  </div>
+                  <p className="text-muted-foreground text-sm">Detailed Lesson Plan & Vocabulary</p>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
                   {/* Left: Content */}
@@ -1654,7 +2590,189 @@ export function CurriculumExplorer() {
                     {useElaStructuredPrimary && elaPlanPayload ? (
                       <ElaStructuredLessonPlanSection plan={elaPlanPayload} />
                     ) : null}
-                    {(!hideTeacherObjectivesForEla || !hideStudentObjectivesForEla) && (
+                    {useScienceDayStructuredPrimary && scienceDayPayload?.segments ? (
+                      <section className="space-y-4" aria-label="Science learning intentions by day">
+                        <h3 className="flex items-center gap-2 font-bold text-lg border-b pb-2 text-sky-700">
+                          <FileText className="w-5 h-5" />
+                          Learning intention and success criteria (by day)
+                        </h3>
+                        <div className="space-y-6">
+                          {scienceDayPayload.segments.map((seg, idx) => (
+                            <div
+                              key={`${seg.label}-${idx}`}
+                              className="rounded-lg border border-border bg-muted/10 p-4 space-y-4"
+                            >
+                              <h4 className="font-semibold text-base text-foreground">
+                                {seg.label}
+                              </h4>
+                              {(seg.brief_overview || "").trim() ? (
+                                <div className="space-y-2 rounded-md border border-sky-200/60 bg-sky-50/50 p-3 dark:border-sky-900/40 dark:bg-sky-950/20">
+                                  <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                                    Summary of key learning
+                                  </p>
+                                  <CurriculumRichHtml
+                                    className="prose prose-sm max-w-none text-muted-foreground rich-html"
+                                    html={(seg.brief_overview || "").trim()}
+                                  />
+                                </div>
+                              ) : null}
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="space-y-2">
+                                  <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                                    Learning intention
+                                  </p>
+                                  <CurriculumRichHtml
+                                    className="prose prose-sm max-w-none text-muted-foreground rich-html"
+                                    html={
+                                      (seg.learning_intention_html || "").trim() ||
+                                      "<p class=\"text-muted-foreground\">—</p>"
+                                    }
+                                  />
+                                </div>
+                                <div className="space-y-2">
+                                  <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                                    Success criteria
+                                  </p>
+                                  <CurriculumRichHtml
+                                    className="prose prose-sm max-w-none text-muted-foreground rich-html"
+                                    html={
+                                      (seg.success_criteria_html || "").trim() ||
+                                      "<p class=\"text-muted-foreground\">—</p>"
+                                    }
+                                  />
+                                </div>
+                              </div>
+                              {(seg.lesson_in_action_html || "").trim() ? (
+                                <div className="space-y-2 border-t border-border pt-4">
+                                  <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                                    Lesson in action
+                                  </p>
+                                  {seg.experimental_splits &&
+                                  (
+                                    seg.experimental_splits.opening_html ||
+                                    seg.experimental_splits.during_html ||
+                                    seg.experimental_splits.closing_html ||
+                                    seg.experimental_splits.online_html
+                                  )?.trim() ? (
+                                    <details className="rounded-md border border-border bg-background/80 px-3 py-2 text-sm">
+                                      <summary className="cursor-pointer font-medium text-foreground">
+                                        Structured sections (parsed)
+                                      </summary>
+                                      <div className="mt-3 space-y-4 border-t border-border pt-3">
+                                        {(seg.experimental_splits.opening_html || "").trim() ? (
+                                          <div className="space-y-1">
+                                            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                                              Lesson opening
+                                            </p>
+                                            <CurriculumRichHtml
+                                              className="prose prose-sm max-w-none text-muted-foreground rich-html overflow-x-auto"
+                                              html={(seg.experimental_splits.opening_html || "").trim()}
+                                            />
+                                          </div>
+                                        ) : null}
+                                        {(seg.experimental_splits.during_html || "").trim() ? (
+                                          <div className="space-y-1">
+                                            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                                              During the lesson
+                                            </p>
+                                            <CurriculumRichHtml
+                                              className="prose prose-sm max-w-none text-muted-foreground rich-html overflow-x-auto"
+                                              html={(seg.experimental_splits.during_html || "").trim()}
+                                            />
+                                          </div>
+                                        ) : null}
+                                        {(seg.experimental_splits.closing_html || "").trim() ? (
+                                          <div className="space-y-1">
+                                            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                                              Lesson closing
+                                            </p>
+                                            <CurriculumRichHtml
+                                              className="prose prose-sm max-w-none text-muted-foreground rich-html overflow-x-auto"
+                                              html={(seg.experimental_splits.closing_html || "").trim()}
+                                            />
+                                          </div>
+                                        ) : null}
+                                        {(seg.experimental_splits.online_html || "").trim() ? (
+                                          <div className="space-y-1">
+                                            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                                              Online learning activities
+                                            </p>
+                                            <CurriculumRichHtml
+                                              className="prose prose-sm max-w-none text-muted-foreground rich-html overflow-x-auto"
+                                              html={(seg.experimental_splits.online_html || "").trim()}
+                                            />
+                                          </div>
+                                        ) : null}
+                                      </div>
+                                    </details>
+                                  ) : null}
+                                  <CurriculumRichHtml
+                                    className="prose prose-sm max-w-none text-muted-foreground rich-html overflow-x-auto"
+                                    html={(seg.lesson_in_action_html || "").trim()}
+                                  />
+                                </div>
+                              ) : null}
+                            </div>
+                          ))}
+                        </div>
+                      </section>
+                    ) : null}
+                    {selectedLessonHasScienceBook && (
+                      <section
+                        id="science-book"
+                        ref={scienceBookSectionRef}
+                        className="space-y-4 scroll-mt-20"
+                        aria-label="Science student workbook"
+                      >
+                        <div className="border-t border-border pt-6 mt-2" />
+                        <h3 className="flex items-center gap-2 font-bold text-lg border-b pb-2 text-amber-800 dark:text-amber-200">
+                          <BookCopy className="w-5 h-5 shrink-0" />
+                          Science Book
+                        </h3>
+                        <p className="text-xs text-muted-foreground leading-relaxed">
+                          Plain text from the Inspire Grade 2 student workbook PDF (aligned by lesson
+                          title; complement to the teacher plan, not a second source of truth).
+                        </p>
+                        {bookPageExtractsBundle.length === 0 ? (
+                          <p className="text-sm text-muted-foreground italic">
+                            No workbook pages linked for this lesson yet. After running{' '}
+                            <code className="rounded bg-muted px-1 py-0.5 text-xs">
+                              ingest_g2_science_book_pdf.py
+                            </code>
+                            , open the lesson again (or hard-refresh the app).
+                          </p>
+                        ) : (
+                          <div className="space-y-3">
+                            {bookPageExtractsBundle.map((ex) => (
+                              <details
+                                key={ex.id}
+                                className="rounded-lg border border-amber-200/70 dark:border-amber-900/40 bg-amber-50/30 dark:bg-amber-950/20 px-3 py-2"
+                                open={bookPageExtractsBundle.length <= 3}
+                              >
+                                <summary className="cursor-pointer list-none font-medium text-sm text-foreground flex flex-wrap items-baseline gap-x-2 gap-y-1 [&::-webkit-details-marker]:hidden">
+                                  <span className="underline-offset-2 group-open:underline">
+                                    PDF page {ex.page_number}
+                                  </span>
+                                  {ex.alignment_ambiguous ? (
+                                    <span className="text-xs font-normal text-amber-700 dark:text-amber-300">
+                                      ambiguous alignment
+                                    </span>
+                                  ) : null}
+                                  <span className="text-xs font-normal text-muted-foreground">
+                                    {ex.alignment_confidence} confidence
+                                  </span>
+                                </summary>
+                                <pre className="mt-3 whitespace-pre-wrap text-xs text-muted-foreground font-sans border-t border-border/60 pt-3 max-h-[min(70vh,520px)] overflow-y-auto leading-relaxed">
+                                  {ex.body_text}
+                                </pre>
+                              </details>
+                            ))}
+                          </div>
+                        )}
+                      </section>
+                    )}
+                    {(!hideTeacherObjectivesForEla || !hideStudentObjectivesForEla) &&
+                      !hideObjectivesWhenScienceStructured && (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       {!hideTeacherObjectivesForEla && (
                       <section className="space-y-3">
@@ -1735,7 +2853,9 @@ export function CurriculumExplorer() {
                     </section>
                     )}
 
-                    {selectedLesson.success_criteria && !hideStandaloneSuccessCriteriaForEla && (
+                    {selectedLesson.success_criteria &&
+                      !hideStandaloneSuccessCriteriaForEla &&
+                      !hideStandaloneSuccessCriteriaForScience && (
                       <section className="space-y-3">
                         <h3 className="flex items-center gap-2 font-bold text-lg border-b pb-2 text-yellow-600">
                           <ChevronRight className="w-5 h-5" />
@@ -2028,7 +3148,7 @@ export function CurriculumExplorer() {
                       <div className="space-y-4">
                         {displayVocabulary.length === 0 ? (
                           <p className="text-xs text-muted-foreground italic">No vocabulary terms identified for this lesson.</p>
-                        ) : useElaStructuredPrimary && elaVocabTermList.length > 0 ? (
+                        ) : useElaStructuredPrimary && elaVocabTermsSanitized.length > 0 ? (
                           <div className="p-4 bg-muted/40 rounded-xl border border-transparent hover:border-orange-200 transition-colors">
                             <ul className="list-disc pl-5 space-y-1">
                               {displayVocabulary.map((vocab) => (
@@ -2064,6 +3184,7 @@ export function CurriculumExplorer() {
                 )}
               </div>
             )}
+            </div>
           </div>
         )}
       </div>

@@ -27,7 +27,7 @@
 
 ## Refactor pass
 
-- Skipped (documentation and evidence only; no production code edits in scope)
+- **ELA summary coalescing (2026-03-29):** `RecursiveTableParser.ingest_to_curriculum` (`tools/scraper/table_extractor.py`) replaces paragraph-driven lessons with **Summary of Key Learning** rows when **no** lesson anchors match or when matched count is **below 35%** of summary rows (minimum **5** summary rows). Restores **ELA_6_U1_sample** and **ELA_8_U1_sample** on merged-tab DOCX without changing compendium tabs that already parse “Lesson N:” headings.
 
 ## Test gate #2 (post-refactor)
 
@@ -35,10 +35,23 @@
 - Result: Pass
 - Evidence: `test-gate-5-2-verify_curriculum_db.txt`, `test-gate-5-2-pytest-phase-deps.txt`, `test-gate-5-2-lesson-browser-build.txt`
 
+## Local JSON ingest (Stage C vertical sample)
+
+- Orchestrator / tooling: `tools/db/phase5_vertical_sample_ingest.py`, `tools/db/ingest_wave_unit.py --docx`, `tools/scraper/gdoc_tab_to_docx.py`
+- Parser: `RecursiveTableParser` ELA **summary-table coalescing** (when paragraph lesson anchors are missing or coverage is below 35% of summary rows with at least 5 rows) — `tools/scraper/table_extractor.py`
+- PASS rows (2026-03-29): `ELA_4_compendium_sample` (21), `ELA_5_compendium_sample` (15), `ELA_6_U1_sample` (34), `ELA_8_U1_sample` (24), `Math_8_U8_sample` (20)
+- PENDING: Math G4/G5 matrix doc IDs (no matching `originals` JSON in repo)
+
+## Test gate #3 (post–local-JSON ingest)
+
+- Commands: same as gate #1, plus `verify_curriculum_db.py --ingest-report` for PASS ingest reports listed in `test-gate-5-3-verify_curriculum_db.txt`
+- Result: Pass
+- Evidence: `test-gate-5-3-verify_curriculum_db.txt`, `test-gate-5-3-pytest-phase-deps.txt`, `test-gate-5-3-lesson-browser-build.txt`
+
 ## Branch hygiene
 
 - Merged `origin/master` into this branch — already up to date at session time
 
 ## Merge and push
 
-- **Not executed** — Phase 5 exit criteria require all matrix rows to pass ingest + gate policy (see `PHASE_5_WRAP_UP.md`)
+- Phase 5 **evidence and scope** are **closed** (2026-03-29): no further ingest for deferred Math G4/G5 rows; see `PHASE_5_WRAP_UP.md`. Git merge/push of `curriculum/phase-5-cross-grade-sample` follows normal branch policy and is not blocked on those rows.

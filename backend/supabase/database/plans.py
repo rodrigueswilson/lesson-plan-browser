@@ -3,6 +3,7 @@
 import json
 import logging
 import uuid
+from datetime import datetime
 from typing import Any, Dict, List, Optional
 
 from postgrest.exceptions import APIError
@@ -124,6 +125,7 @@ class SupabasePlansMixin:
         error_message: Optional[str] = None,
         lesson_json: Optional[Dict[str, Any]] = None,
         total_slots: Optional[int] = None,
+        generated_at: Optional[datetime] = None,
     ) -> bool:
         """Update weekly plan status."""
         updates: Dict[str, Any] = {}
@@ -138,6 +140,8 @@ class SupabasePlansMixin:
             updates["lesson_json"] = lesson_json
         if total_slots is not None:
             updates["total_slots"] = int(total_slots)
+        if generated_at is not None:
+            updates["generated_at"] = generated_at.isoformat()
 
         if not updates:
             return False
