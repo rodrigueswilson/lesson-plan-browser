@@ -1,0 +1,745 @@
+{
+  "docx": "D:\\LP\\reference_docs\\scraped\\batch_8_linked_mar2026\\Unit_2__Area_and_Multiplication\\originals\\Unit_2__Area_and_Multiplication.docx",
+  "subject": "Math",
+  "stream_items": 1907,
+  "paragraph_items": 1907,
+  "lesson_title_hits": 37,
+  "standards_token_hits": 184,
+  "lessons": [
+    {
+      "stream_index": 296,
+      "text": "Lesson 10",
+      "groups": [
+        "1",
+        null,
+        "0"
+      ]
+    },
+    {
+      "stream_index": 299,
+      "text": "Lesson 10",
+      "groups": [
+        "1",
+        null,
+        "0"
+      ]
+    },
+    {
+      "stream_index": 330,
+      "text": "Lesson 10",
+      "groups": [
+        "1",
+        null,
+        "0"
+      ]
+    },
+    {
+      "stream_index": 345,
+      "text": "Lesson 11",
+      "groups": [
+        "1",
+        null,
+        "1"
+      ]
+    },
+    {
+      "stream_index": 357,
+      "text": "Lesson 15",
+      "groups": [
+        "1",
+        null,
+        "5"
+      ]
+    },
+    {
+      "stream_index": 360,
+      "text": "Lesson 13",
+      "groups": [
+        "1",
+        null,
+        "3"
+      ]
+    },
+    {
+      "stream_index": 402,
+      "text": "Lesson 12",
+      "groups": [
+        "1",
+        null,
+        "2"
+      ]
+    },
+    {
+      "stream_index": 725,
+      "text": "LESSON 1: WHAT IS AREA?",
+      "groups": [
+        "1",
+        null,
+        "WHAT IS AREA?"
+      ]
+    },
+    {
+      "stream_index": 726,
+      "text": "LESSON 2: HOW DO WE MEASURE AREA?",
+      "groups": [
+        "2",
+        null,
+        "HOW DO WE MEASURE AREA?"
+      ]
+    },
+    {
+      "stream_index": 727,
+      "text": "LESSON 3: TILE RECTANGLE",
+      "groups": [
+        "3",
+        null,
+        "TILE RECTANGLE"
+      ]
+    },
+    {
+      "stream_index": 728,
+      "text": "LESSON 4: AREA OF A RECTANGLE",
+      "groups": [
+        "4",
+        null,
+        "AREA OF A RECTANGLE"
+      ]
+    },
+    {
+      "stream_index": 731,
+      "text": "LESSON 5: REPRESENT PRODUCTS AS AREAS",
+      "groups": [
+        "5",
+        null,
+        "REPRESENT PRODUCTS AS AREAS"
+      ]
+    },
+    {
+      "stream_index": 732,
+      "text": "LESSON 6: DIFFERENT SQUARE UNITS (PART 1)",
+      "groups": [
+        "6",
+        null,
+        "DIFFERENT SQUARE UNITS (PART 1)"
+      ]
+    },
+    {
+      "stream_index": 733,
+      "text": "LESSON 7: DIFFERENT SQUARE UNITS (PART 2)",
+      "groups": [
+        "7",
+        null,
+        "DIFFERENT SQUARE UNITS (PART 2)"
+      ]
+    },
+    {
+      "stream_index": 734,
+      "text": "LESSON 8: AREA OF A RECTANGLE WITHOUT A GRID",
+      "groups": [
+        "8",
+        null,
+        "AREA OF A RECTANGLE WITHOUT A GRID"
+      ]
+    },
+    {
+      "stream_index": 735,
+      "text": "LESSON 9: MEASURE TO FIND THE AREA",
+      "groups": [
+        "9",
+        null,
+        "MEASURE TO FIND THE AREA"
+      ]
+    },
+    {
+      "stream_index": 736,
+      "text": "LESSON 10: SOLVE AREA PROBLEMS",
+      "groups": [
+        "10",
+        null,
+        "SOLVE AREA PROBLEMS"
+      ]
+    },
+    {
+      "stream_index": 737,
+      "text": "LESSON 11: AREA AND THE MULTIPLICATION TABLE",
+      "groups": [
+        "11",
+        null,
+        "AREA AND THE MULTIPLICATION TABLE"
+      ]
+    },
+    {
+      "stream_index": 740,
+      "text": "LESSON 12: AREA AND ADDITION",
+      "groups": [
+        "12",
+        null,
+        "AREA AND ADDITION"
+      ]
+    },
+    {
+      "stream_index": 741,
+      "text": "LESSON 13: FIND THE AREA OF A FIGURE",
+      "groups": [
+        "13",
+        null,
+        "FIND THE AREA OF A FIGURE"
+      ]
+    },
+    {
+      "stream_index": 742,
+      "text": "LESSON 14: FIND THE AREA OF A FIGURE WITH KNOWN SIDE LENGTHS",
+      "groups": [
+        "14",
+        null,
+        "FIND THE AREA OF A FIGURE WITH KNOWN SIDE LENGTHS"
+      ]
+    },
+    {
+      "stream_index": 743,
+      "text": "LESSON 15: NEW ROOM (OPTIONAL)",
+      "groups": [
+        "15",
+        null,
+        "NEW ROOM (OPTIONAL)"
+      ]
+    },
+    {
+      "stream_index": 805,
+      "text": "LESSON 1: WHAT IS AREA?   3.2.1 Teacher Guide",
+      "groups": [
+        "1",
+        null,
+        "WHAT IS AREA?   3.2.1 Teacher Guide"
+      ]
+    },
+    {
+      "stream_index": 880,
+      "text": "LESSON 2: HOW DO WE MEASURE AREA?  3.2.2 Teacher Guide",
+      "groups": [
+        "2",
+        null,
+        "HOW DO WE MEASURE AREA?  3.2.2 Teacher Guide"
+      ]
+    },
+    {
+      "stream_index": 951,
+      "text": "LESSON 3: TILE RECTANGLES  3.2.3 Teacher Guide",
+      "groups": [
+        "3",
+        null,
+        "TILE RECTANGLES  3.2.3 Teacher Guide"
+      ]
+    },
+    {
+      "stream_index": 1023,
+      "text": "LESSON 4: AREA OF A RECTANGLE  3.2.4 Teacher Guide",
+      "groups": [
+        "4",
+        null,
+        "AREA OF A RECTANGLE  3.2.4 Teacher Guide"
+      ]
+    },
+    {
+      "stream_index": 1092,
+      "text": "LESSON 5: REPRESENT PRODUCTS AS AREAS  3.2.5 Teacher Guide",
+      "groups": [
+        "5",
+        null,
+        "REPRESENT PRODUCTS AS AREAS  3.2.5 Teacher Guide"
+      ]
+    },
+    {
+      "stream_index": 1162,
+      "text": "LESSON 6: DIFFERENT SQUARE UNITS (PART 1)  3.2.6 Teacher Guide",
+      "groups": [
+        "6",
+        null,
+        "DIFFERENT SQUARE UNITS (PART 1)  3.2.6 Teacher Guide"
+      ]
+    },
+    {
+      "stream_index": 1237,
+      "text": "LESSON 7: DIFFERENT SQUARE UNITS (PART 2)  3.2.7 Teacher Guide",
+      "groups": [
+        "7",
+        null,
+        "DIFFERENT SQUARE UNITS (PART 2)  3.2.7 Teacher Guide"
+      ]
+    },
+    {
+      "stream_index": 1305,
+      "text": "LESSON 8: AREA OF A RECTANGLE WITHOUT A GRID  3.2.8 Teacher Guide",
+      "groups": [
+        "8",
+        null,
+        "AREA OF A RECTANGLE WITHOUT A GRID  3.2.8 Teacher Guide"
+      ]
+    },
+    {
+      "stream_index": 1380,
+      "text": "LESSON 9: MEASURE TO FIND THE AREA  3.2.9 Teacher Guide",
+      "groups": [
+        "9",
+        null,
+        "MEASURE TO FIND THE AREA  3.2.9 Teacher Guide"
+      ]
+    },
+    {
+      "stream_index": 1457,
+      "text": "LESSON 10: SOLVE AREA PROBLEMS  3.2.10 Teacher Guide",
+      "groups": [
+        "10",
+        null,
+        "SOLVE AREA PROBLEMS  3.2.10 Teacher Guide"
+      ]
+    },
+    {
+      "stream_index": 1542,
+      "text": "LESSON 11: AREA AND THE MULTIPLICATION TABLE  3.2.11 Teacher Guide",
+      "groups": [
+        "11",
+        null,
+        "AREA AND THE MULTIPLICATION TABLE  3.2.11 Teacher Guide"
+      ]
+    },
+    {
+      "stream_index": 1619,
+      "text": "LESSON 12: AREA AND ADDITION  3.2.12 Teacher Guide",
+      "groups": [
+        "12",
+        null,
+        "AREA AND ADDITION  3.2.12 Teacher Guide"
+      ]
+    },
+    {
+      "stream_index": 1692,
+      "text": "LESSON 13: FIND THE AREA OF A FIGURE  3.2.13 Teacher Guide",
+      "groups": [
+        "13",
+        null,
+        "FIND THE AREA OF A FIGURE  3.2.13 Teacher Guide"
+      ]
+    },
+    {
+      "stream_index": 1762,
+      "text": "LESSON 14: FIND THE AREA OF A FIGURE WITH UNKNOWN SIDE LENGTHS  3.2.14 Teacher Guide",
+      "groups": [
+        "14",
+        null,
+        "FIND THE AREA OF A FIGURE WITH UNKNOWN SIDE LENGTHS  3.2.14 Teacher Guide"
+      ]
+    },
+    {
+      "stream_index": 1830,
+      "text": "LESSON 15 (OPTIONAL): NEW ROOM  3.2.15 Teacher Guide",
+      "groups": [
+        "15",
+        null,
+        "(OPTIONAL): NEW ROOM  3.2.15 Teacher Guide"
+      ]
+    }
+  ],
+  "standards_sample": [
+    {
+      "stream_index": 17,
+      "token": "NJSLS-MATH.CONTENT.3.DL.A.1",
+      "line": "NJSLS-MATH.CONTENT.3.DL.A.1"
+    },
+    {
+      "stream_index": 20,
+      "token": "NJSLS-MATH.CONTENT.3.DL.A.2",
+      "line": "NJSLS-MATH.CONTENT.3.DL.A.2"
+    },
+    {
+      "stream_index": 23,
+      "token": "NJSLS-MATH.CONTENT.3.OA.A.1",
+      "line": "NJSLS-MATH.CONTENT.3.OA.A.1"
+    },
+    {
+      "stream_index": 26,
+      "token": "NJSLS-MATH.CONTENT.3.OA.B.5",
+      "line": "NJSLS-MATH.CONTENT.3.OA.B.5"
+    },
+    {
+      "stream_index": 29,
+      "token": "NJSLS-MATH.CONTENT.3.OA.C.7",
+      "line": "NJSLS-MATH.CONTENT.3.OA.C.7"
+    },
+    {
+      "stream_index": 32,
+      "token": "NJSLS-MATH.CONTENT.3.OA.D.9",
+      "line": "NJSLS-MATH.CONTENT.3.OA.D.9"
+    },
+    {
+      "stream_index": 35,
+      "token": "NJSLS-MATH.CONTENT.3.NBT.A.2",
+      "line": "NJSLS-MATH.CONTENT.3.NBT.A.2"
+    },
+    {
+      "stream_index": 38,
+      "token": "NJSLS-MATH.CONTENT.3.M.B.3",
+      "line": "NJSLS-MATH.CONTENT.3.M.B.3"
+    },
+    {
+      "stream_index": 43,
+      "token": "NJSLS-MATH.CONTENT.3.M.B.4",
+      "line": "NJSLS-MATH.CONTENT.3.M.B.4"
+    },
+    {
+      "stream_index": 46,
+      "token": "NJSLS-MATH.CONTENT.3.M.B.5",
+      "line": "NJSLS-MATH.CONTENT.3.M.B.5"
+    },
+    {
+      "stream_index": 56,
+      "token": "NJSLS-MATH.CONTENT.1.OA.B.4",
+      "line": "NJSLS-MATH.CONTENT.1.OA.B.4"
+    },
+    {
+      "stream_index": 59,
+      "token": "NJSLS-MATH.CONTENT.2.OA.C.3",
+      "line": "NJSLS-MATH.CONTENT.2.OA.C.3"
+    },
+    {
+      "stream_index": 62,
+      "token": "NJSLS-MATH.CONTENT.2.OA.C.4",
+      "line": "NJSLS-MATH.CONTENT.2.OA.C.4"
+    },
+    {
+      "stream_index": 65,
+      "token": "NJSLS-MATH.CONTENT.2.NBT.A.2",
+      "line": "NJSLS-MATH.CONTENT.2.NBT.A.2"
+    },
+    {
+      "stream_index": 68,
+      "token": "NJSLS-MATH.CONTENT.2.NBT.B.7",
+      "line": "NJSLS-MATH.CONTENT.2.NBT.B.7"
+    },
+    {
+      "stream_index": 71,
+      "token": "NJSLS-MATH.CONTENT.2.NBT.B.8",
+      "line": "NJSLS-MATH.CONTENT.2.NBT.B.8"
+    },
+    {
+      "stream_index": 416,
+      "token": "NJSLS-MATH.CONTENT.2.OA.C.3",
+      "line": "NJSLS-MATH.CONTENT.2.OA.C.3"
+    },
+    {
+      "stream_index": 418,
+      "token": "NJSLS-MATH.CONTENT.3.OA.A.1",
+      "line": "NJSLS-MATH.CONTENT.3.OA.A.1"
+    },
+    {
+      "stream_index": 425,
+      "token": "NJSLS-MATH.CONTENT.4.OA.A.1",
+      "line": "NJSLS-MATH.CONTENT.4.OA.A.1"
+    },
+    {
+      "stream_index": 427,
+      "token": "NJSLS-MATH.CONTENT.2.OA.C.4",
+      "line": "NJSLS-MATH.CONTENT.2.OA.C.4"
+    },
+    {
+      "stream_index": 430,
+      "token": "NJSLS-MATH.CONTENT.4.NF.B.4",
+      "line": "NJSLS-MATH.CONTENT.4.NF.B.4"
+    },
+    {
+      "stream_index": 435,
+      "token": "NJSLS-MATH.CONTENT.2.NBT.A.2",
+      "line": "NJSLS-MATH.CONTENT.2.NBT.A.2"
+    },
+    {
+      "stream_index": 441,
+      "token": "NJSLS-MATH.CONTENT.5.NBT.B.5",
+      "line": "NJSLS-MATH.CONTENT.5.NBT.B.5"
+    },
+    {
+      "stream_index": 443,
+      "token": "NJSLS-MATH.CONTENT.3.OA.A.1",
+      "line": "NJSLS-MATH.CONTENT.3.OA.A.1"
+    },
+    {
+      "stream_index": 445,
+      "token": "NJSLS-MATH.CONTENT.3.OA.B.5",
+      "line": "NJSLS-MATH.CONTENT.3.OA.B.5"
+    },
+    {
+      "stream_index": 448,
+      "token": "NJSLS-MATH.CONTENT.3.OA.C.7",
+      "line": "NJSLS-MATH.CONTENT.3.OA.C.7"
+    },
+    {
+      "stream_index": 452,
+      "token": "NJSLS-MATH.CONTENT.3.OA.D.9",
+      "line": "NJSLS-MATH.CONTENT.3.OA.D.9"
+    },
+    {
+      "stream_index": 456,
+      "token": "NJSLS-MATH.CONTENT.3.NBT.A.3",
+      "line": "NJSLS-MATH.CONTENT.3.NBT.A.3"
+    },
+    {
+      "stream_index": 460,
+      "token": "NJSLS-MATH.CONTENT.4.NBT.B.5",
+      "line": "NJSLS-MATH.CONTENT.4.NBT.B.5"
+    },
+    {
+      "stream_index": 464,
+      "token": "NJSLS-MATH.CONTENT.4.NBT.B.6",
+      "line": "NJSLS-MATH.CONTENT.4.NBT.B.6"
+    },
+    {
+      "stream_index": 468,
+      "token": "NJSLS-MATH.CONTENT.5.NF.B.4",
+      "line": "NJSLS-MATH.CONTENT.5.NF.B.4"
+    },
+    {
+      "stream_index": 474,
+      "token": "NJSLS-MATH.CONTENT.5.M.B.4",
+      "line": "NJSLS-MATH.CONTENT.5.M.B.4"
+    },
+    {
+      "stream_index": 482,
+      "token": "NJSLS-MATH.CONTENT.3.OA.B.5",
+      "line": "NJSLS-MATH.CONTENT.3.OA.B.5"
+    },
+    {
+      "stream_index": 484,
+      "token": "NJSLS-MATH.CONTENT.3.OA.C.7",
+      "line": "NJSLS-MATH.CONTENT.3.OA.C.7"
+    },
+    {
+      "stream_index": 486,
+      "token": "NJSLS-MATH.CONTENT.4.NBT.B.5",
+      "line": "NJSLS-MATH.CONTENT.4.NBT.B.5"
+    },
+    {
+      "stream_index": 491,
+      "token": "NJSLS-MATH.CONTENT.4.NBT.B.6",
+      "line": "NJSLS-MATH.CONTENT.4.NBT.B.6"
+    },
+    {
+      "stream_index": 495,
+      "token": "NJSLS-MATH.CONTENT.4.M.A.1",
+      "line": "NJSLS-MATH.CONTENT.4.M.A.1"
+    },
+    {
+      "stream_index": 500,
+      "token": "NJSLS-MATH.CONTENT.2.OA.C.3",
+      "line": "NJSLS-MATH.CONTENT.2.OA.C.3"
+    },
+    {
+      "stream_index": 502,
+      "token": "NJSLS-MATH.CONTENT.3.OA.D.9",
+      "line": "NJSLS-MATH.CONTENT.3.OA.D.9"
+    },
+    {
+      "stream_index": 504,
+      "token": "NJSLS-MATH.CONTENT.4.OA.C.5",
+      "line": "NJSLS-MATH.CONTENT.4.OA.C.5"
+    },
+    {
+      "stream_index": 506,
+      "token": "NJSLS-MATH.CONTENT.3.OA.B.5",
+      "line": "NJSLS-MATH.CONTENT.3.OA.B.5"
+    },
+    {
+      "stream_index": 510,
+      "token": "NJSLS-MATH.CONTENT.1.OA.B.4",
+      "line": "NJSLS-MATH.CONTENT.1.OA.B.4"
+    },
+    {
+      "stream_index": 512,
+      "token": "NJSLS-MATH.CONTENT.3.NBT.A.2",
+      "line": "NJSLS-MATH.CONTENT.3.NBT.A.2"
+    },
+    {
+      "stream_index": 514,
+      "token": "NJSLS-MATH.CONTENT.4.NBT.B.4",
+      "line": "NJSLS-MATH.CONTENT.4.NBT.B.4"
+    },
+    {
+      "stream_index": 516,
+      "token": "NJSLS-MATH.CONTENT.2.NBT.B.7",
+      "line": "NJSLS-MATH.CONTENT.2.NBT.B.7"
+    },
+    {
+      "stream_index": 519,
+      "token": "NJSLS-MATH.CONTENT.4.NBT.B.5",
+      "line": "NJSLS-MATH.CONTENT.4.NBT.B.5"
+    },
+    {
+      "stream_index": 521,
+      "token": "NJSLS-MATH.CONTENT.2.NBT.B.8",
+      "line": "NJSLS-MATH.CONTENT.2.NBT.B.8"
+    },
+    {
+      "stream_index": 525,
+      "token": "NJSLS-MATH.CONTENT.4.NBT.B.6",
+      "line": "NJSLS-MATH.CONTENT.4.NBT.B.6"
+    },
+    {
+      "stream_index": 531,
+      "token": "NJSLS-MATH.CONTENT.3.M.B.3",
+      "line": "NJSLS-MATH.CONTENT.3.M.B.3"
+    },
+    {
+      "stream_index": 538,
+      "token": "NJSLS-MATH.CONTENT.3.M.B.4",
+      "line": "NJSLS-MATH.CONTENT.3.M.B.4"
+    },
+    {
+      "stream_index": 540,
+      "token": "NJSLS-MATH.CONTENT.4.M.B.4",
+      "line": "NJSLS-MATH.CONTENT.4.M.B.4"
+    },
+    {
+      "stream_index": 544,
+      "token": "NJSLS-MATH.CONTENT.3.M.B.3",
+      "line": "NJSLS-MATH.CONTENT.3.M.B.3"
+    },
+    {
+      "stream_index": 548,
+      "token": "NJSLS-MATH.CONTENT.3.M.B.5",
+      "line": "NJSLS-MATH.CONTENT.3.M.B.5"
+    },
+    {
+      "stream_index": 555,
+      "token": "NJSLS-MATH.CONTENT.3.OA.D.9",
+      "line": "NJSLS-MATH.CONTENT.3.OA.D.9"
+    },
+    {
+      "stream_index": 559,
+      "token": "NJSLS-MATH.CONTENT.4.NBT.B.6",
+      "line": "NJSLS-MATH.CONTENT.4.NBT.B.6"
+    },
+    {
+      "stream_index": 563,
+      "token": "NJSLS-MATH.CONTENT.5.NF.B.4",
+      "line": "NJSLS-MATH.CONTENT.5.NF.B.4"
+    },
+    {
+      "stream_index": 833,
+      "token": "NJSLS-MATH.CONTENT.3.M.B.3",
+      "line": "NJSLS-MATH.CONTENT.3.M.B.3"
+    },
+    {
+      "stream_index": 837,
+      "token": "NJSLS-MATH.CONTENT.3.OA.A.1",
+      "line": "NJSLS-MATH.CONTENT.3.OA.A.1"
+    },
+    {
+      "stream_index": 841,
+      "token": "MP3",
+      "line": "MP3. Construct viable arguments and critique the reasoning of others."
+    },
+    {
+      "stream_index": 842,
+      "token": "MP7",
+      "line": "MP7. Look for and make use of structure."
+    },
+    {
+      "stream_index": 844,
+      "token": "NCTM-MATH.CONTENT.3-5.ME.A.1",
+      "line": "NCTM-MATH.CONTENT.3-5.ME.A.1"
+    },
+    {
+      "stream_index": 846,
+      "token": "NCTM-MATH.CONTENT.3-5.ME.A.1",
+      "line": "NCTM-MATH.CONTENT.3-5.ME.A.1"
+    },
+    {
+      "stream_index": 850,
+      "token": "PR1",
+      "line": "PR1. Problem Solving"
+    },
+    {
+      "stream_index": 851,
+      "token": "PR4",
+      "line": "PR4. Connections"
+    },
+    {
+      "stream_index": 852,
+      "token": "PR5",
+      "line": "PR5. Representation"
+    },
+    {
+      "stream_index": 907,
+      "token": "NJSLS-MATH.CONTENT.3.M.B.3",
+      "line": "NJSLS-MATH.CONTENT.3.M.B.3"
+    },
+    {
+      "stream_index": 913,
+      "token": "MP6",
+      "line": "MP6. Attend to precision."
+    },
+    {
+      "stream_index": 915,
+      "token": "NCTM-MATH.CONTENT.3-5.ME.A.1",
+      "line": "NCTM-MATH.CONTENT.3-5.ME.A.1"
+    },
+    {
+      "stream_index": 917,
+      "token": "NCTM-MATH.CONTENT.3-5.ME.A.1",
+      "line": "NCTM-MATH.CONTENT.3-5.ME.A.1"
+    },
+    {
+      "stream_index": 921,
+      "token": "PR1",
+      "line": "PR1. Problem Solving"
+    },
+    {
+      "stream_index": 922,
+      "token": "PR4",
+      "line": "PR4. Connections"
+    },
+    {
+      "stream_index": 923,
+      "token": "PR5",
+      "line": "PR5. Representation"
+    },
+    {
+      "stream_index": 925,
+      "token": "MP6",
+      "line": "The purpose of this warm-up is to elicit observations about tiled squares by comparing four images. The work here prepares students to reason about unit squares later in the lesson and gives students a reason to use language precisely (MP6)"
+    },
+    {
+      "stream_index": 981,
+      "token": "NJSLS-MATH.CONTENT.3.M.B.3",
+      "line": "NJSLS-MATH.CONTENT.3.M.B.3"
+    },
+    {
+      "stream_index": 986,
+      "token": "MP6",
+      "line": "MP6. Attend to precision."
+    },
+    {
+      "stream_index": 987,
+      "token": "MP7",
+      "line": "MP7. Look for and make use of structure."
+    },
+    {
+      "stream_index": 989,
+      "token": "NCTM-MATH.CONTENT.3-5.ME.A.1",
+      "line": "NCTM-MATH.CONTENT.3-5.ME.A.1"
+    },
+    {
+      "stream_index": 991,
+      "token": "NCTM-MATH.CONTENT.3-5.ME.A.1",
+      "line": "NCTM-MATH.CONTENT.3-5.ME.A.1"
+    },
+    {
+      "stream_index": 995,
+      "token": "PR1",
+      "line": "PR1. Problem Solving"
+    },
+    {
+      "stream_index": 996,
+      "token": "PR4",
+      "line": "PR4. Connections"
+    }
+  ]
+}

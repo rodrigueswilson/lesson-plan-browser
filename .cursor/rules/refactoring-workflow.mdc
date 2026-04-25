@@ -1,0 +1,18 @@
+---
+description: When refactoring a file that has a plan under docs/refactor/plans/, follow the plan; one extraction per commit; run the plan's test command before each commit.
+alwaysApply: false
+---
+
+# Refactoring workflow (plan-driven)
+
+When the user asks to refactor a file, or to implement extractions for a file that has a refactor plan:
+
+1. **Find the plan:** Look for `docs/refactor/plans/slim_*.md` matching the file (e.g. `tools/docx_renderer/renderer.py` -> `slim_tools_docx_renderer_renderer.md`). Open and read the plan.
+2. **Preserve public API:** Do not change the items listed under "Public API to preserve" (signatures, class name, package `__all__`). Only move implementation into new modules.
+3. **One extraction per commit:** Implement one suggested extraction at a time (create new module, update imports, slim the original). Run the **Test command** from the plan before committing. Then commit with a clear message (e.g. `refactor(docx_renderer): extract format_* helpers to content_format.py`).
+4. **Repeat** for the next extraction until the plan's list is done.
+5. **After all extractions:** Remind to update REFACTORING_PRIORITIES_AND_TOOLS.md (0.1, 1.4, 0.5 LOC) and run `python tools/refactor/count_loc.py --markdown` for the changed area before merging to master.
+
+**Starting a new refactor:** From project root, run `python tools/refactor/start_refactor.py <file_path>` to create the branch and plan. Use `--no-branch` to only write/refresh the plan; use `--force` or `--update-plan` to overwrite or refresh an existing plan.
+
+**References:** [REFACTORING_TOOLS_FOR_CURSOR.md](docs/refactor/REFACTORING_TOOLS_FOR_CURSOR.md), [GIT_DURING_REFACTORING.md](docs/refactor/GIT_DURING_REFACTORING.md).

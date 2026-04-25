@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<courseStructure xmlns="http://purl.org/net/cmis/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://purl.org/net/cmis/1.0 cmi5.xsd">
+    <title>
+        <langstring xml:lang="en">{{ lesson_title }}</langstring>
+    </title>
+    <description>
+        <langstring xml:lang="en">{{ lesson_description }}</langstring>
+    </description>
+    <au id="au-{{ lesson_id }}">
+        <title>
+            <langstring xml:lang="en">{{ lesson_title }}</langstring>
+        </title>
+        <description>
+            <langstring xml:lang="en">Interactive lesson for {{ lesson_title }}</langstring>
+        </description>
+        <url target="index.html" />
+        <launchMethod>OwnWindow</launchMethod>
+        <moveOn>Completed</moveOn>
+    </au>
+</courseStructure>

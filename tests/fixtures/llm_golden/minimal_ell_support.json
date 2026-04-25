@@ -1,0 +1,82 @@
+{
+  "metadata": {
+    "week_of": "1/1-1/5",
+    "grade": "7",
+    "subject": "ELA",
+    "homeroom": "101",
+    "teacher_name": "Golden Fixture"
+  },
+  "days": {
+    "monday": {
+      "unit_lesson": "Golden unit",
+      "objective": {
+        "content_objective": "Objective",
+        "student_goal": "Goal",
+        "wida_objective": "WIDA"
+      },
+      "anticipatory_set": {
+        "original_content": "Warm-up",
+        "bilingual_bridge": ""
+      },
+      "tailored_instruction": {
+        "original_content": "Instruction",
+        "co_teaching_model": {
+          "model_name": "One Teach One Assist",
+          "rationale": "Fixture",
+          "wida_context": "Fixture",
+          "phase_plan": [],
+          "implementation_notes": [],
+          "warnings": []
+        },
+        "ell_support": [
+          {
+            "strategy_id": "sentence_frames",
+            "strategy_name": "Sentence Frames",
+            "implementation": "Golden fixture implementation A",
+            "proficiency_levels": "2-3"
+          },
+          {
+            "strategy_id": "cognate_awareness",
+            "strategy_name": "Cognate Awareness",
+            "implementation": "Golden fixture implementation B",
+            "proficiency_levels": "2-3"
+          }
+        ],
+        "special_needs_support": [],
+        "materials": []
+      },
+      "misconceptions": {
+        "original_content": "",
+        "linguistic_note": {
+          "pattern_id": "none",
+          "note": "",
+          "prevention_tip": ""
+        }
+      },
+      "assessment": {
+        "primary_assessment": "Exit ticket",
+        "bilingual_overlay": {
+          "instrument": "Written",
+          "wida_mapping": "Fixture",
+          "supports_by_level": {
+            "levels_1_2": "",
+            "levels_3_4": "",
+            "levels_5_6": ""
+          }
+        }
+      },
+      "homework": {
+        "original_content": "",
+        "bilingual_overlay": {
+          "assignment": "",
+          "wida_mapping": "",
+          "supports_by_level": {
+            "levels_1_2": "",
+            "levels_3_4": "",
+            "levels_5_6": ""
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,10 @@
+backend/services/objectives_pdf_generator.py
+backend/llm/prompt_builder.py
+backend/llm/validation.py
+tools/batch_processor_pkg/combined_original.py
+tools/docx_utils.py
+tools/json_repair.py
+backend/lesson_schema_models.py
+tools/batch_processor_pkg/signatures.py
+tools/docx_renderer/table_cell/fill_cell.py
+tools/docx_renderer/renderer.py

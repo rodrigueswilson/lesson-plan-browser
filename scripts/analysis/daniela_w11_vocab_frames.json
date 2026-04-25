@@ -1,0 +1,1963 @@
+{
+  "user": "Daniela Silva",
+  "plans": [
+    {
+      "plan_id": "plan_20260308130747_8929f90d",
+      "week_of": "03-09-03-13",
+      "vocabulary_cognates": [
+        {
+          "english": "setting",
+          "portuguese": "cenário",
+          "day": "monday"
+        },
+        {
+          "english": "character",
+          "portuguese": "personagem",
+          "day": "monday"
+        },
+        {
+          "english": "trait",
+          "portuguese": "característica",
+          "day": "monday"
+        },
+        {
+          "english": "event",
+          "portuguese": "evento",
+          "day": "monday"
+        },
+        {
+          "english": "problem",
+          "portuguese": "problema",
+          "day": "monday"
+        },
+        {
+          "english": "solution",
+          "portuguese": "solução",
+          "day": "monday"
+        },
+        {
+          "english": "dynasty",
+          "portuguese": "dinastia",
+          "day": "monday"
+        },
+        {
+          "english": "oracle",
+          "portuguese": "oráculo",
+          "day": "monday"
+        },
+        {
+          "english": "artifact",
+          "portuguese": "artefato",
+          "day": "monday"
+        },
+        {
+          "english": "bronze",
+          "portuguese": "bronze",
+          "day": "monday"
+        },
+        {
+          "english": "ancestor",
+          "portuguese": "antepassado",
+          "day": "monday"
+        },
+        {
+          "english": "agriculture",
+          "portuguese": "agricultura",
+          "day": "monday"
+        },
+        {
+          "english": "structure",
+          "portuguese": "estrutura",
+          "day": "monday"
+        },
+        {
+          "english": "function",
+          "portuguese": "função",
+          "day": "monday"
+        },
+        {
+          "english": "reproduce",
+          "portuguese": "reproduzir",
+          "day": "monday"
+        },
+        {
+          "english": "feeding",
+          "portuguese": "alimentação",
+          "day": "monday"
+        },
+        {
+          "english": "adaptation",
+          "portuguese": "adaptação",
+          "day": "monday"
+        },
+        {
+          "english": "appendage",
+          "portuguese": "apêndice",
+          "day": "monday"
+        },
+        {
+          "english": "shelter",
+          "portuguese": "abrigo",
+          "day": "monday"
+        },
+        {
+          "english": "food",
+          "portuguese": "alimento",
+          "day": "monday"
+        },
+        {
+          "english": "habitat",
+          "portuguese": "habitat",
+          "day": "monday"
+        },
+        {
+          "english": "survive",
+          "portuguese": "sobreviver",
+          "day": "monday"
+        },
+        {
+          "english": "plant",
+          "portuguese": "planta",
+          "day": "monday"
+        },
+        {
+          "english": "animal",
+          "portuguese": "animal",
+          "day": "monday"
+        },
+        {
+          "english": "time",
+          "portuguese": "tempo",
+          "day": "monday"
+        },
+        {
+          "english": "clock",
+          "portuguese": "relógio",
+          "day": "monday"
+        },
+        {
+          "english": "hour",
+          "portuguese": "hora",
+          "day": "monday"
+        },
+        {
+          "english": "minute",
+          "portuguese": "minuto",
+          "day": "monday"
+        },
+        {
+          "english": "quarter",
+          "portuguese": "quarto",
+          "day": "monday"
+        },
+        {
+          "english": "half",
+          "portuguese": "metade",
+          "day": "monday"
+        },
+        {
+          "english": "need",
+          "portuguese": "necessidade",
+          "day": "tuesday"
+        },
+        {
+          "english": "want",
+          "portuguese": "desejo",
+          "day": "tuesday"
+        },
+        {
+          "english": "family",
+          "portuguese": "família",
+          "day": "tuesday"
+        },
+        {
+          "english": "grow",
+          "portuguese": "cultivar",
+          "day": "tuesday"
+        },
+        {
+          "english": "purchase",
+          "portuguese": "comprar",
+          "day": "tuesday"
+        },
+        {
+          "english": "supply",
+          "portuguese": "suprimento",
+          "day": "tuesday"
+        },
+        {
+          "english": "wall",
+          "portuguese": "muralha",
+          "day": "tuesday"
+        },
+        {
+          "english": "fortification",
+          "portuguese": "fortificação",
+          "day": "tuesday"
+        },
+        {
+          "english": "labor",
+          "portuguese": "trabalho",
+          "day": "tuesday"
+        },
+        {
+          "english": "cost",
+          "portuguese": "custo",
+          "day": "tuesday"
+        },
+        {
+          "english": "defense",
+          "portuguese": "defesa",
+          "day": "tuesday"
+        },
+        {
+          "english": "maintenance",
+          "portuguese": "manutenção",
+          "day": "tuesday"
+        },
+        {
+          "english": "leaf",
+          "portuguese": "folha",
+          "day": "tuesday"
+        },
+        {
+          "english": "mouth",
+          "portuguese": "boca",
+          "day": "tuesday"
+        },
+        {
+          "english": "gill",
+          "portuguese": "brânquia",
+          "day": "tuesday"
+        },
+        {
+          "english": "reproduce",
+          "portuguese": "reproduzir",
+          "day": "tuesday"
+        },
+        {
+          "english": "absorb",
+          "portuguese": "absorver",
+          "day": "tuesday"
+        },
+        {
+          "english": "structure",
+          "portuguese": "estrutura",
+          "day": "tuesday"
+        },
+        {
+          "english": "shelter",
+          "portuguese": "abrigo",
+          "day": "tuesday"
+        },
+        {
+          "english": "food",
+          "portuguese": "alimento",
+          "day": "tuesday"
+        },
+        {
+          "english": "habitat",
+          "portuguese": "habitat",
+          "day": "tuesday"
+        },
+        {
+          "english": "leaf",
+          "portuguese": "folha",
+          "day": "tuesday"
+        },
+        {
+          "english": "plant",
+          "portuguese": "planta",
+          "day": "tuesday"
+        },
+        {
+          "english": "animal",
+          "portuguese": "animal",
+          "day": "tuesday"
+        },
+        {
+          "english": "minute",
+          "portuguese": "minuto",
+          "day": "tuesday"
+        },
+        {
+          "english": "five",
+          "portuguese": "cinco",
+          "day": "tuesday"
+        },
+        {
+          "english": "count",
+          "portuguese": "contar",
+          "day": "tuesday"
+        },
+        {
+          "english": "minutes",
+          "portuguese": "minutos",
+          "day": "tuesday"
+        },
+        {
+          "english": "hand",
+          "portuguese": "ponteiro",
+          "day": "tuesday"
+        },
+        {
+          "english": "position",
+          "portuguese": "posição",
+          "day": "tuesday"
+        },
+        {
+          "english": "edit",
+          "portuguese": "editar",
+          "day": "wednesday"
+        },
+        {
+          "english": "publish",
+          "portuguese": "publicar",
+          "day": "wednesday"
+        },
+        {
+          "english": "paragraph",
+          "portuguese": "parágrafo",
+          "day": "wednesday"
+        },
+        {
+          "english": "revision",
+          "portuguese": "revisão",
+          "day": "wednesday"
+        },
+        {
+          "english": "detail",
+          "portuguese": "detalhe",
+          "day": "wednesday"
+        },
+        {
+          "english": "sentence",
+          "portuguese": "sentença",
+          "day": "wednesday"
+        },
+        {
+          "english": "social",
+          "portuguese": "social",
+          "day": "wednesday"
+        },
+        {
+          "english": "noble",
+          "portuguese": "nobre",
+          "day": "wednesday"
+        },
+        {
+          "english": "merchant",
+          "portuguese": "comerciante",
+          "day": "wednesday"
+        },
+        {
+          "english": "mandate",
+          "portuguese": "mandato",
+          "day": "wednesday"
+        },
+        {
+          "english": "feudal",
+          "portuguese": "feudal",
+          "day": "wednesday"
+        },
+        {
+          "english": "culture",
+          "portuguese": "cultura",
+          "day": "wednesday"
+        },
+        {
+          "english": "invader",
+          "portuguese": "invasor",
+          "day": "wednesday"
+        },
+        {
+          "english": "population",
+          "portuguese": "população",
+          "day": "wednesday"
+        },
+        {
+          "english": "competition",
+          "portuguese": "competição",
+          "day": "wednesday"
+        },
+        {
+          "english": "resources",
+          "portuguese": "recursos",
+          "day": "wednesday"
+        },
+        {
+          "english": "impact",
+          "portuguese": "impacto",
+          "day": "wednesday"
+        },
+        {
+          "english": "model",
+          "portuguese": "modelo",
+          "day": "wednesday"
+        },
+        {
+          "english": "survive",
+          "portuguese": "sobreviver",
+          "day": "wednesday"
+        },
+        {
+          "english": "grow",
+          "portuguese": "crescer",
+          "day": "wednesday"
+        },
+        {
+          "english": "habitat",
+          "portuguese": "habitat",
+          "day": "wednesday"
+        },
+        {
+          "english": "food",
+          "portuguese": "alimento",
+          "day": "wednesday"
+        },
+        {
+          "english": "water",
+          "portuguese": "água",
+          "day": "wednesday"
+        },
+        {
+          "english": "shelter",
+          "portuguese": "abrigo",
+          "day": "wednesday"
+        },
+        {
+          "english": "dollar",
+          "portuguese": "dólar",
+          "day": "wednesday"
+        },
+        {
+          "english": "cent",
+          "portuguese": "centavo",
+          "day": "wednesday"
+        },
+        {
+          "english": "coin",
+          "portuguese": "moeda",
+          "day": "wednesday"
+        },
+        {
+          "english": "buy",
+          "portuguese": "comprar",
+          "day": "wednesday"
+        },
+        {
+          "english": "change",
+          "portuguese": "troco",
+          "day": "wednesday"
+        },
+        {
+          "english": "total",
+          "portuguese": "total",
+          "day": "wednesday"
+        },
+        {
+          "english": "continent",
+          "portuguese": "continente",
+          "day": "thursday"
+        },
+        {
+          "english": "equator",
+          "portuguese": "equador",
+          "day": "thursday"
+        },
+        {
+          "english": "Arctic",
+          "portuguese": "Ártico",
+          "day": "thursday"
+        },
+        {
+          "english": "canyon",
+          "portuguese": "cânion",
+          "day": "thursday"
+        },
+        {
+          "english": "pyramid",
+          "portuguese": "pirâmide",
+          "day": "thursday"
+        },
+        {
+          "english": "map",
+          "portuguese": "mapa",
+          "day": "thursday"
+        },
+        {
+          "english": "prosperity",
+          "portuguese": "prosperidade",
+          "day": "thursday"
+        },
+        {
+          "english": "decline",
+          "portuguese": "declínio",
+          "day": "thursday"
+        },
+        {
+          "english": "government",
+          "portuguese": "governo",
+          "day": "thursday"
+        },
+        {
+          "english": "economy",
+          "portuguese": "economia",
+          "day": "thursday"
+        },
+        {
+          "english": "art",
+          "portuguese": "arte",
+          "day": "thursday"
+        },
+        {
+          "english": "document",
+          "portuguese": "documento",
+          "day": "thursday"
+        },
+        {
+          "english": "pattern",
+          "portuguese": "padrão",
+          "day": "thursday"
+        },
+        {
+          "english": "predator",
+          "portuguese": "predador",
+          "day": "thursday"
+        },
+        {
+          "english": "prey",
+          "portuguese": "presa",
+          "day": "thursday"
+        },
+        {
+          "english": "data",
+          "portuguese": "dados",
+          "day": "thursday"
+        },
+        {
+          "english": "analyze",
+          "portuguese": "analisar",
+          "day": "thursday"
+        },
+        {
+          "english": "chart",
+          "portuguese": "gráfico",
+          "day": "thursday"
+        },
+        {
+          "english": "fur",
+          "portuguese": "pelo",
+          "day": "thursday"
+        },
+        {
+          "english": "fat",
+          "portuguese": "gordura",
+          "day": "thursday"
+        },
+        {
+          "english": "insulate",
+          "portuguese": "isolar",
+          "day": "thursday"
+        },
+        {
+          "english": "survive",
+          "portuguese": "sobreviver",
+          "day": "thursday"
+        },
+        {
+          "english": "habitat",
+          "portuguese": "habitat",
+          "day": "thursday"
+        },
+        {
+          "english": "adaptation",
+          "portuguese": "adaptação",
+          "day": "thursday"
+        },
+        {
+          "english": "dollars",
+          "portuguese": "dólares",
+          "day": "thursday"
+        },
+        {
+          "english": "subtract",
+          "portuguese": "subtrair",
+          "day": "thursday"
+        },
+        {
+          "english": "tape diagram",
+          "portuguese": "diagrama de fita",
+          "day": "thursday"
+        },
+        {
+          "english": "compare",
+          "portuguese": "comparar",
+          "day": "thursday"
+        },
+        {
+          "english": "amount",
+          "portuguese": "quantia",
+          "day": "thursday"
+        },
+        {
+          "english": "equation",
+          "portuguese": "equação",
+          "day": "thursday"
+        },
+        {
+          "english": "people",
+          "portuguese": "pessoas",
+          "day": "friday"
+        },
+        {
+          "english": "culture",
+          "portuguese": "cultura",
+          "day": "friday"
+        },
+        {
+          "english": "country",
+          "portuguese": "país",
+          "day": "friday"
+        },
+        {
+          "english": "tradition",
+          "portuguese": "tradição",
+          "day": "friday"
+        },
+        {
+          "english": "fact",
+          "portuguese": "fato",
+          "day": "friday"
+        },
+        {
+          "english": "region",
+          "portuguese": "região",
+          "day": "friday"
+        },
+        {
+          "english": "culture",
+          "portuguese": "cultura",
+          "day": "friday"
+        },
+        {
+          "english": "change",
+          "portuguese": "mudança",
+          "day": "friday"
+        },
+        {
+          "english": "religion",
+          "portuguese": "religião",
+          "day": "friday"
+        },
+        {
+          "english": "writing",
+          "portuguese": "escrita",
+          "day": "friday"
+        },
+        {
+          "english": "trade",
+          "portuguese": "comércio",
+          "day": "friday"
+        },
+        {
+          "english": "government",
+          "portuguese": "governo",
+          "day": "friday"
+        },
+        {
+          "english": "claim",
+          "portuguese": "afirmação",
+          "day": "friday"
+        },
+        {
+          "english": "evidence",
+          "portuguese": "evidência",
+          "day": "friday"
+        },
+        {
+          "english": "reasoning",
+          "portuguese": "raciocínio",
+          "day": "friday"
+        },
+        {
+          "english": "diet",
+          "portuguese": "dieta",
+          "day": "friday"
+        },
+        {
+          "english": "invasive",
+          "portuguese": "invasivo",
+          "day": "friday"
+        },
+        {
+          "english": "defend",
+          "portuguese": "defender",
+          "day": "friday"
+        },
+        {
+          "english": "plant",
+          "portuguese": "planta",
+          "day": "friday"
+        },
+        {
+          "english": "animal",
+          "portuguese": "animal",
+          "day": "friday"
+        },
+        {
+          "english": "habitat",
+          "portuguese": "habitat",
+          "day": "friday"
+        },
+        {
+          "english": "shelter",
+          "portuguese": "abrigo",
+          "day": "friday"
+        },
+        {
+          "english": "food",
+          "portuguese": "alimento",
+          "day": "friday"
+        },
+        {
+          "english": "adaptation",
+          "portuguese": "adaptação",
+          "day": "friday"
+        },
+        {
+          "english": "estimate",
+          "portuguese": "estimar",
+          "day": "friday"
+        },
+        {
+          "english": "reasonableness",
+          "portuguese": "razoabilidade",
+          "day": "friday"
+        },
+        {
+          "english": "round",
+          "portuguese": "arredondar",
+          "day": "friday"
+        },
+        {
+          "english": "benchmark",
+          "portuguese": "referência",
+          "day": "friday"
+        },
+        {
+          "english": "reasonable",
+          "portuguese": "razoável",
+          "day": "friday"
+        },
+        {
+          "english": "answer",
+          "portuguese": "resposta",
+          "day": "friday"
+        }
+      ],
+      "sentence_frames": [
+        {
+          "english": "This is the setting ___.",
+          "portuguese": "Este é o cenário ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "monday"
+        },
+        {
+          "english": "The character is ___.",
+          "portuguese": "O personagem é ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "monday"
+        },
+        {
+          "english": "I see the event ___.",
+          "portuguese": "Eu vejo o evento ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "monday"
+        },
+        {
+          "english": "First the event was ___, then ___.",
+          "portuguese": "Primeiro o evento foi ___, depois ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "monday"
+        },
+        {
+          "english": "The character shows this trait because ___.",
+          "portuguese": "O personagem mostra esta característica porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "monday"
+        },
+        {
+          "english": "The problem happened when ___ and then ___.",
+          "portuguese": "O problema aconteceu quando ___ e então ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "monday"
+        },
+        {
+          "english": "Evidence from the story shows that ___.",
+          "portuguese": "As evidências da história mostram que ___.",
+          "proficiency_level": "levels_5_6",
+          "day": "monday"
+        },
+        {
+          "english": "How does the setting affect the character ___?",
+          "portuguese": "Como o cenário afeta o personagem ___?",
+          "proficiency_level": "levels_5_6",
+          "day": "monday"
+        },
+        {
+          "english": "This is a dynasty called ___.",
+          "portuguese": "Isto é uma dinastia chamada ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "monday"
+        },
+        {
+          "english": "An oracle is a person or object that ___.",
+          "portuguese": "Um oráculo é uma pessoa ou objeto que ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "monday"
+        },
+        {
+          "english": "The artifact shows ___.",
+          "portuguese": "O artefato mostra ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "monday"
+        },
+        {
+          "english": "First the Shang used oracle bones to ___. Then they ___.",
+          "portuguese": "Primeiro os Shang usavam ossos oraculares para ___. Depois eles ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "monday"
+        },
+        {
+          "english": "The use of bronze helped the Shang by ___ because ___.",
+          "portuguese": "O uso do bronze ajudou os Shang por ___ porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "monday"
+        },
+        {
+          "english": "I think ancestor worship influenced society because ___.",
+          "portuguese": "Eu acho que a adoração aos antepassados influenciou a sociedade porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "monday"
+        },
+        {
+          "english": "Evidence suggests that the Shang Dynasty developed complex technology such as bronze production because ___.",
+          "portuguese": "As evidências sugerem que a Dinastia Shang desenvolveu tecnologia complexa, como a produção de bronze, porque ___.",
+          "proficiency_level": "levels_5_6",
+          "day": "monday"
+        },
+        {
+          "english": "How do artifacts and oracle bones together help historians understand Shang beliefs and daily life?",
+          "portuguese": "Como os artefatos e os ossos oraculares juntos ajudam os historiadores a entender as crenças e a vida diária dos Shang?",
+          "proficiency_level": "levels_5_6",
+          "day": "monday"
+        },
+        {
+          "english": "This animal has a ___ that helps it eat.",
+          "portuguese": "Este animal tem um ___ que o ajuda a comer.",
+          "proficiency_level": "levels_1_2",
+          "day": "monday"
+        },
+        {
+          "english": "I see the ___ for feeding.",
+          "portuguese": "Eu vejo o ___ para alimentação.",
+          "proficiency_level": "levels_1_2",
+          "day": "monday"
+        },
+        {
+          "english": "It uses its ___ to ___ for survival.",
+          "portuguese": "Ele usa seu ___ para ___ para sobreviver.",
+          "proficiency_level": "levels_1_2",
+          "day": "monday"
+        },
+        {
+          "english": "First identify the ___, then explain its function.",
+          "portuguese": "Primeiro identifique o ___, depois explique sua função.",
+          "proficiency_level": "levels_3_4",
+          "day": "monday"
+        },
+        {
+          "english": "The ___ helps with feeding because ___.",
+          "portuguese": "O ___ ajuda na alimentação porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "monday"
+        },
+        {
+          "english": "I think this ___ is an adaptation since ___.",
+          "portuguese": "Eu acho que este ___ é uma adaptação porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "monday"
+        },
+        {
+          "english": "Evidence suggests that the appendage functions to ___ in this environment.",
+          "portuguese": "As evidências sugerem que o apêndice funciona para ___ neste ambiente.",
+          "proficiency_level": "levels_5_6",
+          "day": "monday"
+        },
+        {
+          "english": "How does this structure improve an organism's ability to obtain food?",
+          "portuguese": "Como esta estrutura melhora a capacidade do organismo de obter alimento?",
+          "proficiency_level": "levels_5_6",
+          "day": "monday"
+        },
+        {
+          "english": "This is a ___.",
+          "portuguese": "Isto é um ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "monday"
+        },
+        {
+          "english": "The animal is in the ___.",
+          "portuguese": "O animal está no ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "monday"
+        },
+        {
+          "english": "The plant gives ___ to the animal.",
+          "portuguese": "A planta dá ___ ao animal.",
+          "proficiency_level": "levels_1_2",
+          "day": "monday"
+        },
+        {
+          "english": "First the animal finds ___, then it uses ___ because ___.",
+          "portuguese": "Primeiro o animal encontra ___, depois usa ___ porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "monday"
+        },
+        {
+          "english": "The habitat helps animals survive by ___ because ___.",
+          "portuguese": "O habitat ajuda os animais a sobreviver porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "monday"
+        },
+        {
+          "english": "I think the plant is important because ___.",
+          "portuguese": "Eu acho que a planta é importante porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "monday"
+        },
+        {
+          "english": "Evidence from the habitat shows that animals rely on plants to ___.",
+          "portuguese": "Evidências do habitat mostram que os animais dependem das plantas para ___.",
+          "proficiency_level": "levels_5_6",
+          "day": "monday"
+        },
+        {
+          "english": "How does the plant help the animal survive in this habitat?",
+          "portuguese": "Como a planta ajuda o animal a sobreviver neste habitat?",
+          "proficiency_level": "levels_5_6",
+          "day": "monday"
+        },
+        {
+          "english": "This clock shows ___.",
+          "portuguese": "Este relógio mostra ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "monday"
+        },
+        {
+          "english": "It is ___ o'clock.",
+          "portuguese": "São ___ horas.",
+          "proficiency_level": "levels_1_2",
+          "day": "monday"
+        },
+        {
+          "english": "It is half past ___.",
+          "portuguese": "É meia hora depois das ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "monday"
+        },
+        {
+          "english": "First read the hour, then read the minute ___ because ___.",
+          "portuguese": "Primeiro leia a hora, depois leia os minutos ___ porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "monday"
+        },
+        {
+          "english": "The clock shows a quarter past ___ because ___.",
+          "portuguese": "O relógio mostra um quarto depois das ___ porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "monday"
+        },
+        {
+          "english": "I know it is half past when the minute hand is at ___ because ___.",
+          "portuguese": "Eu sei que é meia hora quando o ponteiro dos minutos está em ___ porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "monday"
+        },
+        {
+          "english": "Evidence suggests that reading both the hour and minute helps me check my answer ___.",
+          "portuguese": "As evidências sugerem que ler hora e minuto me ajuda a verificar minha resposta ___.",
+          "proficiency_level": "levels_5_6",
+          "day": "monday"
+        },
+        {
+          "english": "How does knowing quarter and half help you tell time faster?",
+          "portuguese": "Como saber 'quarto' e 'meia' ajuda você a dizer as horas mais rápido?",
+          "proficiency_level": "levels_5_6",
+          "day": "monday"
+        },
+        {
+          "english": "The family needs ___.",
+          "portuguese": "A família precisa de ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "tuesday"
+        },
+        {
+          "english": "They want ___.",
+          "portuguese": "Eles querem ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "tuesday"
+        },
+        {
+          "english": "They grow ___.",
+          "portuguese": "Eles cultivam ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "tuesday"
+        },
+        {
+          "english": "The family meets this need by ___.",
+          "portuguese": "A família atende esta necessidade por ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "tuesday"
+        },
+        {
+          "english": "This is a need because ___.",
+          "portuguese": "Isto é uma necessidade porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "tuesday"
+        },
+        {
+          "english": "They decide to purchase ___ when ___.",
+          "portuguese": "Eles decidem comprar ___ quando ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "tuesday"
+        },
+        {
+          "english": "Evidence from the story suggests that the family needed ___ because ___.",
+          "portuguese": "Evidências da história sugerem que a família precisava de ___ porque ___.",
+          "proficiency_level": "levels_5_6",
+          "day": "tuesday"
+        },
+        {
+          "english": "How do needs and wants affect the family\u0019s decisions?",
+          "portuguese": "Como necessidades e desejos afetam as decisões da família?",
+          "proficiency_level": "levels_5_6",
+          "day": "tuesday"
+        },
+        {
+          "english": "The wall protects because ___.",
+          "portuguese": "A muralha protege porque ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "tuesday"
+        },
+        {
+          "english": "It took many people to build the wall, for example ___.",
+          "portuguese": "Levou muitas pessoas para construir a muralha, por exemplo ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "tuesday"
+        },
+        {
+          "english": "The cost was high because ___.",
+          "portuguese": "O custo foi alto porque ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "tuesday"
+        },
+        {
+          "english": "One benefit of the Great Wall is ___ because ___.",
+          "portuguese": "Um benefício da Grande Muralha é ___ porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "tuesday"
+        },
+        {
+          "english": "A drawback of the Wall is ___ which led to ___.",
+          "portuguese": "Uma desvantagem da Muralha é ___ que levou a ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "tuesday"
+        },
+        {
+          "english": "I think the Wall was worth the cost when ___ because ___.",
+          "portuguese": "Eu acho que a Muralha valeu o custo quando ___ porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "tuesday"
+        },
+        {
+          "english": "Evidence from construction records and labor estimates suggests that building the Wall required ___ and therefore ___.",
+          "portuguese": "Evidências de registros de construção e estimativas de mão de obra sugerem que construir a Muralha exigiu ___ e, portanto, ___.",
+          "proficiency_level": "levels_5_6",
+          "day": "tuesday"
+        },
+        {
+          "english": "In your opinion, do walls work and are they worth the cost? Why or why not?",
+          "portuguese": "Na sua opinião, as muralhas funcionam e valem o custo? Por quê ou por que não?",
+          "proficiency_level": "levels_5_6",
+          "day": "tuesday"
+        },
+        {
+          "english": "This part is a ___ that helps with ___.",
+          "portuguese": "Esta parte é um ___ que ajuda com ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "tuesday"
+        },
+        {
+          "english": "I see a ___ used for feeding.",
+          "portuguese": "Eu vejo um ___ usado para alimentação.",
+          "proficiency_level": "levels_1_2",
+          "day": "tuesday"
+        },
+        {
+          "english": "The ___ helps the animal eat.",
+          "portuguese": "A ___ ajuda o animal a comer.",
+          "proficiency_level": "levels_1_2",
+          "day": "tuesday"
+        },
+        {
+          "english": "Compare the leaf and the gill: both ____ because ___.",
+          "portuguese": "Compare a folha e a brânquia: ambos ____ porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "tuesday"
+        },
+        {
+          "english": "The ___ absorbs light/food by ___.",
+          "portuguese": "O ___ absorve luz/alimento por ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "tuesday"
+        },
+        {
+          "english": "I can record that this ___ is used for ___.",
+          "portuguese": "Eu posso registrar que este ___ é usado para ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "tuesday"
+        },
+        {
+          "english": "Evidence from the model suggests the structure increases survival by ___.",
+          "portuguese": "Evidências do modelo sugerem que a estrutura aumenta a sobrevivência por ___.",
+          "proficiency_level": "levels_5_6",
+          "day": "tuesday"
+        },
+        {
+          "english": "Why might different feeding structures be advantageous in different habitats?",
+          "portuguese": "Por que diferentes estruturas de alimentação podem ser vantajosas em habitats diferentes?",
+          "proficiency_level": "levels_5_6",
+          "day": "tuesday"
+        },
+        {
+          "english": "This plant gives the animal ___.",
+          "portuguese": "Esta planta dá ao animal ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "tuesday"
+        },
+        {
+          "english": "The animal hides under the ___.",
+          "portuguese": "O animal se esconde debaixo do ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "tuesday"
+        },
+        {
+          "english": "I see a ___ in the habitat.",
+          "portuguese": "Eu vejo um ___ no habitat.",
+          "proficiency_level": "levels_1_2",
+          "day": "tuesday"
+        },
+        {
+          "english": "The leaf provides ___ which helps the animal because ___.",
+          "portuguese": "A folha fornece ___ que ajuda o animal porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "tuesday"
+        },
+        {
+          "english": "When the animal uses the plant for shelter, it can ___.",
+          "portuguese": "Quando o animal usa a planta como abrigo, ele pode ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "tuesday"
+        },
+        {
+          "english": "I observed ___ in the habitat and I think ___.",
+          "portuguese": "Observei ___ no habitat e eu acho ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "tuesday"
+        },
+        {
+          "english": "The relationship between the plant and animal shows that ___.",
+          "portuguese": "A relação entre a planta e o animal mostra que ___.",
+          "proficiency_level": "levels_5_6",
+          "day": "tuesday"
+        },
+        {
+          "english": "Why is the plant important for this animal in its habitat?",
+          "portuguese": "Por que a planta é importante para este animal em seu habitat?",
+          "proficiency_level": "levels_5_6",
+          "day": "tuesday"
+        },
+        {
+          "english": "Count by fives: 5, 10, 15, ___.",
+          "portuguese": "Conte de cinco em cinco: 5, 10, 15, ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "tuesday"
+        },
+        {
+          "english": "The minute hand is at ___.",
+          "portuguese": "O ponteiro dos minutos está em ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "tuesday"
+        },
+        {
+          "english": "It is ___ minutes past the hour.",
+          "portuguese": "São ___ minutos depois da hora.",
+          "proficiency_level": "levels_1_2",
+          "day": "tuesday"
+        },
+        {
+          "english": "I count by fives to find the minute because ___.",
+          "portuguese": "Eu conto de cinco em cinco para encontrar os minutos porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "tuesday"
+        },
+        {
+          "english": "The minute hand is on the ___ position which means ___ minutes.",
+          "portuguese": "O ponteiro dos minutos está na posição ___ que significa ___ minutos.",
+          "proficiency_level": "levels_3_4",
+          "day": "tuesday"
+        },
+        {
+          "english": "First count by fives, then say the time ___ because ___.",
+          "portuguese": "Primeiro conte de cinco em cinco, depois diga as horas ___ porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "tuesday"
+        },
+        {
+          "english": "Evidence shows counting by fives helps me read minutes faster when ___.",
+          "portuguese": "As evidências mostram que contar de cinco em cinco me ajuda a ler os minutos mais rápido quando ___.",
+          "proficiency_level": "levels_5_6",
+          "day": "tuesday"
+        },
+        {
+          "english": "How does counting by fives change the way you read a clock?",
+          "portuguese": "Como contar de cinco em cinco muda a forma de ler um relógio?",
+          "proficiency_level": "levels_5_6",
+          "day": "tuesday"
+        },
+        {
+          "english": "I will change this sentence to ___.",
+          "portuguese": "Vou mudar esta sentença para ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "wednesday"
+        },
+        {
+          "english": "This paragraph needs ___.",
+          "portuguese": "Este parágrafo precisa de ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "wednesday"
+        },
+        {
+          "english": "Add this detail ___.",
+          "portuguese": "Adicione este detalhe ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "wednesday"
+        },
+        {
+          "english": "I revised the paragraph by changing ___ to ___.",
+          "portuguese": "Eu revisei o parágrafo mudando ___ para ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "wednesday"
+        },
+        {
+          "english": "This sentence becomes clearer when I add ___.",
+          "portuguese": "Esta sentença fica mais clara quando eu adiciono ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "wednesday"
+        },
+        {
+          "english": "My paragraph now shows ___ because ___.",
+          "portuguese": "Meu parágrafo agora mostra ___ porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "wednesday"
+        },
+        {
+          "english": "After revision, this paragraph demonstrates that ___.",
+          "portuguese": "Após a revisão, este parágrafo demonstra que ___.",
+          "proficiency_level": "levels_5_6",
+          "day": "wednesday"
+        },
+        {
+          "english": "How did your revision make the paragraph better?",
+          "portuguese": "Como sua revisão melhorou o parágrafo?",
+          "proficiency_level": "levels_5_6",
+          "day": "wednesday"
+        },
+        {
+          "english": "A noble is someone who ___.",
+          "portuguese": "Um nobre é alguém que ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "wednesday"
+        },
+        {
+          "english": "A merchant might feel ___.",
+          "portuguese": "Um comerciante pode sentir ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "wednesday"
+        },
+        {
+          "english": "The feudal system includes ___.",
+          "portuguese": "O sistema feudal inclui ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "wednesday"
+        },
+        {
+          "english": "One reason the feudal system worked was ___ because ___.",
+          "portuguese": "Uma razão pela qual o sistema feudal funcionou foi ___ porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "wednesday"
+        },
+        {
+          "english": "The Mandate of Heaven meant that ___, which affected ___ because ___.",
+          "portuguese": "O Mandato do Céu significava que ___, o que afetou ___ porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "wednesday"
+        },
+        {
+          "english": "I would hashtag this person as ___ because ___.",
+          "portuguese": "Eu colocaria a hashtag desta pessoa como ___ porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "wednesday"
+        },
+        {
+          "english": "Evidence from Zhou texts suggests that social hierarchy influenced daily life by ___.",
+          "portuguese": "Evidências dos textos Zhou sugerem que a hierarquia social influenciou a vida diária por ___.",
+          "proficiency_level": "levels_5_6",
+          "day": "wednesday"
+        },
+        {
+          "english": "Do you think tricking nobles to take control was justified? Why or why not?",
+          "portuguese": "Você acha que enganar os nobres para tomar o controle foi justificado? Por quê ou por que não?",
+          "proficiency_level": "levels_5_6",
+          "day": "wednesday"
+        },
+        {
+          "english": "The invader is a ___.",
+          "portuguese": "O invasor é um ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "wednesday"
+        },
+        {
+          "english": "I see more/less ___ in the model.",
+          "portuguese": "Eu vejo mais/menos ___ no modelo.",
+          "proficiency_level": "levels_1_2",
+          "day": "wednesday"
+        },
+        {
+          "english": "The ___ needs resources like ___.",
+          "portuguese": "A ___ precisa de recursos como ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "wednesday"
+        },
+        {
+          "english": "When the invader increases, the population of ___ changes because ___.",
+          "portuguese": "Quando o invasor aumenta, a população de ___ muda porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "wednesday"
+        },
+        {
+          "english": "Competition for resources leads to ___ when ___.",
+          "portuguese": "A competição por recursos leva a ___ quando ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "wednesday"
+        },
+        {
+          "english": "I predict the impact on ___ after adding an invader because ___.",
+          "portuguese": "Eu prevejo o impacto em ___ após adicionar um invasor porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "wednesday"
+        },
+        {
+          "english": "Evidence from the model suggests that the invader causes population shifts by ___.",
+          "portuguese": "Evidências do modelo sugerem que o invasor causa deslocamentos populacionais por ___.",
+          "proficiency_level": "levels_5_6",
+          "day": "wednesday"
+        },
+        {
+          "english": "How does adding an invader change competition for resources in the ecosystem model?",
+          "portuguese": "Como adicionar um invasor altera a competição por recursos no modelo do ecossistema?",
+          "proficiency_level": "levels_5_6",
+          "day": "wednesday"
+        },
+        {
+          "english": "This living thing needs ___.",
+          "portuguese": "Este ser vivo precisa de ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "wednesday"
+        },
+        {
+          "english": "It grows because ___.",
+          "portuguese": "Ele cresce porque ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "wednesday"
+        },
+        {
+          "english": "The habitat has ___.",
+          "portuguese": "O habitat tem ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "wednesday"
+        },
+        {
+          "english": "The plant helps the animal survive by ___ because ___.",
+          "portuguese": "A planta ajuda o animal a sobreviver porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "wednesday"
+        },
+        {
+          "english": "First the living thing finds ___, then it uses ___ to survive.",
+          "portuguese": "Primeiro o ser vivo encontra ___, depois usa ___ para sobreviver.",
+          "proficiency_level": "levels_3_4",
+          "day": "wednesday"
+        },
+        {
+          "english": "I noticed ___ in the habitat which shows ___.",
+          "portuguese": "Notei ___ no habitat que mostra ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "wednesday"
+        },
+        {
+          "english": "Evidence suggests that access to food and shelter affects how well a living thing can grow.",
+          "portuguese": "Evidências sugerem que o acesso a alimento e abrigo afeta o quanto um ser vivo pode crescer.",
+          "proficiency_level": "levels_5_6",
+          "day": "wednesday"
+        },
+        {
+          "english": "How do plants and animals depend on each other in this habitat?",
+          "portuguese": "Como plantas e animais dependem uns dos outros neste habitat?",
+          "proficiency_level": "levels_5_6",
+          "day": "wednesday"
+        },
+        {
+          "english": "I have ___ cents.",
+          "portuguese": "Eu tenho ___ centavos.",
+          "proficiency_level": "levels_1_2",
+          "day": "wednesday"
+        },
+        {
+          "english": "This costs ___ dollars.",
+          "portuguese": "Isto custa ___ dólares.",
+          "proficiency_level": "levels_1_2",
+          "day": "wednesday"
+        },
+        {
+          "english": "I need ___ more to buy it.",
+          "portuguese": "Eu preciso de mais ___ para comprar.",
+          "proficiency_level": "levels_1_2",
+          "day": "wednesday"
+        },
+        {
+          "english": "First add the prices to find the total ___ because ___.",
+          "portuguese": "Primeiro some os preços para encontrar o total ___ porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "wednesday"
+        },
+        {
+          "english": "I solved the problem by ___ and my answer is ___ because ___.",
+          "portuguese": "Resolvi o problema por ___ e minha resposta é ___ porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "wednesday"
+        },
+        {
+          "english": "The change I should get is ___ when I pay with ___ because ___.",
+          "portuguese": "O troco que devo receber é ___ quando pago com ___ porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "wednesday"
+        },
+        {
+          "english": "Evidence from my steps shows that my method produces the correct total because ___.",
+          "portuguese": "As evidências dos meus passos mostram que meu método produz o total correto porque ___.",
+          "proficiency_level": "levels_5_6",
+          "day": "wednesday"
+        },
+        {
+          "english": "How could you use coins and dollars to show your solution?",
+          "portuguese": "Como você poderia usar moedas e dólares para mostrar sua solução?",
+          "proficiency_level": "levels_5_6",
+          "day": "wednesday"
+        },
+        {
+          "english": "This is a continent called ___.",
+          "portuguese": "Isto é um continente chamado ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "thursday"
+        },
+        {
+          "english": "The equator is ___.",
+          "portuguese": "O equador é ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "thursday"
+        },
+        {
+          "english": "I see a canyon called ___.",
+          "portuguese": "Eu vejo um cânion chamado ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "thursday"
+        },
+        {
+          "english": "North America includes places such as ___ because ___.",
+          "portuguese": "A América do Norte inclui lugares como ___ porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "thursday"
+        },
+        {
+          "english": "The map shows ___ which helps us understand ___.",
+          "portuguese": "O mapa mostra ___ que nos ajuda a entender ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "thursday"
+        },
+        {
+          "english": "A pyramid is different from a canyon because ___.",
+          "portuguese": "Uma pirâmide é diferente de um cânion porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "thursday"
+        },
+        {
+          "english": "The geography of North America demonstrates that ___.",
+          "portuguese": "A geografia da América do Norte demonstra que ___.",
+          "proficiency_level": "levels_5_6",
+          "day": "thursday"
+        },
+        {
+          "english": "How do physical features like the equator and Arctic influence life in North America?",
+          "portuguese": "Como características físicas como o equador e o Ártico influenciam a vida na América do Norte?",
+          "proficiency_level": "levels_5_6",
+          "day": "thursday"
+        },
+        {
+          "english": "This source says ___.",
+          "portuguese": "Esta fonte diz ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "thursday"
+        },
+        {
+          "english": "One strength was ___.",
+          "portuguese": "Uma força foi ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "thursday"
+        },
+        {
+          "english": "I notice the document shows ___.",
+          "portuguese": "Eu noto que o documento mostra ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "thursday"
+        },
+        {
+          "english": "The document suggests prosperity because ___, which led to ___.",
+          "portuguese": "O documento sugere prosperidade porque ___, o que levou a ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "thursday"
+        },
+        {
+          "english": "Comparing Source A and Source B shows ___ because ___.",
+          "portuguese": "Comparar a Fonte A e a Fonte B mostra ___ porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "thursday"
+        },
+        {
+          "english": "I can use evidence such as ___ to support my claim that ___.",
+          "portuguese": "Posso usar evidências como ___ para apoiar minha afirmação de que ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "thursday"
+        },
+        {
+          "english": "Evidence from primary sources demonstrates that economic factors caused the Han decline by ___.",
+          "portuguese": "Evidências de fontes primárias demonstram que fatores econômicos causaram o declínio Han por ___.",
+          "proficiency_level": "levels_5_6",
+          "day": "thursday"
+        },
+        {
+          "english": "In what ways did government decisions impact Han prosperity and decline?",
+          "portuguese": "De que maneiras as decisões do governo impactaram a prosperidade e o declínio Han?",
+          "proficiency_level": "levels_5_6",
+          "day": "thursday"
+        },
+        {
+          "english": "The chart shows more ___ when ___.",
+          "portuguese": "O gráfico mostra mais ___ quando ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "thursday"
+        },
+        {
+          "english": "I record the number of ___.",
+          "portuguese": "Eu registro o número de ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "thursday"
+        },
+        {
+          "english": "This pattern means ___.",
+          "portuguese": "Este padrão significa ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "thursday"
+        },
+        {
+          "english": "The predator population changes because ___.",
+          "portuguese": "A população de predadores muda porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "thursday"
+        },
+        {
+          "english": "When prey numbers decrease, the chart suggests ___.",
+          "portuguese": "Quando os números de presas diminuem, o gráfico sugere ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "thursday"
+        },
+        {
+          "english": "I can compare two runs of the model and report differences in ___.",
+          "portuguese": "Eu posso comparar duas execuções do modelo e relatar diferenças em ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "thursday"
+        },
+        {
+          "english": "Evidence from multiple runs indicates a pattern of predator/prey fluctuation because ___.",
+          "portuguese": "Evidências de múltiplas execuções indicam um padrão de flutuação predador/presa porque ___.",
+          "proficiency_level": "levels_5_6",
+          "day": "thursday"
+        },
+        {
+          "english": "What patterns in the data support the conclusion that an invader changed the ecosystem?",
+          "portuguese": "Quais padrões nos dados apoiam a conclusão de que um invasor mudou o ecossistema?",
+          "proficiency_level": "levels_5_6",
+          "day": "thursday"
+        },
+        {
+          "english": "The animal has ___ to stay warm.",
+          "portuguese": "O animal tem ___ para ficar quente.",
+          "proficiency_level": "levels_1_2",
+          "day": "thursday"
+        },
+        {
+          "english": "This feature is ___.",
+          "portuguese": "Esta característica é ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "thursday"
+        },
+        {
+          "english": "The fur/fat keeps the animal ___.",
+          "portuguese": "O pelo/a gordura mantém o animal ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "thursday"
+        },
+        {
+          "english": "The adaptation helps the animal survive by ___ because ___.",
+          "portuguese": "A adaptação ajuda o animal a sobreviver porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "thursday"
+        },
+        {
+          "english": "I can compare this animal to another because ___.",
+          "portuguese": "Eu posso comparar este animal com outro porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "thursday"
+        },
+        {
+          "english": "First it uses ___, then it ___ to stay warm.",
+          "portuguese": "Primeiro usa ___, depois ___ para ficar quente.",
+          "proficiency_level": "levels_3_4",
+          "day": "thursday"
+        },
+        {
+          "english": "This adaptation demonstrates that the animal is better able to survive in cold habitats because ___.",
+          "portuguese": "Esta adaptação demonstra que o animal está mais apto a sobreviver em habitats frios porque ___.",
+          "proficiency_level": "levels_5_6",
+          "day": "thursday"
+        },
+        {
+          "english": "Why would this feature be less useful in a warm habitat?",
+          "portuguese": "Por que essa característica seria menos útil em um habitat quente?",
+          "proficiency_level": "levels_5_6",
+          "day": "thursday"
+        },
+        {
+          "english": "This costs ___ dollars.",
+          "portuguese": "Isto custa ___ dólares.",
+          "proficiency_level": "levels_1_2",
+          "day": "thursday"
+        },
+        {
+          "english": "I need ___ dollars more.",
+          "portuguese": "Eu preciso de mais ___ dólares.",
+          "proficiency_level": "levels_1_2",
+          "day": "thursday"
+        },
+        {
+          "english": "I have ___ dollars and ___ cents.",
+          "portuguese": "Eu tenho ___ dólares e ___ centavos.",
+          "proficiency_level": "levels_1_2",
+          "day": "thursday"
+        },
+        {
+          "english": "I subtracted ___ from ___ to find the change because ___.",
+          "portuguese": "Eu subtrai ___ de ___ para encontrar o troco porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "thursday"
+        },
+        {
+          "english": "The tape diagram shows ___ which means I must ___.",
+          "portuguese": "O diagrama de fita mostra ___ que significa que eu devo ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "thursday"
+        },
+        {
+          "english": "First estimate the amount, then calculate exactly to check because ___.",
+          "portuguese": "Primeiro estime a quantia, depois calcule exatamente para verificar porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "thursday"
+        },
+        {
+          "english": "My equation represents the problem because ___ and shows the correct total/change ___.",
+          "portuguese": "Minha equação representa o problema porque ___ e mostra o total/troco correto ___.",
+          "proficiency_level": "levels_5_6",
+          "day": "thursday"
+        },
+        {
+          "english": "How does a tape diagram help you choose addition or subtraction?",
+          "portuguese": "Como um diagrama de fita ajuda você a escolher adição ou subtração?",
+          "proficiency_level": "levels_5_6",
+          "day": "thursday"
+        },
+        {
+          "english": "A fact about these people is ___.",
+          "portuguese": "Um fato sobre estas pessoas é ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "friday"
+        },
+        {
+          "english": "This culture has ___.",
+          "portuguese": "Esta cultura tem ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "friday"
+        },
+        {
+          "english": "They live in the country of ___.",
+          "portuguese": "Eles vivem no país ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "friday"
+        },
+        {
+          "english": "One tradition in this region is ___ because ___.",
+          "portuguese": "Uma tradição nesta região é ___ porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "friday"
+        },
+        {
+          "english": "This fact shows something about the culture because ___.",
+          "portuguese": "Este fato mostra algo sobre a cultura porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "friday"
+        },
+        {
+          "english": "The region is known for ___ and this matters because ___.",
+          "portuguese": "A região é conhecida por ___ e isso importa porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "friday"
+        },
+        {
+          "english": "Evidence about this culture suggests that ___.",
+          "portuguese": "Evidências sobre esta cultura sugerem que ___.",
+          "proficiency_level": "levels_5_6",
+          "day": "friday"
+        },
+        {
+          "english": "How does this fact help us understand the country\u0019s culture?",
+          "portuguese": "Como este fato nos ajuda a entender a cultura do país?",
+          "proficiency_level": "levels_5_6",
+          "day": "friday"
+        },
+        {
+          "english": "This cultural element changed because ___.",
+          "portuguese": "Este elemento cultural mudou porque ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "friday"
+        },
+        {
+          "english": "Writing in Shang looked like ___.",
+          "portuguese": "A escrita nos Shang parecia ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "friday"
+        },
+        {
+          "english": "One example of trade is ___.",
+          "portuguese": "Um exemplo de comércio é ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "friday"
+        },
+        {
+          "english": "Compared to the Shang, the Han government changed by ___ because ___.",
+          "portuguese": "Comparado aos Shang, o governo Han mudou por ___ porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "friday"
+        },
+        {
+          "english": "The shift in religion affected culture by ___, which resulted in ___.",
+          "portuguese": "A mudança na religião afetou a cultura por ___, o que resultou em ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "friday"
+        },
+        {
+          "english": "I can support my claim with evidence such as ___ from Source A and ___ from Source B.",
+          "portuguese": "Posso apoiar minha afirmação com evidências como ___ da Fonte A e ___ da Fonte B.",
+          "proficiency_level": "levels_3_4",
+          "day": "friday"
+        },
+        {
+          "english": "Evidence comparing Shang and Han sources indicates that cultural change occurred because ___.",
+          "portuguese": "Evidências que comparam fontes Shang e Han indicam que a mudança cultural ocorreu porque ___.",
+          "proficiency_level": "levels_5_6",
+          "day": "friday"
+        },
+        {
+          "english": "How do changes in government and economy together explain cultural shifts between Shang and Han?",
+          "portuguese": "Como as mudanças no governo e na economia juntas explicam as mudanças culturais entre Shang e Han?",
+          "proficiency_level": "levels_5_6",
+          "day": "friday"
+        },
+        {
+          "english": "My claim: The invader eats ___.",
+          "portuguese": "Minha afirmação: O invasor come ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "friday"
+        },
+        {
+          "english": "The evidence shows ___.",
+          "portuguese": "A evidência mostra ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "friday"
+        },
+        {
+          "english": "Therefore, the diet includes ___.",
+          "portuguese": "Portanto, a dieta inclui ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "friday"
+        },
+        {
+          "english": "My evidence supports the claim because ___.",
+          "portuguese": "Minha evidência apoia a afirmação porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "friday"
+        },
+        {
+          "english": "The data shows the invader consumes ___, which affects ___.",
+          "portuguese": "Os dados mostram que o invasor consome ___, o que afeta ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "friday"
+        },
+        {
+          "english": "I conclude that the invader's diet leads to ___ because ___.",
+          "portuguese": "Eu concluo que a dieta do invasor leva a ___ porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "friday"
+        },
+        {
+          "english": "Based on the evidence, I defend the claim that the invader's diet alters population dynamics by ___.",
+          "portuguese": "Com base nas evidências, eu defendo a afirmação de que a dieta do invasor altera a dinâmica populacional por ___.",
+          "proficiency_level": "levels_5_6",
+          "day": "friday"
+        },
+        {
+          "english": "What evidence best supports your claim about the invader's diet and why?",
+          "portuguese": "Quais evidências apoiam melhor sua afirmação sobre a dieta do invasor e por quê?",
+          "proficiency_level": "levels_5_6",
+          "day": "friday"
+        },
+        {
+          "english": "This plant/feature helps by ___.",
+          "portuguese": "Esta planta/característica ajuda por ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "friday"
+        },
+        {
+          "english": "The animal eats ___.",
+          "portuguese": "O animal come ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "friday"
+        },
+        {
+          "english": "The habitat has ___ for animals.",
+          "portuguese": "O habitat tem ___ para os animais.",
+          "proficiency_level": "levels_1_2",
+          "day": "friday"
+        },
+        {
+          "english": "The plant provides ___ which helps the animal because ___.",
+          "portuguese": "A planta fornece ___ que ajuda o animal porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "friday"
+        },
+        {
+          "english": "I compare these two habitats and notice ___ which affects survival.",
+          "portuguese": "Eu comparo estes dois habitats e noto ___ que afeta a sobrevivência.",
+          "proficiency_level": "levels_3_4",
+          "day": "friday"
+        },
+        {
+          "english": "First ___, then ___, and because of that ___.",
+          "portuguese": "Primeiro ___, depois ___, e por isso ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "friday"
+        },
+        {
+          "english": "Evidence across examples demonstrates that plant resources and animal adaptations together support survival.",
+          "portuguese": "Evidências através de exemplos demonstram que recursos de plantas e adaptações animais juntos apoiam a sobrevivência.",
+          "proficiency_level": "levels_5_6",
+          "day": "friday"
+        },
+        {
+          "english": "What evidence from our notebooks shows how plants and animals help each other?",
+          "portuguese": "Quais evidências de nossos cadernos mostram como plantas e animais se ajudam?",
+          "proficiency_level": "levels_5_6",
+          "day": "friday"
+        },
+        {
+          "english": "My answer is about ___.",
+          "portuguese": "Minha resposta é cerca de ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "friday"
+        },
+        {
+          "english": "This seems too big/small because ___.",
+          "portuguese": "Isso parece muito grande/pequeno porque ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "friday"
+        },
+        {
+          "english": "I used ___ to check my answer.",
+          "portuguese": "Eu usei ___ para verificar minha resposta.",
+          "proficiency_level": "levels_1_2",
+          "day": "friday"
+        },
+        {
+          "english": "First I estimated using ___, then I calculated exactly to check because ___.",
+          "portuguese": "Primeiro estimei usando ___, depois calculei exatamente para verificar porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "friday"
+        },
+        {
+          "english": "The estimate was ___ and my answer is ___, so my answer seems reasonable because ___.",
+          "portuguese": "A estimativa foi ___ e minha resposta é ___, então minha resposta parece razoável porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "friday"
+        },
+        {
+          "english": "I can use benchmarks like ___ to check if my answer is close.",
+          "portuguese": "Posso usar referências como ___ para verificar se minha resposta está próxima.",
+          "proficiency_level": "levels_3_4",
+          "day": "friday"
+        },
+        {
+          "english": "Evidence suggests my method gives a reasonable estimate because ___.",
+          "portuguese": "As evidências sugerem que meu método fornece uma estimativa razoável porque ___.",
+          "proficiency_level": "levels_5_6",
+          "day": "friday"
+        },
+        {
+          "english": "What strategy did you use to estimate and why did you choose it?",
+          "portuguese": "Que estratégia você usou para estimar e por que a escolheu?",
+          "proficiency_level": "levels_5_6",
+          "day": "friday"
+        }
+      ]
+    }
+  ]
+}

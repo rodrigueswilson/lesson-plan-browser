@@ -1,0 +1,34 @@
+{
+  "label": "wave1-u3",
+  "doc_id": "1W1IBU71bwuGpP3M3NTdQXQSH8Jx8fRKF-l9I4Rdo2B4",
+  "json_table_count": 8,
+  "docx_table_count_with_nesting": 31,
+  "json_hyperlink_count": 225,
+  "docx_hyperlink_count": 502,
+  "json_text_len": 163035,
+  "docx_text_len": 1090274,
+  "json_anchor_hits": {
+    "learning intentions": 0,
+    "materials": 20,
+    "activity": 136,
+    "warm-up": 36,
+    "cool-down": 3,
+    "standards": 84,
+    "narrative": 22,
+    "purpose": 58,
+    "daily instructional task": 0,
+    "success criteria": 0
+  },
+  "docx_anchor_hits": {
+    "learning intentions": 0,
+    "materials": 160,
+    "activity": 1010,
+    "warm-up": 232,
+    "cool-down": 104,
+    "standards": 344,
+    "narrative": 164,
+    "purpose": 463,
+    "daily instructional task": 0,
+    "success criteria": 0
+  }
+}
