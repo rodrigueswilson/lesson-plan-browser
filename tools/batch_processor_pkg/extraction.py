@@ -14,6 +14,7 @@ from tools.docx_parser import DOCXParser
 from tools.batch_processor_pkg.context import SlotProcessingContext
 from tools.batch_processor_pkg.extraction_primary_file import resolve_primary_file
 from tools.batch_processor_pkg.persistence import persist_original_lesson_plan as persistence_persist_original
+from tools.batch_processor_pkg.slot_flow_extract import get_available_days_from_content
 from tools.batch_processor_pkg.slot_schema import sanitize_slot
 
 
@@ -272,19 +273,7 @@ async def extract_slot_content(
             parser.extract_subject_content_for_slot, slot_num, slot["subject"], teacher_name, strip_urls=False
         )
 
-    available_days = []
-    if "table_content" in content:
-        for day, day_content in content["table_content"].items():
-            day_lower = day.lower().strip()
-            if day_lower == "all days":
-                available_days = ["monday"]
-                break
-            elif day_lower in ["monday", "tuesday", "wednesday", "thursday", "friday"]:
-                day_text = " ".join(day_content.values()) if isinstance(day_content, dict) else str(day_content)
-                if day_text and day_text.strip().lower() not in ["no school", "n/a", ""]:
-                    available_days.append(day_lower)
-    if not available_days:
-        available_days = None
+    available_days = get_available_days_from_content(content)
 
     primary_content = content.get("full_text", "")
     context.slot["_extracted_images"] = images
@@ -306,6 +295,7 @@ async def extract_slot_content(
 
     context.extracted_content = primary_content
     context.available_days = available_days
+    context.no_school_days = content.get("no_school_days") or []
     logger.info("parallel_extract_slot_content_hyperlinks_stored", extra={"slot": slot["slot_number"], "subject": slot["subject"], "hyperlinks_count": len(hyperlinks)})
     return context
 

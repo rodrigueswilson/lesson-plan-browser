@@ -89,7 +89,9 @@ async def persist_original_lesson_plan(
             "full_text": content.get("full_text", ""),
             "available_days": available_days,
             "status": "extracted",
-            "has_no_school": not available_days or len(available_days) == 0,
+            "has_no_school": (
+                available_days is not None and len(available_days) == 0
+            ),
             **structured_days,
         }
 

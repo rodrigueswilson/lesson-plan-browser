@@ -10,6 +10,10 @@ from typing import Any, Dict, List, Optional, Tuple
 
 from backend.telemetry import logger
 
+from tools.docx_parser.instructional_day import (
+    infer_instructional_weekdays_from_table_content,
+)
+
 from tools.batch_processor_pkg.slot_flow_no_school import (
     build_no_school_day_json,
     build_no_school_week_json,
@@ -319,27 +323,16 @@ async def extract_content_for_slot(
 
 
 def get_available_days_from_content(content: Dict[str, Any]) -> Optional[List[str]]:
-    """Derive available_days from content table_content. Returns None for all 5 days."""
-    available_days = []
+    """Infer instructional weekdays from ``table_content`` (per-slot).
+
+    Returns:
+        ``None`` if ``table_content`` is absent (legacy full-week fallback).
+        A (possibly empty) list when ``table_content`` exists; ``[]`` means no
+        instructional days — skip LLM and emit non-instructional stubs.
+    """
     if "table_content" not in content:
         return None
-    for day, day_content in content["table_content"].items():
-        day_lower = day.lower().strip()
-        if day_lower == "all days":
-            return ["monday"]
-        if day_lower in [
-            "monday", "tuesday", "wednesday", "thursday", "friday"
-        ]:
-            day_text = (
-                " ".join(day_content.values())
-                if isinstance(day_content, dict)
-                else str(day_content)
-            )
-            if day_text and day_text.strip().lower() not in ["no school", "n/a", ""]:
-                available_days.append(day_lower)
-    if not available_days:
-        return None
-    return available_days
+    return infer_instructional_weekdays_from_table_content(content["table_content"])
 
 
 def get_original_unit_lessons_and_objectives(

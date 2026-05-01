@@ -2,10 +2,13 @@
 Pure helper functions for batch processor (teacher name, week number, no-school stub).
 """
 
+from copy import deepcopy
 from datetime import datetime
 from typing import Any, Dict
 
 from backend.telemetry import logger
+from backend.utils.date_formatter import format_week_dates
+from tools.docx_parser.instructional_day import NON_INSTRUCTIONAL_UNIT_LESSON
 
 
 def build_teacher_name(user: Dict[str, Any], slot: Dict[str, Any]) -> str:
@@ -54,6 +57,76 @@ def build_teacher_name(user: Dict[str, Any], slot: Dict[str, Any]) -> str:
         return bilingual_name
     else:
         return "Unknown"
+
+
+def non_instructional_day_stub() -> Dict[str, Any]:
+    """Minimal day payload when school is open but there is no regular lesson (e.g. assessments)."""
+    label = NON_INSTRUCTIONAL_UNIT_LESSON
+    return {
+        "unit_lesson": label,
+        "objective": {
+            "content_objective": label,
+            "student_goal": label,
+            "wida_objective": label,
+        },
+        "anticipatory_set": {
+            "original_content": "",
+            "bilingual_bridge": "",
+        },
+        "tailored_instruction": {
+            "original_content": "",
+            "co_teaching_model": {},
+            "ell_support": [],
+            "special_needs_support": [],
+            "materials": [],
+        },
+        "misconceptions": {
+            "original_content": "",
+            "linguistic_note": {},
+        },
+        "assessment": {
+            "primary_assessment": "",
+            "bilingual_overlay": {},
+        },
+        "homework": {
+            "original_content": "",
+            "family_connection": "",
+        },
+    }
+
+
+def build_non_instructional_week_lesson_json(
+    processor: Any,
+    slot: Dict[str, Any],
+    week_of: str,
+) -> Dict[str, Any]:
+    """Full-week stub without calling the LLM (zero instructional weekdays)."""
+    user_dict = {
+        "first_name": getattr(processor, "_user_first_name", ""),
+        "last_name": getattr(processor, "_user_last_name", ""),
+        "name": getattr(processor, "_user_name", ""),
+    }
+    stub = non_instructional_day_stub()
+    week_days = [
+        "monday",
+        "tuesday",
+        "wednesday",
+        "thursday",
+        "friday",
+    ]
+    return {
+        "metadata": {
+            "teacher_name": processor._build_teacher_name(user_dict, slot),
+            "grade": slot.get("grade", ""),
+            "subject": slot["subject"],
+            "week_of": format_week_dates(week_of),
+            "homeroom": slot.get("homeroom", ""),
+            "slot_number": slot["slot_number"],
+        },
+        "days": {d: deepcopy(stub) for d in week_days},
+        "_images": [],
+        "_hyperlinks": [],
+    }
 
 
 def no_school_day_stub() -> Dict[str, Any]:
