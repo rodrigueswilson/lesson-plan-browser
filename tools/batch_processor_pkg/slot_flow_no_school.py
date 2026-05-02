@@ -2,13 +2,17 @@
 No-school day/week JSON builders for slot flow.
 """
 
+from copy import deepcopy
 from typing import Any, Dict, List
+
+from tools.batch_processor_pkg.helpers import no_school_day_stub
 
 
 def build_no_school_day_json(
     week_of: str, slot: dict, hyperlinks: List[Dict[str, Any]]
 ) -> Dict[str, Any]:
     """Build minimal lesson JSON for no-school day (entire document)."""
+    stub = no_school_day_stub()
     no_school_json = {
         "metadata": {
             "week_of": week_of,
@@ -18,37 +22,7 @@ def build_no_school_day_json(
             "no_school": True,
         },
         "days": {
-            day: {
-                "unit_lesson": "No School",
-                "objective": {
-                    "content_objective": "No School",
-                    "student_goal": "No School",
-                    "wida_objective": "No School",
-                },
-                "anticipatory_set": {
-                    "original_content": "No School",
-                    "bilingual_bridge": "",
-                },
-                "tailored_instruction": {
-                    "original_content": "No School",
-                    "co_teaching_model": {},
-                    "ell_support": [],
-                    "special_needs_support": [],
-                    "materials": [],
-                },
-                "misconceptions": {
-                    "original_content": "No School",
-                    "linguistic_note": {},
-                },
-                "assessment": {
-                    "primary_assessment": "No School",
-                    "bilingual_overlay": {},
-                },
-                "homework": {
-                    "original_content": "No School",
-                    "family_connection": "",
-                },
-            }
+            day: deepcopy(stub)
             for day in ["monday", "tuesday", "wednesday", "thursday", "friday"]
         },
     }

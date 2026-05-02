@@ -1,7 +1,7 @@
 # LP2 Program Charter
 
 Status: Proposed
-Last updated: 2026-04-23
+Last updated: 2026-04-25
 
 ## Purpose
 Define how `LP` (stable lane) and `LP2` (innovation lane) coexist during the transition period, while minimizing delivery risk for the current school year.
@@ -25,6 +25,29 @@ Define how `LP` (stable lane) and `LP2` (innovation lane) coexist during the tra
 - Scope: agent-centric architecture, container and portability improvements, retrieval/database decisions.
 - Out of scope: production-cutover assumptions or LP2 clone execution before gate approval.
 - Release policy: research-driven milestones with benchmark-backed decisions.
+- Repository policy: LP2 runs in a dedicated repository (`LP2`) once clone execution is approved.
+
+## Repository and Content Separation Policy
+- LP2 must be created as a dedicated/cloned repository, not as a long-lived branch inside `LP`.
+- Before clone creation, the team runs a repository audit of `LP` to classify content into:
+  - required in LP2 baseline,
+  - optional/migrate later,
+  - excluded from LP2 (temporary artifacts, local logs, one-off dumps, stale generated files).
+- LP remains the source for historical context and fallback references during transition.
+
+## LP Audit Requirement Before LP2 Creation
+- Produce an `LP` inventory report (code, docs, data, scripts, local artifacts) with owner and keep/drop rationale.
+- Define copy rules for LP2 bootstrap (allowlist-first) to avoid carrying unnecessary files.
+- Define ignore rules for LP2 from day one (`.gitignore`, data/log/cache exclusions) to prevent artifact drift.
+- Capture migration notes for anything intentionally left in `LP`.
+
+## Left-Behind File Access Policy
+- LP2 may reference files left in `LP` only through explicit, documented paths/pointers.
+- LP2 docs must include where these files live in `LP`, why they were not copied, and who owns migration timing.
+- Any LP dependency discovered after clone kickoff must be triaged as:
+  1. copy now into LP2,
+  2. keep as temporary LP reference with deprecation date, or
+  3. retire as no longer needed.
 
 ## Governance Model
 - Weekly architecture checkpoint: status, risk, decisions pending.
@@ -57,3 +80,6 @@ If any criterion fails, promotion is deferred.
 - LP2 container/portability baseline validated on target machines.
 - Database architecture gate resolved with benchmark evidence.
 - First promotion-ready LP2 capability accepted through all gates.
+
+## Further reading (industry patterns)
+For curated external articles and how they map to this charter (strangler-style evolution, branch by abstraction, parallel change, database expand/contract, and risks of long-lived divergence), see [LP2_EXTERNAL_REFERENCES_AND_PRACTICES.md](LP2_EXTERNAL_REFERENCES_AND_PRACTICES.md).

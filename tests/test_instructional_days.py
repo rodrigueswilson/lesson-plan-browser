@@ -38,6 +38,58 @@ def test_is_testing_or_assessment_day_detects_common_labels():
 
 
 @pytest.mark.unit
+def test_is_testing_or_assessment_day_detects_njsla_and_non_instructional():
+    assert is_testing_or_assessment_day("NJ-SLA")
+    assert is_testing_or_assessment_day("NJSLA")
+    assert is_testing_or_assessment_day("NJ SLA reading")
+    assert not is_testing_or_assessment_day(
+        "See district non-instructional calendar boilerplate"
+    )
+    assert is_testing_or_assessment_day("exam period — morning")
+    assert is_testing_or_assessment_day("mid-year exam prep")
+
+
+@pytest.mark.unit
+def test_is_testing_or_assessment_day_standalone_exam_cell_only():
+    assert is_testing_or_assessment_day("exam")
+    assert is_testing_or_assessment_day("  exam day  ")
+    assert not is_testing_or_assessment_day(
+        "Students prepare for the unit exam next week."
+    )
+
+
+@pytest.mark.unit
+def test_is_instructional_lesson_day_short_njsla_and_non_instructional():
+    assert not is_instructional_lesson_day("NJSLA")
+    assert not is_instructional_lesson_day("benchmark assessment")
+    assert is_instructional_lesson_day(
+        "Unit 4 Lesson 2: fractions practice with manipulatives."
+    )
+
+
+@pytest.mark.unit
+def test_is_instructional_lesson_day_long_text_with_exam_word_not_standalone():
+    assert is_instructional_lesson_day(
+        "Students prepare for the unit exam next week."
+    )
+
+
+@pytest.mark.unit
+def test_infer_instructional_weekdays_mixed_non_instructional_day():
+    table = {
+        "Monday": {"Unit/Lesson": "Lesson A", "Objective": "Read closely."},
+        "Tuesday": {"Unit/Lesson": "Lesson B", "Objective": "Compare texts."},
+        "Wednesday": {"Unit/Lesson": "benchmark assessment window", "Objective": ""},
+        "Thursday": {"Unit/Lesson": "NJ-SLA", "Objective": ""},
+        "Friday": {"Unit/Lesson": "exam period block 1", "Objective": ""},
+    }
+    assert infer_instructional_weekdays_from_table_content(table) == [
+        "monday",
+        "tuesday",
+    ]
+
+
+@pytest.mark.unit
 def test_is_instructional_lesson_day_excludes_assessment_and_no_school():
     assert is_instructional_lesson_day(
         "Unit 4 Lesson 2: fractions practice with manipulatives."
@@ -59,6 +111,33 @@ def test_infer_instructional_weekdays_partial_week_exam_days():
     assert infer_instructional_weekdays_from_table_content(table) == [
         "monday",
         "tuesday",
+    ]
+
+
+@pytest.mark.unit
+def test_infer_instructional_weekdays_notes_column_does_not_poison_unit_lesson():
+    """District/notes text must not mark a day non-instructional if Unit/Lesson is a real lesson."""
+    table = {
+        "Monday": {
+            "Unit/Lesson": (
+                "Unit 2 Lesson 3: Add and subtract within 100 using concrete models "
+                "and story problems for grade two instruction."
+            ),
+            "Notes": "NJ-SLA testing week district assessment window benchmark",
+        },
+        "Tuesday": {
+            "Unit/Lesson": "Lesson B with enough words for substantive classification.",
+            "Notes": "",
+        },
+        "Wednesday": {"Unit/Lesson": "NJ-SLA", "Notes": "ignored when primary is assessment"},
+        "Thursday": {"Unit/Lesson": "Lesson D continuation", "Objective": "Practice fluency."},
+        "Friday": {"Unit/Lesson": "Lesson E wrap-up and review stations.", "Notes": "exam period"},
+    }
+    assert infer_instructional_weekdays_from_table_content(table) == [
+        "monday",
+        "tuesday",
+        "thursday",
+        "friday",
     ]
 
 

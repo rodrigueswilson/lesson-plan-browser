@@ -1,10 +1,10 @@
 # LP2 Execution Roadmap (8 Weeks)
 
 Status: Planning
-Last updated: 2026-04-23
+Last updated: 2026-04-25
 
 ## Intent
-Use an 8-week transition window for research, documentation, and decision readiness, without starting LP2 clone execution during the current reflection period.
+Use an 8-week transition window for research, documentation, and controlled LP2 execution under approved governance constraints.
 
 Planning note: database transition work is preferred for summer execution (before next school year), subject to gate approval.
 
@@ -24,36 +24,47 @@ Planning note: database transition work is preferred for summer execution (befor
 - Finalize containerization and portability recommendation.
 - Validate database gate criteria and benchmark protocol.
 - Publish architecture decision inputs in roadmap docs.
+- Define LP2 dedicated-repo creation criteria and bootstrap strategy (allowlist-first copy).
+- Start LP repository audit to identify what is unnecessary for LP2 baseline.
 
 ### Weeks 3-4: Documentation Hardening
 - Convert strategy docs into implementation-ready checklists.
 - Define acceptance tests for portability and backup/restore.
 - Prepare decision review package for stakeholders.
+- Finalize LP audit report: keep/migrate/exclude classification with owners.
+- Draft LP2 migration manifest and explicit exclusions (`logs`, caches, one-off artifacts, large local dumps).
 
-### Weeks 5-6: Readiness Validation (No Clone Yet)
+### Weeks 5-6: Readiness Validation (Conditional Go Active)
 - Dry-run benchmark plan design (datasets, query suites, scoring templates).
 - Dry-run migration and rollback playbook structure.
 - Confirm team ownership and operating cadence for LP2.
+- Dry-run LP2 bootstrap from manifest and verify excluded-content policy.
+- Validate "left-behind in LP" lookup policy (documented references, temporary dependency tracking).
 
-### Weeks 7-8: Reflection and Approval
+### Weeks 7-8: Closure Tracking and Controlled Start
 - Stakeholder review of all LP2 strategy docs.
-- Finalize go/no-go for initiating physical LP2 clone.
-- If approved, schedule LP2 clone kickoff and database migration track in the summer execution window.
+- Track D4/D5 conditional-waiver closure against dated requirements and owners.
+- Proceed with LP2 clone kickoff and repository creation under Conditional Go controls.
+- Approve LP-to-LP2 audit outputs and leftover dependency handling policy.
 
 ## Current Decision Boundary
-During this roadmap window, the team prepares LP2 and defines gates, but does not start the physical LP2 clone until post-reflection approval.
+Conditional Go is approved. During this roadmap window, the team executes LP2 clone stand-up while enforcing D4/D5 dated closure requirements and escalation on missed closure dates.
 
 ## Deliverables by End of Week 8
 - Approved LP2 program charter.
 - Approved containerization and portability strategy.
 - Approved database decision gates.
 - Approved execution checklist for LP2 clone kickoff.
+- Approved LP audit dossier (keep/migrate/exclude inventory for LP2).
+- Approved LP2 bootstrap manifest (what is copied, what is intentionally excluded).
+- Approved LP left-behind reference protocol for temporary dependencies.
 
 ## Stop Conditions
 Do not begin LP2 clone execution if any are true:
 - unresolved high-impact risk in governance or operability,
 - missing rollback plan,
-- unapproved portability baseline.
+- unapproved portability baseline,
+- D4/D5 waiver closure date is missed or waiver ownership is missing.
 
 ## Go Conditions for Next Cycle
 - Decision package accepted by stakeholders.

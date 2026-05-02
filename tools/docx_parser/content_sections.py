@@ -5,6 +5,8 @@ Subject and section content extraction for DOCX parsing.
 import re
 from typing import Any, Callable, Dict, List, Optional
 
+from .instructional_day import _day_text_for_instructional_inference
+
 
 def find_subject_sections(doc, tables: List, get_full_text: Callable[[], str]) -> Dict[str, Any]:
     """Find different subject sections in the document."""
@@ -218,7 +220,7 @@ def extract_subject_content(
                 full_text_parts = []
                 no_school_days = []
                 for day, day_content in table_content.items():
-                    day_text = " ".join(day_content.values())
+                    day_text = _day_text_for_instructional_inference(day_content)
                     if is_day_no_school(day_text):
                         no_school_days.append(day)
                         full_text_parts.append(f"\n{day.upper()}")

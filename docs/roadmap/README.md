@@ -83,6 +83,8 @@ Use this bundle for the architecture reflection gate on relational + vector stra
 
 ## LP2 transition docs (research and next-cycle readiness)
 
+**LP2 vision:** LP2 is the dedicated-repository innovation lane for next-generation, agent-centric architecture and for container/portability and retrieval/database work—governed by benchmarks and promotion gates—while `LP` stays the stable, supported product until those gates are met.
+
 Use this bundle for LP2 planning, portability, and decision gates. This bundle is intended to support research and stakeholder reflection before any LP2 clone execution:
 
 - **Program charter (LP vs LP2 governance):** [design/LP2_PROGRAM_CHARTER.md](design/LP2_PROGRAM_CHARTER.md)
@@ -91,6 +93,16 @@ Use this bundle for LP2 planning, portability, and decision gates. This bundle i
 - **Database decision gates (relational + vector):** [design/LP2_DATABASE_DECISION_GATES.md](design/LP2_DATABASE_DECISION_GATES.md)
 - **8-week execution roadmap (no clone during reflection):** [design/LP2_EXECUTION_ROADMAP_8_WEEKS.md](design/LP2_EXECUTION_ROADMAP_8_WEEKS.md)
 - **Stakeholder review checklist (one-page):** [design/LP2_STAKEHOLDER_REVIEW_CHECKLIST.md](design/LP2_STAKEHOLDER_REVIEW_CHECKLIST.md)
+- **External references (industry patterns, stable vs innovation split):** [design/LP2_EXTERNAL_REFERENCES_AND_PRACTICES.md](design/LP2_EXTERNAL_REFERENCES_AND_PRACTICES.md) — curated links to strangler-fig style evolution, branch-by-abstraction, parallel change, evolutionary/expand–contract data work, and branching long-term divergence; maps each to this repo’s LP2 docs.
+- **End-to-end stand-up plan (GitHub, bootstrap, CI, data, risks, checklist):** [design/LP2_STANDUP_EXECUTION_PLAN.md](design/LP2_STANDUP_EXECUTION_PLAN.md)
+- **Critical review workstream (de-risking, dimensions, go/no-go inputs):** [design/LP2_STANDUP_CRITICAL_REVIEW_PLAN.md](design/LP2_STANDUP_CRITICAL_REVIEW_PLAN.md)
+- **LP audit appendix and migration manifest v0 (draft, under `docs/lp2/`):** [../lp2/README.md](../lp2/README.md)
+- **Go/no-go decision record (current cycle):** [design/LP2_GO_NO_GO_DECISION_RECORD_2026-04-25.md](design/LP2_GO_NO_GO_DECISION_RECORD_2026-04-25.md)
+
+LP2 planning now explicitly includes:
+- creating LP2 as a dedicated repository clone,
+- auditing current `LP` content before clone execution to identify unnecessary files for LP2 baseline,
+- defining a documented policy for temporary LP2 lookups to files intentionally left behind in `LP`.
 
 Current planning direction: prefer major database migration execution in the summer window (before next school year), after gate approval. **Current `LP` stays available** if the agentic line is not ready by then. Use recent curriculum ingestion (Math, ELA, Science) plus upcoming WIDA/Newark-style document storage design to **inform** the database and agentic architecture; treat containers and MCP as **after** that evidence is clear (see [design/LP2_EXECUTION_ROADMAP_8_WEEKS.md](design/LP2_EXECUTION_ROADMAP_8_WEEKS.md)).
 

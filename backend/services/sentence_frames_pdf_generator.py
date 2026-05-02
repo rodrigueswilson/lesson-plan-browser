@@ -111,7 +111,11 @@ class SentenceFramesPDFGenerator:
         output_path: Optional[str] = None,
         user_name: Optional[str] = None,
     ) -> str:
-        """Generate HTML file with sentence frames pages."""
+        """Generate HTML file with sentence frames pages.
+
+        If every instructional slot/day is omitted (No School or non-instructional
+        assessment), extraction returns no payloads and this raises ValueError.
+        """
         payloads = self.extract_sentence_frames(lesson_json)
         if not payloads:
             raise ValueError("No sentence_frames found in lesson plan")
@@ -146,7 +150,10 @@ class SentenceFramesPDFGenerator:
         output_path: Optional[str] = None,
         user_name: Optional[str] = None,
     ) -> str:
-        """Generate DOCX file with sentence frames, two pages per day (front/back)."""
+        """Generate DOCX file with sentence frames, two pages per day (front/back).
+
+        Same empty-payload behavior as ``generate_html``.
+        """
         payloads = self.extract_sentence_frames(lesson_json)
         if not payloads:
             raise ValueError("No sentence frames found in lesson plan")

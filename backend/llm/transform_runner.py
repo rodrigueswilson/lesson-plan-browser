@@ -139,7 +139,9 @@ def run_transform_lesson(
                             )
                         )
 
-                    is_valid, validation_error = validate_structure(lesson_json)
+                    is_valid, validation_error = validate_structure(
+                        lesson_json, available_days=available_days
+                    )
                     if is_valid:
                         sid_ok, sid_err, bad_ids = validate_ell_support_strategy_ids(
                             lesson_json
@@ -194,7 +196,7 @@ def run_transform_lesson(
                         full_prompt,
                         validation_error,
                         retry_count,
-                        None,
+                        available_days,
                         error_analysis,
                     )
                     response_text, usage = service._call_llm(feedback_prompt)
@@ -291,9 +293,13 @@ def run_transform_lesson(
 
             if plan_id:
                 with tracker.track_operation(plan_id, "llm_validate_structure"):
-                    is_valid, validation_error = validate_structure(lesson_json)
+                    is_valid, validation_error = validate_structure(
+                        lesson_json, available_days=available_days
+                    )
             else:
-                is_valid, validation_error = validate_structure(lesson_json)
+                is_valid, validation_error = validate_structure(
+                    lesson_json, available_days=available_days
+                )
 
             if is_valid:
                 sid_ok, sid_err, bad_ids = validate_ell_support_strategy_ids(
@@ -349,6 +355,7 @@ def run_transform_lesson(
                     "parsed_errors": parsed_validation_errors,
                     "grade": grade,
                     "subject": subject,
+                    "available_days": available_days,
                 },
             )
 
@@ -363,6 +370,7 @@ def run_transform_lesson(
                         "parsed_errors": parsed_validation_errors,
                         "grade": grade,
                         "subject": subject,
+                        "available_days": available_days,
                     },
                 )
             else:

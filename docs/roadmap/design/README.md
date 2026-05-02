@@ -347,6 +347,12 @@ Based on the implementation roadmap, the following documents should be created:
 
 ---
 
+## LP2 transition (stable `LP` vs innovation `LP2`)
+
+Planning for a dedicated LP2 repository, pre-clone audit, and promotion gates is indexed in the [roadmap](../README.md#lp2-transition-docs-research-and-next-cycle-readiness). For **external** articles on strangler-style evolution, safe refactoring, and database change patterns, see [LP2_EXTERNAL_REFERENCES_AND_PRACTICES.md](./LP2_EXTERNAL_REFERENCES_AND_PRACTICES.md).
+
+---
+
 ## 🚀 Next Steps
 
 1. **Review this README** to understand the document structure

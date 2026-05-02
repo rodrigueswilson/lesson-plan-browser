@@ -413,6 +413,7 @@ async def process_one_slot(
             images,
             slot,
             week_of,
+            table_content=content.get("table_content"),
         )
         del parser
         gc.collect()

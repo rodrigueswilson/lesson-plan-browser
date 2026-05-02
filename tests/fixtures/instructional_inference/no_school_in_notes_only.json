@@ -1,0 +1,9 @@
+{
+  "description": "Notes column says No School but Unit/Lesson is instructional — joined text falsely triggers closure detection if using full join.",
+  "table_content": {
+    "Monday": {
+      "Unit/Lesson": "Unit 3 Lesson 5: Main idea",
+      "Notes": "No School - parent conference moved"
+    }
+  }
+}

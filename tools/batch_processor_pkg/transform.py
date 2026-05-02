@@ -14,6 +14,7 @@ from backend.utils.date_formatter import format_week_dates
 
 from tools.batch_processor_pkg.context import SlotProcessingContext
 from tools.batch_processor_pkg.helpers import build_non_instructional_week_lesson_json
+from tools.batch_processor_pkg.no_school_stub_pick import day_stub_for_no_school_list_entry
 
 
 def _finalize_parallel_lesson_output(
@@ -115,7 +116,9 @@ def _finalize_parallel_lesson_output(
         for day in context.no_school_days:
             day_lower = day.lower().strip()
             if day_lower in lesson_json.get("days", {}):
-                lesson_json["days"][day_lower] = processor._no_school_day_stub()
+                lesson_json["days"][day_lower] = day_stub_for_no_school_list_entry(
+                    processor, day, getattr(context, "table_content", None)
+                )
 
     elapsed_time = (time.time() - start_time) * 1000
     context.lesson_json = lesson_json

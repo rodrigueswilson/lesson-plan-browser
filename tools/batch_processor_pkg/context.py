@@ -35,3 +35,4 @@ class SlotProcessingContext:
     tpm_usage: Optional[int] = None
     rpm_usage: Optional[int] = None
     link_map: Dict[str, Dict[str, Any]] = field(default_factory=dict)
+    table_content: Optional[Dict[str, Any]] = None

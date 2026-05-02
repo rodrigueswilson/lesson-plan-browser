@@ -8,6 +8,10 @@ from __future__ import annotations
 
 from typing import Any, Dict, List
 
+from backend.services.objectives.omit import (
+    should_omit_objectives_for_unit_lesson,
+    should_omit_objectives_from_triple,
+)
 from backend.services.objectives_utils import normalize_objective_payload
 from backend.telemetry import logger
 from backend.utils.metadata_utils import get_homeroom, get_subject, get_teacher_name
@@ -29,6 +33,9 @@ def extract_from_slot(
     Prioritizes slot-specific metadata over merged metadata.
     """
     unit_lesson = slot.get("unit_lesson", "")
+    if should_omit_objectives_for_unit_lesson(unit_lesson):
+        return
+
     slot_teacher = get_teacher_name(metadata, slot=slot)
 
     slot_grade = slot.get("grade", grade)
@@ -57,18 +64,10 @@ def extract_from_slot(
             "wida_objective": "",
         }
 
-    if unit_lesson and unit_lesson.strip().lower() == "no school":
-        return
-
-    content_obj = objective_data.get("content_objective", "").strip().lower()
-    student_goal = objective_data.get("student_goal", "").strip().lower()
-    wida_obj = objective_data.get("wida_objective", "").strip().lower()
-
-    if (
-        content_obj == "no school"
-        and student_goal == "no school"
-        and wida_obj == "no school"
-    ):
+    content_obj = objective_data.get("content_objective", "")
+    student_goal = objective_data.get("student_goal", "")
+    wida_obj = objective_data.get("wida_objective", "")
+    if should_omit_objectives_from_triple(content_obj, student_goal, wida_obj):
         return
 
     objectives.append(
@@ -102,6 +101,10 @@ def extract_from_day(
     objectives: List[Dict[str, Any]],
 ) -> None:
     """Extract objectives from a day (single-slot structure)."""
+    unit_lesson = day_data.get("unit_lesson", "")
+    if should_omit_objectives_for_unit_lesson(unit_lesson):
+        return
+
     objective_data = normalize_objective_payload(
         day_data.get("objective", {}),
         {
@@ -112,20 +115,10 @@ def extract_from_day(
     if not objective_data:
         return
 
-    unit_lesson = day_data.get("unit_lesson", "")
-
-    if unit_lesson and unit_lesson.strip().lower() == "no school":
-        return
-
-    content_obj = objective_data.get("content_objective", "").strip().lower()
-    student_goal = objective_data.get("student_goal", "").strip().lower()
-    wida_obj = objective_data.get("wida_objective", "").strip().lower()
-
-    if (
-        content_obj == "no school"
-        and student_goal == "no school"
-        and wida_obj == "no school"
-    ):
+    content_obj = objective_data.get("content_objective", "")
+    student_goal = objective_data.get("student_goal", "")
+    wida_obj = objective_data.get("wida_objective", "")
+    if should_omit_objectives_from_triple(content_obj, student_goal, wida_obj):
         return
 
     detected_subject = get_subject(metadata)

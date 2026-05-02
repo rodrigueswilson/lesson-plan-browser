@@ -296,6 +296,7 @@ async def extract_slot_content(
     context.extracted_content = primary_content
     context.available_days = available_days
     context.no_school_days = content.get("no_school_days") or []
+    context.table_content = content.get("table_content")
     logger.info("parallel_extract_slot_content_hyperlinks_stored", extra={"slot": slot["slot_number"], "subject": slot["subject"], "hyperlinks_count": len(hyperlinks)})
     return context
 

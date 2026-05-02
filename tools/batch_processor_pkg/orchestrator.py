@@ -26,6 +26,7 @@ from tools.batch_processor_pkg.helpers import (
     calculate_week_number,
     get_week_num,
     no_school_day_stub,
+    non_instructional_day_stub,
 )
 from tools.batch_processor_pkg.hyperlink_scrubber import (
     restore_hyperlinks,
@@ -77,6 +78,10 @@ class BatchProcessor:
     def _no_school_day_stub(self) -> Dict[str, Any]:
         """Return the minimal day structure for a No School day (shared by sequential and parallel paths)."""
         return no_school_day_stub()
+
+    def _non_instructional_day_stub(self) -> Dict[str, Any]:
+        """Return the minimal day structure for assessment / non-instructional weekdays."""
+        return non_instructional_day_stub()
 
     def _scrub_hyperlinks(self, context: SlotProcessingContext):
         """Pre-processing: Replace links with [[LINK_n]] placeholders, tracking which day they belong to."""

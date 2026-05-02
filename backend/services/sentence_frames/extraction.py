@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from typing import Any, Dict, List
 
+from backend.services.objectives.omit import should_omit_sentence_frames_for_unit_lesson
 from backend.services.sorting_utils import sort_slots
 from backend.telemetry import logger
 from backend.utils.metadata_utils import (
@@ -56,12 +57,10 @@ def extract_sentence_frames(lesson_json: Dict[str, Any]) -> List[Dict[str, Any]]
                 slot_num = slot.get("slot_number", 0)
                 slot_unit_lesson = slot.get("unit_lesson", "")
 
-                if (
-                    slot_unit_lesson
-                    and slot_unit_lesson.strip().lower() == "no school"
-                ):
+                if should_omit_sentence_frames_for_unit_lesson(slot_unit_lesson):
                     logger.debug(
-                        f"Skipping slot {slot_num} ({day_name}) - No School entry"
+                        f"Skipping slot {slot_num} ({day_name}) - "
+                        "No School or non-instructional (assessment)"
                     )
                     continue
 
@@ -134,7 +133,7 @@ def extract_sentence_frames(lesson_json: Dict[str, Any]) -> List[Dict[str, Any]]
         else:
             day_unit_lesson = day_data.get("unit_lesson", "")
 
-            if day_unit_lesson and day_unit_lesson.strip().lower() == "no school":
+            if should_omit_sentence_frames_for_unit_lesson(day_unit_lesson):
                 continue
 
             day_level_frames = day_data.get("sentence_frames") or []

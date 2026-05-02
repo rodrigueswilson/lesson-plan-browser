@@ -3,6 +3,7 @@ Retry and validation logic for LLM responses.
 Parse validation errors, pre-validate JSON, analyze JSON errors, validate structure.
 """
 
+from copy import deepcopy
 import json
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -18,6 +19,7 @@ from backend.llm.error_analysis import (
 from backend.llm.json_pre_validation import pre_validate_json
 from backend.llm.validation_error_parser import parse_validation_errors
 from backend.telemetry import logger
+from tools.docx_parser.instructional_day import NON_INSTRUCTIONAL_UNIT_LESSON
 from tools.json_repair import repair_json
 
 
@@ -155,8 +157,53 @@ def parse_llm_response(response_text: str) -> Dict[str, Any]:
         raise error_with_analysis
 
 
+_NON_INSTRUCTIONAL_LOWER = NON_INSTRUCTIONAL_UNIT_LESSON.strip().lower()
+
+
+def _is_non_generated_placeholder(day_data: Dict[str, Any]) -> bool:
+    unit_lesson = str(day_data.get("unit_lesson", "") or "").strip().lower()
+    return unit_lesson in {"no school", _NON_INSTRUCTIONAL_LOWER}
+
+
+def _base_empty_day_placeholder(unit_lesson: str) -> Dict[str, Any]:
+    return {
+        "unit_lesson": unit_lesson,
+        "objective": {
+            "content_objective": unit_lesson,
+            "student_goal": unit_lesson,
+            "wida_objective": unit_lesson,
+        },
+        "anticipatory_set": {
+            "original_content": "",
+            "bilingual_bridge": "",
+        },
+        "vocabulary_cognates": [],
+        "sentence_frames": [],
+        "tailored_instruction": {
+            "original_content": "",
+            "co_teaching_model": {},
+            "ell_support": [],
+            "special_needs_support": [],
+            "materials": [],
+        },
+        "misconceptions": {
+            "original_content": "",
+            "linguistic_note": {},
+        },
+        "assessment": {
+            "primary_assessment": "",
+            "bilingual_overlay": {},
+        },
+        "homework": {
+            "original_content": "",
+            "family_connection": "",
+        },
+    }
+
+
 def validate_structure(
     lesson_json: Dict[str, Any],
+    available_days: Optional[List[str]] = None,
 ) -> Tuple[bool, Optional[str]]:
     """
     Validate JSON structure matches schema. Fills missing days with placeholders.
@@ -179,6 +226,13 @@ def validate_structure(
 
     days = lesson_json["days"]
     required_days = ["monday", "tuesday", "wednesday", "thursday", "friday"]
+    available_days_normalized = None
+    if available_days is not None:
+        available_days_normalized = {
+            str(day).lower().strip()
+            for day in available_days
+            if str(day).lower().strip() in required_days
+        }
     missing_days = []
     for day in required_days:
         if day not in days:
@@ -188,43 +242,35 @@ def validate_structure(
                 extra={"day": day, "action": "Adding placeholder"},
             )
 
-    no_school_placeholder = {
-        "unit_lesson": "No School",
-        "objective": {
-            "content_objective": "No School",
-            "student_goal": "No School",
-            "wida_objective": "No School",
-        },
-        "anticipatory_set": {
-            "original_content": "No School",
-            "bilingual_bridge": "No School",
-        },
-        "vocabulary_cognates": [],
-        "sentence_frames": [],
-        "tailored_instruction": {
-            "original_content": "No School",
-            "co_teaching_model": {},
-            "ell_support": [],
-            "special_needs_support": [],
-            "materials": [],
-        },
-        "misconceptions": {
-            "original_content": "No School",
-            "linguistic_note": {},
-        },
-        "assessment": {
-            "primary_assessment": "No School",
-            "bilingual_overlay": {},
-        },
-        "homework": {
-            "original_content": "No School",
-            "family_connection": "No School",
-        },
-    }
+    no_school_placeholder = _base_empty_day_placeholder("No School")
+    non_instructional_placeholder = _base_empty_day_placeholder(
+        NON_INSTRUCTIONAL_UNIT_LESSON
+    )
 
     if missing_days:
+        if available_days_normalized:
+            missing_required_days = [
+                day for day in missing_days if day in available_days_normalized
+            ]
+            if missing_required_days:
+                error_msg = (
+                    "Missing required generated days from available_days: "
+                    f"{', '.join(missing_required_days)}"
+                )
+                logger.error(
+                    "schema_validation_missing_available_days",
+                    extra={
+                        "available_days": sorted(available_days_normalized),
+                        "missing_required_days": missing_required_days,
+                    },
+                )
+                return False, error_msg
+
         for day in missing_days:
-            days[day] = no_school_placeholder.copy()
+            if available_days_normalized is not None:
+                days[day] = deepcopy(non_instructional_placeholder)
+            else:
+                days[day] = deepcopy(no_school_placeholder)
 
         for day_name in required_days:
             if day_name not in days:
@@ -304,7 +350,13 @@ def validate_structure(
 
         logger.info(
             "schema_validation_missing_days_filled",
-            extra={"missing_days": missing_days, "filled_count": len(missing_days)},
+            extra={
+                "missing_days": missing_days,
+                "filled_count": len(missing_days),
+                "available_days": sorted(available_days_normalized)
+                if available_days_normalized is not None
+                else None,
+            },
         )
 
     monday = days["monday"]
@@ -316,7 +368,7 @@ def validate_structure(
     missing_fields = []
     for day_name in required_days:
         day_data = days.get(day_name, {})
-        if not day_data or day_data.get("unit_lesson") == "No School":
+        if not day_data or _is_non_generated_placeholder(day_data):
             continue
 
         vocab = day_data.get("vocabulary_cognates")

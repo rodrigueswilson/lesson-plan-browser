@@ -11,6 +11,7 @@ Use this checklist to decide whether the team is ready to begin physical LP2 clo
 - [ ] Scope is limited to LP2 readiness decision, not full implementation kickoff.
 - [ ] `LP` remains stable-lane only (bug fixes and low-risk improvements).
 - [ ] No clone start date is committed before all gates are approved.
+- [ ] LP2 is confirmed to use a dedicated repository (not a long-lived in-repo branch strategy).
 
 ## 2) Required Inputs Reviewed
 - [ ] `LP2_PROGRAM_CHARTER.md` reviewed and accepted.
@@ -18,6 +19,8 @@ Use this checklist to decide whether the team is ready to begin physical LP2 clo
 - [ ] `LP2_ENVIRONMENT_PORTABILITY_SPEC.md` reviewed and accepted.
 - [ ] `LP2_DATABASE_DECISION_GATES.md` reviewed and accepted.
 - [ ] `LP2_EXECUTION_ROADMAP_8_WEEKS.md` reviewed and accepted.
+- [ ] `LP2_EXTERNAL_REFERENCES_AND_PRACTICES.md` awareness (optional; supports alignment with common stable-vs-innovation patterns).
+- [ ] LP audit dossier for LP2 bootstrap (keep/migrate/exclude) reviewed and accepted.
 
 ## 3) Governance and Ownership
 - [ ] Product owner assigned for LP2 scope and priorities.
@@ -45,6 +48,7 @@ Use this checklist to decide whether the team is ready to begin physical LP2 clo
 - [ ] Mitigation owners assigned for each high-impact risk.
 - [ ] Stop conditions explicitly accepted (no clone if unresolved high-impact risks).
 - [ ] Change control agreed for LP2-to-LP promotion (gated, evidence-based).
+- [ ] Left-behind dependency policy approved (when LP2 can reference LP, owner, and retirement date).
 
 ## 7) Go / No-Go Outcome
 - [ ] **Go**: all sections above pass and owners/dates are assigned.
@@ -65,3 +69,4 @@ Approvers (name + role):
 - [ ] Schedule LP2 clone kickoff in next cycle.
 - [ ] Publish final decision record and timeline.
 - [ ] Start first milestone with explicit rollback and success criteria.
+- [ ] Create LP2 dedicated repository and bootstrap only from approved migration manifest.

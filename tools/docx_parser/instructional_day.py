@@ -14,6 +14,39 @@ from tools.docx_parser.no_school import is_day_no_school
 
 NON_INSTRUCTIONAL_UNIT_LESSON = "Non-instructional (assessment)"
 
+
+def _day_text_for_instructional_inference(day_content: Any) -> str:
+    """Build text used to classify instructional vs assessment for one weekday.
+
+    Prefer Unit/Lesson and Objective-style columns (matches extractors in
+    slot_flow_extract.get_original_unit_lessons_and_objectives) so district notes,
+    testing banners, or extra columns do not override a normal lesson line.
+
+    If no such columns have text, fall back to joining all cell values (legacy).
+    """
+    if not isinstance(day_content, dict):
+        return str(day_content) if day_content is not None else ""
+
+    primary_parts: List[str] = []
+    for label, text in day_content.items():
+        if text is None or not str(text).strip():
+            continue
+        label_lower = str(label).lower().strip()
+        if (
+            ("unit" in label_lower and ("lesson" in label_lower or "module" in label_lower))
+            or label_lower.startswith("unit")
+            or label_lower.startswith("lesson")
+            or label_lower.startswith("objective")
+        ):
+            primary_parts.append(str(text).strip())
+
+    if primary_parts:
+        return " ".join(primary_parts)
+
+    return " ".join(
+        str(v).strip() for v in day_content.values() if v is not None and str(v).strip()
+    )
+
 # Phrases indicating assessments / testing (school open, no regular lesson).
 _ASSESSMENT_PATTERNS = tuple(
     re.compile(p, re.IGNORECASE)
@@ -31,7 +64,16 @@ _ASSESSMENT_PATTERNS = tuple(
         r"\btest\s+days?\b",
         r"\bmock\s+staar\b",
         r"\bdistrict\s+assessment\b",
+        r"\bnj[-\s]?sla\b",
+        r"\bexam\s+period\b",
+        r"\bmid[-\s]?year\s+exam\b",
     )
+)
+
+# Cell is only the word "exam" or "exam day" (avoids matching "exam" inside long lesson prose).
+_STANDALONE_EXAM_OR_EXAM_DAY = re.compile(
+    r"^\s*exam(?:\s+day)?\s*$",
+    re.IGNORECASE,
 )
 
 
@@ -54,6 +96,8 @@ def is_testing_or_assessment_day(day_text: str) -> bool:
     if not day_text or not str(day_text).strip():
         return False
     text = str(day_text).strip()
+    if _STANDALONE_EXAM_OR_EXAM_DAY.match(text):
+        return True
     return any(p.search(text) for p in _ASSESSMENT_PATTERNS)
 
 
@@ -61,13 +105,19 @@ def is_instructional_lesson_day(day_text: str) -> bool:
     """
     True if this weekday column should receive bilingual lesson generation.
 
-    Requires substantive text and excludes no-school and assessment/testing markers.
+    No-school and assessment markers are checked before the substantive-text gate
+    so short labels (e.g. NJ-SLA, exam) still classify correctly.
     """
-    if not substantive_day_text(day_text):
+    if not day_text or not str(day_text).strip():
         return False
-    if is_day_no_school(day_text):
+    text = str(day_text).strip()
+    if text.lower() in ("-", "—", "n/a", "na", ".", "..", "none", "tbd"):
         return False
-    if is_testing_or_assessment_day(day_text):
+    if is_day_no_school(text):
+        return False
+    if is_testing_or_assessment_day(text):
+        return False
+    if not substantive_day_text(text):
         return False
     return True
 
@@ -89,11 +139,7 @@ def infer_instructional_weekdays_from_table_content(
             return ["monday"]
 
         if day_lower in weekdays:
-            day_text = (
-                " ".join(day_content.values())
-                if isinstance(day_content, dict)
-                else str(day_content)
-            )
+            day_text = _day_text_for_instructional_inference(day_content)
             lowered = day_text.strip().lower()
             if lowered in ("no school", "n/a", ""):
                 continue

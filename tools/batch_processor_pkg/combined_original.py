@@ -15,6 +15,27 @@ from tools.batch_processor_pkg.combined_original_render import (
 )
 from tools.batch_processor_pkg.context import SlotProcessingContext
 from tools.batch_processor_pkg.persistence import stable_original_lesson_plan_id
+from tools.batch_processor_pkg.slot_flow_extract import get_available_days_from_content
+
+
+def _available_days_for_cached_record(db_record: Any) -> Optional[List[str]]:
+    """Prefer recomputed available_days from cached table_content over stale DB column."""
+    stored = db_record.available_days
+    content_json = db_record.content_json or {}
+    if isinstance(content_json, dict) and "table_content" in content_json:
+        recomputed = get_available_days_from_content(content_json)
+        if recomputed != stored:
+            logger.warning(
+                "cached_available_days_recomputed_mismatch",
+                extra={
+                    "slot": db_record.slot_number,
+                    "subject": db_record.subject,
+                    "stored_available_days": stored,
+                    "recomputed_available_days": recomputed,
+                },
+            )
+        return recomputed
+    return stored
 
 
 async def process_file_group(
@@ -85,7 +106,9 @@ async def process_file_group(
                             f"DB Cache hit for slot {slot['slot_number']} ({slot['subject']})"
                         )
                         context.extracted_content = db_record.full_text
-                        context.available_days = db_record.available_days
+                        context.available_days = _available_days_for_cached_record(
+                            db_record
+                        )
                         context.cache_hit = True
 
                         cached_hyperlinks = []
@@ -105,6 +128,9 @@ async def process_file_group(
                                 db_record.content_json.get(
                                     "no_school_days", []
                                 )
+                            )
+                            context.table_content = db_record.content_json.get(
+                                "table_content"
                             )
 
                         if not cached_hyperlinks:
@@ -211,12 +237,15 @@ async def process_file_group(
                         context.extracted_content = content_data.get(
                             "full_text", ""
                         )
-                        context.available_days = content_data.get(
-                            "available_days", []
+                        # Parser output does not include available_days; derive from table_content.
+                        # Never default to [] (that means "zero instructional days" and forces full-week stub).
+                        context.available_days = get_available_days_from_content(
+                            content_data
                         )
                         context.no_school_days = content_data.get(
                             "no_school_days", []
                         )
+                        context.table_content = content_data.get("table_content")
 
                         context.slot["_extracted_images"] = images
                         context.slot["_extracted_hyperlinks"] = hyperlinks
