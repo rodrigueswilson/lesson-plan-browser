@@ -14,6 +14,8 @@ from pydantic import (
     model_validator,
 )
 
+from backend.wida_eld_format import WIDA_ELD_CODE_RE, validate_and_normalize_wida_objective
+
 
 class VocabularyCognatePair(BaseModel):
     """English-Portuguese vocabulary pair with cognate information."""
@@ -93,9 +95,7 @@ class ObjectiveData(BaseModel):
     )
 
     _NO_SCHOOL_VALUES = {"no school", "holiday", "teacher workday", "testing"}
-    _WIDA_PATTERN = re.compile(
-        r"ELD-[A-Z]{2}\.[0-9K-]+\.[A-Za-z]+\.(?:Listening|Reading|Speaking|Writing)(?:/(?:Listening|Reading|Speaking|Writing))*"
-    )
+    _WIDA_PATTERN = WIDA_ELD_CODE_RE
     _STUDENT_GOAL_DOMAIN_PATTERN = re.compile(
         r"\b(listen(?:ing)?|read(?:ing)?|speak(?:ing)?|write|writing)\b",
         re.IGNORECASE,
@@ -178,10 +178,7 @@ class ObjectiveData(BaseModel):
                 return pattern
         except (TypeError, AttributeError):
             pass
-        # Fallback to hardcoded pattern
-        return re.compile(
-            r"ELD-[A-Z]{2}\.[0-9K-]+\.[A-Za-z]+\.(?:Listening|Reading|Speaking|Writing)(?:/(?:Listening|Reading|Speaking|Writing))*"
-        )
+        return WIDA_ELD_CODE_RE
 
     @classmethod
     def _is_no_school(cls, value: str) -> bool:
@@ -300,47 +297,7 @@ class ObjectiveData(BaseModel):
     @field_validator("wida_objective")
     @classmethod
     def validate_wida_objective(cls, value: str) -> str:
-        if cls._is_no_school(value):
-            return value
-        if len(value.strip()) < 50:
-            raise ValueError(
-                "wida_objective must be at least 50 characters unless 'No School'"
-            )
-
-        # Normalize common ELD code format mistakes before validation
-        # Fix: ELD-XX.#-#.Function/Domain -> ELD-XX.#-#.Function.Domain
-        # Pattern matches: ELD-[letters].[numbers].[Function]/[Domain]
-        # IMPORTANT: Only replace the FIRST slash after the function name, not all slashes
-        # The pattern should match: FunctionName/Domain (where FunctionName is before the slash)
-        # and convert it to: FunctionName.Domain
-        # But preserve slashes between multiple domains (e.g., Listening/Speaking/Writing)
-        normalized_value = re.sub(
-            r"(ELD-[A-Z]{2}\.[0-9K-]+\.[A-Za-z]+)/(Listening|Reading|Speaking|Writing)",
-            r"\1.\2",
-            value,
-        )
-
-        # Log normalization for debugging (only if change occurred)
-        if normalized_value != value:
-            from backend.telemetry import logger
-
-            logger.debug(
-                "eld_code_normalized",
-                extra={
-                    "original": value[:100] if len(value) > 100 else value,
-                    "normalized": normalized_value[:100]
-                    if len(normalized_value) > 100
-                    else normalized_value,
-                },
-            )
-
-        wida_pattern = cls._get_wida_pattern()
-        if not wida_pattern.search(normalized_value):
-            raise ValueError(
-                "wida_objective must include an ELD code with domain(s) (e.g., ELD-SS.6-8.Explain.Writing or ELD-SS.6-8.Explain.Listening/Speaking or ELD-SS.6-8.Explain.Listening/Reading/Speaking/Writing)"
-            )
-        # Return normalized value if it was fixed, otherwise return original
-        return normalized_value if normalized_value != value else value
+        return validate_and_normalize_wida_objective(value)
 
 
 class SlotMetadata(BaseModel):

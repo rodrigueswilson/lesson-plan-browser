@@ -466,7 +466,22 @@ function getISOWeekNumber(year: number, month: number, day: number): number {
   );
 }
 
-function formatWeekDisplayLabel(weekOf: string): string {
+/**
+ * ISO week-numbering year for the week containing `date` (local).
+ * Uses the Thursday-in-week rule so labels align with folder names like `26 W19` (YY W## = ISO week).
+ */
+function isoWeekNumberingYearLocal(date: Date): number {
+  const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  const dow = d.getDay() || 7;
+  d.setDate(d.getDate() + 4 - dow);
+  return d.getFullYear();
+}
+
+/**
+ * Human-readable week label for selectors. Matches on-disk folder style `YY W##` + date range
+ * (same ISO week semantics as `parse_iso_year_week_string_to_hyphen_range` on the backend).
+ */
+export function formatWeekDisplayLabel(weekOf: string): string {
   if (!weekOf) {
     return 'Unknown Week';
   }
@@ -482,9 +497,11 @@ function formatWeekDisplayLabel(weekOf: string): string {
     let year = now.getFullYear();
     if (now.getMonth() + 1 === 12 && month <= 2) year += 1;
     else if (now.getMonth() + 1 === 1 && month === 12) year -= 1;
-    const w = getISOWeekNumber(year, month, day);
+    const startDate = new Date(year, month - 1, day);
+    const w = getISOWeekNumber(startDate.getFullYear(), startDate.getMonth() + 1, startDate.getDate());
+    const yy = String(isoWeekNumberingYearLocal(startDate)).slice(-2).padStart(2, '0');
     const pad = (s: string) => String(parseInt(s, 10)).padStart(2, '0');
-    return `W${String(w).padStart(2, '0')} ${pad(m1)}/${pad(d1)}-${pad(m2)}/${pad(d2)}`;
+    return `${yy} W${String(w).padStart(2, '0')} ${pad(m1)}/${pad(d1)}-${pad(m2)}/${pad(d2)}`;
   }
 
   // Try single date format (YYYY-MM-DD)
@@ -964,6 +981,7 @@ export const userApi = {
     // Standalone: local DB only (TABLET_STANDALONE_DB.md).
     if (canUseLocalDb) {
       try {
+        const weekLimit = Math.max(limit, 120);
         const rows = await queryLocalDatabase<Record<string, any>>(
           `SELECT week_of, MAX(generated_at) as latest_created_at
            FROM weekly_plans
@@ -972,7 +990,7 @@ export const userApi = {
            GROUP BY week_of
            ORDER BY MAX(generated_at) DESC
            LIMIT ?`,
-          [userId, limit]
+          [userId, weekLimit]
         );
 
         // Do not call getLessonPlanDirectory here: it is async, expects userId, and on
@@ -1061,18 +1079,20 @@ export const planApi = {
     // Standalone: local DB only (TABLET_STANDALONE_DB.md).
     if (canUseLocalDb) {
       try {
+        // Do not cap rows on tablet: LIMIT applies to plan *rows*, not distinct weeks. Heavy
+        // regeneration (same week) can push the newest calendar weeks out of the top N and
+        // hide W19/W20 even though they are the latest lessons.
         const rows = await queryLocalDatabase<Record<string, any>>(
           `SELECT id, user_id, week_of, status, output_file, generated_at, error_message
            FROM weekly_plans
            WHERE user_id = ?
-           ORDER BY generated_at DESC
-           LIMIT ?`,
-          [userId, limit]
+           ORDER BY generated_at DESC`,
+          [userId]
         );
         const plans = rows.map(rowToPlan);
-        console.log('[API] planApi.list (local):', {
+        console.log('[API] planApi.list (local, no row limit):', {
           userId,
-          limit,
+          requestedLimit: limit,
           planCount: plans.length,
           weekOfValues: plans.map(p => p.week_of),
           firstPlanWeekOf: plans[0]?.week_of

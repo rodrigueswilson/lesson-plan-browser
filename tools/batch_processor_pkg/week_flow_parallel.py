@@ -6,6 +6,9 @@ from typing import Any, Dict, List, Optional
 
 from backend.progress import progress_tracker
 from backend.telemetry import logger
+from tools.batch_processor_pkg.combine_render.multi_slot_metadata import (
+    apply_slot_metadata_to_lesson,
+)
 
 
 async def run_parallel_path(
@@ -71,6 +74,11 @@ async def run_parallel_path(
                 ):
                     ctx.lesson_json = copy.deepcopy(
                         existing_slot_plans[slot_num]["lesson_json"]
+                    )
+                    apply_slot_metadata_to_lesson(
+                        ctx.lesson_json,
+                        ctx.slot,
+                        processor,
                     )
 
     transform_count = len(

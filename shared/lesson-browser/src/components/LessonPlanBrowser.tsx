@@ -4,7 +4,17 @@ import { WeekView } from './WeekView';
 import { DayView } from './DayView';
 import { LessonDetailView } from './LessonDetailView';
 import { TopNavigationBar } from './TopNavigationBar';
-import { planApi, WeeklyPlan, ScheduleEntry, scheduleApi, lessonApi, userApi, ClassSlot, normalizeWeekOfForMatch } from '@lesson-api';
+import {
+  planApi,
+  WeeklyPlan,
+  ScheduleEntry,
+  scheduleApi,
+  lessonApi,
+  userApi,
+  ClassSlot,
+  normalizeWeekOfForMatch,
+  formatWeekDisplayLabel,
+} from '@lesson-api';
 import { useStore } from '../store/useStore';
 
 function logToNative(msg: string): void {
@@ -40,36 +50,6 @@ const sortLessons = (entries: ScheduleEntry[]) => {
     return (a.subject || '').localeCompare(b.subject || '');
   });
 };
-
-/** Get ISO week number (1-53) for a given date. */
-function getISOWeekNumber(year: number, month: number, day: number): number {
-  const d = new Date(year, month - 1, day);
-  d.setDate(d.getDate() + 4 - (d.getDay() || 7));
-  const startOfYear = new Date(d.getFullYear(), 0, 1);
-  return Math.ceil((((d.getTime() - startOfYear.getTime()) / 86400000) + startOfYear.getDay() + 1) / 7);
-}
-
-/** Format week_of (e.g. "09-29-10-03") as "W12 03/16-03/20" for display when not provided by API. */
-function formatWeekOfForDisplay(weekOf: string): string {
-  if (!weekOf) return 'Unknown Week';
-  const parts = weekOf.replace(/^week of\s+/i, '').trim().split(/[-/]/);
-  if (parts.length >= 4) {
-    const m1 = parseInt(parts[0], 10);
-    const d1 = parseInt(parts[1], 10);
-    const m2 = parseInt(parts[2], 10);
-    const d2 = parseInt(parts[3], 10);
-    const now = new Date();
-    let year = now.getFullYear();
-    if (now.getMonth() + 1 === 12 && m1 <= 2) year += 1;
-    else if (now.getMonth() + 1 === 1 && m1 === 12) year -= 1;
-    const w = getISOWeekNumber(year, m1, d1);
-    const pad = (n: number) => String(n).padStart(2, '0');
-    const start = `${pad(m1)}/${pad(d1)}`;
-    const end = `${pad(m2)}/${pad(d2)}`;
-    return `W${String(w).padStart(2, '0')} ${start}-${end}`;
-  }
-  return weekOf;
-}
 
 type WeekOption = { week_of: string; display: string; folder_name?: string };
 
@@ -142,7 +122,7 @@ function buildAvailableWeeksInApiOrder(
     .sort((a, b) => b.latestAt - a.latestAt);
   for (const { week_of } of planOnly) {
     seen.add(week_of);
-    result.push({ week_of, display: formatWeekOfForDisplay(week_of) });
+    result.push({ week_of, display: formatWeekDisplayLabel(week_of) });
   }
 
   result.sort(

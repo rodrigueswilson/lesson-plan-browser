@@ -2,6 +2,7 @@
 Helpers for batch render (signature path, lesson JSON normalization). Used by combine_render.
 """
 
+from copy import deepcopy
 from pathlib import Path
 from typing import Any, Dict, Optional
 
@@ -15,7 +16,7 @@ def normalize_lesson_json_for_render(
 ) -> Dict[str, Any]:
     """
     Ensure lesson_json is a dict with metadata and _source_slot/_source_subject on media.
-    Mutates and returns the same dict.
+    Returns a render-local copy so slot metadata does not leak across reused/cached JSON.
     """
     if not isinstance(lesson_json, dict):
         if hasattr(lesson_json, "model_dump"):
@@ -24,6 +25,8 @@ def normalize_lesson_json_for_render(
             lesson_json = lesson_json.dict()
         else:
             lesson_json = dict(lesson_json) if lesson_json else {}
+    else:
+        lesson_json = deepcopy(lesson_json)
 
     if "metadata" not in lesson_json:
         lesson_json["metadata"] = {}

@@ -142,7 +142,17 @@ You are mixing DayPlanSingleSlot and DayPlanMultiSlot structures.
             structured_feedback += f"**Required pattern:** `{pattern_req}`\n"
             if invalid_value != "unknown":
                 structured_feedback += f"**Your value:** `{invalid_value}`\n"
-            structured_feedback += "**Fix:** Ensure your value matches the pattern. See examples in original prompt.\n\n"
+            structured_feedback += "**Fix:** Ensure your value matches the pattern. See examples in original prompt.\n"
+            if "wida_objective" in field_path or "ELD-" in pattern_req:
+                structured_feedback += (
+                    "\n**WIDA ELD code format (objective.wida_objective):**\n"
+                    "- Use four segments: `ELD-[Standard].[GradeCluster].[Function].[Domains]`\n"
+                    "- WRONG: `(ELD-SS.6-8.Explain/Speaking/Writing)` — slash after Function\n"
+                    "- CORRECT: `(ELD-SS.6-8.Explain.Speaking/Writing)` — dot before first domain\n"
+                    "- Single domain example: `(ELD-LA.2-3.Explain.Writing)`\n\n"
+                )
+            else:
+                structured_feedback += "\n"
 
     if parsed_errors and parsed_errors.get("missing_field_errors"):
         structured_feedback += "\n## MISSING REQUIRED FIELDS\n\n"
