@@ -32,7 +32,8 @@ jobs:
 
       - name: Audit dependencies
         run: |
-          pip-audit -r requirements.txt --ignore-vuln CVE-2025-62727 --ignore-vuln CVE-2025-71176
+          pip-audit -r requirements.txt --ignore-vuln CVE-2025-62727 --ignore-vuln CVE-2025-71176 --ignore-vuln CVE-2025-69872
           # CVE-2025-62727: starlette 0.49.1 required; FastAPI does not yet support starlette>=0.49. Remove this ignore when upgrading FastAPI.
           # CVE-2025-71176: pytest 9.x required; stay on 7.4.3 until test suite is validated on pytest 9.
+          # CVE-2025-69872: diskcache via instructor; no fix version published yet.
         # Exits non-zero if any other known vulnerability is found
