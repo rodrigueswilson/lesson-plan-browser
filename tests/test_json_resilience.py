@@ -31,6 +31,13 @@ def test_samples():
             "name": "Missing closing brace",
             "json": '{"key": "value"',
         },
+        {
+            "name": "Assessment stray quote before Time field",
+            "json": (
+                '{"assessment": {"primary_assessment": '
+                '"Rubric: Claim (1), Organization (1). " Time": "30 minutes."}}'
+            ),
+        },
     ]
 
     for sample in samples:

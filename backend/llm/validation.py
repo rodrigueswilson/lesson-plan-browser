@@ -201,6 +201,16 @@ def _base_empty_day_placeholder(unit_lesson: str) -> Dict[str, Any]:
     }
 
 
+_WEEKDAY_KEYS = ("monday", "tuesday", "wednesday", "thursday", "friday")
+
+
+def _coerce_null_days_to_missing(days: Dict[str, Any]) -> None:
+    """Remove explicit null day values so missing-day placeholder logic applies."""
+    for day in _WEEKDAY_KEYS:
+        if days.get(day) is None:
+            days.pop(day, None)
+
+
 def validate_structure(
     lesson_json: Dict[str, Any],
     available_days: Optional[List[str]] = None,
@@ -225,7 +235,14 @@ def validate_structure(
             return False, error_msg
 
     days = lesson_json["days"]
-    required_days = ["monday", "tuesday", "wednesday", "thursday", "friday"]
+    if not isinstance(days, dict):
+        error_msg = "Invalid days: expected object"
+        logger.error("schema_validation_failed", extra={"reason": error_msg})
+        return False, error_msg
+
+    _coerce_null_days_to_missing(days)
+
+    required_days = list(_WEEKDAY_KEYS)
     available_days_normalized = None
     if available_days is not None:
         available_days_normalized = {
@@ -359,7 +376,11 @@ def validate_structure(
             },
         )
 
-    monday = days["monday"]
+    monday = days.get("monday")
+    if not isinstance(monday, dict):
+        error_msg = "Missing or invalid monday day plan"
+        logger.error("schema_validation_failed", extra={"reason": error_msg})
+        return False, error_msg
     if "unit_lesson" not in monday:
         error_msg = "Missing monday.unit_lesson"
         logger.error("schema_validation_failed", extra={"reason": error_msg})
