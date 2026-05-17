@@ -80,17 +80,24 @@ fn try_copy_bundled_database(_target_path: &PathBuf) -> bool {
 }
 
 /// On Android, apply ADB-pushed transfer DB before opening the internal database.
+///
+/// Candidate ordering: the canonical drop-off is the internal storage path
+/// (`/data/user/0/<pkg>/files/transfer/lesson_planner.db`), which the desktop's
+/// `push_tablet_database` writes via `run-as cp` from `/data/local/tmp`. The
+/// `/sdcard/...` aliases are kept as a legacy fallback for installs where
+/// only the Kotlin staging in `MainActivity` could pre-populate the file (or
+/// for non-Samsung devices where Java reads through the FUSE layer).
 #[cfg(target_os = "android")]
 fn apply_incoming_transfer_if_present(target_path: &PathBuf) {
     let candidates = [
+        PathBuf::from(INCOMING_TRANSFER_INTERNAL_PATH),
         PathBuf::from(INCOMING_TRANSFER_PATH),
         PathBuf::from(INCOMING_TRANSFER_ALT_PATH),
         PathBuf::from(INCOMING_TRANSFER_ALT_PATH_2),
-        PathBuf::from(INCOMING_TRANSFER_INTERNAL_PATH),
     ];
 
     let mut chosen: Option<(PathBuf, std::fs::Metadata)> = None;
-    let mut saw_permission_error = false;
+    let mut blocked_paths: Vec<String> = Vec::new();
 
     for pending in candidates {
         match fs::metadata(&pending) {
@@ -100,21 +107,22 @@ fn apply_incoming_transfer_if_present(target_path: &PathBuf) {
             }
             Err(e) if e.kind() == std::io::ErrorKind::NotFound => {}
             Err(e) => {
-                saw_permission_error = true;
-                eprintln!(
-                    "[DB] Transfer candidate not readable {}: {}",
-                    pending.display(),
-                    e
-                );
+                blocked_paths.push(format!("{} ({})", pending.display(), e));
             }
         }
     }
 
     let Some((pending, meta)) = chosen else {
-        if saw_permission_error {
-            eprintln!("[DB] Transfer import skipped: no readable transfer path found");
+        if !blocked_paths.is_empty() {
+            eprintln!(
+                "[DB] Transfer import skipped: no readable transfer path. Blocked: {}",
+                blocked_paths.join("; ")
+            );
         } else {
-            eprintln!("[DB] Transfer import skipped (missing): {}", INCOMING_TRANSFER_PATH);
+            eprintln!(
+                "[DB] Transfer import skipped (no transfer file). Canonical path: {}",
+                INCOMING_TRANSFER_INTERNAL_PATH
+            );
         }
         return;
     };
