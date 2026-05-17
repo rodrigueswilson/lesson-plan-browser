@@ -12,6 +12,14 @@ from backend.telemetry import logger
 from tools.batch_processor_pkg.slot_schema import map_day_content_to_schema
 
 
+def stable_original_lesson_plan_id(
+    user_id: str, week_of: str, slot_number: int, subject: str
+) -> str:
+    """Single stable primary key for original_lesson_plans (SSOT with parallel extract path)."""
+    unique_str = f"{user_id}_{week_of}_{slot_number}_{subject}"
+    return f"orig_{hashlib.md5(unique_str.encode()).hexdigest()}"
+
+
 async def persist_original_lesson_plan(
     db: Any,
     user_id: str,
@@ -62,8 +70,9 @@ async def persist_original_lesson_plan(
                         day_data, slot, day_hyperlinks=day_links
                     )
 
-        unique_str = f"{user_id}_{week_of}_{slot['slot_number']}_{slot['subject']}"
-        stable_id = f"orig_{hashlib.md5(unique_str.encode()).hexdigest()}"
+        stable_id = stable_original_lesson_plan_id(
+            user_id, week_of, slot["slot_number"], slot["subject"]
+        )
 
         original_plan_data = {
             "id": stable_id,
@@ -80,7 +89,9 @@ async def persist_original_lesson_plan(
             "full_text": content.get("full_text", ""),
             "available_days": available_days,
             "status": "extracted",
-            "has_no_school": not available_days or len(available_days) == 0,
+            "has_no_school": (
+                available_days is not None and len(available_days) == 0
+            ),
             **structured_days,
         }
 

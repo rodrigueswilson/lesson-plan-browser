@@ -17,7 +17,8 @@ from backend.llm.schema import (
     model_supports_structured_outputs,
     structured_response_format,
 )
-from backend.llm_service import LLMService, get_llm_service
+from backend.llm.api_key import get_openai_api_key_for_tests
+from backend.llm_service import LLMService
 
 load_dotenv()
 
@@ -258,17 +259,21 @@ def test_integration_with_real_api():
     print("TEST 5: Integration Test (Real API)")
     print("=" * 60)
 
-    api_key = os.getenv("OPENAI_API_KEY") or os.getenv("LLM_API_KEY")
-
-    if not api_key:
-        pytest.skip("OPENAI_API_KEY or LLM_API_KEY required when RUN_STRUCTURED_OUTPUTS_API=1")
-    
-    # Try GPT-5 Mini first (user's actual model), then fallback to gpt-4-turbo-preview
+    # Prefer OPENAI_API_KEY_TESTS / GPT5_API_KEY_TESTS so lesson-plan keys stay separate.
     test_models = ["gpt-5-mini", "gpt-4-turbo-preview"]
-    
+    if not any(get_openai_api_key_for_tests(model=m) for m in test_models):
+        pytest.skip(
+            "OpenAI key required when RUN_STRUCTURED_OUTPUTS_API=1: set "
+            "OPENAI_API_KEY_TESTS (and GPT5_API_KEY_TESTS for gpt-5* models) or fall back "
+            "to OPENAI_API_KEY / GPT5_API_KEY / LLM_API_KEY"
+        )
+
     for model in test_models:
         try:
-            service = get_llm_service(provider="openai")
+            model_key = get_openai_api_key_for_tests(model=model)
+            if not model_key:
+                continue
+            service = LLMService(provider="openai", api_key=model_key)
             service.model = model
             
             print(f"   Testing with model: {model}")

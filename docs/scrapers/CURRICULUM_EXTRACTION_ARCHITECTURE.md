@@ -45,9 +45,18 @@ flowchart LR
 | [tools/scraper/table_extractor.py](../../tools/scraper/table_extractor.py) | DOCX parse: recursive tables, hyperlinks, semantic stream; `ingest_to_curriculum` (lessons/standards/vocab/resources); `ingest_to_db` (extraction cache). |
 | [tools/scraper/cell_content_format.py](../../tools/scraper/cell_content_format.py) | **Cross-subject SSOT helpers** on table cell JSON: walk runs/paragraphs, collect hyperlinks, split leading bold title vs body (shared by ELA summary and ingest tooling). |
 | [tools/scraper/subject_config.py](../../tools/scraper/subject_config.py) | Subject-specific lesson title regexes and section anchor strings. |
+| [tools/scraper/science_lesson_tables.py](../../tools/scraper/science_lesson_tables.py) | Grade 2 Science: structured pass for learning-intention / success-criteria grids (and related merges into lesson records); complements the semantic DOCX stream, not ELA table rules. |
 | [backend/database/curriculum.py](../../backend/database/curriculum.py) | Reads/writes `curriculum.db` for explorer, lessons, unit intro, vocabulary, resources. |
 | [backend/database/curriculum_validation.py](../../backend/database/curriculum_validation.py) | Validates required tables/columns before curriculum routes run. |
 | [backend/routers/curriculum.py](../../backend/routers/curriculum.py) | REST endpoints for curriculum explorer and lesson detail. |
+
+The lesson-plan browser loads full lesson payloads via **`GET /api/curriculum/lessons/{lesson_id}/bundle`** (lesson + vocabulary + standards in one response), with optional client-side IndexedDB caching and `If-None-Match` when `content_hash` yields an ETag.
+
+### Grade 2 Science: module day-band index (API + UI)
+
+- **`GET /api/curriculum/units/{unit_id}/science-day-outline`** — Returns **`unit_id`**, **`lessons`** (each with **`lesson_id`**, **`lesson_number`**, **`title`**, **`segments`**: **`segment_index`**, **`day_label`** only), and **`total_writer_bands`**. This is a **read-only SSOT index** for pacing context; it is **not** a school-calendar projection (see [ADR-003-grade2-science-cluster-ssot-and-daily-projection.md](ADR-003-grade2-science-cluster-ssot-and-daily-projection.md)). Source: `science_lesson_day_segments` joined to `lessons` ([`backend/database/curriculum.py`](../../backend/database/curriculum.py) `get_unit_science_day_outline`).
+- **Full segment payloads** (HTML, experimental splits, etc.) remain on the **lesson bundle** as **`science_day_segments`**.
+- **Explorer:** [`lesson-plan-browser/frontend/src/components/CurriculumExplorer.tsx`](../../lesson-plan-browser/frontend/src/components/CurriculumExplorer.tsx) loads the outline for units whose ids match the canonical Science module pattern; the module overview shows cumulative writer bands and uses **Module N** labeling for those units.
 
 ## Two ingestion modes (do not conflate)
 
@@ -65,7 +74,17 @@ flowchart LR
 
 - **Linked Google Docs** may enrich `procedure_html` when `docs.google.com/document/d/...` links exist; Drive files and Slides are not DOCX-exportable and are skipped for recursion.  
 - **Section routing** in `ingest_to_curriculum` depends on anchor strings in `SubjectConfig`; missing anchors can leave `procedure_html` empty until anchors or fallbacks are extended.  
+- **Grade 2 Science:** procedure routing often needs **curriculum-specific** anchor strings (writer headings such as “THE LESSON IN ACTION,” “Do It Now in Science,” “Online Learning Activities”) added to `SubjectConfig.SCIENCE` when those strings bound procedural content in the DOCX. Grids for learning intentions and success criteria are parsed in a **separate pass** by [`tools/scraper/science_lesson_tables.py`](../../tools/scraper/science_lesson_tables.py) (analogous in role to ELA’s dedicated table extractors, not a duplicate of `ela_summary_table.py`). After changes, **cross-check** semantic-stream fields (for example `procedure_html`) against structured Science payloads so no block appears only in one path. See [RUNBOOK-grade2-science-three-step-pacing-and-daily-drafts.md](./RUNBOOK-grade2-science-three-step-pacing-and-daily-drafts.md).  
 - **Schema drift**: `upsert_lesson` filters columns against `PRAGMA table_info(lessons)`; unknown columns are omitted (warnings logged when keys are dropped).
+
+## AI-assisted extraction policy (optional second pass)
+
+- **Default authority:** Deterministic `tools/scraper` extraction remains the SSOT baseline for curriculum ingestion.
+- **Scope:** AI/agentic extraction may be used only as an optional second pass for targeted gaps (for example, missing/ambiguous sections or layout-classification uncertainty).
+- **Field ownership:** Any AI-assisted write scope must be documented in issue/ADR acceptance criteria before implementation; do not allow implicit field expansion.
+- **No silent replacement:** AI output must not silently replace deterministic output outside the declared field scope.
+- **Failure behavior:** Missing credentials, timeout/rate limit, or invalid schema response must preserve deterministic results and emit ingest evidence/warnings.
+- **A4 provenance:** AI-assisted paths must preserve provenance expectations, including hyperlink/resource lineage semantics when applicable.
 
 ## High-fidelity lesson fields (ingestion and API)
 
@@ -112,9 +131,15 @@ The **Vocabulary** section populates the lesson’s **`vocabulary`** HTML field 
 - **Document layouts (reference only):** [math_unit_structure_analysis.md](math_unit_structure_analysis.md) (math grid anchors and in-cell bold labels); [ELA_SUMMARY_OF_KEY_LEARNING_STRUCTURE.md](ELA_SUMMARY_OF_KEY_LEARNING_STRUCTURE.md) (unit matrix + column C bold task title).
 - **Local-first curriculum links:** Google Doc hyperlinks are emitted as `<a href="…" data-resource-id="…">`. The `resources` table may store `local_path` when a file exists under `CURRICULUM_LOCAL_FILES_ROOT` (see `backend.config.Settings`). The API exposes `GET /api/curriculum/resources/google-id/{id}/resolve` (preferred URL for open) and `GET /api/curriculum/resources/google-id/{id}/file` (serve local file when present). The curriculum explorer rewrites or intercepts `data-resource-id` links to use the resolver.
 
+## External references and research
+
+For **agentic / LLM-assisted** document extraction, local shallow clones of reference projects, and per-repository research questions keyed to this pipeline, use the committed index [Agentic document extraction research](../research/agentic_doc_extraction_index.md). On-disk clones and spikes live under `research/agentic_doc_extraction/` ([README](../../research/agentic_doc_extraction/README.md)); those folders are gitignored except the README.
+
 ## Related docs
 
 - [math_unit_structure_analysis.md](math_unit_structure_analysis.md) — observed DOCX grid patterns.  
+- [ADR-003-grade2-science-cluster-ssot-and-daily-projection.md](ADR-003-grade2-science-cluster-ssot-and-daily-projection.md) — Grade 2 Science decision record for cluster SSOT, calendar projection, and AI advisory drafts.
+- [RUNBOOK-grade2-science-three-step-pacing-and-daily-drafts.md](RUNBOOK-grade2-science-three-step-pacing-and-daily-drafts.md) — operational workflow for Science variation (ingest, projection, validation, troubleshooting).
 - [tools/db/CURRICULUM_SCHEMA_SSOT.md](../../tools/db/CURRICULUM_SCHEMA_SSOT.md) — canonical curriculum tables.  
 - [tools/scraper/verify_curriculum_db.py](../../tools/scraper/verify_curriculum_db.py) — post-ingestion integrity CLI.
 - [tools/db/recreate_and_ingest_sample.py](../../tools/db/recreate_and_ingest_sample.py) — wipe/recreate `curriculum.db` from SSOT, seed reference unit, ingest sample DOCX (`--full-unit` for entire Unit 2 file).

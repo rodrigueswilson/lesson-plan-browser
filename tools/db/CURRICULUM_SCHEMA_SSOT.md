@@ -38,6 +38,78 @@ ALTER TABLE lessons ADD COLUMN ela_lesson_plan_structured TEXT;
 
 **API startup parity:** [backend/database/curriculum_validation.py](../../backend/database/curriculum_validation.py) enforces required `lessons` columns (including `standards_structured`) before curriculum routes run. When you add a column to `initialize_db.py` and `upsert_lesson`, update the validator’s `REQUIRED_COLUMNS` in the same change set.
 
+### `lessons.science_doc_lesson_number` and `lessons.science_li_sc_day_structured`
+
+- **`science_doc_lesson_number`** (INTEGER, nullable): the curriculum-writer `Lesson N` number from the DOCX module heading for Science ingest (repeats across modules in a long guide; used to align overview tables).
+- **`science_li_sc_day_structured`** (TEXT, JSON object): per-module **Learning intention / Success criteria** overview table split into ordered **day segments**. Each segment uses **`label`** (writer day key, e.g. `Day 1`, `Days 2&3`), **`learning_intention_html`**, **`success_criteria_html`**, **`brief_overview`** (HTML from the **Summary of Key Learning** table when detected in the tables preceding that lesson’s LI/SC grid), **`lesson_in_action_html`** (full **THE LESSON IN ACTION** table, lossless), and optionally **`experimental_splits`** (`opening_html`, `during_html`, `closing_html`, `online_html`) only when heading-based validation succeeds in the scraper. **`schema_version`** `2` indicates this segment shape. Produced by [tools/scraper/science_lesson_tables.py](../scraper/science_lesson_tables.py) during Science `ingest_to_curriculum` (`source` may be `science_lesson_tables@v2` when action tables were merged).
+
+```sql
+ALTER TABLE lessons ADD COLUMN science_doc_lesson_number INTEGER;
+ALTER TABLE lessons ADD COLUMN science_li_sc_day_structured TEXT;
+```
+
+**Writer parity:** include both in `upsert_lesson` `requested_columns`, `_LESSON_EXTRA_SCHEMA_COLUMNS` in [backend/database/curriculum.py](../../backend/database/curriculum.py), and `REQUIRED_COLUMNS["lessons"]`.
+
+### `science_lesson_day_segments`
+
+Relational mirror of **`lessons.science_li_sc_day_structured`**: one row per writer day segment for Science ingest. Populated in the same ingest transaction via `CurriculumDatabase.replace_science_lesson_day_segments` (stable `id` = `{lesson_id}_sci_{segment_index}`). The JSON column remains the scraper SSOT; the bundle API exposes ordered `science_day_segments` for clients that should not parse JSON.
+
+| Column | Type | Notes |
+|--------|------|--------|
+| `id` | TEXT PK | `{lesson_id}_sci_{segment_index}` |
+| `lesson_id` | TEXT NOT NULL | FK to `lessons.id` |
+| `segment_index` | INTEGER NOT NULL | 0-based; UNIQUE with `lesson_id` |
+| `day_label` | TEXT NOT NULL | Writer label (e.g. Day 1) |
+| `science_doc_lesson_number` | INTEGER | From payload `doc_lesson_number` |
+| `learning_intention_html` | TEXT | |
+| `success_criteria_html` | TEXT | |
+| `brief_overview_html` | TEXT | From segment `brief_overview` in JSON |
+| `lesson_in_action_html` | TEXT | |
+| `experimental_splits_json` | TEXT | Optional JSON object |
+
+Idempotent creation: `CurriculumDatabase.ensure_science_lesson_day_segments_table()` (via `ensure_provenance_columns`).
+
+### `g2_science_book_lesson_supplement`
+
+Optional **Grade 2 Inspire Science student workbook** cross-reference (not writer SSOT for lesson HTML). One row per canonical `lesson_id` under `Science_2_Mod*`. Populated by [`seed_g2_science_book_lesson_supplement.py`](seed_g2_science_book_lesson_supplement.py) from the PDF beside the scraped DOCX plus [`Tab_1.md`](../../reference_docs/scraped/Copy_of__2nd_Grade_Science/Tab_1/Tab_1.md). Exposed on `GET /api/curriculum/lessons/{id}/bundle` as `book_lesson_supplement` when present.
+
+| Column | Type | Notes |
+|--------|------|--------|
+| `lesson_id` | TEXT PK | FK `lessons.id` |
+| `source_pdf_label` | TEXT | Stable label for the workbook artifact |
+| `isbn13` | TEXT | From filename / metadata |
+| `pdf_page_start` / `pdf_page_end` | INTEGER | Heuristic span where worksheet title appears in page header |
+| `pdf_title_hit_count` | INTEGER | Pages matching title-in-head heuristic |
+| `first_page_workbook_pattern` | TEXT | e.g. `MODULE_OPENER`, `ASSESS_LESSON_READINESS` |
+| `paired_read_block_title` | TEXT | Curated teacher-facing block names |
+| `teacher_curriculum_cue` | TEXT | Snippet from Tab_1 near title + paired-read wording |
+| `format_notes` | TEXT | e.g. PDF module order vs canonical `unit_number` |
+| `updated_at` | TEXT | ISO8601 UTC |
+
+Idempotent creation: `CurriculumDatabase.ensure_g2_science_book_lesson_supplement_table()` (via `ensure_provenance_columns`).
+
+### `g2_science_book_lesson_extract`
+
+Per-page **plain text** from the same Grade 2 Inspire student workbook PDF, aligned to canonical `lesson_id` (title-in-head heuristic + optional overrides). **Complement only** (ADR-003); does not replace teacher lesson HTML.
+
+| Column | Type | Notes |
+|--------|------|--------|
+| `id` | TEXT PK | Stable id e.g. `{lesson_id}_bkp{page}` |
+| `lesson_id` | TEXT NOT NULL | FK `lessons.id` |
+| `page_number` | INTEGER NOT NULL | 1-based PDF page |
+| `body_text` | TEXT NOT NULL | Normalized `pdfplumber` extract |
+| `char_count` | INTEGER | |
+| `content_sha256` | TEXT | Hash of `body_text` for invalidation |
+| `alignment_confidence` | TEXT | `high` / `low` / `none` (stored values: high/low from matcher) |
+| `alignment_ambiguous` | INTEGER | 0/1 when multiple same-length title hits |
+| `source_pdf_label` | TEXT | Same label as supplement rows (`SOURCE_PDF_LABEL` in tools) |
+| `ingest_parser_version` | TEXT | e.g. `g2_book_extract@v1` |
+| `ingested_at` | TEXT | ISO8601 UTC |
+
+**UNIQUE** (`lesson_id`, `page_number`). Populated by [`ingest_g2_science_book_pdf.py`](ingest_g2_science_book_pdf.py). Bundle API: optional `book_page_extracts` on `GET /api/curriculum/lessons/{id}/bundle?include_book_extracts=true`; paginated `GET /api/curriculum/lessons/{id}/book-extracts`. Long `body_text` responses are truncated server-side.
+
+Idempotent creation: `CurriculumDatabase.ensure_g2_science_book_lesson_extract_table()` (via `ensure_provenance_columns`).
+
 Run from repo root (or adjust path): this script **recreates** `d:\LP\data\curriculum.db` from scratch. Use only when intentional.
 
 After a fresh init, seed at least one `units` row before `ingest_to_curriculum` (see [seed_reference_unit.py](seed_reference_unit.py)) or run [recreate_and_ingest_sample.py](recreate_and_ingest_sample.py).

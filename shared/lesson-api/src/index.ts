@@ -429,6 +429,34 @@ export function normalizeWeekOfForMatch(weekOf: string): string {
   return clean;
 }
 
+/**
+ * Infer calendar year for the Monday of a plan week (school-year heuristic) when no folder YY is present.
+ * Matches lesson-browser `getWeekCalendarSortKey` / batch week ordering.
+ */
+function inferSchoolYearForWeekStartMonth(month: number, reference: Date): number {
+  const currentYear = reference.getFullYear();
+  const currMonth = reference.getMonth() + 1;
+  if (month >= 8 && month <= 12) {
+    return currMonth >= 1 && currMonth <= 7 ? currentYear - 1 : currentYear;
+  }
+  return currMonth === 12 ? currentYear - 1 : currentYear;
+}
+
+/**
+ * Monday (start) of the plan week in local time. Accepts the same `week_of` shapes as {@link normalizeWeekOfForMatch}.
+ */
+export function parseWeekOfMondayLocalDate(weekOf: string, reference: Date = new Date()): Date | null {
+  if (!weekOf || typeof weekOf !== 'string') return null;
+  const canonical = normalizeWeekOfForMatch(weekOf);
+  const m = canonical.match(/^(\d{2})\/(\d{2})-(\d{2})\/(\d{2})$/);
+  if (!m) return null;
+  const m1 = Number(m[1]);
+  const d1 = Number(m[2]);
+  if (Number.isNaN(m1) || Number.isNaN(d1)) return null;
+  const year = inferSchoolYearForWeekStartMonth(m1, reference);
+  return new Date(year, m1 - 1, d1);
+}
+
 function getISOWeekNumber(year: number, month: number, day: number): number {
   const d = new Date(year, month - 1, day);
   d.setDate(d.getDate() + 4 - (d.getDay() || 7));
@@ -1224,7 +1252,26 @@ export function classifyProgressPollPayload(data: unknown): {
   return { terminal: false, normalizedStatus: lower, kind: 'ongoing' };
 }
 
-export function createProgressStream(taskId: string, onProgress: (data: any) => void) {
+export interface ProgressPollData {
+  status: string;
+  stage?: string;
+  stage_label?: string;
+  message: string;
+  progress: number;
+  progress_percent: number;
+  current: number;
+  total: number;
+  completed_slots: number;
+  total_slots: number;
+  processed_slots?: number;
+  failed_slots?: number;
+  output_file?: string;
+  errors?: Array<{ slot?: number; subject?: string; error?: string } | string>;
+  result?: Record<string, unknown> | null;
+  last_update_at?: string | null;
+}
+
+export function createProgressStream(taskId: string, onProgress: (data: ProgressPollData) => void) {
   console.log('[API] Starting progress polling for task:', taskId);
 
   const pollInterval = setInterval(async () => {
@@ -1235,14 +1282,35 @@ export function createProgressStream(taskId: string, onProgress: (data: any) => 
       console.log('[API] Progress update:', data);
 
       const cls = classifyProgressPollPayload(data);
-      const rawObj = typeof data === 'object' && data !== null ? data : {};
+      const rawObj = (typeof data === 'object' && data !== null ? data : {}) as Record<string, unknown>;
+      const progressPercent = Number(rawObj.progress_percent ?? rawObj.progress ?? 0) || 0;
+      const completedSlots = Number(rawObj.completed_slots ?? rawObj.processed_slots ?? 0) || 0;
+      const totalSlots = Number(rawObj.total_slots ?? 0) || 0;
+      const current = Number(rawObj.current ?? progressPercent) || 0;
+      const total = Number(rawObj.total ?? 100) || 100;
       onProgress({
-        ...rawObj,
         status: cls.normalizedStatus,
-        progress: (data as { progress?: number })?.progress ?? 0,
-        message: (data as { message?: string })?.message || 'Processing...',
-        current: (data as { current?: number })?.current ?? 0,
-        total: (data as { total?: number })?.total ?? 0,
+        stage: String(rawObj.stage ?? ''),
+        stage_label: String(rawObj.stage_label ?? ''),
+        message: String(rawObj.message ?? 'Processing...'),
+        progress: progressPercent,
+        progress_percent: progressPercent,
+        current,
+        total,
+        completed_slots: completedSlots,
+        total_slots: totalSlots,
+        processed_slots: Number(rawObj.processed_slots ?? completedSlots) || 0,
+        failed_slots: Number(rawObj.failed_slots ?? 0) || 0,
+        output_file: typeof rawObj.output_file === 'string' ? rawObj.output_file : undefined,
+        errors: Array.isArray(rawObj.errors)
+          ? (rawObj.errors as Array<{ slot?: number; subject?: string; error?: string } | string>)
+          : [],
+        result:
+          rawObj.result && typeof rawObj.result === 'object'
+            ? (rawObj.result as Record<string, unknown>)
+            : null,
+        last_update_at:
+          typeof rawObj.last_update_at === 'string' ? rawObj.last_update_at : null,
       });
 
       if (cls.terminal) {

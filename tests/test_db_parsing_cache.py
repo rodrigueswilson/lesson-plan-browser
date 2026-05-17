@@ -133,7 +133,32 @@ async def test_grouping_and_cache():
     print(f"Number of contexts: {len(contexts)}")
     print(f"Parser calls (expected 2 - file1 and file2): {processor._open_docx_with_retry.call_count}")
     assert processor._open_docx_with_retry.call_count == 2
-    
+
+    # Case 4: Would-be cache hit but refresh_source_documents forces re-parse
+    processor._open_docx_with_retry.reset_mock()
+    processor.db.create_original_lesson_plan.reset_mock()
+    processor._resolve_primary_file = MagicMock(return_value="shared_file.docx")
+    processor.db.get_original_lesson_plan = MagicMock(return_value=mock_record)
+
+    with patch("pathlib.Path.exists", return_value=True), patch(
+        "pathlib.Path.stat"
+    ) as mock_stat:
+        mock_stat.return_value.st_mtime = datetime.now().timestamp() - 3600
+
+        print("\n--- Test CASE 4: refresh_source_documents bypasses DB cache ---")
+        contexts = await processor._extract_slots_parallel_db(
+            slots,
+            "10/06-10/10",
+            None,
+            None,
+            "plan_1",
+            MagicMock(),
+            refresh_source_documents=True,
+        )
+
+    assert len(contexts) == 3
+    assert processor._open_docx_with_retry.call_count == 1
+
     print("\nSUCCESS: DB Parsing Cache & Grouping verified!")
 
 if __name__ == "__main__":

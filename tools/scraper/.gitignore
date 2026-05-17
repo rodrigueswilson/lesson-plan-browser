@@ -1,0 +1,7 @@
+# Ignore sensitive Google API credentials
+credentials/credentials.json
+credentials/token.json
+
+# Ignore temporary output
+output/
+reference_docs/scraped/

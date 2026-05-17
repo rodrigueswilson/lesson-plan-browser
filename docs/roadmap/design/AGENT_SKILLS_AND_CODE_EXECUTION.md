@@ -156,6 +156,8 @@ skills/
 - Deduplicate across sources
 - Link vocabulary to specific plans/days
 
+For a planned **orchestrator + multi-API hybrid data model** (unit vs lesson scope, phonology/cognate enrichment, API artifacts), see [VOCABULARY_AGENT_AND_HYBRID_DATA.md](./VOCABULARY_AGENT_AND_HYBRID_DATA.md).
+
 #### 3. Image Collection and Normalization Skill
 
 **Purpose**: Collect images from multiple APIs and normalize to standard sizes.

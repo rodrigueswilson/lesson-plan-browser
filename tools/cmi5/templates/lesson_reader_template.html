@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ lesson_title }} - Interactive Reader</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #34495e;
+            --accent: #3498db;
+            --math: #2980b9;
+            --ela: #27ae60;
+            --bg: #f5f7fa;
+            --card: #ffffff;
+            --text: #2c3e50;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: var(--card);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        }
+        .header {
+            border-bottom: 2px solid #eee;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        .title-group h1 { font-size: 1.8em; margin: 0; }
+        .title-group h2 { font-size: 1.1em; color: var(--accent); margin: 5px 0 0; }
+        
+        .lang-toggle {
+            background: #eee;
+            padding: 5px;
+            border-radius: 20px;
+            display: flex;
+            gap: 5px;
+        }
+        .lang-btn {
+            border: none;
+            padding: 8px 15px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .lang-btn.active { background: var(--accent); color: white; }
+
+        .section { margin-bottom: 30px; }
+        .section-title {
+            font-size: 1.2em;
+            font-weight: 700;
+            text-transform: uppercase;
+            border-left: 5px solid var(--accent);
+            padding-left: 15px;
+            margin-bottom: 15px;
+        }
+
+        .objective-list, .step-list {
+            list-style: none;
+            padding: 0;
+        }
+        .objective-item, .step-item {
+            background: #fcfcfc;
+            border: 1px solid #eee;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .vocab-word {
+            color: var(--accent);
+            text-decoration: underline dotted;
+            cursor: help;
+            font-weight: 600;
+        }
+
+        /* Vocabulary Modal/Popover (Simplified for now) */
+        .vocab-pop { margin-top: 5px; font-size: 0.9em; color: #666; font-style: italic; }
+
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            text-align: center;
+            font-size: 0.9em;
+            color: #999;
+        }
+        
+        /* Language handling */
+        [lang="pt"] { display: none; }
+        body.pt-mode [lang="en"] { display: none; }
+        body.pt-mode [lang="pt"] { display: block; }
+    </style>
+</head>
+<body class="en-mode">
+    <div class="container">
+        <header class="header">
+            <div class="title-group">
+                <h1>{{ lesson_title }}</h1>
+                <h2>Grade {{ grade }} | Unit {{ unit_number }}: {{ unit_title }}</h2>
+            </div>
+            <div class="lang-toggle">
+                <button class="lang-btn active" onclick="setLang('en')">EN</button>
+                <button class="lang-btn" onclick="setLang('pt')">PT</button>
+            </div>
+        </header>
+
+        <section class="section">
+            <div class="section-title">
+                <span lang="en">Learning Targets</span>
+                <span lang="pt">Objetivos de Aprendizagem</span>
+            </div>
+            <ul class="objective-list">
+                {% for item in learning_intentions %}
+                <li class="objective-item">{{ item }}</li>
+                {% endfor %}
+            </ul>
+        </section>
+
+        <section class="section">
+            <div class="section-title">
+                <span lang="en">Today's Task</span>
+                <span lang="pt">Tarefa de Hoje</span>
+            </div>
+            <div class="step-item">
+                <p>{{ daily_instructional_task }}</p>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="section-title">
+                <span lang="en">Word Power</span>
+                <span lang="pt">Poder das Palavras</span>
+            </div>
+            <div class="vocab-grid">
+                {% for vocab in bilingual_vocabulary %}
+                <div class="objective-item">
+                    <strong>
+                        <span lang="en">{{ vocab.en }}</span>
+                        <span lang="pt">{{ vocab.pt }}</span>
+                    </strong>: 
+                    <span lang="en">{{ vocab.def_en }}</span>
+                    <span lang="pt">{{ vocab.def_pt }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <footer class="footer">
+            <p>Newark Public Schools | Interactive CMI5 Learning Object</p>
+            <p>Lesson ID: {{ lesson_id }}</p>
+        </footer>
+    </div>
+
+    <script>
+        function setLang(lang) {
+            document.body.className = lang + '-mode';
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.innerText.toLowerCase() === lang);
+            });
+        }
+    </script>
+</body>
+</html>

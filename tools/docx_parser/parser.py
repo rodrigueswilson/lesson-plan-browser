@@ -19,6 +19,7 @@ from . import images_metadata
 from . import no_school
 from . import slot_extraction
 from . import table_extraction
+from .instructional_day import _day_text_for_instructional_inference
 from .structure import validate_slot_structure
 
 
@@ -337,7 +338,11 @@ class DOCXParser:
             full_text_parts = []
             no_school_days = []
             for day, day_content in table_content.items():
-                day_text = " ".join(day_content.values())
+                day_text = (
+                    _day_text_for_instructional_inference(day_content)
+                    if isinstance(day_content, dict)
+                    else str(day_content or "")
+                )
                 if self.is_day_no_school(day_text):
                     no_school_days.append(day)
                     full_text_parts.append(f"\n{day.upper()}")

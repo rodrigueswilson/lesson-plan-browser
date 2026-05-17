@@ -1,13 +1,18 @@
-import sqlite3
 import os
+import sqlite3
+from pathlib import Path
 
-db_path = r"d:\LP\data\curriculum.db"
+_REPO_ROOT = Path(__file__).resolve().parents[2]
+_DEFAULT_DB = _REPO_ROOT / "data" / "curriculum.db"
+db_path = os.environ.get("CURRICULUM_DB_PATH", str(_DEFAULT_DB))
 
 # Backup old if exists
-if os.path.exists(db_path):
-    os.remove(db_path)
+db_path_obj = Path(db_path)
+db_path_obj.parent.mkdir(parents=True, exist_ok=True)
+if db_path_obj.exists():
+    db_path_obj.unlink()
 
-conn = sqlite3.connect(db_path)
+conn = sqlite3.connect(str(db_path_obj))
 c = conn.cursor()
 
 # Schema
@@ -63,6 +68,8 @@ CREATE TABLE lessons (
     standards_structured TEXT,
     ela_key_learning_summary TEXT,
     ela_lesson_plan_structured TEXT,
+    science_doc_lesson_number INTEGER,
+    science_li_sc_day_structured TEXT,
     source_doc_id TEXT,
     source_url TEXT,
     ingested_at TEXT,
@@ -173,6 +180,28 @@ CREATE TABLE lesson_resources (
 );
 """)
 
+c.execute("""
+CREATE TABLE science_lesson_day_segments (
+    id TEXT PRIMARY KEY,
+    lesson_id TEXT NOT NULL,
+    segment_index INTEGER NOT NULL,
+    day_label TEXT NOT NULL,
+    science_doc_lesson_number INTEGER,
+    learning_intention_html TEXT,
+    success_criteria_html TEXT,
+    brief_overview_html TEXT,
+    lesson_in_action_html TEXT,
+    experimental_splits_json TEXT,
+    FOREIGN KEY(lesson_id) REFERENCES lessons(id),
+    UNIQUE(lesson_id, segment_index)
+);
+""")
+
+c.execute(
+    "CREATE INDEX IF NOT EXISTS idx_science_lesson_day_segments_lesson_id "
+    "ON science_lesson_day_segments(lesson_id)"
+)
+
 conn.commit()
 conn.close()
-print("Database initialized clean with Enhanced Vocabulary Schema.")
+print(f"Database initialized clean with Enhanced Vocabulary Schema: {db_path_obj}")

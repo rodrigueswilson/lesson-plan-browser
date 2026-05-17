@@ -114,7 +114,12 @@ backend/dist/python-sync-processor.exe
 frontend/src-tauri/binaries/python-sync-processor-linux
 frontend/src-tauri/binaries/python-sync-processor-x86_64-pc-windows-msvc.exe
 
+# Local research: reference clones and throwaway spikes (README + committed index: docs/research/agentic_doc_extraction_index.md)
+research/agentic_doc_extraction/clones/
+research/agentic_doc_extraction/spikes/
+
 # Archives
 *.zip
 *.7z
 *.rar
+.gitnexus

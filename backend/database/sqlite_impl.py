@@ -3,6 +3,7 @@ SQLite implementation of DatabaseInterface composing engine and domain modules.
 """
 
 from contextlib import contextmanager
+from datetime import datetime
 from pathlib import Path as PathType
 from typing import Any, Dict, List, Optional, Tuple, Union
 
@@ -199,6 +200,7 @@ class SQLiteDatabase(DatabaseInterface):
         error_message: Optional[str] = None,
         lesson_json: Optional[Dict[str, Any]] = None,
         total_slots: Optional[int] = None,
+        generated_at: Optional[datetime] = None,
     ) -> bool:
         return plans_module.update_weekly_plan(
             self,
@@ -208,6 +210,7 @@ class SQLiteDatabase(DatabaseInterface):
             error_message=error_message,
             lesson_json=lesson_json,
             total_slots=total_slots,
+            generated_at=generated_at,
         )
 
     # Original lesson plans

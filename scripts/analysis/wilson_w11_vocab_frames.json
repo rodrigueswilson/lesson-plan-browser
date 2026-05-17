@@ -1,0 +1,1963 @@
+{
+  "user": "Wilson Rodrigues",
+  "plans": [
+    {
+      "plan_id": "plan_20260307173725_ae2dfb18",
+      "week_of": "03-09-03-13",
+      "vocabulary_cognates": [
+        {
+          "english": "injustice",
+          "portuguese": "injustiça",
+          "day": "monday"
+        },
+        {
+          "english": "runt",
+          "portuguese": "menor da ninhada",
+          "day": "monday"
+        },
+        {
+          "english": "choice",
+          "portuguese": "escolha",
+          "day": "monday"
+        },
+        {
+          "english": "evidence",
+          "portuguese": "evidência",
+          "day": "monday"
+        },
+        {
+          "english": "care",
+          "portuguese": "cuidado",
+          "day": "monday"
+        },
+        {
+          "english": "character",
+          "portuguese": "carácter",
+          "day": "monday"
+        },
+        {
+          "english": "evidence",
+          "portuguese": "evidência",
+          "day": "monday"
+        },
+        {
+          "english": "map",
+          "portuguese": "mapa",
+          "day": "monday"
+        },
+        {
+          "english": "seed",
+          "portuguese": "semente",
+          "day": "monday"
+        },
+        {
+          "english": "plant",
+          "portuguese": "planta",
+          "day": "monday"
+        },
+        {
+          "english": "germinate",
+          "portuguese": "germinar",
+          "day": "monday"
+        },
+        {
+          "english": "pollination",
+          "portuguese": "polinização",
+          "day": "monday"
+        },
+        {
+          "english": "plant",
+          "portuguese": "planta",
+          "day": "monday"
+        },
+        {
+          "english": "water",
+          "portuguese": "água",
+          "day": "monday"
+        },
+        {
+          "english": "root",
+          "portuguese": "raiz",
+          "day": "monday"
+        },
+        {
+          "english": "stem",
+          "portuguese": "caule",
+          "day": "monday"
+        },
+        {
+          "english": "leaf",
+          "portuguese": "folha",
+          "day": "monday"
+        },
+        {
+          "english": "pollen",
+          "portuguese": "pólen",
+          "day": "monday"
+        },
+        {
+          "english": "numerator",
+          "portuguese": "numerador",
+          "day": "monday"
+        },
+        {
+          "english": "denominator",
+          "portuguese": "denominador",
+          "day": "monday"
+        },
+        {
+          "english": "fraction",
+          "portuguese": "fração",
+          "day": "monday"
+        },
+        {
+          "english": "partition",
+          "portuguese": "partição",
+          "day": "monday"
+        },
+        {
+          "english": "equal",
+          "portuguese": "igual",
+          "day": "monday"
+        },
+        {
+          "english": "whole",
+          "portuguese": "todo",
+          "day": "monday"
+        },
+        {
+          "english": "shape",
+          "portuguese": "forma",
+          "day": "monday"
+        },
+        {
+          "english": "triangle",
+          "portuguese": "triângulo",
+          "day": "monday"
+        },
+        {
+          "english": "square",
+          "portuguese": "quadrado",
+          "day": "monday"
+        },
+        {
+          "english": "fraction",
+          "portuguese": "fração",
+          "day": "monday"
+        },
+        {
+          "english": "whole",
+          "portuguese": "inteiro",
+          "day": "monday"
+        },
+        {
+          "english": "equal",
+          "portuguese": "igual",
+          "day": "monday"
+        },
+        {
+          "english": "glutton",
+          "portuguese": "guloso",
+          "day": "tuesday"
+        },
+        {
+          "english": "trough",
+          "portuguese": "cocho",
+          "day": "tuesday"
+        },
+        {
+          "english": "objectionable",
+          "portuguese": "objectione1vel",
+          "day": "tuesday"
+        },
+        {
+          "english": "escape",
+          "portuguese": "fuga",
+          "day": "tuesday"
+        },
+        {
+          "english": "freedom",
+          "portuguese": "liberdade",
+          "day": "tuesday"
+        },
+        {
+          "english": "feeling",
+          "portuguese": "sentimento",
+          "day": "tuesday"
+        },
+        {
+          "english": "edit",
+          "portuguese": "editar",
+          "day": "tuesday"
+        },
+        {
+          "english": "publish",
+          "portuguese": "publicar",
+          "day": "tuesday"
+        },
+        {
+          "english": "draft",
+          "portuguese": "rascunho",
+          "day": "tuesday"
+        },
+        {
+          "english": "revise",
+          "portuguese": "revisar",
+          "day": "tuesday"
+        },
+        {
+          "english": "sentence",
+          "portuguese": "frase",
+          "day": "tuesday"
+        },
+        {
+          "english": "punctuation",
+          "portuguese": "pontuação",
+          "day": "tuesday"
+        },
+        {
+          "english": "plant",
+          "portuguese": "planta",
+          "day": "tuesday"
+        },
+        {
+          "english": "water",
+          "portuguese": "água",
+          "day": "tuesday"
+        },
+        {
+          "english": "grow",
+          "portuguese": "crescer",
+          "day": "tuesday"
+        },
+        {
+          "english": "root",
+          "portuguese": "raiz",
+          "day": "tuesday"
+        },
+        {
+          "english": "leaf",
+          "portuguese": "folha",
+          "day": "tuesday"
+        },
+        {
+          "english": "flower",
+          "portuguese": "flor",
+          "day": "tuesday"
+        },
+        {
+          "english": "unit fraction",
+          "portuguese": "fração unitária",
+          "day": "tuesday"
+        },
+        {
+          "english": "add",
+          "portuguese": "adicionar",
+          "day": "tuesday"
+        },
+        {
+          "english": "sum",
+          "portuguese": "soma",
+          "day": "tuesday"
+        },
+        {
+          "english": "equivalent",
+          "portuguese": "equivalente",
+          "day": "tuesday"
+        },
+        {
+          "english": "half",
+          "portuguese": "meio",
+          "day": "tuesday"
+        },
+        {
+          "english": "unit",
+          "portuguese": "unidade",
+          "day": "tuesday"
+        },
+        {
+          "english": "half",
+          "portuguese": "metade",
+          "day": "tuesday"
+        },
+        {
+          "english": "third",
+          "portuguese": "terço",
+          "day": "tuesday"
+        },
+        {
+          "english": "fourth",
+          "portuguese": "quarto",
+          "day": "tuesday"
+        },
+        {
+          "english": "number line",
+          "portuguese": "linha numérica",
+          "day": "tuesday"
+        },
+        {
+          "english": "equal",
+          "portuguese": "igual",
+          "day": "tuesday"
+        },
+        {
+          "english": "partition",
+          "portuguese": "particionar",
+          "day": "tuesday"
+        },
+        {
+          "english": "salutations",
+          "portuguese": "saudae7f5es",
+          "day": "wednesday"
+        },
+        {
+          "english": "anesthetic",
+          "portuguese": "aneste9sico",
+          "day": "wednesday"
+        },
+        {
+          "english": "conspiracy",
+          "portuguese": "conspirae7e3o",
+          "day": "wednesday"
+        },
+        {
+          "english": "trait",
+          "portuguese": "trae7o",
+          "day": "wednesday"
+        },
+        {
+          "english": "evidence",
+          "portuguese": "evidência",
+          "day": "wednesday"
+        },
+        {
+          "english": "describe",
+          "portuguese": "descrever",
+          "day": "wednesday"
+        },
+        {
+          "english": "question",
+          "portuguese": "pergunta",
+          "day": "wednesday"
+        },
+        {
+          "english": "detail",
+          "portuguese": "detalhe",
+          "day": "wednesday"
+        },
+        {
+          "english": "evidence",
+          "portuguese": "evidência",
+          "day": "wednesday"
+        },
+        {
+          "english": "inference",
+          "portuguese": "inferência",
+          "day": "wednesday"
+        },
+        {
+          "english": "author",
+          "portuguese": "autor",
+          "day": "wednesday"
+        },
+        {
+          "english": "pinecone",
+          "portuguese": "pinha",
+          "day": "wednesday"
+        },
+        {
+          "english": "plant",
+          "portuguese": "planta",
+          "day": "wednesday"
+        },
+        {
+          "english": "water",
+          "portuguese": "água",
+          "day": "wednesday"
+        },
+        {
+          "english": "root",
+          "portuguese": "raiz",
+          "day": "wednesday"
+        },
+        {
+          "english": "leaf",
+          "portuguese": "folha",
+          "day": "wednesday"
+        },
+        {
+          "english": "stem",
+          "portuguese": "caule",
+          "day": "wednesday"
+        },
+        {
+          "english": "flower",
+          "portuguese": "flor",
+          "day": "wednesday"
+        },
+        {
+          "english": "equal",
+          "portuguese": "igual",
+          "day": "wednesday"
+        },
+        {
+          "english": "area",
+          "portuguese": "área",
+          "day": "wednesday"
+        },
+        {
+          "english": "piece",
+          "portuguese": "peça",
+          "day": "wednesday"
+        },
+        {
+          "english": "shape",
+          "portuguese": "forma",
+          "day": "wednesday"
+        },
+        {
+          "english": "compare",
+          "portuguese": "comparar",
+          "day": "wednesday"
+        },
+        {
+          "english": "whole",
+          "portuguese": "inteiro",
+          "day": "wednesday"
+        },
+        {
+          "english": "number line",
+          "portuguese": "reta numérica",
+          "day": "wednesday"
+        },
+        {
+          "english": "label",
+          "portuguese": "rotular",
+          "day": "wednesday"
+        },
+        {
+          "english": "interval",
+          "portuguese": "intervalo",
+          "day": "wednesday"
+        },
+        {
+          "english": "point",
+          "portuguese": "ponto",
+          "day": "wednesday"
+        },
+        {
+          "english": "Locate",
+          "portuguese": "localizar",
+          "day": "wednesday"
+        },
+        {
+          "english": "divide",
+          "portuguese": "dividir",
+          "day": "wednesday"
+        },
+        {
+          "english": "untenable",
+          "portuguese": "insustente1vel",
+          "day": "thursday"
+        },
+        {
+          "english": "unremitting",
+          "portuguese": "incessante",
+          "day": "thursday"
+        },
+        {
+          "english": "fate",
+          "portuguese": "destino",
+          "day": "thursday"
+        },
+        {
+          "english": "react",
+          "portuguese": "reagir",
+          "day": "thursday"
+        },
+        {
+          "english": "sense",
+          "portuguese": "sentido",
+          "day": "thursday"
+        },
+        {
+          "english": "describe",
+          "portuguese": "descrever",
+          "day": "thursday"
+        },
+        {
+          "english": "vocabulary",
+          "portuguese": "vocabulário",
+          "day": "thursday"
+        },
+        {
+          "english": "definition",
+          "portuguese": "definição",
+          "day": "thursday"
+        },
+        {
+          "english": "context",
+          "portuguese": "contexto",
+          "day": "thursday"
+        },
+        {
+          "english": "meaning",
+          "portuguese": "significado",
+          "day": "thursday"
+        },
+        {
+          "english": "word",
+          "portuguese": "palavra",
+          "day": "thursday"
+        },
+        {
+          "english": "concept",
+          "portuguese": "conceito",
+          "day": "thursday"
+        },
+        {
+          "english": "light",
+          "portuguese": "luz",
+          "day": "thursday"
+        },
+        {
+          "english": "entomologist",
+          "portuguese": "entomologista",
+          "day": "thursday"
+        },
+        {
+          "english": "insect",
+          "portuguese": "inseto",
+          "day": "thursday"
+        },
+        {
+          "english": "plant",
+          "portuguese": "planta",
+          "day": "thursday"
+        },
+        {
+          "english": "leaf",
+          "portuguese": "folha",
+          "day": "thursday"
+        },
+        {
+          "english": "grow",
+          "portuguese": "crescer",
+          "day": "thursday"
+        },
+        {
+          "english": "half",
+          "portuguese": "metade",
+          "day": "thursday"
+        },
+        {
+          "english": "third",
+          "portuguese": "terço",
+          "day": "thursday"
+        },
+        {
+          "english": "fourth",
+          "portuguese": "quarto",
+          "day": "thursday"
+        },
+        {
+          "english": "whole",
+          "portuguese": "inteiro",
+          "day": "thursday"
+        },
+        {
+          "english": "equal",
+          "portuguese": "igual",
+          "day": "thursday"
+        },
+        {
+          "english": "model",
+          "portuguese": "modelo",
+          "day": "thursday"
+        },
+        {
+          "english": "greater than one",
+          "portuguese": "maior que um",
+          "day": "thursday"
+        },
+        {
+          "english": "box the whole",
+          "portuguese": "encaixotar o inteiro",
+          "day": "thursday"
+        },
+        {
+          "english": "partition",
+          "portuguese": "partição",
+          "day": "thursday"
+        },
+        {
+          "english": "unit",
+          "portuguese": "unidade",
+          "day": "thursday"
+        },
+        {
+          "english": "label",
+          "portuguese": "rotular",
+          "day": "thursday"
+        },
+        {
+          "english": "interval",
+          "portuguese": "intervalo",
+          "day": "thursday"
+        },
+        {
+          "english": "sedentary",
+          "portuguese": "sedente1rio",
+          "day": "friday"
+        },
+        {
+          "english": "possessions",
+          "portuguese": "possesf5es",
+          "day": "friday"
+        },
+        {
+          "english": "expression",
+          "portuguese": "expresse3o",
+          "day": "friday"
+        },
+        {
+          "english": "voice",
+          "portuguese": "voz",
+          "day": "friday"
+        },
+        {
+          "english": "action",
+          "portuguese": "ae7e3o",
+          "day": "friday"
+        },
+        {
+          "english": "choral",
+          "portuguese": "coral",
+          "day": "friday"
+        },
+        {
+          "english": "consumer",
+          "portuguese": "consumidor",
+          "day": "friday"
+        },
+        {
+          "english": "purchase",
+          "portuguese": "compra",
+          "day": "friday"
+        },
+        {
+          "english": "want",
+          "portuguese": "querer",
+          "day": "friday"
+        },
+        {
+          "english": "need",
+          "portuguese": "necessidade",
+          "day": "friday"
+        },
+        {
+          "english": "price",
+          "portuguese": "preço",
+          "day": "friday"
+        },
+        {
+          "english": "product",
+          "portuguese": "produto",
+          "day": "friday"
+        },
+        {
+          "english": "plant",
+          "portuguese": "planta",
+          "day": "friday"
+        },
+        {
+          "english": "water",
+          "portuguese": "água",
+          "day": "friday"
+        },
+        {
+          "english": "light",
+          "portuguese": "luz",
+          "day": "friday"
+        },
+        {
+          "english": "root",
+          "portuguese": "raiz",
+          "day": "friday"
+        },
+        {
+          "english": "leaf",
+          "portuguese": "folha",
+          "day": "friday"
+        },
+        {
+          "english": "flower",
+          "portuguese": "flor",
+          "day": "friday"
+        },
+        {
+          "english": "non-unit fraction",
+          "portuguese": "fração não unitária",
+          "day": "friday"
+        },
+        {
+          "english": "locate",
+          "portuguese": "localizar",
+          "day": "friday"
+        },
+        {
+          "english": "represent",
+          "portuguese": "representar",
+          "day": "friday"
+        },
+        {
+          "english": "greater",
+          "portuguese": "maior",
+          "day": "friday"
+        },
+        {
+          "english": "interval",
+          "portuguese": "intervalo",
+          "day": "friday"
+        },
+        {
+          "english": "partition",
+          "portuguese": "partição",
+          "day": "friday"
+        },
+        {
+          "english": "hour",
+          "portuguese": "hora",
+          "day": "friday"
+        },
+        {
+          "english": "half",
+          "portuguese": "metade",
+          "day": "friday"
+        },
+        {
+          "english": "clock",
+          "portuguese": "relógio",
+          "day": "friday"
+        },
+        {
+          "english": "minute",
+          "portuguese": "minuto",
+          "day": "friday"
+        },
+        {
+          "english": "hand",
+          "portuguese": "ponteiro",
+          "day": "friday"
+        },
+        {
+          "english": "time",
+          "portuguese": "tempo",
+          "day": "friday"
+        }
+      ],
+      "sentence_frames": [
+        {
+          "english": "This is a runt because ___.",
+          "portuguese": "Isto é o menor da ninhada porque ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "monday"
+        },
+        {
+          "english": "Fern made a choice to ___ because ___.",
+          "portuguese": "Fern fez a escolha de ___ porque ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "monday"
+        },
+        {
+          "english": "I care about ___ because ___.",
+          "portuguese": "Eu me importo com ___ porque ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "monday"
+        },
+        {
+          "english": "First describe Ferns choice, then explain the evidence from the story that shows care.",
+          "portuguese": "Primeiro descreva a escolha de Fern, depois explique a evidência da história que mostra cuidado.",
+          "proficiency_level": "levels_3_4",
+          "day": "monday"
+        },
+        {
+          "english": "This shows Fern cared because ___ and the text says ___.",
+          "portuguese": "Isso mostra que Fern se importava porque ___ e o texto diz ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "monday"
+        },
+        {
+          "english": "I think Ferns choice was good because ___ and the evidence is ___.",
+          "portuguese": "Eu acho que a escolha de Fern foi boa porque ___ e a evidência é ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "monday"
+        },
+        {
+          "english": "Evidence suggests that Ferns choice reflects compassion because ___.",
+          "portuguese": "As evidências sugerem que a escolha de Fern reflete compaixe3o porque ___.",
+          "proficiency_level": "levels_5_6",
+          "day": "monday"
+        },
+        {
+          "english": "How does Ferns choice relate to the idea of injustice in the story?",
+          "portuguese": "Como a escolha de Fern se relaciona com a ideia de injustie7a na história?",
+          "proficiency_level": "levels_5_6",
+          "day": "monday"
+        },
+        {
+          "english": "This is a ___.",
+          "portuguese": "Isto é um ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "monday"
+        },
+        {
+          "english": "I see the ___ in the picture.",
+          "portuguese": "Eu vejo a ___ na imagem.",
+          "proficiency_level": "levels_1_2",
+          "day": "monday"
+        },
+        {
+          "english": "First the ___, then the ___.",
+          "portuguese": "Primeiro a ___, depois a ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "monday"
+        },
+        {
+          "english": "The story map shows ___ because ___.",
+          "portuguese": "O mapa da história mostra ___ porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "monday"
+        },
+        {
+          "english": "I cite this evidence: '___' which shows ___.",
+          "portuguese": "Eu cito esta evidência: '___' que mostra ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "monday"
+        },
+        {
+          "english": "The ___ happens before ___ because ___.",
+          "portuguese": "O ___ acontece antes de ___ porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "monday"
+        },
+        {
+          "english": "Evidence suggests that the author's idea about ___ is ___.",
+          "portuguese": "As evidências sugerem que a ideia do autor sobre ___ é ___.",
+          "proficiency_level": "levels_5_6",
+          "day": "monday"
+        },
+        {
+          "english": "How does the ___ in the text support the main idea?",
+          "portuguese": "Como a ___ no texto apoia a ideia principal?",
+          "proficiency_level": "levels_5_6",
+          "day": "monday"
+        },
+        {
+          "english": "This is a leaf that helps the plant ___ .",
+          "portuguese": "Isto é uma folha que ajuda a planta a ___ .",
+          "proficiency_level": "levels_1_2",
+          "day": "monday"
+        },
+        {
+          "english": "The plant drinks water from the ___ .",
+          "portuguese": "A planta bebe água pela ___ .",
+          "proficiency_level": "levels_1_2",
+          "day": "monday"
+        },
+        {
+          "english": "I see the root and the ___ .",
+          "portuguese": "Eu vejo a raiz e o ___ .",
+          "proficiency_level": "levels_1_2",
+          "day": "monday"
+        },
+        {
+          "english": "First the seed grows roots, then the stem ___ because ___.",
+          "portuguese": "Primeiro a semente cria raízes, depois o caule ___ porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "monday"
+        },
+        {
+          "english": "The leaf helps the plant by ___ because ___.",
+          "portuguese": "A folha ajuda a planta por ___ porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "monday"
+        },
+        {
+          "english": "I think the plant needs water because ___.",
+          "portuguese": "Eu acho que a planta precisa de água porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "monday"
+        },
+        {
+          "english": "Evidence suggests that plants without water will ___.",
+          "portuguese": "As evidências sugerem que plantas sem água vão ___.",
+          "proficiency_level": "levels_5_6",
+          "day": "monday"
+        },
+        {
+          "english": "How does the leaf relate to the plant's ability to grow?",
+          "portuguese": "Como a folha se relaciona com a capacidade da planta de crescer?",
+          "proficiency_level": "levels_5_6",
+          "day": "monday"
+        },
+        {
+          "english": "This is a ___.",
+          "portuguese": "Isto é um ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "monday"
+        },
+        {
+          "english": "I see __ out of __ parts.",
+          "portuguese": "Eu vejo __ de __ partes.",
+          "proficiency_level": "levels_1_2",
+          "day": "monday"
+        },
+        {
+          "english": "The numerator is __.",
+          "portuguese": "O numerador é __.",
+          "proficiency_level": "levels_1_2",
+          "day": "monday"
+        },
+        {
+          "english": "First partition the whole into __ equal parts, then shade __ of them.",
+          "portuguese": "Primeiro parta o todo em __ partes iguais, depois sombree __ delas.",
+          "proficiency_level": "levels_3_4",
+          "day": "monday"
+        },
+        {
+          "english": "This fraction is __ because the numerator shows ___ and the denominator shows ___.",
+          "portuguese": "Esta fração é __ porque o numerador mostra ___ e o denominador mostra ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "monday"
+        },
+        {
+          "english": "I can build __ by adding __ unit fractions because __.",
+          "portuguese": "Eu posso construir __ adicionando __ frações unitárias porque __.",
+          "proficiency_level": "levels_3_4",
+          "day": "monday"
+        },
+        {
+          "english": "Evidence suggests that partitioning into equal parts shows how the fraction represents a part of the whole.",
+          "portuguese": "As evidências sugerem que partir em partes iguais mostra como a fração representa uma parte do todo.",
+          "proficiency_level": "levels_5_6",
+          "day": "monday"
+        },
+        {
+          "english": "How does the numerator relate to the denominator when the whole is partitioned into __ parts?",
+          "portuguese": "Como o numerador se relaciona com o denominador quando o todo é partido em __ partes?",
+          "proficiency_level": "levels_5_6",
+          "day": "monday"
+        },
+        {
+          "english": "This is a ___.",
+          "portuguese": "Isto é um ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "monday"
+        },
+        {
+          "english": "I can make a ___ from pieces.",
+          "portuguese": "Eu posso fazer um ___ com peças.",
+          "proficiency_level": "levels_1_2",
+          "day": "monday"
+        },
+        {
+          "english": "The part is ___ of the whole.",
+          "portuguese": "A parte é ___ do inteiro.",
+          "proficiency_level": "levels_1_2",
+          "day": "monday"
+        },
+        {
+          "english": "First I put the pieces together, then I see the ___.",
+          "portuguese": "Primeiro eu junto as peças, depois eu vejo o ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "monday"
+        },
+        {
+          "english": "The pieces are equal because ___.",
+          "portuguese": "As peças são iguais porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "monday"
+        },
+        {
+          "english": "I think this shape is a ___ because ___.",
+          "portuguese": "Eu acho que esta forma é um ___ porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "monday"
+        },
+        {
+          "english": "Evidence suggests that the pieces form a whole when ___.",
+          "portuguese": "As evidências sugerem que as peças formam um inteiro quando ___.",
+          "proficiency_level": "levels_5_6",
+          "day": "monday"
+        },
+        {
+          "english": "How can you show that two shapes make one whole?",
+          "portuguese": "Como você pode mostrar que duas formas formam um inteiro?",
+          "proficiency_level": "levels_5_6",
+          "day": "monday"
+        },
+        {
+          "english": "Wilbur feels ___ because ___.",
+          "portuguese": "Wilbur se sente ___ porque ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "tuesday"
+        },
+        {
+          "english": "After the escape, Wilbur ___ and then ___.",
+          "portuguese": "Apos a fuga, Wilbur ___ e ente3o ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "tuesday"
+        },
+        {
+          "english": "He is free and he feels ___.",
+          "portuguese": "Ele este1 livre e ele se sente ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "tuesday"
+        },
+        {
+          "english": "Wilbur wanted freedom because ___ and the text shows ___ as evidence.",
+          "portuguese": "Wilbur queria liberdade porque ___ e o texto mostra ___ como evidência.",
+          "proficiency_level": "levels_3_4",
+          "day": "tuesday"
+        },
+        {
+          "english": "The trough and barn setting make Wilbur feel ___ because ___.",
+          "portuguese": "O cocho e o celeiro fazem Wilbur se sentir ___ porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "tuesday"
+        },
+        {
+          "english": "I think Wilbur felt better because ___ and the evidence is ___.",
+          "portuguese": "Eu acho que Wilbur se sentiu melhor porque ___ e a evidência é ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "tuesday"
+        },
+        {
+          "english": "Evidence suggests that Wilburs escape changed his feelings because ___.",
+          "portuguese": "As evidências sugerem que a fuga de Wilbur mudou seus sentimentos porque ___.",
+          "proficiency_level": "levels_5_6",
+          "day": "tuesday"
+        },
+        {
+          "english": "How does Wilburs feeling after escaping compare to his feeling before?",
+          "portuguese": "Como o sentimento de Wilbur apf3s a fuga se compara ao sentimento dele antes?",
+          "proficiency_level": "levels_5_6",
+          "day": "tuesday"
+        },
+        {
+          "english": "I will fix the ___ in my sentence.",
+          "portuguese": "Eu vou corrigir o ___ na minha frase.",
+          "proficiency_level": "levels_1_2",
+          "day": "tuesday"
+        },
+        {
+          "english": "This sentence needs a ___.",
+          "portuguese": "Esta frase precisa de ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "tuesday"
+        },
+        {
+          "english": "I changed the ___ to make it better.",
+          "portuguese": "Eu mudei o ___ para ficar melhor.",
+          "proficiency_level": "levels_1_2",
+          "day": "tuesday"
+        },
+        {
+          "english": "I revised this sentence by ___ which improved ___.",
+          "portuguese": "Eu revisei esta frase por ___ que melhorou ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "tuesday"
+        },
+        {
+          "english": "My draft is better because I fixed the ___.",
+          "portuguese": "Meu rascunho está melhor porque eu corrigi o ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "tuesday"
+        },
+        {
+          "english": "Please check my ___ and tell me one change.",
+          "portuguese": "Por favor, verifique meu ___ e me diga uma mudança.",
+          "proficiency_level": "levels_3_4",
+          "day": "tuesday"
+        },
+        {
+          "english": "Evidence of effective writing shows that the author ___ because ___.",
+          "portuguese": "A evidência de uma escrita eficaz mostra que o autor ___ porque ___.",
+          "proficiency_level": "levels_5_6",
+          "day": "tuesday"
+        },
+        {
+          "english": "What change improves the meaning of this paragraph?",
+          "portuguese": "Que mudança melhora o significado deste parágrafo?",
+          "proficiency_level": "levels_5_6",
+          "day": "tuesday"
+        },
+        {
+          "english": "This plant looks ___ after water.",
+          "portuguese": "Esta planta parece ___ depois da água.",
+          "proficiency_level": "levels_1_2",
+          "day": "tuesday"
+        },
+        {
+          "english": "I drew the leaf and the ___.",
+          "portuguese": "Eu desenhei a folha e a ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "tuesday"
+        },
+        {
+          "english": "The plant is bigger because it ___ .",
+          "portuguese": "A planta está maior porque ela ___ .",
+          "proficiency_level": "levels_1_2",
+          "day": "tuesday"
+        },
+        {
+          "english": "Before watering, the plant was ___; after, it ___ because ___.",
+          "portuguese": "Antes de regar, a planta estava ___; depois, ela ___ porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "tuesday"
+        },
+        {
+          "english": "The root helps the plant by ___ when it takes water.",
+          "portuguese": "A raiz ajuda a planta por ___ quando absorve água.",
+          "proficiency_level": "levels_3_4",
+          "day": "tuesday"
+        },
+        {
+          "english": "I can tell the plant got water because ___.",
+          "portuguese": "Posso dizer que a planta recebeu água porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "tuesday"
+        },
+        {
+          "english": "Evidence from the drawings shows that water caused the plant to ___.",
+          "portuguese": "As evidências dos desenhos mostram que a água fez com que a planta ___.",
+          "proficiency_level": "levels_5_6",
+          "day": "tuesday"
+        },
+        {
+          "english": "How do changes in the leaf indicate plant health?",
+          "portuguese": "Como as mudanças na folha indicam a saúde da planta?",
+          "proficiency_level": "levels_5_6",
+          "day": "tuesday"
+        },
+        {
+          "english": "One __ is __.",
+          "portuguese": "Uma __ é __.",
+          "proficiency_level": "levels_1_2",
+          "day": "tuesday"
+        },
+        {
+          "english": "I add __ and __ to make __.",
+          "portuguese": "Eu adiciono __ e __ para fazer __.",
+          "proficiency_level": "levels_1_2",
+          "day": "tuesday"
+        },
+        {
+          "english": "This is __ of the whole.",
+          "portuguese": "Isto é __ do todo.",
+          "proficiency_level": "levels_1_2",
+          "day": "tuesday"
+        },
+        {
+          "english": "I can build __ by adding __ unit fractions because __.",
+          "portuguese": "Eu posso construir __ adicionando __ frações unitárias porque __.",
+          "proficiency_level": "levels_3_4",
+          "day": "tuesday"
+        },
+        {
+          "english": "First add the unit fractions, then write the sum as a fraction __.",
+          "portuguese": "Primeiro some as frações unitárias, depois escreva a soma como a fração __.",
+          "proficiency_level": "levels_3_4",
+          "day": "tuesday"
+        },
+        {
+          "english": "These two fractions are equivalent because __.",
+          "portuguese": "Essas duas frações são equivalentes porque __.",
+          "proficiency_level": "levels_3_4",
+          "day": "tuesday"
+        },
+        {
+          "english": "Evidence from unit fractions shows that composing parts results in a larger fraction when denominators are the same.",
+          "portuguese": "Evidências das frações unitárias mostram que compor partes resulta em uma fração maior quando os denominadores são iguais.",
+          "proficiency_level": "levels_5_6",
+          "day": "tuesday"
+        },
+        {
+          "english": "How can you show that 1/4 + 1/4 equals 1/2 using unit fractions?",
+          "portuguese": "Como você pode mostrar que 1/4 + 1/4 é igual a 1/2 usando frações unitárias?",
+          "proficiency_level": "levels_5_6",
+          "day": "tuesday"
+        },
+        {
+          "english": "This is one ___.",
+          "portuguese": "Isto é um ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "tuesday"
+        },
+        {
+          "english": "I see ___ equal parts.",
+          "portuguese": "Eu vejo ___ partes iguais.",
+          "proficiency_level": "levels_1_2",
+          "day": "tuesday"
+        },
+        {
+          "english": "Half is ___ of the whole.",
+          "portuguese": "Metade é ___ do inteiro.",
+          "proficiency_level": "levels_1_2",
+          "day": "tuesday"
+        },
+        {
+          "english": "On the number line, the point at ___ shows a ___.",
+          "portuguese": "Na linha numérica, o ponto em ___ mostra um ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "tuesday"
+        },
+        {
+          "english": "These parts are equal because ___.",
+          "portuguese": "Essas partes são iguais porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "tuesday"
+        },
+        {
+          "english": "I can partition this shape into ___ and show it on the line.",
+          "portuguese": "Eu posso particionar esta forma em ___ e mostrar na linha.",
+          "proficiency_level": "levels_3_4",
+          "day": "tuesday"
+        },
+        {
+          "english": "Evidence shows that halves and fourths can represent the same point when ___.",
+          "portuguese": "As evidências mostram que metades e quartos podem representar o mesmo ponto quando ___.",
+          "proficiency_level": "levels_5_6",
+          "day": "tuesday"
+        },
+        {
+          "english": "How do you decide where to place a third on the number line?",
+          "portuguese": "Como você decide onde colocar um terço na linha numérica?",
+          "proficiency_level": "levels_5_6",
+          "day": "tuesday"
+        },
+        {
+          "english": "Charlotte is ___.",
+          "portuguese": "Charlotte é ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "wednesday"
+        },
+        {
+          "english": "I draw Charlotte with ___ because ___.",
+          "portuguese": "Eu desenho Charlotte com ___ porque ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "wednesday"
+        },
+        {
+          "english": "The trait is ___ and the evidence is ___.",
+          "portuguese": "O trae7o é ___ e a evidência é ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "wednesday"
+        },
+        {
+          "english": "I think Charlotte is ___ because in the story ___.",
+          "portuguese": "Eu acho que Charlotte é ___ porque na história ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "wednesday"
+        },
+        {
+          "english": "This trait is important because ___ and the evidence shows ___.",
+          "portuguese": "Este trae7o é importante porque ___ e as evidências mostram ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "wednesday"
+        },
+        {
+          "english": "Use the word \"conspiracy\" to explain how characters acted when ___.",
+          "portuguese": "Use a palavra \"conspirae7e3o\" para explicar como os personagens agiram quando ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "wednesday"
+        },
+        {
+          "english": "Evidence suggests Charlotte is a helpful friend because ___.",
+          "portuguese": "As evidências sugerem que Charlotte é uma amiga prestativa porque ___.",
+          "proficiency_level": "levels_5_6",
+          "day": "wednesday"
+        },
+        {
+          "english": "How does Charlottes behavior support the trait you labeled?",
+          "portuguese": "Como o comportamento de Charlotte apoia o trae7o que vocea rotulou?",
+          "proficiency_level": "levels_5_6",
+          "day": "wednesday"
+        },
+        {
+          "english": "Who is the ___ in the story.",
+          "portuguese": "Quem é o ___ na história.",
+          "proficiency_level": "levels_1_2",
+          "day": "wednesday"
+        },
+        {
+          "english": "The ___ is ___ in the picture.",
+          "portuguese": "O ___ é ___ na imagem.",
+          "proficiency_level": "levels_1_2",
+          "day": "wednesday"
+        },
+        {
+          "english": "I found the ___ on page ___.",
+          "portuguese": "Eu encontrei o ___ na página ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "wednesday"
+        },
+        {
+          "english": "The detail that shows this is ___ because ___.",
+          "portuguese": "O detalhe que mostra isso é ___ porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "wednesday"
+        },
+        {
+          "english": "I know this from the text when it says '___' which means ___.",
+          "portuguese": "Eu sei disso pelo texto quando diz '___' que significa ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "wednesday"
+        },
+        {
+          "english": "This supports the idea that ___ because ___.",
+          "portuguese": "Isto apoia a ideia de que ___ porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "wednesday"
+        },
+        {
+          "english": "Evidence suggests that the author intended to show ___ because ___.",
+          "portuguese": "As evidências sugerem que o autor pretendia mostrar ___ porque ___.",
+          "proficiency_level": "levels_5_6",
+          "day": "wednesday"
+        },
+        {
+          "english": "How does the ___ on page ___ help you answer the question?",
+          "portuguese": "Como o ___ na página ___ ajuda você a responder à pergunta?",
+          "proficiency_level": "levels_5_6",
+          "day": "wednesday"
+        },
+        {
+          "english": "This is the root that takes in ___.",
+          "portuguese": "Esta é a raiz que absorve ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "wednesday"
+        },
+        {
+          "english": "The leaf is ___ and helps the plant ___.",
+          "portuguese": "A folha é ___ e ajuda a planta a ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "wednesday"
+        },
+        {
+          "english": "I will draw the stem and the ___.",
+          "portuguese": "Eu vou desenhar o caule e a ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "wednesday"
+        },
+        {
+          "english": "First the plant gets water, then it ___ because ___.",
+          "portuguese": "Primeiro a planta recebe água, depois ela ___ porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "wednesday"
+        },
+        {
+          "english": "The plant needs light and water to ___ because ___.",
+          "portuguese": "A planta precisa de luz e água para ___ porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "wednesday"
+        },
+        {
+          "english": "I can show the part that helps the plant by ___.",
+          "portuguese": "Posso mostrar a parte que ajuda a planta por ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "wednesday"
+        },
+        {
+          "english": "Evidence from my drawings explains how the plant used water to ___.",
+          "portuguese": "As evidências dos meus desenhos explicam como a planta usou água para ___.",
+          "proficiency_level": "levels_5_6",
+          "day": "wednesday"
+        },
+        {
+          "english": "How would you show that a plant needs light and water?",
+          "portuguese": "Como você mostraria que uma planta precisa de luz e água?",
+          "proficiency_level": "levels_5_6",
+          "day": "wednesday"
+        },
+        {
+          "english": "These two pieces are ___.",
+          "portuguese": "Estas duas peças são ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "wednesday"
+        },
+        {
+          "english": "They are the same ___ of the whole.",
+          "portuguese": "Elas têm o mesmo ___ do inteiro.",
+          "proficiency_level": "levels_1_2",
+          "day": "wednesday"
+        },
+        {
+          "english": "One piece is ___ and the other is ___.",
+          "portuguese": "Uma peça é ___ e a outra é ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "wednesday"
+        },
+        {
+          "english": "These pieces are equal in area because ___.",
+          "portuguese": "Essas peças são iguais em área porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "wednesday"
+        },
+        {
+          "english": "Although the shapes differ, they show equal ___.",
+          "portuguese": "Embora as formas sejam diferentes, elas mostram ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "wednesday"
+        },
+        {
+          "english": "I can compare these pieces by ___.",
+          "portuguese": "Eu posso comparar essas peças por ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "wednesday"
+        },
+        {
+          "english": "Evidence indicates these different shapes are equal in area because ___.",
+          "portuguese": "As evidências indicam que essas formas diferentes são iguais em área porque ___.",
+          "proficiency_level": "levels_5_6",
+          "day": "wednesday"
+        },
+        {
+          "english": "What evidence supports that two different shapes are equal pieces?",
+          "portuguese": "Que evidência apoia que duas formas diferentes são peças iguais?",
+          "proficiency_level": "levels_5_6",
+          "day": "wednesday"
+        },
+        {
+          "english": "Place the point at __.",
+          "portuguese": "Coloque o ponto em __.",
+          "proficiency_level": "levels_1_2",
+          "day": "wednesday"
+        },
+        {
+          "english": "The fraction is __ on the line.",
+          "portuguese": "A fração é __ na reta.",
+          "proficiency_level": "levels_1_2",
+          "day": "wednesday"
+        },
+        {
+          "english": "This point shows __ out of __.",
+          "portuguese": "Este ponto mostra __ de __.",
+          "proficiency_level": "levels_1_2",
+          "day": "wednesday"
+        },
+        {
+          "english": "First divide the interval into __ parts, then locate __.",
+          "portuguese": "Primeiro divida o intervalo em __ partes, depois localize __.",
+          "proficiency_level": "levels_3_4",
+          "day": "wednesday"
+        },
+        {
+          "english": "I label the point as __ because __.",
+          "portuguese": "Eu rotulo o ponto como __ porque __.",
+          "proficiency_level": "levels_3_4",
+          "day": "wednesday"
+        },
+        {
+          "english": "When the whole is __, the point at __ represents __.",
+          "portuguese": "Quando o todo é __, o ponto em __ representa __.",
+          "proficiency_level": "levels_3_4",
+          "day": "wednesday"
+        },
+        {
+          "english": "Evidence shows that consistent partitioning of intervals yields accurate fractional placement on the number line.",
+          "portuguese": "As evidências mostram que o particionamento consistente dos intervalos produz posicionamentos fracionários precisos na reta numérica.",
+          "proficiency_level": "levels_5_6",
+          "day": "wednesday"
+        },
+        {
+          "english": "How do you decide how many equal parts to divide an interval into for locating __?",
+          "portuguese": "Como você decide em quantas partes iguais dividir um intervalo para localizar __?",
+          "proficiency_level": "levels_5_6",
+          "day": "wednesday"
+        },
+        {
+          "english": "I feel ___ when Wilbur hears ___.",
+          "portuguese": "Eu me sinto ___ quando Wilbur ouve ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "thursday"
+        },
+        {
+          "english": "I see ___, I hear ___, I feel ___.",
+          "portuguese": "Eu vejo ___, eu oue7o ___, eu sinto ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "thursday"
+        },
+        {
+          "english": "Wilbur reacts by ___ because ___.",
+          "portuguese": "Wilbur reage por ___ porque ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "thursday"
+        },
+        {
+          "english": "When Wilbur learns his fate, he feels ___ and then ___.",
+          "portuguese": "Quando Wilbur descobre seu destino, ele se sente ___ e ente3o ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "thursday"
+        },
+        {
+          "english": "This moment is untenable for Wilbur because ___ and the text shows ___.",
+          "portuguese": "Este momento é insustente1vel para Wilbur porque ___ e o texto mostra ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "thursday"
+        },
+        {
+          "english": "I will describe what Wilbur sees and hears and explain how he reacts.",
+          "portuguese": "Eu vou descrever o que Wilbur vea e ouve e explicar como ele reage.",
+          "proficiency_level": "levels_3_4",
+          "day": "thursday"
+        },
+        {
+          "english": "The narrative demonstrates Wilburs fear because ___.",
+          "portuguese": "A narrativa demonstra o medo de Wilbur porque ___.",
+          "proficiency_level": "levels_5_6",
+          "day": "thursday"
+        },
+        {
+          "english": "How does using sensory detail help readers understand Wilburs reaction?",
+          "portuguese": "Como usar detalhes sensoriais ajuda os leitores a entender a reae7e3o de Wilbur?",
+          "proficiency_level": "levels_5_6",
+          "day": "thursday"
+        },
+        {
+          "english": "This word means ___.",
+          "portuguese": "Esta palavra significa ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "thursday"
+        },
+        {
+          "english": "I see the ___ in the sentence.",
+          "portuguese": "Eu vejo a ___ na frase.",
+          "proficiency_level": "levels_1_2",
+          "day": "thursday"
+        },
+        {
+          "english": "The ___ shows the meaning.",
+          "portuguese": "O ___ mostra o significado.",
+          "proficiency_level": "levels_1_2",
+          "day": "thursday"
+        },
+        {
+          "english": "In this context, ___ means ___ because ___.",
+          "portuguese": "Neste contexto, ___ significa ___ porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "thursday"
+        },
+        {
+          "english": "The definition of ___ is ___ and it helps because ___.",
+          "portuguese": "A definição de ___ é ___ e ajuda porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "thursday"
+        },
+        {
+          "english": "I can use the word ___ in a sentence: ___.",
+          "portuguese": "Eu posso usar a palavra ___ em uma frase: ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "thursday"
+        },
+        {
+          "english": "Evidence from the sentence suggests that ___ means ___ because ___.",
+          "portuguese": "A evidência da frase sugere que ___ significa ___ porque ___.",
+          "proficiency_level": "levels_5_6",
+          "day": "thursday"
+        },
+        {
+          "english": "How does the context help you determine the meaning of ___?",
+          "portuguese": "Como o contexto ajuda você a determinar o significado de ___?",
+          "proficiency_level": "levels_5_6",
+          "day": "thursday"
+        },
+        {
+          "english": "The plant needs light from the ___.",
+          "portuguese": "A planta precisa de luz do ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "thursday"
+        },
+        {
+          "english": "An entomologist studies ___ in nature.",
+          "portuguese": "Um entomologista estuda ___ na natureza.",
+          "proficiency_level": "levels_1_2",
+          "day": "thursday"
+        },
+        {
+          "english": "I can see the leaf and the ___.",
+          "portuguese": "Eu posso ver a folha e o ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "thursday"
+        },
+        {
+          "english": "The plant grows better with light because ___.",
+          "portuguese": "A planta cresce melhor com luz porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "thursday"
+        },
+        {
+          "english": "An entomologist would look for insects that live on the ___.",
+          "portuguese": "Um entomologista procuraria insetos que vivem na ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "thursday"
+        },
+        {
+          "english": "I predict the plant will grow more when it has ___ because ___.",
+          "portuguese": "Eu prevejo que a planta vai crescer mais quando tiver ___ porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "thursday"
+        },
+        {
+          "english": "The role of light in plant growth demonstrates that ___.",
+          "portuguese": "O papel da luz no crescimento da planta demonstra que ___.",
+          "proficiency_level": "levels_5_6",
+          "day": "thursday"
+        },
+        {
+          "english": "How might an entomologist study insects on plants?",
+          "portuguese": "Como um entomologista poderia estudar insetos nas plantas?",
+          "proficiency_level": "levels_5_6",
+          "day": "thursday"
+        },
+        {
+          "english": "This is a ___.",
+          "portuguese": "Isto é um ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "thursday"
+        },
+        {
+          "english": "Two halves make ___.",
+          "portuguese": "Duas metades fazem ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "thursday"
+        },
+        {
+          "english": "Three thirds make ___.",
+          "portuguese": "Três terços fazem ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "thursday"
+        },
+        {
+          "english": "I can show that ___ parts equal one whole by ___.",
+          "portuguese": "Eu posso mostrar que ___ partes equivalem a um inteiro por ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "thursday"
+        },
+        {
+          "english": "The model shows ___ because ___.",
+          "portuguese": "O modelo mostra ___ porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "thursday"
+        },
+        {
+          "english": "I will partition this shape into ___ equal parts.",
+          "portuguese": "Eu vou particionar esta forma em ___ partes iguais.",
+          "proficiency_level": "levels_3_4",
+          "day": "thursday"
+        },
+        {
+          "english": "Evidence shows these parts form a whole when ___.",
+          "portuguese": "As evidências mostram que essas partes formam um inteiro quando ___.",
+          "proficiency_level": "levels_5_6",
+          "day": "thursday"
+        },
+        {
+          "english": "How can you prove that four fourths equal one whole?",
+          "portuguese": "Como você pode provar que quatro quartos equivalem a um inteiro?",
+          "proficiency_level": "levels_5_6",
+          "day": "thursday"
+        },
+        {
+          "english": "Box the whole, then place __.",
+          "portuguese": "Encaixote o inteiro, depois coloque __.",
+          "proficiency_level": "levels_1_2",
+          "day": "thursday"
+        },
+        {
+          "english": "One whole and __ parts makes __.",
+          "portuguese": "Um inteiro e __ partes faz __.",
+          "proficiency_level": "levels_1_2",
+          "day": "thursday"
+        },
+        {
+          "english": "Label the point __ on the line.",
+          "portuguese": "Rotule o ponto __ na reta.",
+          "proficiency_level": "levels_1_2",
+          "day": "thursday"
+        },
+        {
+          "english": "First box the whole number, then divide the next interval into __ equal parts to locate __.",
+          "portuguese": "Primeiro encaixote o número inteiro, depois divida o próximo intervalo em __ partes iguais para localizar __.",
+          "proficiency_level": "levels_3_4",
+          "day": "thursday"
+        },
+        {
+          "english": "I locate __ by partitioning the interval between __ and __ into __ parts.",
+          "portuguese": "Eu localizo __ particionando o intervalo entre __ e __ em __ partes.",
+          "proficiency_level": "levels_3_4",
+          "day": "thursday"
+        },
+        {
+          "english": "When a number is greater than one, I count whole boxes then __.",
+          "portuguese": "Quando um número é maior que um, eu conto caixas inteiras e então __.",
+          "proficiency_level": "levels_3_4",
+          "day": "thursday"
+        },
+        {
+          "english": "This strategy demonstrates how partitioning whole intervals supports locating fractions greater than one on a number line.",
+          "portuguese": "Esta estratégia demonstra como o particionamento de intervalos inteiros ajuda a localizar frações maiores que um na reta numérica.",
+          "proficiency_level": "levels_5_6",
+          "day": "thursday"
+        },
+        {
+          "english": "How does boxing the whole help when labeling fractions greater than 1?",
+          "portuguese": "Como encaixotar o inteiro ajuda ao rotular frações maiores que 1?",
+          "proficiency_level": "levels_5_6",
+          "day": "thursday"
+        },
+        {
+          "english": "I will read this line with ___ because ___.",
+          "portuguese": "Eu vou ler esta fala com ___ porque ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "friday"
+        },
+        {
+          "english": "Show with your face and body: I feel ___.",
+          "portuguese": "Mostre com seu rosto e corpo: Eu sinto ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "friday"
+        },
+        {
+          "english": "We will choral read the part about ___.",
+          "portuguese": "Nos vamos ler em coro a parte sobre ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "friday"
+        },
+        {
+          "english": "Use voice and action to show the characters feeling of ___.",
+          "portuguese": "Use a voz e a ae7e3o para mostrar o sentimento do personagem de ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "friday"
+        },
+        {
+          "english": "My character shows emotion when ___ and I will demonstrate it by ___.",
+          "portuguese": "Meu personagem mostra emoe7e3o quando ___ e eu vou demonstrar isso por ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "friday"
+        },
+        {
+          "english": "Before performing, I will rehearse my lines by ___.",
+          "portuguese": "Antes de apresentar, eu vou ensaiar minhas falas por ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "friday"
+        },
+        {
+          "english": "The performance demonstrates character feelings through voice and action because ___.",
+          "portuguese": "A apresentae7e3o demonstra sentimentos do personagem pela voz e ae7e3o porque ___.",
+          "proficiency_level": "levels_5_6",
+          "day": "friday"
+        },
+        {
+          "english": "How does using choral reading help build confidence for the solo reader?",
+          "portuguese": "Como usar leitura em coro ajuda a construir confiane7a para o leitor solo?",
+          "proficiency_level": "levels_5_6",
+          "day": "friday"
+        },
+        {
+          "english": "A person buys ___ because ___.",
+          "portuguese": "Uma pessoa compra ___ porque ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "friday"
+        },
+        {
+          "english": "I want ___ but I need ___.",
+          "portuguese": "Eu quero ___ mas eu preciso ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "friday"
+        },
+        {
+          "english": "The ___ costs ___.",
+          "portuguese": "O ___ custa ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "friday"
+        },
+        {
+          "english": "Consumers choose this product because ___ which shows ___.",
+          "portuguese": "Os consumidores escolhem este produto porque ___ que mostra ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "friday"
+        },
+        {
+          "english": "The evidence in the text says '___' and that means ___.",
+          "portuguese": "A evidência no texto diz '___' e isso significa ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "friday"
+        },
+        {
+          "english": "Because of the ___, the consumer decided to ___.",
+          "portuguese": "Por causa do ___, o consumidor decidiu ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "friday"
+        },
+        {
+          "english": "Evidence suggests that consumers prioritize ___ over ___ because ___.",
+          "portuguese": "As evidências sugerem que os consumidores priorizam ___ sobre ___ porque ___.",
+          "proficiency_level": "levels_5_6",
+          "day": "friday"
+        },
+        {
+          "english": "How does price influence a consumer's decision in the text?",
+          "portuguese": "Como o preço influencia a decisão do consumidor no texto?",
+          "proficiency_level": "levels_5_6",
+          "day": "friday"
+        },
+        {
+          "english": "This is a plant called a ___.",
+          "portuguese": "Isto é uma planta chamada ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "friday"
+        },
+        {
+          "english": "The plant drinks ___ to grow.",
+          "portuguese": "A planta bebe ___ para crescer.",
+          "proficiency_level": "levels_1_2",
+          "day": "friday"
+        },
+        {
+          "english": "I can point to the leaf and the ___.",
+          "portuguese": "Eu posso apontar para a folha e o ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "friday"
+        },
+        {
+          "english": "The plant needs light and water to ___ because ___.",
+          "portuguese": "A planta precisa de luz e água para ___ porque ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "friday"
+        },
+        {
+          "english": "My family helped me find a plant that has ___.",
+          "portuguese": "Minha família me ajudou a encontrar uma planta que tem ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "friday"
+        },
+        {
+          "english": "I can label the root, stem, and ___.",
+          "portuguese": "Posso rotular a raiz, o caule e a ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "friday"
+        },
+        {
+          "english": "My observations show that plants grow when they receive ___.",
+          "portuguese": "Minhas observações mostram que as plantas crescem quando recebem ___.",
+          "proficiency_level": "levels_5_6",
+          "day": "friday"
+        },
+        {
+          "english": "How can families help children practice plant vocabulary at home?",
+          "portuguese": "Como as famílias podem ajudar as crianças a praticar o vocabulário de plantas em casa?",
+          "proficiency_level": "levels_5_6",
+          "day": "friday"
+        },
+        {
+          "english": "I place __ at __ on the line.",
+          "portuguese": "Eu coloco __ em __ na reta.",
+          "proficiency_level": "levels_1_2",
+          "day": "friday"
+        },
+        {
+          "english": "This is __ out of __ parts.",
+          "portuguese": "Isto é __ de __ partes.",
+          "proficiency_level": "levels_1_2",
+          "day": "friday"
+        },
+        {
+          "english": "I boxed the whole then divided it into __ parts.",
+          "portuguese": "Eu encaixotei o inteiro e depois dividi em __ partes.",
+          "proficiency_level": "levels_1_2",
+          "day": "friday"
+        },
+        {
+          "english": "I locate __ by partitioning between __ and __ into __ equal parts.",
+          "portuguese": "Eu localizo __ particionando entre __ e __ em __ partes iguais.",
+          "proficiency_level": "levels_3_4",
+          "day": "friday"
+        },
+        {
+          "english": "These fractions are equivalent because __.",
+          "portuguese": "Essas frações são equivalentes porque __.",
+          "proficiency_level": "levels_3_4",
+          "day": "friday"
+        },
+        {
+          "english": "I can show __ as __ of the whole by __.",
+          "portuguese": "Eu posso mostrar __ como __ do todo por __.",
+          "proficiency_level": "levels_3_4",
+          "day": "friday"
+        },
+        {
+          "english": "Evidence from number-line partitioning demonstrates that non-unit fractions correspond to sums of unit fractions.",
+          "portuguese": "Evidências do particionamento da reta mostram que frações não unitárias correspondem à soma de frações unitárias.",
+          "proficiency_level": "levels_5_6",
+          "day": "friday"
+        },
+        {
+          "english": "How would you explain placing 5/4 on a number line that includes whole boxes?",
+          "portuguese": "Como você explicaria colocar 5/4 em uma reta numérica que inclui caixas inteiras?",
+          "proficiency_level": "levels_5_6",
+          "day": "friday"
+        },
+        {
+          "english": "It is ___ o'clock.",
+          "portuguese": "São ___ horas.",
+          "proficiency_level": "levels_1_2",
+          "day": "friday"
+        },
+        {
+          "english": "It is half past ___.",
+          "portuguese": "É meia hora depois das ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "friday"
+        },
+        {
+          "english": "The short hand points to ___.",
+          "portuguese": "O ponteiro curto aponta para ___.",
+          "proficiency_level": "levels_1_2",
+          "day": "friday"
+        },
+        {
+          "english": "The clock shows ___ because the minute hand is at ___.",
+          "portuguese": "O relógio mostra ___ porque o ponteiro dos minutos está em ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "friday"
+        },
+        {
+          "english": "First move the hands to ___, then say the time as ___.",
+          "portuguese": "Primeiro mova os ponteiros para ___, então diga a hora como ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "friday"
+        },
+        {
+          "english": "I can show half past by moving the minute hand to ___.",
+          "portuguese": "Eu posso mostrar meia hora movendo o ponteiro dos minutos para ___.",
+          "proficiency_level": "levels_3_4",
+          "day": "friday"
+        },
+        {
+          "english": "Evidence shows the time is half past when the minute hand is at 6 because ___.",
+          "portuguese": "As evidências mostram que é meia hora quando o ponteiro dos minutos está em 6 porque ___.",
+          "proficiency_level": "levels_5_6",
+          "day": "friday"
+        },
+        {
+          "english": "How can you explain the difference between hour and minute hands?",
+          "portuguese": "Como você pode explicar a diferença entre os ponteiros de hora e minuto?",
+          "proficiency_level": "levels_5_6",
+          "day": "friday"
+        }
+      ]
+    }
+  ]
+}

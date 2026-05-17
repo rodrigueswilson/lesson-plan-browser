@@ -21,6 +21,53 @@ def _utc_now_naive() -> datetime:
     return datetime.now(timezone.utc).replace(tzinfo=None)
 
 
+CANONICAL_STATUS_MAP = {
+    "initialized": "processing",
+    "queued": "processing",
+    "processing": "processing",
+    "extracting": "processing",
+    "transforming": "processing",
+    "rendering": "processing",
+    "finalizing": "processing",
+    "complete": "completed",
+    "completed": "completed",
+    "done": "completed",
+    "error": "failed",
+    "failed": "failed",
+}
+
+STAGE_LABELS = {
+    "queued": "Queued",
+    "extracting": "Extracting lesson data",
+    "transforming": "Transforming lessons with AI",
+    "rendering": "Rendering DOCX",
+    "finalizing": "Finalizing outputs",
+    "completed": "Completed",
+    "failed": "Failed",
+}
+
+
+def canonical_status(raw_status: Optional[str]) -> str:
+    return CANONICAL_STATUS_MAP.get(str(raw_status or "").lower(), "processing")
+
+
+def normalize_stage(raw_stage: Optional[str]) -> str:
+    stage = str(raw_stage or "").lower()
+    if stage in ("initialized", "processing"):
+        return "extracting"
+    if stage in ("complete", "completed", "done"):
+        return "completed"
+    if stage in ("error", "failed"):
+        return "failed"
+    if stage in STAGE_LABELS:
+        return stage
+    return "extracting"
+
+
+def stage_label(stage: Optional[str]) -> str:
+    return STAGE_LABELS.get(str(stage or "").lower(), "Processing")
+
+
 class ProgressTracker:
     """Track and stream progress updates with file-based persistence."""
 
@@ -58,7 +105,10 @@ class ProgressTracker:
                     now = _utc_now_naive()
                     tasks_to_remove = []
                     for task_id, task in loaded_tasks.items():
-                        if task.get("stage") in ["complete", "completed", "error"]:
+                        if canonical_status(task.get("status") or task.get("stage")) in [
+                            "completed",
+                            "failed",
+                        ]:
                             # Check if task is too old
                             updates = task.get("updates", [])
                             if updates:
@@ -180,7 +230,10 @@ class ProgressTracker:
         removed_count = 0
 
         for task_id, task in list(self.tasks.items()):
-            if task.get("stage") in ["complete", "completed", "error"]:
+            if canonical_status(task.get("status") or task.get("stage")) in [
+                "completed",
+                "failed",
+            ]:
                 last_update_str = task.get("updates", [{}])[-1].get("timestamp", "")
                 if last_update_str:
                     try:
@@ -223,6 +276,7 @@ class ProgressTracker:
         progress: int,
         message: str,
         result: Optional[dict] = None,
+        metadata: Optional[dict] = None,
     ):
         """Update task progress.
 
@@ -243,10 +297,14 @@ class ProgressTracker:
                 "updates": [],
             }
 
+        normalized_stage = normalize_stage(stage)
+        normalized_status = canonical_status(stage)
         update = {
-            "stage": stage,
+            "stage": normalized_stage,
+            "status": normalized_status,
             "progress": progress,
             "message": message,
+            "stage_label": stage_label(normalized_stage),
             "timestamp": _utc_now_naive().isoformat(),
         }
 
@@ -254,15 +312,17 @@ class ProgressTracker:
         if result:
             update.update(result)
             self.tasks[task_id]["result"] = result
+        if metadata:
+            update.update(metadata)
 
         self.tasks[task_id].update(update)
         self.tasks[task_id]["updates"].append(update)
         print(
-            f"DEBUG: Progress tracker updated: task_id={task_id}, stage={stage}, progress={progress}%, message={message[:50]}"
+            f"DEBUG: Progress tracker updated: task_id={task_id}, stage={normalized_stage}, progress={progress}%, message={message[:50]}"
         )
 
         # Persist state on important updates (every 10% or on stage changes)
-        if progress % 10 == 0 or stage in ["complete", "completed", "error"]:
+        if progress % 10 == 0 or normalized_status in ["completed", "failed"]:
             self._save_state()
 
     def get_updates(self, task_id: str) -> list:
@@ -275,7 +335,7 @@ class ProgressTracker:
     def complete(self, task_id: str):
         """Mark task as complete."""
         if task_id in self.tasks:
-            self.update(task_id, "complete", 100, "Task completed successfully")
+            self.update(task_id, "completed", 100, "Task completed successfully")
             print(f"DEBUG: Progress tracker marked task {task_id} as complete")
             # Force save on completion
             self._save_state()
@@ -285,7 +345,7 @@ class ProgressTracker:
     def error(self, task_id: str, error_message: str):
         """Mark task as failed."""
         if task_id in self.tasks:
-            self.update(task_id, "error", 0, f"Error: {error_message}")
+            self.update(task_id, "failed", 0, f"Error: {error_message}")
             # Force save on error
             self._save_state()
         else:
@@ -363,7 +423,10 @@ async def stream_render_progress(
 
             # Check if complete using get_task (handles persistence)
             task = progress_tracker.get_task(task_id)
-            if task and task.get("stage") in ["complete", "completed", "error"]:
+            if task and canonical_status(task.get("status") or task.get("stage")) in [
+                "completed",
+                "failed",
+            ]:
                 break
 
             await asyncio.sleep(0.1)

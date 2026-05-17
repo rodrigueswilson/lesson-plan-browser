@@ -130,21 +130,25 @@ def verify_curriculum_data_integrity(db_path: str) -> list[str]:
                     "lessons in Grade 3 ELA sample unit: some rows lack non-empty standards_structured JSON"
                 )
         cols = {row[1] for row in conn.execute("PRAGMA table_info(lessons)").fetchall()}
-        if "ela_key_learning_summary" in cols:
+        if "ela_key_learning_summary" in cols and "ela_lesson_plan_structured" in cols:
             sample_unit = "ELA_3_U8_sample"
             row = conn.execute(
                 """
                 SELECT COUNT(*) AS n,
-                       SUM(CASE WHEN ela_key_learning_summary IS NOT NULL
-                                 AND TRIM(ela_key_learning_summary) != '' THEN 1 ELSE 0 END) AS filled
+                       SUM(
+                         CASE WHEN
+                           (ela_lesson_plan_structured IS NULL OR TRIM(ela_lesson_plan_structured) = '')
+                           AND (ela_key_learning_summary IS NULL OR TRIM(ela_key_learning_summary) = '')
+                         THEN 1 ELSE 0 END
+                       ) AS missing_both
                 FROM lessons WHERE unit_id = ?
                 """,
                 (sample_unit,),
             ).fetchone()
-            if row and row["n"] and row["n"] > 0 and (row["filled"] or 0) == 0:
+            if row and row["n"] and row["n"] > 0 and (row["missing_both"] or 0) > 0:
                 issues.append(
-                    "warning: unit ELA_3_U8_sample has lessons but no ela_key_learning_summary "
-                    "(re-ingest with ELA ingest after Summary-of-Key-Learning extraction)"
+                    "warning: unit ELA_3_U8_sample has lessons missing both "
+                    "ela_lesson_plan_structured and ela_key_learning_summary"
                 )
     finally:
         conn.close()

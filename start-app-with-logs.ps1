@@ -150,17 +150,20 @@ Write-Host ""
 Write-Host "Checking for existing frontend dev server..." -ForegroundColor Yellow
 $frontendPort = Get-NetTCPConnection -LocalPort 1420 -ErrorAction SilentlyContinue
 if ($frontendPort) {
-    $frontendPid = $frontendPort.OwningProcess
-    $frontendProc = Get-Process -Id $frontendPid -ErrorAction SilentlyContinue
-    if ($frontendProc) {
-        Write-Host "Found existing frontend dev server (PID: $frontendPid) on port 1420" -ForegroundColor Yellow
-        Write-Host "Stopping process $frontendPid..." -ForegroundColor Yellow
-        try {
-            Stop-Process -Id $frontendPid -Force -ErrorAction Stop
-            Start-Sleep -Seconds 2
-            Write-Host "Process stopped successfully" -ForegroundColor Green
-        } catch {
-            Write-Host "Warning: Could not stop frontend process: $_" -ForegroundColor Red
+    # OwningProcess can be 0 for some connection states; never treat PID 0 (System Idle) as a dev server.
+    $frontendPids = @($frontendPort | Select-Object -ExpandProperty OwningProcess -Unique) | Where-Object { $_ -and $_ -ne 0 }
+    foreach ($frontendPid in $frontendPids) {
+        $frontendProc = Get-Process -Id $frontendPid -ErrorAction SilentlyContinue
+        if ($frontendProc) {
+            Write-Host "Found existing frontend dev server (PID: $frontendPid) on port 1420" -ForegroundColor Yellow
+            Write-Host "Stopping process $frontendPid..." -ForegroundColor Yellow
+            try {
+                Stop-Process -Id $frontendPid -Force -ErrorAction Stop
+                Start-Sleep -Seconds 2
+                Write-Host "Process stopped successfully" -ForegroundColor Green
+            } catch {
+                Write-Host "Warning: Could not stop frontend process: $_" -ForegroundColor Red
+            }
         }
     }
 }

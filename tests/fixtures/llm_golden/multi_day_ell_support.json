@@ -1,0 +1,147 @@
+{
+  "metadata": {
+    "week_of": "1/1-1/5",
+    "grade": "6",
+    "subject": "Math",
+    "homeroom": "202",
+    "teacher_name": "Golden Multi-Day"
+  },
+  "days": {
+    "monday": {
+      "unit_lesson": "Golden unit",
+      "objective": {
+        "content_objective": "Objective",
+        "student_goal": "Goal",
+        "wida_objective": "WIDA"
+      },
+      "anticipatory_set": {
+        "original_content": "Warm-up",
+        "bilingual_bridge": ""
+      },
+      "tailored_instruction": {
+        "original_content": "Instruction",
+        "co_teaching_model": {
+          "model_name": "One Teach One Assist",
+          "rationale": "Fixture",
+          "wida_context": "Fixture",
+          "phase_plan": [],
+          "implementation_notes": [],
+          "warnings": []
+        },
+        "ell_support": [
+          {
+            "strategy_id": "sentence_frames",
+            "strategy_name": "Sentence Frames",
+            "implementation": "Monday slot",
+            "proficiency_levels": "2-3"
+          }
+        ],
+        "special_needs_support": [],
+        "materials": []
+      },
+      "misconceptions": {
+        "original_content": "",
+        "linguistic_note": {
+          "pattern_id": "none",
+          "note": "",
+          "prevention_tip": ""
+        }
+      },
+      "assessment": {
+        "primary_assessment": "Exit ticket",
+        "bilingual_overlay": {
+          "instrument": "Written",
+          "wida_mapping": "Fixture",
+          "supports_by_level": {
+            "levels_1_2": "",
+            "levels_3_4": "",
+            "levels_5_6": ""
+          }
+        }
+      },
+      "homework": {
+        "original_content": "",
+        "bilingual_overlay": {
+          "assignment": "",
+          "wida_mapping": "",
+          "supports_by_level": {
+            "levels_1_2": "",
+            "levels_3_4": "",
+            "levels_5_6": ""
+          }
+        }
+      }
+    },
+    "friday": {
+      "unit_lesson": "Golden unit B",
+      "objective": {
+        "content_objective": "Objective B",
+        "student_goal": "Goal B",
+        "wida_objective": "WIDA B"
+      },
+      "anticipatory_set": {
+        "original_content": "Warm-up B",
+        "bilingual_bridge": ""
+      },
+      "tailored_instruction": {
+        "original_content": "Instruction B",
+        "co_teaching_model": {
+          "model_name": "One Teach One Assist",
+          "rationale": "Fixture",
+          "wida_context": "Fixture",
+          "phase_plan": [],
+          "implementation_notes": [],
+          "warnings": []
+        },
+        "ell_support": [
+          {
+            "strategy_id": "graphic_organizers",
+            "strategy_name": "Graphic Organizers",
+            "implementation": "Friday slot A",
+            "proficiency_levels": "3-4"
+          },
+          {
+            "strategy_id": "explicit_vocabulary",
+            "strategy_name": "Explicit Vocabulary",
+            "implementation": "Friday slot B",
+            "proficiency_levels": "3-4"
+          }
+        ],
+        "special_needs_support": [],
+        "materials": []
+      },
+      "misconceptions": {
+        "original_content": "",
+        "linguistic_note": {
+          "pattern_id": "none",
+          "note": "",
+          "prevention_tip": ""
+        }
+      },
+      "assessment": {
+        "primary_assessment": "Quiz",
+        "bilingual_overlay": {
+          "instrument": "Written",
+          "wida_mapping": "Fixture",
+          "supports_by_level": {
+            "levels_1_2": "",
+            "levels_3_4": "",
+            "levels_5_6": ""
+          }
+        }
+      },
+      "homework": {
+        "original_content": "",
+        "bilingual_overlay": {
+          "assignment": "",
+          "wida_mapping": "",
+          "supports_by_level": {
+            "levels_1_2": "",
+            "levels_3_4": "",
+            "levels_5_6": ""
+          }
+        }
+      }
+    }
+  }
+}

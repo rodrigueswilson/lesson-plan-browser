@@ -74,7 +74,7 @@ export function DesktopNav({ activeItem, onNavigate, compact = false, availableN
   return (
     <nav className="border-r bg-card w-64 min-h-screen flex flex-col">
       {/* Logo/Header */}
-      <div className="p-6 border-b">
+      <div className="px-6 min-h-24 border-b flex items-center">
         <div className="flex items-center gap-2">
           <FileText className="w-6 h-6 text-primary" />
           <span className="font-bold text-lg">Lesson Planner</span>

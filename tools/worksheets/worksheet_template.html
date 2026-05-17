@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ subject }} Worksheet - Grade {{ grade }} Unit {{ unit_number }}</title>
+    <link rel="stylesheet" href="worksheet.css">
+</head>
+<body class="{{ subject.lower() }}-theme">
+    <!-- Header with School Info & Student QR -->
+    <header class="worksheet-header">
+        <div class="header-left">
+            <h1>Newark Public Schools</h1>
+            <h2>{{ subject }} | Unit {{ unit_number }}: {{ unit_title }}</h2>
+            <h3>Lesson {{ lesson_number }}: {{ lesson_title }}</h3>
+        </div>
+        <div class="header-right">
+            <div class="student-info">
+                <label>Student Name: ___________________________</label>
+                <label>Date: _______________</label>
+            </div>
+            <div class="qr-code">
+                <!-- Placeholder for QR code (rendered by WeasyPrint or as an image) -->
+                <div class="qr-placeholder">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data={{ qr_content }}" alt="Lesson QR">
+                </div>
+                <span>QR-{{ lesson_number }}-SCAN</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="worksheet-content">
+        <!-- Word Power Section (Bilingual & Leveled) -->
+        <section class="word-power">
+            <h4 class="section-title">Word Power / Poder das Palavras</h4>
+            <div class="vocab-grid">
+                {% for item in bilingual_vocabulary %}
+                <div class="vocab-card">
+                    <div class="vocab-header">
+                        <span class="term-en">{{ item.en }}</span>
+                        <span class="term-divider">|</span>
+                        <span class="term-pt">{{ item.pt }}</span>
+                    </div>
+                    <div class="vocab-body">
+                        <p class="def-en">{{ item.def_en }}</p>
+                        <hr class="def-divider">
+                        <p class="def-pt">{{ item.def_pt }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- Dynamic Content Section -->
+        <section class="learning-tasks">
+            <h4 class="section-title">Today's Goal: {{ content_instruction }}</h4>
+            <div class="task-list">
+                {% for item in content_items %}
+                <div class="task-item">
+                    <p class="question">{{ loop.index }}. {{ item.question }}</p>
+                    <div class="answer-space"></div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- Sentence Frames for WIDA Scaffolding -->
+        <section class="language-scaffolds">
+            <h4 class="section-title">Let's Write! / Vamos Escrever!</h4>
+            <div class="frame-list">
+                {% for frame in sentence_frames %}
+                <p class="sentence-frame">{{ frame.text | safe }}</p>
+                {% endfor %}
+            </div>
+        </section>
+    </main>
+
+    <footer class="worksheet-footer">
+        <div class="footer-left">
+            <p><strong>Standards:</strong> 
+                {% for std in standards %}
+                {{ std.code }}{% if not loop.last %}, {% endif %}
+                {% endfor %}
+            </p>
+        </div>
+        <div class="footer-right">
+            <p class="exit-ticket-title">Exit Ticket / Ticket de Saída</p>
+            <p class="exit-ticket-instr">{{ exit_ticket_instruction }}</p>
+            <div class="exit-ticket-space"></div>
+        </div>
+    </footer>
+</body>
+</html>

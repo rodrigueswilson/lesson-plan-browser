@@ -183,16 +183,16 @@ export const UserSelector: React.FC<UserSelectorProps> = ({ autoSelect = 'off' }
     if (currentUser) return;
     if (autoSelect === 'single' && users.length !== 1) return;
     if (autoSelect === 'first' && users.length < 1) return;
-
-    autoSelectedRef.current = true;
     if (autoSelect === 'first' && users.length > 1) {
       console.warn(
-        `[UserSelector] autoSelect=first: multiple users found (${users.length}). ` +
-        `Auto-selecting first user: ${users[0].id}. Tablet DB should normally contain exactly one user.`
+        `[UserSelector] autoSelect=first disabled for multi-user dataset (${users.length}). ` +
+        `Waiting for explicit user selection to avoid selecting the wrong tablet owner.`
       );
-    } else {
-      console.log('[UserSelector] autoSelect enabled; selecting user:', users[0].id);
+      return;
     }
+
+    autoSelectedRef.current = true;
+    console.log('[UserSelector] autoSelect enabled; selecting user:', users[0].id);
     // Fire and forget; selectUser handles its own loading states.
     void selectUser(users[0].id);
   }, [autoSelect, currentUser, users]);  

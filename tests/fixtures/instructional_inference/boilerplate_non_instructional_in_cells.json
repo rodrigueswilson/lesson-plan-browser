@@ -1,0 +1,25 @@
+{
+  "description": "District template repeats 'non-instructional' in cells — must not zero out the whole week after regex fix.",
+  "table_content": {
+    "Monday": {
+      "Unit/Lesson": "Unit 1 Lesson 2: Fractions intro",
+      "Notes": "See district non-instructional calendar key"
+    },
+    "Tuesday": {
+      "Unit/Lesson": "Unit 1 Lesson 3: Compare fractions",
+      "Notes": "See district non-instructional calendar key"
+    },
+    "Wednesday": {
+      "Unit/Lesson": "Unit 1 Lesson 4: Practice",
+      "Notes": "See district non-instructional calendar key"
+    },
+    "Thursday": {
+      "Unit/Lesson": "Unit 1 Lesson 5: Word problems",
+      "Notes": "See district non-instructional calendar key"
+    },
+    "Friday": {
+      "Unit/Lesson": "Unit 1 Lesson 6: Review",
+      "Notes": "See district non-instructional calendar key"
+    }
+  }
+}

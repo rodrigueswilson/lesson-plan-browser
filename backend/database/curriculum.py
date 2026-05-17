@@ -8,6 +8,23 @@ from typing import Any, Dict, List, Optional, Set
 
 logger = logging.getLogger(__name__)
 
+
+def _fts5_prefix_query(raw: str) -> Optional[str]:
+    """
+    Build a conservative FTS5 MATCH string (AND of prefix tokens).
+    Returns None if nothing usable remains (caller should fall back to LIKE).
+    """
+    parts: List[str] = []
+    for token in (raw or "").split():
+        cleaned = "".join(c for c in token if c.isalnum() or c in "-_'")
+        if len(cleaned) < 2:
+            continue
+        esc = cleaned.replace('"', '""')
+        parts.append(f'"{esc}"*')
+    if not parts:
+        return None
+    return " AND ".join(parts)
+
 _UNIT_PROVENANCE_COLUMNS: Dict[str, str] = {
     "source_doc_id": "TEXT",
     "source_url": "TEXT",
@@ -29,6 +46,8 @@ _LESSON_PROVENANCE_COLUMNS: Dict[str, str] = {
 _LESSON_EXTRA_SCHEMA_COLUMNS: Dict[str, str] = {
     "ela_key_learning_summary": "TEXT",
     "ela_lesson_plan_structured": "TEXT",
+    "science_doc_lesson_number": "INTEGER",
+    "science_li_sc_day_structured": "TEXT",
 }
 
 class CurriculumDatabase:
@@ -54,23 +73,55 @@ class CurriculumDatabase:
             return json.load(f)
 
     def search_lessons_text(self, query: str, limit: int = 40) -> List[Dict[str, Any]]:
-        """Substring search over title and main HTML fields (interim; FTS5 planned)."""
+        """Full-text search (FTS5) with HTML snippet highlights; falls back to LIKE."""
         q = (query or "").strip()
         if len(q) < 2:
             return []
         if limit < 1 or limit > 200:
             limit = 40
-        pat = f"%{q}%"
-        sql = """
-        SELECT id, unit_id, lesson_number, title
-        FROM lessons
-        WHERE title LIKE ? OR IFNULL(procedure_html, '') LIKE ?
-           OR IFNULL(narrative_html, '') LIKE ?
-        ORDER BY unit_id, lesson_number
-        LIMIT ?
-        """
+        self.ensure_lessons_fts_index()
+        fts_q = _fts5_prefix_query(q)
         with self._get_conn() as conn:
-            rows = conn.execute(sql, (pat, pat, pat, limit)).fetchall()
+            fts_ready = conn.execute(
+                "SELECT 1 FROM sqlite_master WHERE type='table' AND name='lessons_fts'"
+            ).fetchone()
+            if fts_q and fts_ready:
+                try:
+                    sql_fts = """
+                    SELECT
+                        l.id,
+                        l.unit_id,
+                        l.lesson_number,
+                        l.title,
+                        snippet(
+                            lessons_fts,
+                            2,
+                            '<mark>',
+                            '</mark>',
+                            ' … ',
+                            20
+                        ) AS snippet_html,
+                        bm25(lessons_fts) AS fts_rank
+                    FROM lessons_fts
+                    JOIN lessons l ON l.id = lessons_fts.lesson_id
+                    WHERE lessons_fts MATCH ?
+                    ORDER BY fts_rank
+                    LIMIT ?
+                    """
+                    rows = conn.execute(sql_fts, (fts_q, limit)).fetchall()
+                    return [dict(r) for r in rows]
+                except sqlite3.OperationalError as exc:
+                    logger.warning("FTS search failed, using LIKE fallback: %s", exc)
+            pat = f"%{q}%"
+            sql_like = """
+            SELECT id, unit_id, lesson_number, title, NULL AS snippet_html, NULL AS fts_rank
+            FROM lessons
+            WHERE title LIKE ? OR IFNULL(procedure_html, '') LIKE ?
+               OR IFNULL(narrative_html, '') LIKE ?
+            ORDER BY unit_id, lesson_number
+            LIMIT ?
+            """
+            rows = conn.execute(sql_like, (pat, pat, pat, limit)).fetchall()
             return [dict(r) for r in rows]
 
     def _get_conn(self):
@@ -126,6 +177,58 @@ class CurriculumDatabase:
             rows = conn.execute(query, (unit_id,)).fetchall()
             return [dict(r) for r in rows]
 
+    def get_unit_science_day_outline(self, unit_id: str) -> Dict[str, Any]:
+        """
+        Per-lesson writer day-band labels for Science (segment_index + day_label only).
+        Lessons with no relational segments still appear with an empty segments list.
+        """
+        with self._get_conn() as conn:
+            if not conn.execute(
+                "SELECT 1 FROM sqlite_master WHERE type='table' AND name=?",
+                ("science_lesson_day_segments",),
+            ).fetchone():
+                return {"unit_id": unit_id, "lessons": [], "total_writer_bands": 0}
+            rows = conn.execute(
+                """
+                SELECT
+                    l.id AS lesson_id,
+                    l.lesson_number,
+                    l.title,
+                    s.segment_index,
+                    s.day_label
+                FROM lessons l
+                LEFT JOIN science_lesson_day_segments s ON s.lesson_id = l.id
+                WHERE l.unit_id = ?
+                ORDER BY l.lesson_number ASC, s.segment_index ASC
+                """,
+                (unit_id,),
+            ).fetchall()
+
+        lessons_map: Dict[str, Dict[str, Any]] = {}
+        lesson_order: List[str] = []
+        for r in rows:
+            lid = str(r["lesson_id"])
+            if lid not in lessons_map:
+                lessons_map[lid] = {
+                    "lesson_id": lid,
+                    "lesson_number": int(r["lesson_number"]),
+                    "title": (r["title"] or ""),
+                    "segments": [],
+                }
+                lesson_order.append(lid)
+            seg_idx = r["segment_index"]
+            if seg_idx is not None:
+                lessons_map[lid]["segments"].append(
+                    {
+                        "segment_index": int(seg_idx),
+                        "day_label": (r["day_label"] or ""),
+                    }
+                )
+
+        lessons = [lessons_map[i] for i in lesson_order]
+        total = sum(len(x["segments"]) for x in lessons)
+        return {"unit_id": unit_id, "lessons": lessons, "total_writer_bands": total}
+
     def get_unit_intro(self, unit_id: str) -> Optional[Dict[str, Any]]:
         """Returns introductory content for a unit."""
         query = """
@@ -163,22 +266,348 @@ class CurriculumDatabase:
                 if col not in lessons_cols:
                     conn.execute(f"ALTER TABLE lessons ADD COLUMN {col} {col_type}")
             conn.commit()
+        self.ensure_lessons_fts_index()
+        self.ensure_unit_semantic_links_table()
+        self.ensure_science_lesson_day_segments_table()
+        self.ensure_g2_science_book_lesson_supplement_table()
+        self.ensure_g2_science_book_lesson_extract_table()
 
-    def get_lesson_details(self, lesson_id: str) -> Optional[Dict[str, Any]]:
-        """Returns full details for a single lesson."""
-        query = "SELECT * FROM lessons WHERE id = ?"
+    def ensure_g2_science_book_lesson_extract_table(self) -> None:
+        """Per-page plain text from the Grade 2 Inspire student workbook PDF (complement to lesson SSOT)."""
         with self._get_conn() as conn:
-            row = conn.execute(query, (lesson_id,)).fetchone()
-            return dict(row) if row else None
+            conn.execute(
+                """
+                CREATE TABLE IF NOT EXISTS g2_science_book_lesson_extract (
+                    id TEXT PRIMARY KEY,
+                    lesson_id TEXT NOT NULL,
+                    page_number INTEGER NOT NULL,
+                    body_text TEXT NOT NULL,
+                    char_count INTEGER,
+                    content_sha256 TEXT,
+                    alignment_confidence TEXT NOT NULL DEFAULT 'high',
+                    alignment_ambiguous INTEGER NOT NULL DEFAULT 0,
+                    source_pdf_label TEXT NOT NULL,
+                    ingest_parser_version TEXT NOT NULL,
+                    ingested_at TEXT NOT NULL,
+                    FOREIGN KEY(lesson_id) REFERENCES lessons(id),
+                    UNIQUE(lesson_id, page_number)
+                )
+                """
+            )
+            conn.execute(
+                "CREATE INDEX IF NOT EXISTS idx_g2_book_extract_lesson_page "
+                "ON g2_science_book_lesson_extract(lesson_id, page_number)"
+            )
+            conn.commit()
 
-    def get_lesson_vocabulary(self, lesson_id: str) -> List[Dict[str, Any]]:
-        """Returns enriched bilingual vocabulary for a lesson."""
+    def ensure_g2_science_book_lesson_supplement_table(self) -> None:
+        """Grade 2 Inspire student-workbook metadata keyed by canonical lesson (QA / planning complement)."""
         with self._get_conn() as conn:
-            vi_cols = {
-                row[1] for row in conn.execute("PRAGMA table_info(vocabulary_items)")
+            conn.execute(
+                """
+                CREATE TABLE IF NOT EXISTS g2_science_book_lesson_supplement (
+                    lesson_id TEXT PRIMARY KEY,
+                    source_pdf_label TEXT NOT NULL,
+                    isbn13 TEXT,
+                    pdf_page_start INTEGER,
+                    pdf_page_end INTEGER,
+                    pdf_title_hit_count INTEGER,
+                    first_page_workbook_pattern TEXT,
+                    paired_read_block_title TEXT,
+                    teacher_curriculum_cue TEXT,
+                    format_notes TEXT,
+                    updated_at TEXT NOT NULL,
+                    FOREIGN KEY(lesson_id) REFERENCES lessons(id)
+                )
+                """
+            )
+            conn.execute(
+                "CREATE INDEX IF NOT EXISTS idx_g2_book_supplement_lesson_id "
+                "ON g2_science_book_lesson_supplement(lesson_id)"
+            )
+            conn.commit()
+
+    def ensure_science_lesson_day_segments_table(self) -> None:
+        """Relational Science writer day segments (mirrors science_li_sc_day_structured on ingest)."""
+        with self._get_conn() as conn:
+            conn.execute(
+                """
+                CREATE TABLE IF NOT EXISTS science_lesson_day_segments (
+                    id TEXT PRIMARY KEY,
+                    lesson_id TEXT NOT NULL,
+                    segment_index INTEGER NOT NULL,
+                    day_label TEXT NOT NULL,
+                    science_doc_lesson_number INTEGER,
+                    learning_intention_html TEXT,
+                    success_criteria_html TEXT,
+                    brief_overview_html TEXT,
+                    lesson_in_action_html TEXT,
+                    experimental_splits_json TEXT,
+                    FOREIGN KEY(lesson_id) REFERENCES lessons(id),
+                    UNIQUE(lesson_id, segment_index)
+                )
+                """
+            )
+            conn.execute(
+                "CREATE INDEX IF NOT EXISTS idx_science_lesson_day_segments_lesson_id "
+                "ON science_lesson_day_segments(lesson_id)"
+            )
+            conn.commit()
+
+    def replace_science_lesson_day_segments(self, lesson_id: str, payload: Any) -> None:
+        """DELETE then INSERT rows from a science_li_sc_day_structured dict/JSON string, or clear."""
+        self.ensure_science_lesson_day_segments_table()
+        segments: List[Dict[str, Any]] = []
+        doc_num: Optional[int] = None
+        if payload is None:
+            pass
+        elif isinstance(payload, str):
+            raw = payload.strip()
+            if raw:
+                try:
+                    obj = json.loads(raw)
+                    if isinstance(obj, dict):
+                        doc_num = obj.get("doc_lesson_number")
+                        if doc_num is not None and not isinstance(doc_num, int):
+                            try:
+                                doc_num = int(doc_num)
+                            except (TypeError, ValueError):
+                                doc_num = None
+                        segs = obj.get("segments") or []
+                        if isinstance(segs, list):
+                            segments = [x for x in segs if isinstance(x, dict)]
+                except json.JSONDecodeError:
+                    segments = []
+        elif isinstance(payload, dict):
+            doc_num = payload.get("doc_lesson_number")
+            if doc_num is not None and not isinstance(doc_num, int):
+                try:
+                    doc_num = int(doc_num)
+                except (TypeError, ValueError):
+                    doc_num = None
+            segs = payload.get("segments") or []
+            if isinstance(segs, list):
+                segments = [x for x in segs if isinstance(x, dict)]
+
+        with self._get_conn() as conn:
+            conn.execute(
+                "DELETE FROM science_lesson_day_segments WHERE lesson_id = ?",
+                (lesson_id,),
+            )
+            for i, seg in enumerate(segments):
+                row_id = f"{lesson_id}_sci_{i}"
+                label = (seg.get("label") or "").strip()
+                day_label = label if label else f"Segment {i + 1}"
+                exp = seg.get("experimental_splits")
+                exp_json: Optional[str] = None
+                if isinstance(exp, dict):
+                    exp_json = json.dumps(exp, ensure_ascii=False)
+                conn.execute(
+                    """
+                    INSERT INTO science_lesson_day_segments (
+                        id, lesson_id, segment_index, day_label, science_doc_lesson_number,
+                        learning_intention_html, success_criteria_html,
+                        brief_overview_html, lesson_in_action_html, experimental_splits_json
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    """,
+                    (
+                        row_id,
+                        lesson_id,
+                        i,
+                        day_label,
+                        doc_num,
+                        seg.get("learning_intention_html"),
+                        seg.get("success_criteria_html"),
+                        seg.get("brief_overview"),
+                        seg.get("lesson_in_action_html"),
+                        exp_json,
+                    ),
+                )
+            conn.commit()
+
+    def ensure_lessons_fts_index(self) -> None:
+        """Create or rebuild FTS5 index over lesson title + HTML body (Phase 6 navigator).
+
+        Rows are synchronized from ``upsert_lesson`` (no DB triggers; SQLite FTS5 + ON CONFLICT
+        UPDATE paths proved brittle with AFTER UPDATE/DELETE triggers on this schema).
+        """
+        fts_ddl = """
+        CREATE VIRTUAL TABLE IF NOT EXISTS lessons_fts USING fts5(
+            lesson_id UNINDEXED,
+            title,
+            body
+        );
+        """
+        with self._get_conn() as conn:
+            tables = {
+                row[0]
+                for row in conn.execute(
+                    "SELECT name FROM sqlite_master WHERE type='table'"
+                ).fetchall()
             }
-            mw_col = "vi.mw_definition_en" if "mw_definition_en" in vi_cols else "NULL AS mw_definition_en"
-            query = f"""
+            if "lessons" not in tables:
+                return
+            for trg in ("lessons_fts_ai", "lessons_fts_ad", "lessons_fts_au"):
+                conn.execute(f"DROP TRIGGER IF EXISTS {trg}")
+            conn.executescript(fts_ddl)
+            n_lessons = conn.execute("SELECT COUNT(*) FROM lessons").fetchone()[0]
+            n_fts = conn.execute("SELECT COUNT(*) FROM lessons_fts").fetchone()[0]
+            if n_lessons != n_fts:
+                conn.execute("DELETE FROM lessons_fts")
+                conn.execute(
+                    """
+                    INSERT INTO lessons_fts(lesson_id, title, body)
+                    SELECT
+                        id,
+                        COALESCE(title, ''),
+                        COALESCE(procedure_html, '') || ' ' || COALESCE(narrative_html, '')
+                    FROM lessons
+                    """
+                )
+            conn.commit()
+
+    def _replace_lesson_fts_row(self, conn: sqlite3.Connection, lesson_id: str) -> None:
+        if not conn.execute(
+            "SELECT 1 FROM sqlite_master WHERE type='table' AND name='lessons_fts'"
+        ).fetchone():
+            return
+        conn.execute("DELETE FROM lessons_fts WHERE lesson_id = ?", (lesson_id,))
+        row = conn.execute(
+            """
+            SELECT
+                id,
+                COALESCE(title, '') AS title,
+                COALESCE(procedure_html, '') || ' ' || COALESCE(narrative_html, '') AS body
+            FROM lessons
+            WHERE id = ?
+            """,
+            (lesson_id,),
+        ).fetchone()
+        if row:
+            conn.execute(
+                "INSERT INTO lessons_fts(lesson_id, title, body) VALUES (?, ?, ?)",
+                (row["id"], row["title"], row["body"]),
+            )
+
+    def ensure_unit_semantic_links_table(self) -> None:
+        """Curator/staff links between units (manual) plus API-level grade-band suggestions."""
+        with self._get_conn() as conn:
+            conn.execute(
+                """
+                CREATE TABLE IF NOT EXISTS unit_semantic_links (
+                    id TEXT PRIMARY KEY,
+                    from_unit_id TEXT NOT NULL,
+                    to_unit_id TEXT NOT NULL,
+                    link_kind TEXT NOT NULL DEFAULT 'related',
+                    rationale TEXT NOT NULL DEFAULT '',
+                    source TEXT NOT NULL DEFAULT 'manual',
+                    FOREIGN KEY (from_unit_id) REFERENCES units(id),
+                    FOREIGN KEY (to_unit_id) REFERENCES units(id),
+                    UNIQUE (from_unit_id, to_unit_id, link_kind)
+                )
+                """
+            )
+            conn.commit()
+
+    def get_unit_semantic_links(self, unit_id: str) -> List[Dict[str, Any]]:
+        """Manual links from DB merged with cross-grade suggestions (same subject, adjacent grade)."""
+        out: List[Dict[str, Any]] = []
+        seen_to: Set[str] = set()
+        with self._get_conn() as conn:
+            rows = conn.execute(
+                """
+                SELECT
+                    l.id AS link_id,
+                    l.to_unit_id,
+                    l.link_kind,
+                    l.rationale,
+                    l.source,
+                    u.title AS to_unit_title,
+                    u.grade AS to_grade,
+                    u.unit_number AS to_unit_number
+                FROM unit_semantic_links l
+                JOIN units u ON u.id = l.to_unit_id
+                WHERE l.from_unit_id = ?
+                ORDER BY l.source, l.link_kind, u.grade, u.unit_number
+                """,
+                (unit_id,),
+            ).fetchall()
+            for r in rows:
+                d = dict(r)
+                tid = d["to_unit_id"]
+                seen_to.add(tid)
+                out.append(
+                    {
+                        "id": d["link_id"],
+                        "to_unit_id": tid,
+                        "to_unit_title": d["to_unit_title"],
+                        "to_grade": d["to_grade"],
+                        "to_unit_number": d["to_unit_number"],
+                        "link_kind": d["link_kind"],
+                        "rationale": d["rationale"] or "",
+                        "source": d["source"] or "manual",
+                    }
+                )
+
+            cur = conn.execute(
+                "SELECT grade, subject FROM units WHERE id = ?",
+                (unit_id,),
+            ).fetchone()
+            if not cur:
+                return out
+            grade, subject = cur["grade"], cur["subject"]
+            if grade is None or not subject:
+                return out
+            for delta in (-1, 1):
+                ng = int(grade) + delta
+                if ng < 0:
+                    continue
+                peers = conn.execute(
+                    """
+                    SELECT id, title, unit_number, grade
+                    FROM units
+                    WHERE subject = ? AND grade = ? AND id != ?
+                    ORDER BY unit_number, title
+                    """,
+                    (subject, ng, unit_id),
+                ).fetchall()
+                for p in peers:
+                    pid = p["id"]
+                    if pid in seen_to:
+                        continue
+                    seen_to.add(pid)
+                    out.append(
+                        {
+                            "id": None,
+                            "to_unit_id": pid,
+                            "to_unit_title": p["title"],
+                            "to_grade": p["grade"],
+                            "to_unit_number": p["unit_number"],
+                            "link_kind": "vertical_band",
+                            "rationale": (
+                                f"Same {subject} in Grade {ng} (suggested adjacent band)."
+                            ),
+                            "source": "suggested",
+                        }
+                    )
+        return out
+
+    def _lesson_details_row(
+        self, conn: sqlite3.Connection, lesson_id: str
+    ) -> Optional[Dict[str, Any]]:
+        row = conn.execute(
+            "SELECT * FROM lessons WHERE id = ?", (lesson_id,)
+        ).fetchone()
+        return dict(row) if row else None
+
+    def _lesson_vocabulary_rows(
+        self, conn: sqlite3.Connection, lesson_id: str
+    ) -> List[Dict[str, Any]]:
+        vi_cols = {
+            row[1] for row in conn.execute("PRAGMA table_info(vocabulary_items)")
+        }
+        mw_col = "vi.mw_definition_en" if "mw_definition_en" in vi_cols else "NULL AS mw_definition_en"
+        query = f"""
         SELECT
             vi.base_term_en AS term,
             {mw_col},
@@ -195,40 +624,41 @@ class CurriculumDatabase:
             ON vi.id = vt.vocab_item_id AND vt.language_code = 'pt'
         WHERE lv.lesson_id = ?
         """
-            rows = conn.execute(query, (lesson_id,)).fetchall()
-            result = []
-            for row in rows:
-                levels = [
-                    row["level_1_def"],
-                    row["level_2_def"],
-                    row["level_3_def"],
-                    row["level_4_def"],
-                    row["level_5_def"],
-                    row["level_6_def"],
-                ]
-                leveled = []
-                for lv in levels:
-                    leveled.append({
-                        "definition": lv,
-                        "definition_pt": lv,
-                    })
-                if not any(levels) and row["mw_definition_en"]:
-                    leveled[4] = {
-                        "definition": row["mw_definition_en"],
-                        "definition_pt": row["mw_definition_en"],
-                    }
-                tr = row["translated_term"]
-                if not tr:
-                    tr = row["term"]
-                result.append({
-                    "term": row["term"],
-                    "translated_term": tr,
-                    "leveled_definitions": leveled,
+        rows = conn.execute(query, (lesson_id,)).fetchall()
+        result: List[Dict[str, Any]] = []
+        for row in rows:
+            levels = [
+                row["level_1_def"],
+                row["level_2_def"],
+                row["level_3_def"],
+                row["level_4_def"],
+                row["level_5_def"],
+                row["level_6_def"],
+            ]
+            leveled: List[Dict[str, Any]] = []
+            for lv in levels:
+                leveled.append({
+                    "definition": lv,
+                    "definition_pt": lv,
                 })
-            return result
+            if not any(levels) and row["mw_definition_en"]:
+                leveled[4] = {
+                    "definition": row["mw_definition_en"],
+                    "definition_pt": row["mw_definition_en"],
+                }
+            tr = row["translated_term"]
+            if not tr:
+                tr = row["term"]
+            result.append({
+                "term": row["term"],
+                "translated_term": tr,
+                "leveled_definitions": leveled,
+            })
+        return result
 
-    def get_lesson_standards(self, lesson_id: str) -> List[Dict[str, Any]]:
-        """Returns standards linked to a lesson (code + description)."""
+    def _lesson_standards_rows(
+        self, conn: sqlite3.Connection, lesson_id: str
+    ) -> List[Dict[str, Any]]:
         query = """
         SELECT s.code, s.description, s.subject
         FROM lesson_standards ls
@@ -236,8 +666,141 @@ class CurriculumDatabase:
         WHERE ls.lesson_id = ?
         ORDER BY s.code
         """
+        rows = conn.execute(query, (lesson_id,)).fetchall()
+        return [dict(r) for r in rows]
+
+    def get_lesson_details(self, lesson_id: str) -> Optional[Dict[str, Any]]:
+        """Returns full details for a single lesson."""
         with self._get_conn() as conn:
-            rows = conn.execute(query, (lesson_id,)).fetchall()
+            return self._lesson_details_row(conn, lesson_id)
+
+    def get_lesson_vocabulary(self, lesson_id: str) -> List[Dict[str, Any]]:
+        """Returns enriched bilingual vocabulary for a lesson."""
+        with self._get_conn() as conn:
+            return self._lesson_vocabulary_rows(conn, lesson_id)
+
+    def get_lesson_standards(self, lesson_id: str) -> List[Dict[str, Any]]:
+        """Returns standards linked to a lesson (code + description)."""
+        with self._get_conn() as conn:
+            return self._lesson_standards_rows(conn, lesson_id)
+
+    def get_lesson_bundle(
+        self,
+        lesson_id: str,
+        *,
+        include_book_extracts: bool = False,
+        book_extract_max_pages: int = 20,
+    ) -> Optional[Dict[str, Any]]:
+        """Lesson row + vocabulary + standards using a single DB connection."""
+        max_pages = max(1, min(int(book_extract_max_pages or 20), 60))
+        with self._get_conn() as conn:
+            lesson = self._lesson_details_row(conn, lesson_id)
+            if not lesson:
+                return None
+            seg_rows: List[Dict[str, Any]] = []
+            if conn.execute(
+                "SELECT 1 FROM sqlite_master WHERE type='table' AND name=?",
+                ("science_lesson_day_segments",),
+            ).fetchone():
+                seg_rows = [
+                    dict(r)
+                    for r in conn.execute(
+                        """
+                        SELECT
+                            id,
+                            lesson_id,
+                            segment_index,
+                            day_label,
+                            science_doc_lesson_number,
+                            learning_intention_html,
+                            success_criteria_html,
+                            brief_overview_html,
+                            lesson_in_action_html,
+                            experimental_splits_json
+                        FROM science_lesson_day_segments
+                        WHERE lesson_id = ?
+                        ORDER BY segment_index
+                        """,
+                        (lesson_id,),
+                    ).fetchall()
+                ]
+            book_supplement: Optional[Dict[str, Any]] = None
+            if conn.execute(
+                "SELECT 1 FROM sqlite_master WHERE type='table' AND name=?",
+                ("g2_science_book_lesson_supplement",),
+            ).fetchone():
+                b_row = conn.execute(
+                    """
+                    SELECT lesson_id, source_pdf_label, isbn13, pdf_page_start, pdf_page_end,
+                           pdf_title_hit_count, first_page_workbook_pattern, paired_read_block_title,
+                           teacher_curriculum_cue, format_notes, updated_at
+                    FROM g2_science_book_lesson_supplement
+                    WHERE lesson_id = ?
+                    """,
+                    (lesson_id,),
+                ).fetchone()
+                if b_row:
+                    book_supplement = dict(b_row)
+
+            out: Dict[str, Any] = {
+                "lesson": lesson,
+                "vocabulary": self._lesson_vocabulary_rows(conn, lesson_id),
+                "standards": self._lesson_standards_rows(conn, lesson_id),
+                "science_day_segments": seg_rows,
+            }
+            if book_supplement is not None:
+                out["book_lesson_supplement"] = book_supplement
+
+            if include_book_extracts and conn.execute(
+                "SELECT 1 FROM sqlite_master WHERE type='table' AND name=?",
+                ("g2_science_book_lesson_extract",),
+            ).fetchone():
+                ex_rows = [
+                    dict(r)
+                    for r in conn.execute(
+                        """
+                        SELECT id, lesson_id, page_number, body_text, char_count, content_sha256,
+                               alignment_confidence, alignment_ambiguous, source_pdf_label,
+                               ingest_parser_version, ingested_at
+                        FROM g2_science_book_lesson_extract
+                        WHERE lesson_id = ?
+                        ORDER BY page_number
+                        LIMIT ?
+                        """,
+                        (lesson_id, max_pages),
+                    ).fetchall()
+                ]
+                out["book_page_extracts"] = ex_rows
+            return out
+
+    def list_book_extracts(
+        self,
+        lesson_id: str,
+        *,
+        offset: int = 0,
+        limit: int = 20,
+    ) -> List[Dict[str, Any]]:
+        """Paginated workbook PDF extracts for one lesson (empty if table missing or no rows)."""
+        off = max(0, int(offset))
+        lim = max(1, min(int(limit), 100))
+        with self._get_conn() as conn:
+            if not conn.execute(
+                "SELECT 1 FROM sqlite_master WHERE type='table' AND name=?",
+                ("g2_science_book_lesson_extract",),
+            ).fetchone():
+                return []
+            rows = conn.execute(
+                """
+                SELECT id, lesson_id, page_number, body_text, char_count, content_sha256,
+                       alignment_confidence, alignment_ambiguous, source_pdf_label,
+                       ingest_parser_version, ingested_at
+                FROM g2_science_book_lesson_extract
+                WHERE lesson_id = ?
+                ORDER BY page_number
+                LIMIT ? OFFSET ?
+                """,
+                (lesson_id, lim, off),
+            ).fetchall()
             return [dict(r) for r in rows]
 
     def upsert_lesson(self, lesson_data: Dict[str, Any]):
@@ -251,6 +814,8 @@ class CurriculumDatabase:
             "standards_structured",
             "ela_key_learning_summary",
             "ela_lesson_plan_structured",
+            "science_doc_lesson_number",
+            "science_li_sc_day_structured",
             "source_doc_id", "source_url", "ingested_at", "ingest_run_id",
             "ingest_parser_version", "content_hash",
         ]
@@ -284,9 +849,11 @@ class CurriculumDatabase:
         VALUES ({placeholders})
         ON CONFLICT(id) DO UPDATE SET {updates}
         """
-        
+        lesson_id = valid_data.get("id")
         with self._get_conn() as conn:
             conn.execute(query, list(valid_data.values()))
+            if lesson_id:
+                self._replace_lesson_fts_row(conn, str(lesson_id))
             conn.commit()
 
     def update_unit_intro(self, unit_id: str, data: Dict[str, Any]):

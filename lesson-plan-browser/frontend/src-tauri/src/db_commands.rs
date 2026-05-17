@@ -7,6 +7,19 @@ use std::fs;
 use std::sync::Mutex;
 use std::path::PathBuf;
 
+#[cfg(target_os = "android")]
+const INCOMING_TRANSFER_PATH: &str =
+    "/sdcard/Android/data/com.lessonplanner.browser/files/transfer/lesson_planner.db";
+#[cfg(target_os = "android")]
+const INCOMING_TRANSFER_ALT_PATH: &str =
+    "/storage/emulated/0/Android/data/com.lessonplanner.browser/files/transfer/lesson_planner.db";
+#[cfg(target_os = "android")]
+const INCOMING_TRANSFER_ALT_PATH_2: &str =
+    "/storage/self/primary/Android/data/com.lessonplanner.browser/files/transfer/lesson_planner.db";
+#[cfg(target_os = "android")]
+const INCOMING_TRANSFER_INTERNAL_PATH: &str =
+    "/data/user/0/com.lessonplanner.browser/files/transfer/lesson_planner.db";
+
 // Global database connection (thread-safe)
 static DB: Mutex<Option<Connection>> = Mutex::new(None);
 
@@ -66,6 +79,87 @@ fn try_copy_bundled_database(_target_path: &PathBuf) -> bool {
     false
 }
 
+/// On Android, apply ADB-pushed transfer DB before opening the internal database.
+#[cfg(target_os = "android")]
+fn apply_incoming_transfer_if_present(target_path: &PathBuf) {
+    let candidates = [
+        PathBuf::from(INCOMING_TRANSFER_PATH),
+        PathBuf::from(INCOMING_TRANSFER_ALT_PATH),
+        PathBuf::from(INCOMING_TRANSFER_ALT_PATH_2),
+        PathBuf::from(INCOMING_TRANSFER_INTERNAL_PATH),
+    ];
+
+    let mut chosen: Option<(PathBuf, std::fs::Metadata)> = None;
+    let mut saw_permission_error = false;
+
+    for pending in candidates {
+        match fs::metadata(&pending) {
+            Ok(meta) => {
+                chosen = Some((pending, meta));
+                break;
+            }
+            Err(e) if e.kind() == std::io::ErrorKind::NotFound => {}
+            Err(e) => {
+                saw_permission_error = true;
+                eprintln!(
+                    "[DB] Transfer candidate not readable {}: {}",
+                    pending.display(),
+                    e
+                );
+            }
+        }
+    }
+
+    let Some((pending, meta)) = chosen else {
+        if saw_permission_error {
+            eprintln!("[DB] Transfer import skipped: no readable transfer path found");
+        } else {
+            eprintln!("[DB] Transfer import skipped (missing): {}", INCOMING_TRANSFER_PATH);
+        }
+        return;
+    };
+
+    if meta.len() == 0 {
+        eprintln!("[DB] Transfer import skipped (empty file): {}", pending.display());
+        return;
+    }
+
+    for suffix in ["-wal", "-shm"] {
+        let sidecar = format!("{}{}", target_path.to_string_lossy(), suffix);
+        let _ = fs::remove_file(sidecar);
+    }
+    let _ = fs::remove_file(target_path);
+
+    match fs::copy(&pending, target_path) {
+        Ok(bytes) => {
+            eprintln!(
+                "[DB] Transfer import applied: copied {} bytes from {} to {}",
+                bytes,
+                pending.display(),
+                target_path.display()
+            );
+            if let Err(e) = fs::remove_file(&pending) {
+                eprintln!(
+                    "[DB] Transfer cleanup warning: could not delete {}: {}",
+                    pending.display(),
+                    e
+                );
+            }
+        }
+        Err(e) => {
+            eprintln!(
+                "[DB] Transfer import failed: {} -> {}: {}",
+                pending.display(),
+                target_path.display(),
+                e
+            );
+        }
+    }
+}
+
+#[cfg(not(target_os = "android"))]
+fn apply_incoming_transfer_if_present(_target_path: &PathBuf) {}
+
 /// Check if the database has any user data (i.e., is not empty)
 fn database_has_data(conn: &Connection) -> bool {
     match conn.query_row("SELECT COUNT(*) FROM users", [], |row| row.get::<_, i64>(0)) {
@@ -80,6 +174,9 @@ pub fn init_database(db_path: PathBuf) -> Result<(), String> {
         std::fs::create_dir_all(parent)
             .map_err(|e| format!("Failed to create database directory: {}", e))?;
     }
+
+    // Import ADB-pushed transfer DB before opening SQLite (Android only).
+    apply_incoming_transfer_if_present(&db_path);
     
     // Check if database file exists and has content
     let db_exists = db_path.exists() && fs::metadata(&db_path).map(|m| m.len() > 0).unwrap_or(false);

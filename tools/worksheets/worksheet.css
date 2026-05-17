@@ -1,0 +1,121 @@
+@page {
+    size: letter;
+    margin: 0.5in;
+}
+
+:root {
+    --primary-color: #2c3e50;
+    --secondary-color: #34495e;
+    --accent-color: #3498db;
+    --math-color: #2980b9;
+    --ela-color: #27ae60;
+    --muted-color: #95a5a6;
+    --border-color: #bdc3c7;
+    --bg-light: #f8f9fa;
+}
+
+body {
+    font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.4;
+    color: var(--primary-color);
+    margin: 0;
+    padding: 0;
+}
+
+.worksheet-header {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.header-left h1 { font-size: 1.4em; margin: 0; color: var(--secondary-color); }
+.header-left h2 { font-size: 1.1em; margin: 5px 0; color: var(--accent-color); border: none; background: none; padding: 0; }
+.header-left h3 { font-size: 1em; margin: 0; font-weight: normal; }
+
+.header-right { text-align: right; }
+.student-info label { display: block; font-size: 0.9em; margin-bottom: 5px; }
+
+.qr-placeholder img { width: 80px; height: 80px; border: 1px solid #ccc; }
+.qr-code span { display: block; font-size: 0.7em; color: #666; }
+
+/* Themes */
+.math-theme { --accent-color: var(--math-color); }
+.ela-theme { --accent-color: var(--ela-color); }
+
+.section-title {
+    font-size: 1em;
+    text-transform: uppercase;
+    color: var(--accent-color);
+    border-bottom: 1px solid var(--accent-color);
+    margin-bottom: 10px;
+    padding-bottom: 2px;
+}
+
+/* Word Power Section */
+.word-power {
+    margin-bottom: 20px;
+}
+
+.vocab-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.vocab-card {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 8px;
+    background: #fff;
+}
+
+.vocab-header {
+    font-weight: bold;
+    font-size: 1.1em;
+    margin-bottom: 5px;
+    padding-bottom: 3px;
+    border-bottom: 1px solid #eee;
+}
+
+.term-pt { color: #c0392b; font-style: italic; }
+.term-divider { color: #ccc; margin: 0 5px; }
+
+.vocab-body { font-size: 0.85em; }
+.def-divider { border: 0; border-top: 1px dashed #eee; margin: 4px 0; }
+.def-pt { font-style: italic; color: #555; }
+
+/* Learning Tasks */
+.task-item { margin-bottom: 15px; }
+.question { font-weight: bold; margin-bottom: 10px; }
+.answer-space { border-bottom: 1px solid #eee; height: 1.5em; margin-left: 20px; width: 90%; }
+
+/* Language Scaffolds */
+.language-scaffolds {
+    background: #f9f9f9;
+    padding: 10px;
+    border-radius: 4px;
+    border-left: 5px solid var(--accent-color);
+}
+.sentence-frame { font-size: 1.1em; }
+.blank { display: inline-block; border-bottom: 1px solid #333; width: 1.5in; margin: 0 5px; }
+
+/* Footer */
+.worksheet-footer {
+    position: absolute;
+    bottom: 0.5in;
+    width: 7.5in;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8em;
+    border-top: 1px solid #eee;
+    padding-top: 10px;
+}
+
+.exit-ticket-title { font-weight: bold; text-decoration: underline; margin: 0; }
+.exit-ticket-space { height: 0.6in; border: 1px solid #eee; margin-top: 5px; background: #fff; }
+
+@media print {
+    body { -webkit-print-color-adjust: exact; }
+}

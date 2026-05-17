@@ -36,16 +36,11 @@ export function DesktopLayout({
       <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
         {/* Header - Hidden in Browser mode */}
         {!isBrowserMode && (
-          <header className="border-b bg-card flex-shrink-0">
-            <div className="px-6 py-4">
+          <header className="border-b bg-card flex-shrink-0 min-h-24 flex items-center">
+            <div className="px-6 w-full">
               <div className="flex items-center gap-3">
                 <BookOpen className="w-8 h-8 text-primary" />
-                <div>
-                  <h1 className="text-2xl font-bold">Bilingual Lesson Planner</h1>
-                  <p className="text-sm text-muted-foreground">
-                    Weekly lesson plan generator with WIDA support
-                  </p>
-                </div>
+                <h1 className="text-2xl font-bold">Bilingual Lesson Planner</h1>
               </div>
             </div>
           </header>

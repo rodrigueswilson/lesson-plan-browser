@@ -112,7 +112,7 @@ function getWeekCalendarSortKey(
 /**
  * Build available weeks, then sort by calendar (year + week start) newest first.
  * Year from folder_name (YY W##) when present, else inferred from week_of (school-year heuristic).
- * Selector shows first = most recent calendar week (e.g. 26 W12), last = oldest (e.g. 25 W36).
+ * Selector order: first = latest calendar week among plans (default when browser opens), last = oldest.
  */
 function buildAvailableWeeksInApiOrder(
   weeks: Array<{ week_of: string; display: string; folder_name?: string }>,
@@ -153,7 +153,6 @@ function buildAvailableWeeksInApiOrder(
 
   return result.map(({ week_of, display }) => ({ week_of, display }));
 }
-
 
 interface LessonPlanBrowserProps {
   onEnterLessonMode?: (scheduleEntry: ScheduleEntry, day?: string, slot?: number, planId?: string, previousViewMode?: 'week' | 'day' | 'lesson', weekOf?: string) => void;
@@ -429,30 +428,29 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
       setPlans(cachedPlans);
 
       // Still fetch weeks as they might change
+      let cachedAvailableWeeksList: Array<{ week_of: string; display: string }> = [];
       try {
         const weeksResponse = await userApi
           .getRecentWeeks(currentUser.id, 25, currentUser.id)
           .catch(() => ({ data: [] }));
         cachedWeeks = weeksResponse.data || [];
-        const cachedAvailableWeeks = buildAvailableWeeksInApiOrder(
+        cachedAvailableWeeksList = buildAvailableWeeksInApiOrder(
           cachedWeeks,
           cachedPlans || []
         );
-        setAvailableWeeks(cachedAvailableWeeks);
-        if (!selectedWeek && cachedAvailableWeeks.length > 0) {
-          setSelectedWeek(cachedAvailableWeeks[0]?.week_of ?? null);
+        setAvailableWeeks(cachedAvailableWeeksList);
+        if (!selectedWeek && cachedAvailableWeeksList.length > 0) {
+          setSelectedWeek(cachedAvailableWeeksList[0]?.week_of ?? null);
         }
       } catch (error) {
         console.error('Failed to fetch weeks:', error);
       }
 
+      const defaultCachedWeek = cachedAvailableWeeksList[0]?.week_of;
       const desiredWeek =
-        selectedWeek ||
-        cachedAvailableWeeks[0]?.week_of ||
-        cachedPlans[0]?.week_of ||
-        null;
+        selectedWeek || defaultCachedWeek || cachedPlans?.[0]?.week_of || null;
       const cacheHasDesiredWeek = desiredWeek
-        ? cachedPlans.some((p) => p.week_of === desiredWeek)
+        ? (cachedPlans ?? []).some((p) => p.week_of === desiredWeek)
         : false;
 
       if (cacheHasDesiredWeek) {
@@ -528,14 +526,15 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
       const weekValues = availableWeeksList.map((w) => w.week_of);
       if (!selectedWeek && weekValues.length > 0) {
         const autoSelectedWeek = weekValues[0];
-        console.log('[LessonPlanBrowser] Auto-selecting week (most recent):', {
+        console.log('[LessonPlanBrowser] Auto-selecting latest plan week (newest first):', {
           availableWeeks: weekValues,
           selected: autoSelectedWeek
         });
         setSelectedWeek(autoSelectedWeek);
       } else if (selectedWeek && !weekValues.includes(selectedWeek) && weekValues.length > 0) {
-        console.log('[LessonPlanBrowser] Selected week not available, switching to:', weekValues[0]);
-        setSelectedWeek(weekValues[0]);
+        const fallbackWeek = weekValues[0];
+        console.log('[LessonPlanBrowser] Selected week not available, switching to:', fallbackWeek);
+        setSelectedWeek(fallbackWeek);
       } else {
         console.log('[LessonPlanBrowser] Keeping existing selectedWeek:', selectedWeek);
       }
@@ -565,7 +564,7 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
     fetchPlans();
   }, [currentUser]);
 
-  // If we have available weeks but no selected week (e.g. race or state order on tablet), pick the first
+  // If we have available weeks but no selected week (e.g. race on tablet), pick latest plan week (list is newest first)
   useEffect(() => {
     if (availableWeeks.length > 0 && !selectedWeek && !loading) {
       setSelectedWeek(availableWeeks[0].week_of);
@@ -1795,7 +1794,7 @@ export function LessonPlanBrowser({ onEnterLessonMode, onExitLessonMode, showLes
     );
   }
 
-  // Use first available week when API returned weeks but selectedWeek state is not set yet (e.g. Android WebView).
+  // When selectedWeek is not set yet, use latest plan week (availableWeeks[0] is newest-first; e.g. Android WebView).
   // Fall back to first plan's week_of if availableWeeks is empty but we have plans (defensive).
   const effectiveSelectedWeek =
     selectedWeek || availableWeeks[0]?.week_of || plans[0]?.week_of || null;

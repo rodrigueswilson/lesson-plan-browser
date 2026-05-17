@@ -1,0 +1,87 @@
+{
+  "source_docx": "D:\\LP\\docs\\archive\\test-files\\test_hyperlink_robustness.docx",
+  "parser": "RecursiveTableParser.parse_to_stream + walk_stream_shapes",
+  "stream_top_level_items": 76,
+  "paragraphs_with_hyperlinks": 4,
+  "hyperlink_run_count": 4,
+  "occurrences": [
+    {
+      "stream_index": 72,
+      "paragraph_text": "• Lenni Lenape",
+      "runs_with_links": [
+        {
+          "run_index": 1,
+          "text": "Lenni Lenape",
+          "url": "http://example.com/0",
+          "google_id": null
+        }
+      ],
+      "paragraph_html": "<p>• <a href=\"http://example.com/0\" target=\"_blank\" rel=\"noopener noreferrer\">Lenni Lenape</a></p>"
+    },
+    {
+      "stream_index": 73,
+      "paragraph_text": "• Lenni Lenape",
+      "runs_with_links": [
+        {
+          "run_index": 1,
+          "text": "Lenni Lenape",
+          "url": "http://example.com/1",
+          "google_id": null
+        }
+      ],
+      "paragraph_html": "<p>• <a href=\"http://example.com/1\" target=\"_blank\" rel=\"noopener noreferrer\">Lenni Lenape</a></p>"
+    },
+    {
+      "stream_index": 74,
+      "paragraph_text": "• Lenni Lenape",
+      "runs_with_links": [
+        {
+          "run_index": 1,
+          "text": "Lenni Lenape",
+          "url": "http://example.com/2",
+          "google_id": null
+        }
+      ],
+      "paragraph_html": "<p>• <a href=\"http://example.com/2\" target=\"_blank\" rel=\"noopener noreferrer\">Lenni Lenape</a></p>"
+    },
+    {
+      "stream_index": 75,
+      "paragraph_text": "• Lenni Lenape",
+      "runs_with_links": [
+        {
+          "run_index": 1,
+          "text": "Lenni Lenape",
+          "url": "http://example.com/3",
+          "google_id": null
+        }
+      ],
+      "paragraph_html": "<p>• <a href=\"http://example.com/3\" target=\"_blank\" rel=\"noopener noreferrer\">Lenni Lenape</a></p>"
+    }
+  ],
+  "links_flat": [
+    {
+      "stream_index": 72,
+      "text": "Lenni Lenape",
+      "url": "http://example.com/0",
+      "google_id": null
+    },
+    {
+      "stream_index": 73,
+      "text": "Lenni Lenape",
+      "url": "http://example.com/1",
+      "google_id": null
+    },
+    {
+      "stream_index": 74,
+      "text": "Lenni Lenape",
+      "url": "http://example.com/2",
+      "google_id": null
+    },
+    {
+      "stream_index": 75,
+      "text": "Lenni Lenape",
+      "url": "http://example.com/3",
+      "google_id": null
+    }
+  ]
+}

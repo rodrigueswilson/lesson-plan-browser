@@ -8,7 +8,7 @@ import uuid
 from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, Iterator, List, Optional, Set, Union
+from typing import Any, Dict, Iterator, List, Optional, Set, Tuple, Union
 
 from docx import Document
 from docx.table import Table, _Cell
@@ -40,6 +40,11 @@ except ImportError:
     from ela_lesson_plan_table import is_ela_lesson_plan_table, parse_ela_lesson_plan_table
 
 try:
+    from tools.scraper.science_lesson_tables import merge_science_li_sc_into_lessons
+except ImportError:
+    from science_lesson_tables import merge_science_li_sc_into_lessons  # type: ignore[no-redef]
+
+try:
     from tools.scraper.cell_content_format import (
         collect_hyperlinks_from_buffer,
         split_leading_bold_runs_for_paragraph,
@@ -67,6 +72,13 @@ def _extract_source_doc_id(source_url: str) -> Optional[str]:
     if not source_url:
         return None
     m = re.search(r"/document/d/([a-zA-Z0-9_-]+)", source_url)
+    return m.group(1) if m else None
+
+
+def _extract_google_doc_id_from_url(url: str) -> Optional[str]:
+    if not url:
+        return None
+    m = re.search(r"/document/d/([a-zA-Z0-9_-]+)", url)
     return m.group(1) if m else None
 
 
@@ -340,6 +352,146 @@ def _resolve_field_from_anchors(
             best_field = field
     return best_field
 
+
+_VOCAB_SECTION_FIELDS = frozenset({"_vocab_temp", "vocabulary"})
+
+
+def _resolve_section_header_after_false_vocab_run(
+    normalized_paragraph: str,
+    field_map: Dict[str, str],
+    max_len: int = 120,
+) -> Optional[str]:
+    """
+    When _current_section is vocabulary, long paragraphs no longer match anchors via
+    _resolve_field_from_anchors (120-char guard), so the parser never leaves vocabulary
+    and ingests procedure/DIT prose as fake terms. Detect a leading section label before
+    the first ':' or the first line and switch section when it maps to a non-vocabulary field.
+    """
+    if len(normalized_paragraph) <= max_len:
+        return None
+    if ":" in normalized_paragraph:
+        head = normalized_paragraph.split(":", 1)[0].strip()
+        if head and len(head) <= max_len:
+            r = _resolve_field_from_anchors(head, field_map, max_len_for_substring=max_len)
+            if r and r not in _VOCAB_SECTION_FIELDS:
+                return r
+    first = normalized_paragraph.split("\n", 1)[0].strip()
+    if first and first != normalized_paragraph and len(first) <= max_len:
+        r = _resolve_field_from_anchors(first, field_map, max_len_for_substring=max_len)
+        if r and r not in _VOCAB_SECTION_FIELDS:
+            return r
+    return None
+
+
+_JUNK_VOCAB_EXACT_LOW = frozenset(
+    {
+        "materials",
+        "storytelling",
+        "editing",
+        "cultural meaning",
+    }
+)
+
+
+def _strip_vocab_token_noise(s: str) -> str:
+    """Strip BOM/zero-width and wrapping quotes from split fragments."""
+    t = (s or "").strip().strip("\ufeff\u200b\u200c\u200d")
+    t = t.strip('"\'' "\u201c\u201d\u2018\u2019")
+    return t.strip()
+
+
+def _should_drop_vocab_token(term: str) -> bool:
+    """
+    Drop comma-/semicolon-split fragments that are lesson prose, not glossary terms.
+    Mirrors lesson-plan-browser CurriculumExplorer isLikelyJunkVocabLabel plus ELA anchors.
+    """
+    s = _strip_vocab_token_noise(term or "")
+    if len(s) < 2 or len(s) > 48:
+        return True
+    if re.search(r"https?://", s, re.IGNORECASE):
+        return True
+    low = s.lower()
+    junk_needles = (
+        "rubric",
+        "slide deck",
+        "screencast",
+        ".pptx",
+        "vocabulary boxes",
+        "notice/wonder",
+        "notice and wonder",
+        "preview chart",
+        "instructional resources",
+        "primary source",
+        "partner discussion",
+        "discussion rubric",
+        "read aloud",
+        "google.com",
+        "docs.google",
+        "presentation",
+        "culminating task",
+        "portfolio artifact",
+        "daily instructional",
+        "anticipatory set",
+        "engagement with the content",
+        "learning procedures",
+        "addressing misconceptions",
+        "differentiation",
+    )
+    if any(n in low for n in junk_needles):
+        return True
+    if low in _JUNK_VOCAB_EXACT_LOW:
+        return True
+    if "and techniques" in low:
+        return True
+    word_count = len(s.split())
+    if word_count > 6:
+        return True
+    instructional_prefixes = (
+        "article:",
+        "students will",
+        "student will",
+        "think about",
+        "work with",
+        "cite evidence",
+        "include:",
+        "share as",
+        "revisit essential",
+        "identify key",
+        "clearly compare",
+        "comparing and contrasting",
+        "how are they",
+        "what role",
+        "who is responsible",
+        "a body with",
+        "a conclusion",
+        "an introduction",
+        "first draft",
+        "publish final",
+        "or independently",
+        "support as",
+        "or review",
+        "editing and revising",
+        "if students",
+        "if working",
+        "use correct",
+        "launch the lesson",
+        "for the daily",
+        "the teacher",
+        "in their writing",
+        "notebook",
+        "unit 1 ",
+        "unit 2 ",
+        "and ",
+        "correct spelling",
+    )
+    if any(low.startswith(p) for p in instructional_prefixes):
+        return True
+    st = s.strip()
+    if st.endswith(")") and "(" not in st:
+        return True
+    return False
+
+
 def _extract_vocab_terms(text: str) -> List[str]:
     cleaned = (text or "").strip()
     if not cleaned:
@@ -347,7 +499,18 @@ def _extract_vocab_terms(text: str) -> List[str]:
     # Remove common bullet glyphs/prefixes and split lightweight term lists.
     cleaned = re.sub(r"^[\u2022\-\*\u25CF\u25A0\s]+", "", cleaned)
     parts = re.split(r"[,\n;]+", cleaned)
-    return [p.strip() for p in parts if p and p.strip()]
+    out: List[str] = []
+    seen: Set[str] = set()
+    for p in parts:
+        s = _strip_vocab_token_noise(p)
+        if not s or _should_drop_vocab_token(s):
+            continue
+        key = s.lower()
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append(s)
+    return out
 
 def _is_procedure_subheader(text: str) -> bool:
     t = (text or "").strip().lower()
@@ -360,6 +523,32 @@ def _is_procedure_subheader(text: str) -> bool:
         )
     )
 
+
+def _science_lesson_title_too_weak(title: str) -> bool:
+    """TOC-style lines like 'Lesson 1:' match the shared regex but should not open a lesson."""
+    t = (title or "").strip()
+    if len(t) < 2:
+        return True
+    return t == ":"
+
+
+_SCIENCE_STRUCTURAL_NOISE_LESSON_TITLES = frozenset({"resources", "days", "vocabulary"})
+
+
+def _science_lesson_title_is_structural_noise(title: str) -> bool:
+    """
+    Headings like 'Lesson 9: Resources' or 'Lesson 11: Days' are section labels in the
+    compendium, not distinct teaching modules. Treat like weak titles: fold into prior lesson.
+    """
+    t = (title or "").strip().casefold()
+    return t in _SCIENCE_STRUCTURAL_NOISE_LESSON_TITLES
+
+
+def _is_science_subject(subject: str) -> bool:
+    u = (subject or "").strip().upper()
+    return u in ("SCIENCE", "SCI")
+
+
 def _is_non_standard_heading(text: str) -> bool:
     t = (text or "").strip().lower()
     if not t:
@@ -370,6 +559,440 @@ def _is_non_standard_heading(text: str) -> bool:
             t,
         )
     )
+
+
+_COOLDOWN_TITLE_RE = re.compile(r"\b\d+\.\d+\.\d+\s+cool-?down\b", re.IGNORECASE)
+_COOLDOWN_LESSON_RE = re.compile(r"\b\d+\.\d+\.(\d+)\s+cool-?down\b", re.IGNORECASE)
+_DRIVE_FILE_ID_RE = re.compile(r"https://drive\.google\.com/file/d/([a-zA-Z0-9_-]+)", re.IGNORECASE)
+_COOLDOWN_CACHE_BY_SOURCE_DOC: Dict[str, Dict[int, List[Dict[str, str]]]] = {}
+
+
+def _html_escape(text: str) -> str:
+    return (
+        (text or "")
+        .replace("&", "&amp;")
+        .replace("<", "&lt;")
+        .replace(">", "&gt;")
+        .replace('"', "&quot;")
+    )
+
+
+def _cooldown_links_from_resources(resources: List[Dict[str, Any]]) -> List[Dict[str, str]]:
+    out: List[Dict[str, str]] = []
+    seen_urls: Set[str] = set()
+    for res in resources or []:
+        url = (res.get("url") or "").strip()
+        text = (res.get("text") or "").strip()
+        if not url or url in seen_urls:
+            continue
+        # Keep this strict to avoid mixing unrelated links into formative assessment.
+        if _COOLDOWN_TITLE_RE.search(text):
+            out.append({"text": text, "url": url})
+            seen_urls.add(url)
+    return out
+
+
+def _extract_drive_file_id(url: str) -> Optional[str]:
+    m = _DRIVE_FILE_ID_RE.search(url or "")
+    return m.group(1) if m else None
+
+
+def _iter_rich_link_props(node: Any) -> Iterator[Dict[str, Any]]:
+    if isinstance(node, dict):
+        rich = node.get("richLinkProperties")
+        if isinstance(rich, dict):
+            yield rich
+        for v in node.values():
+            yield from _iter_rich_link_props(v)
+    elif isinstance(node, list):
+        for item in node:
+            yield from _iter_rich_link_props(item)
+
+
+def _cooldown_links_from_source_json(source_doc_id: Optional[str]) -> Dict[int, List[Dict[str, str]]]:
+    if not source_doc_id:
+        return {}
+    cached = _COOLDOWN_CACHE_BY_SOURCE_DOC.get(source_doc_id)
+    if cached is not None:
+        return cached
+
+    repo_root = Path(__file__).resolve().parents[2]
+    scraped_root = repo_root / "reference_docs" / "scraped"
+    lesson_map: Dict[int, List[Dict[str, str]]] = {}
+    if not scraped_root.is_dir():
+        _COOLDOWN_CACHE_BY_SOURCE_DOC[source_doc_id] = lesson_map
+        return lesson_map
+
+    doc_id_re = re.compile(r'"documentId"\s*:\s*"' + re.escape(source_doc_id) + r'"')
+    for json_path in scraped_root.rglob("originals/*.json"):
+        try:
+            raw = json_path.read_text(encoding="utf-8", errors="ignore")
+        except OSError:
+            continue
+        if not doc_id_re.search(raw):
+            continue
+        try:
+            payload = json.loads(raw)
+        except Exception:
+            continue
+        for rich in _iter_rich_link_props(payload):
+            title = str(rich.get("title") or "").strip()
+            uri = str(rich.get("uri") or "").strip()
+            mime = str(rich.get("mimeType") or "").strip().lower()
+            m = _COOLDOWN_LESSON_RE.search(title)
+            if not m or not uri:
+                continue
+            if mime and "pdf" not in mime:
+                continue
+            lesson_num = int(m.group(1))
+            lesson_map.setdefault(lesson_num, [])
+            if uri not in {x["url"] for x in lesson_map[lesson_num]}:
+                lesson_map[lesson_num].append({"text": title, "url": uri})
+        break
+
+    _COOLDOWN_CACHE_BY_SOURCE_DOC[source_doc_id] = lesson_map
+    return lesson_map
+
+
+def _merge_lesson_cooldown_resources(
+    lesson_data: Dict[str, Any],
+    source_doc_id: Optional[str],
+) -> None:
+    lesson_num = int(lesson_data.get("lesson_number") or 0)
+    if lesson_num <= 0:
+        return
+    source_map = _cooldown_links_from_source_json(source_doc_id)
+    additions = source_map.get(lesson_num, [])
+    if not additions:
+        return
+    existing_urls = {str((r or {}).get("url") or "") for r in (lesson_data.get("_resources") or [])}
+    for item in additions:
+        url = item["url"]
+        if url in existing_urls:
+            continue
+        res: Dict[str, Any] = {"url": url, "text": item["text"]}
+        file_id = _extract_drive_file_id(url)
+        if file_id:
+            res["google_id"] = file_id
+        lesson_data["_resources"].append(res)
+        existing_urls.add(url)
+
+
+def _append_formative_assessment_resources_section(
+    instructional_resources_html: str,
+    resources: List[Dict[str, Any]],
+) -> str:
+    cooldown_links = _cooldown_links_from_resources(resources)
+    if not cooldown_links:
+        return instructional_resources_html or ""
+
+    existing = instructional_resources_html or ""
+    missing = [r for r in cooldown_links if r["url"] not in existing]
+    if not missing:
+        return existing
+
+    has_heading = bool(re.search(r"formative assessment resources", existing, re.IGNORECASE))
+    parts: List[str] = []
+    if existing.strip():
+        parts.append(existing.strip())
+    if not has_heading:
+        parts.append("<p><b>Formative Assessment Resources</b></p>")
+    parts.append("<ul>")
+    for res in missing:
+        label = _html_escape(res["text"] or "Cool-down")
+        url = _html_escape(res["url"])
+        parts.append(
+            f'<li><a href="{url}" target="_blank" rel="noopener noreferrer">{label}</a></li>'
+        )
+    parts.append("</ul>")
+    return "".join(parts)
+
+
+_ELA_RESOURCE_LINK_CACHE: Dict[Tuple[str, int, int], List[Dict[str, str]]] = {}
+_ELA_RESOURCE_BY_UNIT_CACHE: Dict[Tuple[str, int], Dict[int, List[Dict[str, str]]]] = {}
+
+
+def _unit_number_from_unit_id(unit_id: str) -> Optional[int]:
+    m = re.search(r"_U(\d+)", unit_id or "", re.IGNORECASE)
+    if not m:
+        return None
+    try:
+        return int(m.group(1))
+    except ValueError:
+        return None
+
+
+def _extract_markdown_links(text: str) -> List[Dict[str, str]]:
+    links: List[Dict[str, str]] = []
+    for m in re.finditer(r"\[([^\]]+)\]\((https?://[^)]+)\)", text or "", re.IGNORECASE):
+        label = (m.group(1) or "").strip()
+        url = (m.group(2) or "").strip()
+        if not label or not url:
+            continue
+        links.append({"text": label, "url": url})
+    return links
+
+
+def _load_ela_instructional_links_from_reference_markdown(
+    source_doc_id: Optional[str],
+    unit_id: str,
+    lesson_number: int,
+) -> List[Dict[str, str]]:
+    if not source_doc_id or lesson_number <= 0:
+        return []
+    unit_number = _unit_number_from_unit_id(unit_id)
+    if unit_number is None:
+        return []
+    cache_key = (source_doc_id, unit_number, lesson_number)
+    if cache_key in _ELA_RESOURCE_LINK_CACHE:
+        return _ELA_RESOURCE_LINK_CACHE[cache_key]
+    unit_cache_key = (source_doc_id, unit_number)
+    if unit_cache_key in _ELA_RESOURCE_BY_UNIT_CACHE:
+        links = _ELA_RESOURCE_BY_UNIT_CACHE[unit_cache_key].get(lesson_number, [])
+        _ELA_RESOURCE_LINK_CACHE[cache_key] = links
+        return links
+
+    repo_root = Path(__file__).resolve().parents[2]
+    roots = [
+        repo_root / "reference_docs" / "curriculum",
+        repo_root / "reference_docs" / "scraped_final",
+    ]
+    target_file = f"Grade_2_Unit_{unit_number}.md"
+    lesson_links_map: Dict[int, List[Dict[str, str]]] = {}
+
+    for root in roots:
+        if not root.is_dir():
+            continue
+        for md in root.rglob(target_file):
+            try:
+                raw = md.read_text(encoding="utf-8", errors="ignore")
+            except OSError:
+                continue
+            if source_doc_id not in raw:
+                continue
+            lines = raw.splitlines()
+            starts: List[Tuple[int, int]] = []
+            for i, line in enumerate(lines):
+                m = re.match(r"^\|\s*Lesson\s+(\d+)\s*:", line.strip(), re.IGNORECASE)
+                if m:
+                    try:
+                        starts.append((i, int(m.group(1))))
+                    except ValueError:
+                        continue
+            if not starts:
+                continue
+            for idx, (line_idx, ln) in enumerate(starts):
+                end_idx = starts[idx + 1][0] if idx + 1 < len(starts) else len(lines)
+                block = "\n".join(lines[line_idx:end_idx])
+                links: List[Dict[str, str]] = []
+                seen_urls: Set[str] = set()
+                for link in _extract_markdown_links(block):
+                    if link["url"] in seen_urls:
+                        continue
+                    seen_urls.add(link["url"])
+                    links.append(link)
+                if links:
+                    lesson_links_map[ln] = links
+            if lesson_links_map:
+                _ELA_RESOURCE_BY_UNIT_CACHE[unit_cache_key] = lesson_links_map
+                links = lesson_links_map.get(lesson_number, [])
+                _ELA_RESOURCE_LINK_CACHE[cache_key] = links
+                return links
+
+    _ELA_RESOURCE_BY_UNIT_CACHE[unit_cache_key] = lesson_links_map
+    links = lesson_links_map.get(lesson_number, [])
+    _ELA_RESOURCE_LINK_CACHE[cache_key] = links
+    return links
+
+
+def _inject_links_into_instructional_resources_html(
+    html: str,
+    links: List[Dict[str, str]],
+) -> str:
+    rendered = html or ""
+    if not rendered or "<a href=" in rendered or not links:
+        return rendered
+    for link in sorted(links, key=lambda x: len(x.get("text") or ""), reverse=True):
+        label = (link.get("text") or "").strip()
+        url = (link.get("url") or "").strip()
+        if not label or not url:
+            continue
+        anchor = (
+            f'<a href="{_html_escape(url)}" target="_blank" rel="noopener noreferrer">{_html_escape(label)}</a>'
+        )
+        rendered = re.sub(
+            re.escape(label),
+            anchor,
+            rendered,
+            count=1,
+            flags=re.IGNORECASE,
+        )
+    return rendered
+
+
+def _inject_links_into_html_by_label(html: str, links: List[Dict[str, str]]) -> str:
+    """Best-effort label-based link hydration for plain-text HTML blocks."""
+    rendered = html or ""
+    if not rendered or "<a href=" in rendered or not links:
+        return rendered
+    out = rendered
+    for link in sorted(links, key=lambda x: len(x.get("text") or ""), reverse=True):
+        label = (link.get("text") or "").strip()
+        url = (link.get("url") or "").strip()
+        if not label or not url:
+            continue
+        anchor = (
+            f'<a href="{_html_escape(url)}" target="_blank" rel="noopener noreferrer">{_html_escape(label)}</a>'
+        )
+        out = re.sub(re.escape(label), anchor, out, count=1, flags=re.IGNORECASE)
+    return out
+
+
+def _collect_links_from_ela_structured_plan(plan: Dict[str, Any]) -> List[Dict[str, str]]:
+    """Extract all anchors from all *_html string fields in structured ELA lesson payload."""
+    out: List[Dict[str, str]] = []
+    seen: Set[Tuple[str, str]] = set()
+    for key, value in (plan or {}).items():
+        if not key.endswith("_html"):
+            continue
+        if not isinstance(value, str) or not value.strip():
+            continue
+        for m in re.finditer(
+            r'<a\s+[^>]*href="([^"]+)"[^>]*>(.*?)</a>',
+            value,
+            re.IGNORECASE | re.DOTALL,
+        ):
+            url = (m.group(1) or "").strip()
+            label = re.sub(r"<[^>]+>", "", m.group(2) or "").strip()
+            if not url:
+                continue
+            identity = (url, label.lower())
+            if identity in seen:
+                continue
+            seen.add(identity)
+            out.append({"url": url, "text": label or url})
+        # Safety net: capture any href attributes, including malformed/nested anchors.
+        for m in re.finditer(r'href="([^"]+)"', value, re.IGNORECASE):
+            url = (m.group(1) or "").strip()
+            if not url:
+                continue
+            identity = (url, url.lower())
+            if identity in seen:
+                continue
+            seen.add(identity)
+            out.append({"url": url, "text": url})
+    return out
+
+
+def _collect_links_from_ela_structured_json(raw: Any) -> List[Dict[str, str]]:
+    """Extract anchors from persisted `ela_lesson_plan_structured` JSON string."""
+    if not isinstance(raw, str) or not raw.strip():
+        return []
+    try:
+        plan = json.loads(raw)
+    except Exception:
+        return []
+    if not isinstance(plan, dict):
+        return []
+    return _collect_links_from_ela_structured_plan(plan)
+
+
+def _collect_links_from_lesson_html_fields(lesson_data: Dict[str, Any]) -> List[Dict[str, str]]:
+    """Extract anchors from non-structured lesson HTML columns persisted on lessons table."""
+    out: List[Dict[str, str]] = []
+    seen: Set[Tuple[str, str]] = set()
+    html_fields = (
+        "instructional_resources",
+        "procedure_html",
+        "narrative_html",
+        "materials",
+        "daily_instructional_task",
+        "purpose",
+    )
+    for field in html_fields:
+        html = lesson_data.get(field)
+        if not isinstance(html, str) or not html.strip():
+            continue
+        for m in re.finditer(
+            r'<a\s+[^>]*href="([^"]+)"[^>]*>(.*?)</a>',
+            html,
+            re.IGNORECASE | re.DOTALL,
+        ):
+            url = (m.group(1) or "").strip()
+            label = re.sub(r"<[^>]+>", "", m.group(2) or "").strip()
+            if not url:
+                continue
+            identity = (url, label.lower())
+            if identity in seen:
+                continue
+            seen.add(identity)
+            out.append({"url": url, "text": label or url})
+        # Safety net for malformed HTML where nested anchors hide inner hrefs.
+        for m in re.finditer(r'href="([^"]+)"', html, re.IGNORECASE):
+            url = (m.group(1) or "").strip()
+            if not url:
+                continue
+            identity = (url, url.lower())
+            if identity in seen:
+                continue
+            seen.add(identity)
+            out.append({"url": url, "text": url})
+    return out
+
+
+def _merge_links_into_resources(
+    lesson_data: Dict[str, Any],
+    links: List[Dict[str, str]],
+) -> None:
+    existing_urls = {str((r or {}).get("url") or "") for r in (lesson_data.get("_resources") or [])}
+    for link in links:
+        url = (link.get("url") or "").strip()
+        text = (link.get("text") or "").strip()
+        if not url or url in existing_urls:
+            continue
+        res: Dict[str, Any] = {"url": url, "text": text or url}
+        google_id = _extract_google_doc_id_from_url(url)
+        if google_id:
+            res["google_id"] = google_id
+        lesson_data["_resources"].append(res)
+        existing_urls.add(url)
+
+
+def _backfill_ela_structured_instructional_links(
+    lesson_data: Dict[str, Any],
+    unit_id: str,
+    source_doc_id: Optional[str],
+) -> None:
+    raw = (lesson_data.get("ela_lesson_plan_structured") or "").strip()
+    if not raw:
+        return
+    try:
+        plan = json.loads(raw)
+    except Exception:
+        return
+    if not isinstance(plan, dict):
+        return
+    html = str(plan.get("instructional_resources_cell_html") or "").strip()
+    if not html or "<a href=" in html:
+        return
+    lesson_number = int(lesson_data.get("lesson_number") or 0)
+    links = _load_ela_instructional_links_from_reference_markdown(
+        source_doc_id=source_doc_id,
+        unit_id=unit_id,
+        lesson_number=lesson_number,
+    )
+    if not links:
+        return
+    for key, value in list(plan.items()):
+        if not key.endswith("_html"):
+            continue
+        if not isinstance(value, str) or not value.strip():
+            continue
+        plan[key] = _inject_links_into_html_by_label(value, links)
+    lesson_data["ela_lesson_plan_structured"] = json.dumps(plan, ensure_ascii=False)
+    # All-cells SSOT: persist all links found in structured plan, not just one cell.
+    collected = _collect_links_from_ela_structured_plan(plan)
+    _merge_links_into_resources(lesson_data, collected)
 
 _STANDARDS_SECTION_META: Dict[str, Dict[str, str]] = {
     "new jersey state learning standards": {
@@ -1065,6 +1688,149 @@ class RecursiveTableParser:
         lesson_data["_standards_panel"] = current_structured_panel
         self._buffer.clear()
 
+    def _ela_title_from_summary_payload(self, lesson_num: int, payload: Dict[str, Any]) -> str:
+        daily = (payload.get("daily_task_title") or "").strip()
+        daily_low = daily.lower().rstrip(":").strip()
+        skip_daily = not daily or daily.isdigit() or daily_low in {
+            "daily instructional task",
+            "daily instructional tasks",
+            "essential question",
+            "perspective",
+            "central idea (portfolio artifact)",
+        }
+        if not skip_daily:
+            return daily[:500]
+        li = (payload.get("learning_intention") or "").strip()
+        if li:
+            one = li.split("\n")[0].strip()
+            if len(one) > 120:
+                one = one[:120].rstrip() + "..."
+            return one
+        return f"Lesson {lesson_num}"
+
+    def _ela_new_lesson_shell(
+        self,
+        *,
+        unit_id: str,
+        lesson_number: int,
+        title: str,
+        subject: str,
+        source_doc_id: Optional[str],
+        source_url: Optional[str],
+        started_at: str,
+        run_id: str,
+        parser_version: str,
+    ) -> Dict[str, Any]:
+        return {
+            "id": f"{unit_id}_L{lesson_number}",
+            "unit_id": unit_id,
+            "lesson_number": lesson_number,
+            "title": title,
+            "subject": subject,
+            "narrative_html": "",
+            "lesson_narrative": "",
+            "learning_intentions": "",
+            "procedure_html": "",
+            "daily_instructional_task": "",
+            "success_criteria": "",
+            "essential_questions": "",
+            "procedure": "",
+            "instructional_resources": "",
+            "materials": "",
+            "objectives_student": "",
+            "purpose": "",
+            "mlr": "",
+            "vocabulary": "",
+            "practices": "",
+            "procedures": "",
+            "differentiation": "",
+            "standards_structured": "",
+            "source_doc_id": source_doc_id,
+            "source_url": source_url,
+            "ingested_at": started_at,
+            "ingest_run_id": run_id,
+            "ingest_parser_version": parser_version,
+            "_current_section": None,
+            "_standards": {},
+            "_standards_structured": [],
+            "_vocabulary": [],
+            "_resources": [],
+            "_standards_section": "",
+            "_standards_panel": "",
+            "_standards_temp": "",
+            "_vocab_temp": "",
+        }
+
+    def _populate_ela_lesson_from_summary_payload(
+        self, le: Dict[str, Any], payload: Dict[str, Any]
+    ) -> None:
+        if payload.get("learning_intention"):
+            le["learning_intentions"] = payload["learning_intention"]
+        if payload.get("success_criteria"):
+            le["success_criteria"] = payload["success_criteria"]
+        dt_title = (payload.get("daily_task_title") or "").strip()
+        dt_body = payload.get("daily_task_body") or ""
+        if dt_body:
+            le["daily_instructional_task"] = (
+                f"<p><b>{dt_title}</b></p>{dt_body}" if dt_title else dt_body
+            )
+        elif dt_title:
+            le["daily_instructional_task"] = dt_title
+        if payload.get("content_and_strategies"):
+            le["procedure_html"] = payload["content_and_strategies"]
+
+    def _ela_coalesce_lessons_with_summary(
+        self,
+        lessons_data: List[Dict[str, Any]],
+        summary_map: Dict[int, Dict[str, Any]],
+        unit_id: str,
+        subject: str,
+        source_doc_id: Optional[str],
+        source_url: Optional[str],
+        started_at: str,
+        run_id: str,
+        parser_version: str,
+    ) -> List[Dict[str, Any]]:
+        """
+        When paragraph lesson anchors are missing or sparse vs the Summary of Key Learning
+        matrix (common for API-built DOCX), synthesize or replace lessons from summary rows.
+        """
+        expected = len(summary_map)
+        if expected == 0:
+            return lessons_data
+        parsed = len(lessons_data)
+        ratio = parsed / expected if expected else 1.0
+        replace = parsed == 0 or (expected >= 5 and ratio < 0.35)
+
+        def one_synth(n: int) -> Dict[str, Any]:
+            payload = summary_map[n]
+            title = self._ela_title_from_summary_payload(n, payload)
+            le = self._ela_new_lesson_shell(
+                unit_id=unit_id,
+                lesson_number=n,
+                title=title,
+                subject=subject,
+                source_doc_id=source_doc_id,
+                source_url=source_url,
+                started_at=started_at,
+                run_id=run_id,
+                parser_version=parser_version,
+            )
+            self._populate_ela_lesson_from_summary_payload(le, payload)
+            return le
+
+        if replace:
+            log(
+                "ELA: coalescing to summary-table lessons only "
+                f"(parsed={parsed}, summary_rows={expected})",
+                "INFO",
+            )
+            return [one_synth(n) for n in sorted(summary_map.keys())]
+
+        # Do not partially backfill missing summary rows when paragraph parsing already
+        # captured most lessons (would duplicate flex/culminating rows mis-labeled in col A).
+        return list(lessons_data)
+
     def ingest_to_curriculum(
         self,
         docx_path: str,
@@ -1108,6 +1874,7 @@ class RecursiveTableParser:
             "suspected_equation_token_loss_standards": 0,
         }
         seen_lesson_numbers: Set[int] = set()
+        science_lesson_seq = 0
 
         for item in stream:
             item_type = item.get("type")
@@ -1124,6 +1891,26 @@ class RecursiveTableParser:
                         lnum_str = m.group(1)
                         ltitle = (m.group(2) or "").strip().split("   ")[0]
                     lnum = int(lnum_str.split('.')[-1]) if '.' in lnum_str else int(lnum_str)
+                    if _is_science_subject(subject):
+                        if _science_lesson_title_too_weak(ltitle):
+                            if current_lesson:
+                                self._buffer.append(item)
+                                ingest_stats["paragraphs_appended"] += 1
+                            continue
+                        if _science_lesson_title_is_structural_noise(ltitle):
+                            if current_lesson:
+                                self._buffer.append(item)
+                                ingest_stats["paragraphs_appended"] += 1
+                            continue
+                        if (
+                            current_lesson
+                            and current_lesson.get("_science_doc_lnum") == lnum
+                        ):
+                            self.flush_buffer(current_lesson)
+                            current_lesson["_current_section"] = "procedure_html"
+                            self._buffer.append(item)
+                            ingest_stats["paragraphs_appended"] += 1
+                            continue
                     ingest_stats["lessons_started"] += 1
                     if lnum not in seen_lesson_numbers:
                         seen_lesson_numbers.add(lnum)
@@ -1143,8 +1930,18 @@ class RecursiveTableParser:
                         self.process_recursive_links(current_lesson, lesson_links, subject)
                     
                     if current_lesson: lessons_data.append(current_lesson)
+                    if _is_science_subject(subject):
+                        science_lesson_seq += 1
+                        row_lesson_number = science_lesson_seq
+                        lesson_row_id = f"{unit_id}_L{row_lesson_number}"
+                    else:
+                        row_lesson_number = lnum
+                        lesson_row_id = f"{unit_id}_L{lnum}"
                     current_lesson = {
-                        "id": f"{unit_id}_L{lnum}", "unit_id": unit_id, "lesson_number": lnum, "title": ltitle,
+                        "id": lesson_row_id,
+                        "unit_id": unit_id,
+                        "lesson_number": row_lesson_number,
+                        "title": ltitle,
                         "subject": subject,
                         "narrative_html": "", "lesson_narrative": "", "learning_intentions": "", "procedure_html": "",
                         "daily_instructional_task": "", "success_criteria": "", "essential_questions": "",
@@ -1158,13 +1955,23 @@ class RecursiveTableParser:
                         "ingest_parser_version": parser_version,
                         "_current_section": None, "_standards": {}, "_standards_structured": [], "_vocabulary": [], "_resources": [],
                         "_standards_section": "", "_standards_panel": "",
-                        "_standards_temp": "", "_vocab_temp": ""
+                        "_standards_temp": "", "_vocab_temp": "",
                     }
+                    if _is_science_subject(subject):
+                        current_lesson["_science_doc_lnum"] = lnum
+                        current_lesson["science_doc_lesson_number"] = lnum
                     continue
 
                 if not current_lesson: continue
                 low_text = _normalize_anchor_text(text)
                 new_section = _resolve_field_from_anchors(low_text, FIELD_MAP)
+                if (
+                    not new_section
+                    and current_lesson.get("_current_section") in _VOCAB_SECTION_FIELDS
+                ):
+                    new_section = _resolve_section_header_after_false_vocab_run(
+                        low_text, FIELD_MAP
+                    )
                 if not new_section and _is_procedure_subheader(text):
                     new_section = "procedure_html"
                 if new_section:
@@ -1180,7 +1987,7 @@ class RecursiveTableParser:
                         self._buffer.append(item)
                         ingest_stats["paragraphs_appended"] += 1
                     continue
-                if current_lesson.get("_current_section") in {"_vocab_temp", "vocabulary"}:
+                if current_lesson.get("_current_section") in _VOCAB_SECTION_FIELDS:
                     current_lesson["_vocabulary"].extend(_extract_vocab_terms(text))
                     continue
                 self._buffer.append(item)
@@ -1229,16 +2036,33 @@ class RecursiveTableParser:
 
         summary_map = getattr(self, "_ela_summary_by_lesson", None) or {}
         plan_map = getattr(self, "_ela_lesson_plan_by_lesson", None) or {}
+        if subject.upper() == "ELA" and summary_map:
+            lessons_data = self._ela_coalesce_lessons_with_summary(
+                lessons_data,
+                summary_map,
+                unit_id,
+                subject,
+                source_doc_id,
+                source_url,
+                started_at,
+                run_id,
+                parser_version,
+            )
         for le in lessons_data:
             n = le.get("lesson_number")
             if n in summary_map:
-                payload = {"schema_version": 1, **summary_map[n]}
-                le["ela_key_learning_summary"] = json.dumps(payload, ensure_ascii=False)
+                # SSOT: when a per-lesson structured plan exists, do not persist the summary matrix
+                # JSON for the same lesson (explorer uses structured grid; avoids duplicate sources).
+                if n not in plan_map:
+                    payload = {"schema_version": 1, **summary_map[n]}
+                    le["ela_key_learning_summary"] = json.dumps(payload, ensure_ascii=False)
             if n in plan_map:
                 le["ela_lesson_plan_structured"] = json.dumps(
                     plan_map[n],
                     ensure_ascii=False,
                 )
+
+        merge_science_li_sc_into_lessons(self, docx_path, lessons_data, subject)
 
         unique_lessons = {
             l["id"]: l for l in lessons_data
@@ -1262,6 +2086,7 @@ class RecursiveTableParser:
                 l.get("_resources"),
                 l.get("ela_key_learning_summary"),
                 l.get("ela_lesson_plan_structured"),
+                l.get("science_li_sc_day_structured"),
             ])
         }
         
@@ -1281,6 +2106,29 @@ class RecursiveTableParser:
             )
             conn.commit()
         for data in unique_lessons.values():
+            _merge_lesson_cooldown_resources(data, source_doc_id)
+            if subject.upper() == "ELA":
+                _backfill_ela_structured_instructional_links(
+                    lesson_data=data,
+                    unit_id=unit_id,
+                    source_doc_id=source_doc_id,
+                )
+                # Persist anchors already present inside structured-plan JSON.
+                _merge_links_into_resources(
+                    data,
+                    _collect_links_from_ela_structured_json(
+                        data.get("ela_lesson_plan_structured"),
+                    ),
+                )
+            data["instructional_resources"] = _append_formative_assessment_resources_section(
+                data.get("instructional_resources", ""),
+                data.get("_resources", []),
+            )
+            # Global SSOT safety net: capture anchors already present in persisted HTML fields.
+            _merge_links_into_resources(
+                data,
+                _collect_links_from_lesson_html_fields(data),
+            )
             log(f"Upserting Lesson {data['lesson_number']}: {data['title']}")
             data["standards_structured"] = json.dumps(
                 data.get("_standards_structured", []),
@@ -1315,6 +2163,10 @@ class RecursiveTableParser:
             # 5. Save Lesson Core
             clean_data = {k: v for k, v in data.items() if not k.startswith("_")}
             curr_db.upsert_lesson(clean_data)
+            curr_db.replace_science_lesson_day_segments(
+                str(data["id"]),
+                clean_data.get("science_li_sc_day_structured"),
+            )
             ingested_count += 1
         ended_at = _utc_now_iso()
         report = _build_ingest_report(
@@ -1373,7 +2225,17 @@ class RecursiveTableParser:
         return db.create_original_lesson_plan(plan_data)
 
     def process_recursive_links(self, lesson: Dict[str, Any], links: List[str], subject: str):
-        """Processes external links to fetch detailed content."""
+        """Processes external links to fetch detailed content.
+
+        Set ``CURRICULUM_INGEST_SKIP_RECURSION=1`` (or ``true``/``yes``) to skip nested
+        Google Doc exports during ``ingest_to_curriculum`` (faster CI or very large guides).
+        """
+        if os.environ.get("CURRICULUM_INGEST_SKIP_RECURSION", "").strip().lower() in (
+            "1",
+            "true",
+            "yes",
+        ):
+            return
         if not self._docs_client:
             try:
                 self._docs_client = DocsClient()

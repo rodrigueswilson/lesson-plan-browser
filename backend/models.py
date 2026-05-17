@@ -309,6 +309,8 @@ class DuplicatePlanItem(BaseModel):
     id: str
     generated_at: Optional[str] = None
     status: str = "pending"
+    output_file: Optional[str] = None
+    auto_backup_file: Optional[str] = None
 
 
 class DuplicateWeekResponse(BaseModel):

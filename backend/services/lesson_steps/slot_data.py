@@ -6,6 +6,19 @@ from typing import Any, Dict, List, Optional, Tuple
 from fastapi import HTTPException
 
 from backend.telemetry import logger
+from tools.docx_parser.instructional_day import NON_INSTRUCTIONAL_UNIT_LESSON
+
+_NON_INSTRUCTIONAL_UL = NON_INSTRUCTIONAL_UNIT_LESSON.strip().lower()
+
+
+def should_skip_lesson_steps_for_unit_lesson(unit_lesson: str) -> bool:
+    """True when this day/slot should not produce timed lesson steps."""
+    if not unit_lesson:
+        return False
+    ul = unit_lesson.strip().lower()
+    if "no school" in ul:
+        return True
+    return ul == _NON_INSTRUCTIONAL_UL
 
 
 def extract_slot_data(
@@ -73,19 +86,6 @@ def extract_slot_data(
                 detail=f"Slot {slot} not found in {day}. Available slots: {available_slots}",
             )
 
-        unit_lesson = slot_data.get("unit_lesson", "")
-        if unit_lesson and "no school" in unit_lesson.lower():
-            logger.info(
-                "skipping_step_generation_for_no_school",
-                extra={
-                    "plan_id": plan_id,
-                    "day": day,
-                    "slot": slot,
-                    "unit_lesson": unit_lesson,
-                },
-            )
-            return None
-
         if not slot_data.get("vocabulary_cognates"):
             logger.info(
                 "vocabulary_cognates_not_found_in_slot",
@@ -101,6 +101,19 @@ def extract_slot_data(
             "vocabulary_cognates"
         ):
             slot_data["vocabulary_cognates"] = day_data.get("vocabulary_cognates")
+
+    unit_lesson_val = slot_data.get("unit_lesson", "")
+    if unit_lesson_val and should_skip_lesson_steps_for_unit_lesson(unit_lesson_val):
+        logger.info(
+            "skipping_step_generation_non_instructional_or_no_school",
+            extra={
+                "plan_id": plan_id,
+                "day": day,
+                "slot": slot,
+                "unit_lesson": unit_lesson_val,
+            },
+        )
+        return None
 
     slot_tailored_instruction = slot_data.get("tailored_instruction", {})
     day_tailored_instruction = day_data.get("tailored_instruction", {})

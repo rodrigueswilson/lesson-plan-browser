@@ -1,0 +1,31 @@
+# LangExtract smoke: summary lines from smoke_extract.py (stderr may include upstream progress; no secrets)
+
+# Run H — built-in short fixture (historical)
+model=gemini-2.5-flash extractions_total=2 grounded=2
+  'lesson_number': 'Lesson 4' interval=CharInterval(start_pos=0, end_pos=8)
+  'procedure': 'Warm-up 5 minutes. Pairs build rectangles on grid paper.' interval=CharInterval(start_pos=34, end_pos=90)
+
+# Run I — 2026-04-06 lesson-scale (synthetic fixture)
+input=docs/research/spikes/langextract_curriculum_smoke/fixtures/lesson_length_sample.txt chars=1671
+model=gemini-2.5-flash extractions_total=7 grounded=7
+  'lesson_number': 'Lesson 7' interval=CharInterval(start_pos=0, end_pos=8)
+  'procedure': 'Display 3/4 and 5/8. Ask pairs to decide which is greater without calculating decimal values, then share one justification. Circulate and note whether students use benchmarks (e.g., one half), same-size parts, or visual sketches.' interval=CharInterval(start_pos=548, end_pos=777)
+  'procedure': 'Students receive two problems: (1) compare 2/3 and 3/5 using a tape diagram; (2) compare 7/12 and 5/9 by finding a common denominator. Require a short written explanation for each strategy.' interval=CharInterval(start_pos=806, end_pos=995)
+  'procedure': 'For early finishers, extension: create a comparison that requires a denominator larger than 12.' interval=CharInterval(start_pos=996, end_pos=1091)
+  'procedure': 'Use fraction strips for students who struggle to partition tape diagrams evenly.' interval=CharInterval(start_pos=1113, end_pos=1193)
+  'procedure': 'Focus questions: "What does the whole represent?" and "Are the parts the same size in both fractions?"' interval=CharInterval(start_pos=1194, end_pos=1296)
+  'procedure': 'Exit ticket: Compare 4/6 and 3/4 in one sentence that names either a common denominator or a benchmark you used.' interval=CharInterval(start_pos=1318, end_pos=1430)
+
+# Run J — 2026-04-07 real lesson from curriculum.db (Grade 2 Unit 1 lesson 1)
+# Unit Math_2_U1_15E1iQ_x lesson_number=1; export_lesson_text_from_db.py
+input=docs/research/spikes/langextract_curriculum_smoke/fixtures/g2_u1_lesson_01_from_db.txt chars=4112
+lesson_id=Math_2_U1_15E1iQ_x_L1
+model=gemini-2.5-flash extractions_total=7 grounded=7
+  'lesson_number': 'Lesson 1' interval=CharInterval(start_pos=0, end_pos=8)
+  'procedure': 'Number Cards 0–10 : Activity 1 Chart paper: Lesson Synthesis Markers: Lesson Synthesis Warm-up: What Do You Know About Math? (15 minutes)' interval=CharInterval(start_pos=798, end_pos=942)
+  'lesson_number': 'Activity 1' interval=CharInterval(start_pos=963, end_pos=971)
+  'procedure': 'For all of the routines, consider establishing a small, discreet hand signal that students can display to indicate they have an answer they can support with reasoning.' interval=CharInterval(start_pos=1254, end_pos=1421)
+  'procedure': 'The purpose of this activity is for students to demonstrate methods they have for addition and subtraction within 10. In this activity, students draw 2 cards and consider how they could add or subtract the numbers to create a value that matches one of the target numbers (0–10). Listen for the ways students think about how to find the value of sums and differences, including any sums and differences they know from memory, and how they share their thinking with their partner. If students disagree about the value of a sum or difference, encourage them to discuss their reasoning and reach an agreement. Students may write subtraction expressions that do not match their computation. For example, students write 2−4 instead of 4−2. Ask students to use counters or cubes to represent the subtraction. Highlight that they started with 4 and took away 2 and ask them to connect this action to the expression.' interval=CharInterval(start_pos=1934, end_pos=2841)
+  'procedure': 'Some students may benefit from a demonstration of how to play the game using the available connecting cubes or counters.' interval=CharInterval(start_pos=3146, end_pos=3266)
+  'procedure': 'Provide all students with an opportunity for verbal output. Invite students to read each expression they create to their partner. Amplify words and phrases such as: add, addition, sum, take away, difference, value, and expression.' interval=CharInterval(start_pos=3411, end_pos=3641)
+

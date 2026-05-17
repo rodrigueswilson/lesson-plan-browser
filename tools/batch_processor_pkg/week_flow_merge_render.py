@@ -50,6 +50,10 @@ async def merge_and_render(
                 "rendering",
                 rendering_progress,
                 f"Rendering {len(all_lessons_for_rendering)} lessons to DOCX...",
+                metadata={
+                    "completed_slots": len(lessons),
+                    "total_slots": len(all_lessons_for_rendering),
+                },
             )
             output_file = await asyncio.to_thread(
                 processor._combine_lessons,
@@ -61,9 +65,13 @@ async def merge_and_render(
             )
             progress_tracker.update(
                 plan_id,
-                "complete",
+                "completed",
                 100,
                 f"Successfully created lesson plan with {len(all_lessons_for_rendering)} slots",
+                metadata={
+                    "completed_slots": len(all_lessons_for_rendering),
+                    "total_slots": len(all_lessons_for_rendering),
+                },
             )
             progress_tracker.complete(plan_id)
         except Exception as e:
@@ -71,6 +79,13 @@ async def merge_and_render(
             traceback.print_exc()
             errors.append(error_msg)
             progress_tracker.update(
-                plan_id, "error", rendering_progress, f"Failed to render: {str(e)}"
+                plan_id,
+                "failed",
+                rendering_progress,
+                f"Failed to render: {str(e)}",
+                metadata={
+                    "completed_slots": len(lessons),
+                    "total_slots": len(all_lessons_for_rendering),
+                },
             )
     return output_file

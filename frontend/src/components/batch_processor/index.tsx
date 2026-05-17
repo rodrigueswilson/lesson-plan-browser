@@ -25,11 +25,17 @@ export function BatchProcessorView() {
     setPartial,
     missingOnly,
     setMissingOnly,
+    recallAiForSelected,
+    setRecallAiForSelected,
     forceSlots,
     weekStatus,
     isLoadingStatus,
     progress,
     progressPercentage,
+    progressStageLabel,
+    progressSlotCounts,
+    progressLastUpdateAt,
+    progressStalled,
     sortedSlots,
     toggleSlot,
     selectAllSlots,
@@ -117,6 +123,11 @@ export function BatchProcessorView() {
           isProcessing={isProcessing}
           progress={progress}
           progressPercentage={progressPercentage}
+          stageLabel={progressStageLabel}
+          completedSlots={progressSlotCounts.completed}
+          totalSlots={progressSlotCounts.total}
+          lastUpdateAt={progressLastUpdateAt}
+          isStalled={progressStalled}
         />
 
         <BatchAlerts error={error} result={result} onDownload={handleDownload} />
@@ -143,6 +154,8 @@ export function BatchProcessorView() {
           setPartial={setPartial}
           missingOnly={missingOnly}
           setMissingOnly={setMissingOnly}
+          recallAiForSelected={recallAiForSelected}
+          setRecallAiForSelected={setRecallAiForSelected}
           selectedCount={selectedSlots.size}
           totalSlots={slots.length}
           onConfirm={handleConfirmProcess}

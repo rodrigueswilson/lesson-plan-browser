@@ -7,6 +7,10 @@ from backend.services.sorting_utils import sort_slots
 from backend.telemetry import logger
 from tools.docx_renderer.style import sanitize_xml_text
 
+from .omit import (
+    should_omit_objectives_for_unit_lesson,
+    should_omit_objectives_from_triple,
+)
 from .subject_parsing import extract_subject_from_unit_lesson
 
 
@@ -47,7 +51,7 @@ def extract_objectives(lesson_json: Dict[str, Any]) -> List[Dict[str, Any]]:
             unit_lesson = slot.get("unit_lesson", "")
             teacher_name = slot.get("teacher_name", "")
 
-            if unit_lesson and unit_lesson.strip().lower() == "no school":
+            if should_omit_objectives_for_unit_lesson(unit_lesson):
                 continue
 
             objective_data = normalize_objective_payload(
@@ -72,14 +76,8 @@ def extract_objectives(lesson_json: Dict[str, Any]) -> List[Dict[str, Any]]:
                 objective_data.get("wida_objective", "") or ""
             ).strip()
 
-            content_obj = content_objective.lower()
-            student_goal_lower = student_goal.lower()
-            wida_obj = wida_objective.lower()
-
-            if (
-                content_obj == "no school"
-                and student_goal_lower == "no school"
-                and wida_obj == "no school"
+            if should_omit_objectives_from_triple(
+                content_objective, student_goal, wida_objective
             ):
                 continue
 

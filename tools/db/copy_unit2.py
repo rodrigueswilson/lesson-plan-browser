@@ -1,0 +1,17 @@
+import shutil
+import os
+
+src_md = r'd:\LP\reference_docs\scraped\Unit_1__Adding__Subtracting_and_Working_With_Data\Tab_1\Unit_1__Adding__Subtracting_and_Working_With_Data\Tab_1\Unit_3__Measuring_Length\Tab_1\Unit_3__Adding_and_Subtracting_Within_20\Tab_1\Unit_5__Arithmetic_in_Base_Ten\Unit_5__Arithmetic_in_Base_Ten\Unit_5__Rational_Number_Arithmetic\Unit_5__Rational_Number_Arithmetic\Unit_7__Exponents_and_Scientific_Notation\Unit_7__Exponents_and_Scientific_Notation\Unit_1__Area_and_Surface_Area\Unit_1__Area_and_Surface_Area\Unit_6__More_Decimal_and_Fraction_Operations\Tab_1\Unit_5__Place_Value_Patterns_and_Decimal_Operations\Tab_1\Unit_7__Rational_Numbers\Unit_7__Rational_Numbers\Unit_7__Shapes_on_the_Coordinate_Plane\Tab_1\Unit_2__Area_and_Multiplication\Tab_1\Unit_2__Area_and_Multiplication.md'
+src_originals = r'd:\LP\reference_docs\scraped\Unit_1__Adding__Subtracting_and_Working_With_Data\Tab_1\Unit_1__Adding__Subtracting_and_Working_With_Data\Tab_1\Unit_3__Measuring_Length\Tab_1\Unit_3__Adding_and_Subtracting_Within_20\Tab_1\Unit_5__Arithmetic_in_Base_Ten\Unit_5__Arithmetic_in_Base_Ten\Unit_5__Rational_Number_Arithmetic\Unit_5__Rational_Number_Arithmetic\Unit_7__Exponents_and_Scientific_Notation\Unit_7__Exponents_and_Scientific_Notation\Unit_1__Area_and_Surface_Area\Unit_1__Area_and_Surface_Area\Unit_6__More_Decimal_and_Fraction_Operations\Tab_1\Unit_5__Place_Value_Patterns_and_Decimal_Operations\Tab_1\Unit_7__Rational_Numbers\Unit_7__Rational_Numbers\Unit_7__Shapes_on_the_Coordinate_Plane\Tab_1\Unit_2__Area_and_Multiplication\Tab_1\originals'
+
+dest_dir = r'd:\LP\temp_unit2'
+if not os.path.exists(dest_dir):
+    os.makedirs(dest_dir)
+
+# Use \\?\ for long paths on Windows
+def long_path(p):
+    return "\\\\?\\" + os.path.abspath(p)
+
+shutil.copy(long_path(src_md), long_path(os.path.join(dest_dir, 'Unit_2.md')))
+shutil.copytree(long_path(src_originals), long_path(os.path.join(dest_dir, 'originals')), dirs_exist_ok=True)
+print("Done copying.")

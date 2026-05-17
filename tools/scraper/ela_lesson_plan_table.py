@@ -3,8 +3,9 @@ Detect and parse ELA per-lesson detailed plan tables from DOCX table JSON.
 
 Typical layout (Grade 2+ teacher guide tabs):
 - Row 0: "Lesson N: <title>" (often column 0 only).
-- Row 1: headers "Learning Intention" | "Success Criteria".
-- Row 2: body cells for those columns.
+- Optional blank row(s) between title and headers (Grade 2 Unit 8 tab exports).
+- Headers: "Learning Intention" | "Success Criteria" (row located by scanning).
+- Next row: body cells for those columns.
 - Section rows for NJSLS Standards, Key Instructional Practices (then sub-row with
   key questions | instructional routines), Vocabulary | Instructional Resources,
   a large procedures / engagement / DIT cell, and Differentiation | Addressing Misconceptions.
@@ -84,6 +85,45 @@ def _parse_lesson_title_row(row: Dict[str, Any]) -> Tuple[Optional[int], str]:
     return int(m.group(1)), title
 
 
+def _row_is_li_sc_header(row: Dict[str, Any]) -> bool:
+    """True when this row looks like Learning Intention | Success Criteria column headers."""
+    t0, t1 = _row_plain_cells(row)
+    n0, n1 = _norm(t0), _norm(t1)
+    if "learning intention" not in n0:
+        return False
+    if "success criteria" not in n1:
+        return False
+    return True
+
+
+def find_ela_lesson_plan_anchor(
+    rows: List[Dict[str, Any]],
+    max_scan: int = 12,
+) -> Optional[Tuple[int, int]]:
+    """
+    Locate the LI|SC header row and the lesson title row above it.
+
+    Google Docs / district exports sometimes insert blank or spacer rows between
+    the \"Lesson N:\" title and the two-column headers (Grade 2 Unit 8 tab).
+
+    Returns:
+        (header_row_index, lesson_title_row_index) or None if not a lesson plan grid.
+    """
+    limit = min(len(rows), max_scan)
+    for hi in range(limit):
+        cells = rows[hi].get("cells") or []
+        if len(cells) < 2:
+            continue
+        if not _row_is_li_sc_header(rows[hi]):
+            continue
+        for ti in range(hi - 1, -1, -1):
+            lnum, _ = _parse_lesson_title_row(rows[ti])
+            if lnum is not None:
+                return (hi, ti)
+        return None
+    return None
+
+
 def _cell_top_paragraphs(content: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     return [x for x in content if x.get("type") == "paragraph"]
 
@@ -133,24 +173,174 @@ def _bucket_procedure_paragraphs(
     return out
 
 
+def _bold_label_prefix(line: str) -> str:
+    """
+    Emphasize leading section label prefixes like 'Anticipatory Set:' when DOCX export
+    flattened style metadata. Skips lines that already contain bold tags.
+    """
+    if not line or "<b>" in line.lower() or "<strong>" in line.lower():
+        return line
+    m = re.match(r"^\s*([A-Za-z][A-Za-z0-9/&\-\s]{1,90}:)\s*(.*)$", line)
+    if not m:
+        return line
+    label = (m.group(1) or "").strip()
+    rest = (m.group(2) or "").strip()
+    # Keep this conservative to avoid bolding arbitrary long sentence prefixes.
+    if len(label.split()) > 9:
+        return line
+    if rest:
+        return f"<b>{label}</b> {rest}"
+    return f"<b>{label}</b>"
+
+
+def _looks_like_heading_prefix(line: str) -> bool:
+    plain = re.sub(r"<[^>]+>", "", line or "").strip()
+    m = re.match(r"^([A-Za-z][A-Za-z0-9/&\-\s]{1,90}:)\s*(.*)$", plain)
+    if not m:
+        return False
+    label = (m.group(1) or "").strip()
+    if len(label.split()) > 9:
+        return False
+    return True
+
+
+_STANDARDS_TOKEN_RE = re.compile(
+    r"\b(?:[A-Z]{1,4}\.[A-Z]{1,4}\.[0-9A-Za-z\.]+|[0-9]+\.[0-9]+\.[0-9A-Za-z\.]+)\b"
+)
+
+
+def _split_heading_plus_standards_line(line: str) -> List[str]:
+    """
+    Split flattened lines that merged a heading with standards codes.
+    Example:
+      "Read Aloud and Text Dependent Questions RI.IT.2.3, ...:"
+    =>
+      ["Read Aloud and Text Dependent Questions:", "RI.IT.2.3, ...:"]
+    """
+    plain = re.sub(r"<[^>]+>", "", line or "").strip()
+    if not plain:
+        return [line]
+    # "Daily Instructional Task: Partner Discussions RI...." should keep only
+    # the section title as heading and move the rest to a normal bullet line.
+    m_daily = re.match(r"^Daily Instructional Task\s*:\s*(.+)$", plain, flags=re.IGNORECASE)
+    if m_daily:
+        rest = m_daily.group(1).strip()
+        if rest and _STANDARDS_TOKEN_RE.search(rest):
+            return ["Daily Instructional Task:", rest]
+    m = _STANDARDS_TOKEN_RE.search(plain)
+    if not m:
+        return [line]
+    idx = m.start()
+    if idx < 8:
+        return [line]
+    head = plain[:idx].strip().rstrip(":")
+    tail = plain[idx:].strip()
+    # Avoid splitting short labels or obvious full-sentence content.
+    if len(head.split()) < 2 or len(head) > 120:
+        return [line]
+    head_low = head.lower()
+    # Keep scope conservative: this normalization is intended for long instructional
+    # lines where a heading and standards list were flattened into one line.
+    allowed_heads = (
+        "read aloud",
+        "text dependent questions",
+        "daily instructional task",
+    )
+    if not any(h in head_low for h in allowed_heads):
+        return [line]
+    if "," not in tail and "." not in tail:
+        return [line]
+    return [f"{head}:", tail]
+
+
+def _normalize_docx_export_html(html: str) -> str:
+    """
+    Normalize flattened DOCX HTML:
+    - preserve/emphasize heading-like prefixes ending with ':'
+    - recover bullets from lines starting with '*' or '-' within paragraph <br> blocks
+    """
+    raw = (html or "").strip()
+    if not raw:
+        return raw
+
+    def _rewrite_paragraph(match: re.Match[str]) -> str:
+        inner = match.group(1) or ""
+        lines0 = [x.strip() for x in re.split(r"<br\s*/?>", inner, flags=re.IGNORECASE)]
+        lines0 = [ln for ln in lines0 if ln]
+        lines: List[str] = []
+        for ln in lines0:
+            lines.extend(_split_heading_plus_standards_line(ln))
+        if not lines:
+            return "<p></p>"
+
+        normal_lines: List[str] = []
+        bullets: List[str] = []
+        heading_context = False
+        for ln in lines:
+            ln2 = _bold_label_prefix(ln)
+            b = re.match(r"^[\*\-]\s+(.+)$", ln2)
+            if b:
+                bullets.append((b.group(1) or "").strip())
+                heading_context = True
+            else:
+                if _looks_like_heading_prefix(ln2):
+                    # New section heading in long flattened cells: keep heading as a line and
+                    # treat following lines as list items for readability.
+                    if bullets:
+                        lis = "".join(f"<li>{item}</li>" for item in bullets if item)
+                        if lis:
+                            normal_lines.append(f"<ul>{lis}</ul>")
+                        bullets = []
+                    normal_lines.append(ln2)
+                    heading_context = True
+                elif heading_context and len(ln2) > 0:
+                    bullets.append(ln2)
+                else:
+                    normal_lines.append(ln2)
+
+        chunks: List[str] = []
+        if bullets:
+            lis = "".join(f"<li>{item}</li>" for item in bullets if item)
+            if lis:
+                normal_lines.append(f"<ul>{lis}</ul>")
+        if normal_lines:
+            # Don't wrap block-level lists in <p>.
+            if any(x.startswith("<ul>") for x in normal_lines):
+                buf: List[str] = []
+                for item in normal_lines:
+                    if item.startswith("<ul>"):
+                        if buf:
+                            chunks.append(f"<p>{'<br>'.join(buf)}</p>")
+                            buf = []
+                        chunks.append(item)
+                    else:
+                        buf.append(item)
+                if buf:
+                    chunks.append(f"<p>{'<br>'.join(buf)}</p>")
+            else:
+                chunks.append(f"<p>{'<br>'.join(normal_lines)}</p>")
+        return "".join(chunks) if chunks else "<p></p>"
+
+    # Rebuild each paragraph independently so list recovery remains local.
+    return re.sub(
+        r"<p>(.*?)</p>",
+        _rewrite_paragraph,
+        raw,
+        flags=re.IGNORECASE | re.DOTALL,
+    )
+
+
 def is_ela_lesson_plan_table(table_json: Dict[str, Any]) -> bool:
     """True if the table matches the ELA detailed lesson plan grid (Lesson N: title + LI/SC headers)."""
     rows = table_json.get("rows") or []
-    if len(rows) < 4:
+    if len(rows) < 3:
         return False
-    lnum, _title = _parse_lesson_title_row(rows[0])
-    if lnum is None:
+    anchor = find_ela_lesson_plan_anchor(rows)
+    if anchor is None:
         return False
-    r1 = rows[1].get("cells") or []
-    if len(r1) < 2:
-        return False
-    h0 = _norm(_cell_plain(r1[0].get("content", [])))
-    h1 = _norm(_cell_plain(r1[1].get("content", [])))
-    if "learning intention" not in h0:
-        return False
-    if "success criteria" not in h1:
-        return False
-    return True
+    hi, _ti = anchor
+    # Need header row plus at least one content row (LI/SC body).
+    return hi + 1 < len(rows)
 
 
 def parse_ela_lesson_plan_table(
@@ -159,13 +349,18 @@ def parse_ela_lesson_plan_table(
 ) -> Optional[Dict[str, Any]]:
     """
     Parse a detected ELA lesson plan table into a JSON-serializable dict.
-    Returns None if the title row cannot be parsed.
+    Returns None if the lesson title or header anchor cannot be resolved.
+    Permissive: after LI/SC cells are captured, remaining sections are best-effort.
     """
     rows = table_json.get("rows") or []
     if len(rows) < 3:
         return None
 
-    lesson_number, lesson_title = _parse_lesson_title_row(rows[0])
+    anchor = find_ela_lesson_plan_anchor(rows)
+    if anchor is None:
+        return None
+    hi, ti = anchor
+    lesson_number, lesson_title = _parse_lesson_title_row(rows[ti])
     if lesson_number is None:
         return None
 
@@ -175,18 +370,14 @@ def parse_ela_lesson_plan_table(
         "lesson_title": lesson_title,
     }
 
-    i = 1
-    # Learning Intention | Success Criteria
+    # Skip rows from after the title through the LI|SC header; next row is the body pair.
+    i = hi + 1
     if i < len(rows):
-        t0, t1 = _row_plain_cells(rows[i])
-        if "learning intention" in _norm(t0) and "success criteria" in _norm(t1):
-            i += 1
-            if i < len(rows):
-                cells = rows[i].get("cells") or []
-                if len(cells) >= 2:
-                    out["learning_intention_html"] = json_to_html(cells[0].get("content", []))
-                    out["success_criteria_html"] = json_to_html(cells[1].get("content", []))
-                i += 1
+        cells = rows[i].get("cells") or []
+        if len(cells) >= 2:
+            out["learning_intention_html"] = json_to_html(cells[0].get("content", []))
+            out["success_criteria_html"] = json_to_html(cells[1].get("content", []))
+        i += 1
 
     while i < len(rows):
         t0, t1 = _row_plain_cells(rows[i])
@@ -197,7 +388,8 @@ def parse_ela_lesson_plan_table(
             return len(t1.strip()) == 0
 
         # Section: NJSLS Standards (short label row + body row, or one merged cell)
-        if n0.startswith("njsls standards"):
+        # Some exports label this row as "NJSLS Priority Standards".
+        if n0.startswith("njsls standards") or n0.startswith("njsls priority standards"):
             short_label = len(t0.strip()) < 50 and _second_empty()
             if short_label and i + 1 < len(rows):
                 i += 1
@@ -225,7 +417,7 @@ def parse_ela_lesson_plan_table(
                 continue
 
         # Section: Key Instructional Practices (label) then sub-row
-        if n0.startswith("key instructional practices") and len(t0) < 120 and _second_empty():
+        if n0.startswith("key instructional practices") and len(t0) < 200 and _second_empty():
             i += 1
             if i < len(rows):
                 c2 = rows[i].get("cells") or []
@@ -267,4 +459,8 @@ def parse_ela_lesson_plan_table(
 
         i += 1
 
+    # Post-process all rich cells with a single formatter for heading/bullet readability.
+    for k, v in list(out.items()):
+        if isinstance(v, str) and k.endswith("_html") and v.strip():
+            out[k] = _normalize_docx_export_html(v)
     return out

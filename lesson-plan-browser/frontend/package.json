@@ -13,7 +13,7 @@
     "tauri:dev": "tauri dev",
     "tauri:build": "tauri build",
     "android:dev": "npm run tauri android dev",
-    "android:build": "cross-env TAURI_ENV_PLATFORM=android TAURI_ENV_TARGET_TRIPLE=aarch64-linux-android npm run tauri android build -- -- --target aarch64",
+    "android:build": "cross-env TAURI_ENV_PLATFORM=android TAURI_ENV_TARGET_TRIPLE=aarch64-linux-android npm run tauri android build",
     "prepare:env": "node ./scripts/select-env.mjs",
     "dev:tauri": "node ./scripts/run-vite.mjs dev",
     "build:tauri": "node ./scripts/run-vite.mjs build"

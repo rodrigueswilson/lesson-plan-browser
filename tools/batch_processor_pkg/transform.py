@@ -5,7 +5,7 @@ Used by the orchestrator for Phase 2 (parallel or sequential) transformation.
 import asyncio
 import time
 import traceback
-from typing import Optional
+from typing import Any, Dict, List, Optional
 
 from backend.config import settings
 from backend.progress import progress_tracker
@@ -13,6 +13,124 @@ from backend.telemetry import logger
 from backend.utils.date_formatter import format_week_dates
 
 from tools.batch_processor_pkg.context import SlotProcessingContext
+from tools.batch_processor_pkg.helpers import build_non_instructional_week_lesson_json
+from tools.batch_processor_pkg.no_school_stub_pick import day_stub_for_no_school_list_entry
+
+
+def _finalize_parallel_lesson_output(
+    processor: Any,
+    lesson_json: Dict[str, Any],
+    slot: dict,
+    week_of: str,
+    context: SlotProcessingContext,
+    images: List[Any],
+    hyperlinks: List[Any],
+    start_time: float,
+    total_slots: int,
+    is_parallel: bool,
+) -> None:
+    """Attach media, metadata, no-school overlays; assign context.lesson_json and timing."""
+    slot_number = slot.get("slot_number")
+    subject = slot.get("subject")
+    if hyperlinks:
+        print(
+            f"[DEBUG] _transform_slot_with_llm (PARALLEL): Processing {len(hyperlinks)} hyperlinks "
+            f"for slot {slot_number}, subject {subject}"
+        )
+        for hyperlink in hyperlinks:
+            if "_source_slot" not in hyperlink:
+                hyperlink["_source_slot"] = slot_number
+            if "_source_subject" not in hyperlink:
+                hyperlink["_source_subject"] = subject
+
+    if images:
+        lesson_json["_images"] = images
+        print(
+            f"[DEBUG] _transform_slot_with_llm (PARALLEL): Added {len(images)} images to lesson_json"
+        )
+    if hyperlinks:
+        print(
+            f"[DEBUG] _transform_slot_with_llm (PARALLEL): Adding {len(hyperlinks)} hyperlinks to lesson_json"
+        )
+        lesson_json["_hyperlinks"] = hyperlinks
+        logger.info(
+            "parallel_hyperlinks_attached",
+            extra={
+                "slot": slot_number,
+                "subject": subject,
+                "hyperlinks_count": len(hyperlinks),
+            },
+        )
+    else:
+        print(
+            f"[WARN] _transform_slot_with_llm (PARALLEL): No hyperlinks to attach for slot {slot_number}, subject {subject}"
+        )
+        logger.warning(
+            "parallel_no_hyperlinks",
+            extra={
+                "slot": slot_number,
+                "subject": subject,
+                "context_slot_keys": list(context.slot.keys()),
+            },
+        )
+
+    if images or hyperlinks:
+        lesson_json["_media_schema_version"] = "2.0"
+
+    if "metadata" not in lesson_json:
+        lesson_json["metadata"] = {}
+    try:
+        teacher_name = processor._build_teacher_name(
+            {
+                "first_name": getattr(processor, "_user_first_name", ""),
+                "last_name": getattr(processor, "_user_last_name", ""),
+                "name": getattr(processor, "_user_name", ""),
+            },
+            slot,
+        )
+        lesson_json["metadata"]["teacher_name"] = teacher_name
+    except Exception as e:
+        print(f"DEBUG: Error in _build_teacher_name (parallel path): {e}")
+        traceback.print_exc()
+        lesson_json["metadata"]["teacher_name"] = "Unknown"
+
+    lesson_json["metadata"]["week_of"] = format_week_dates(week_of)
+    try:
+        lesson_json["metadata"]["slot_number"] = slot.get("slot_number")
+        lesson_json["metadata"]["homeroom"] = slot.get("homeroom")
+        lesson_json["metadata"]["grade"] = slot.get("grade")
+        lesson_json["metadata"]["subject"] = slot.get("subject")
+        lesson_json["metadata"]["start_time"] = slot.get("start_time")
+        lesson_json["metadata"]["end_time"] = slot.get("end_time")
+        lesson_json["metadata"]["day_times"] = slot.get("day_times")
+        if slot.get("slot_number") == 2:
+            print(
+                "DEBUG: Preserving Slot 2 Metadata -> Grade: "
+                f"'{lesson_json['metadata']['grade']}', Homeroom: '{lesson_json['metadata']['homeroom']}'"
+            )
+    except Exception as e:
+        print(f"DEBUG: Error copying slot metadata (parallel path): {e}")
+        traceback.print_exc()
+
+    if context.no_school_days:
+        for day in context.no_school_days:
+            day_lower = day.lower().strip()
+            if day_lower in lesson_json.get("days", {}):
+                lesson_json["days"][day_lower] = day_stub_for_no_school_list_entry(
+                    processor, day, getattr(context, "table_content", None)
+                )
+
+    elapsed_time = (time.time() - start_time) * 1000
+    context.lesson_json = lesson_json
+    context.is_parallel = is_parallel
+    context.parallel_slot_count = total_slots if is_parallel else None
+    if is_parallel:
+        context.sequential_time_ms = elapsed_time * total_slots
+
+    usage = lesson_json.get("_usage", {})
+    if usage:
+        context.tpm_usage = usage.get("tpm_usage")
+        context.rpm_usage = usage.get("rpm_usage")
 
 
 async def transform_slot_with_llm(
@@ -104,6 +222,35 @@ async def transform_slot_with_llm(
         }
         return context
 
+    if context.available_days is not None and len(context.available_days) == 0:
+        logger.info(
+            "parallel_transform_skip_llm_zero_instructional",
+            extra={
+                "slot": slot.get("slot_number"),
+                "subject": slot.get("subject"),
+            },
+        )
+        start_time = time.time()
+        is_parallel = settings.PARALLEL_LLM_PROCESSING and total_slots > 1
+        lesson_json = build_non_instructional_week_lesson_json(
+            processor, slot, week_of
+        )
+        images = context.slot.get("_extracted_images", [])
+        hyperlinks = context.slot.get("_extracted_hyperlinks", [])
+        _finalize_parallel_lesson_output(
+            processor,
+            lesson_json,
+            slot,
+            week_of,
+            context,
+            images,
+            hyperlinks,
+            start_time,
+            total_slots,
+            is_parallel,
+        )
+        return context
+
     start_time = time.time()
     is_parallel = settings.PARALLEL_LLM_PROCESSING and total_slots > 1
 
@@ -125,7 +272,13 @@ async def transform_slot_with_llm(
             phase2_progress = phase2_min + int(
                 (llm_progress - 10) / 80 * (phase2_max - phase2_min)
             )
-            progress_tracker.update(plan_id, stage, phase2_progress, message)
+            progress_tracker.update(
+                plan_id,
+                "transforming",
+                phase2_progress,
+                message,
+                metadata={"total_slots": total_slots},
+            )
 
     try:
         success, lesson_json, error = await asyncio.to_thread(
@@ -200,98 +353,18 @@ async def transform_slot_with_llm(
             },
         )
 
-        slot_number = slot.get("slot_number")
-        subject = slot.get("subject")
-        if hyperlinks:
-            print(
-                f"[DEBUG] _transform_slot_with_llm (PARALLEL): Processing {len(hyperlinks)} hyperlinks "
-                f"for slot {slot_number}, subject {subject}"
-            )
-            for hyperlink in hyperlinks:
-                if "_source_slot" not in hyperlink:
-                    hyperlink["_source_slot"] = slot_number
-                if "_source_subject" not in hyperlink:
-                    hyperlink["_source_subject"] = subject
-
-        if images:
-            lesson_json["_images"] = images
-            print(
-                f"[DEBUG] _transform_slot_with_llm (PARALLEL): Added {len(images)} images to lesson_json"
-            )
-        if hyperlinks:
-            print(
-                f"[DEBUG] _transform_slot_with_llm (PARALLEL): Adding {len(hyperlinks)} hyperlinks to lesson_json"
-            )
-            lesson_json["_hyperlinks"] = hyperlinks
-            logger.info(
-                "parallel_hyperlinks_attached",
-                extra={"slot": slot_number, "subject": subject, "hyperlinks_count": len(hyperlinks)},
-            )
-        else:
-            print(
-                f"[WARN] _transform_slot_with_llm (PARALLEL): No hyperlinks to attach for slot {slot_number}, subject {subject}"
-            )
-            logger.warning(
-                "parallel_no_hyperlinks",
-                extra={
-                    "slot": slot_number,
-                    "subject": subject,
-                    "context_slot_keys": list(context.slot.keys()),
-                },
-            )
-
-        if images or hyperlinks:
-            lesson_json["_media_schema_version"] = "2.0"
-
-        if "metadata" not in lesson_json:
-            lesson_json["metadata"] = {}
-        try:
-            teacher_name = processor._build_teacher_name(
-                {
-                    "first_name": getattr(processor, "_user_first_name", ""),
-                    "last_name": getattr(processor, "_user_last_name", ""),
-                    "name": getattr(processor, "_user_name", ""),
-                },
-                slot,
-            )
-            lesson_json["metadata"]["teacher_name"] = teacher_name
-        except Exception as e:
-            print(f"DEBUG: Error in _build_teacher_name (parallel path): {e}")
-            traceback.print_exc()
-            lesson_json["metadata"]["teacher_name"] = "Unknown"
-
-        lesson_json["metadata"]["week_of"] = format_week_dates(week_of)
-        try:
-            lesson_json["metadata"]["slot_number"] = slot.get("slot_number")
-            lesson_json["metadata"]["homeroom"] = slot.get("homeroom")
-            lesson_json["metadata"]["grade"] = slot.get("grade")
-            lesson_json["metadata"]["subject"] = slot.get("subject")
-            lesson_json["metadata"]["start_time"] = slot.get("start_time")
-            lesson_json["metadata"]["end_time"] = slot.get("end_time")
-            lesson_json["metadata"]["day_times"] = slot.get("day_times")
-            if slot.get("slot_number") == 2:
-                print(f"DEBUG: Preserving Slot 2 Metadata -> Grade: '{lesson_json['metadata']['grade']}', Homeroom: '{lesson_json['metadata']['homeroom']}'")
-        except Exception as e:
-            print(f"DEBUG: Error copying slot metadata (parallel path): {e}")
-            traceback.print_exc()
-
-        if context.no_school_days:
-            for day in context.no_school_days:
-                day_lower = day.lower().strip()
-                if day_lower in lesson_json.get("days", {}):
-                    lesson_json["days"][day_lower] = processor._no_school_day_stub()
-
-        elapsed_time = (time.time() - start_time) * 1000
-        context.lesson_json = lesson_json
-        context.is_parallel = is_parallel
-        context.parallel_slot_count = total_slots if is_parallel else None
-        if is_parallel:
-            context.sequential_time_ms = elapsed_time * total_slots
-
-        usage = lesson_json.get("_usage", {})
-        if usage:
-            context.tpm_usage = usage.get("tpm_usage")
-            context.rpm_usage = usage.get("rpm_usage")
+        _finalize_parallel_lesson_output(
+            processor,
+            lesson_json,
+            slot,
+            week_of,
+            context,
+            images,
+            hyperlinks,
+            start_time,
+            total_slots,
+            is_parallel,
+        )
 
     except Exception as e:
         context.error = str(e)

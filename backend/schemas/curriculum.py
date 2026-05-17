@@ -73,6 +73,86 @@ class CurriculumLessonDetail(BaseModel):
     ingest_run_id: Optional[str] = None
     ingest_parser_version: Optional[str] = None
     content_hash: Optional[str] = None
+    science_doc_lesson_number: Optional[int] = Field(
+        default=None,
+        description="Curriculum-writer lesson number from Science DOCX module heading.",
+    )
+    science_li_sc_day_structured: Optional[str] = Field(
+        default=None,
+        description="JSON: Learning intention / success criteria by day segment (Science ingest).",
+    )
+
+
+class CurriculumScienceOutlineSegment(BaseModel):
+    """Label-only row for module-level Science day-band index (no HTML)."""
+
+    segment_index: int
+    day_label: str
+
+
+class CurriculumScienceOutlineLesson(BaseModel):
+    lesson_id: str
+    lesson_number: int
+    title: str
+    segments: List[CurriculumScienceOutlineSegment] = Field(default_factory=list)
+
+
+class CurriculumUnitScienceDayOutline(BaseModel):
+    """Writer cluster index for one unit (Science); not a calendar projection."""
+
+    unit_id: str
+    lessons: List[CurriculumScienceOutlineLesson] = Field(default_factory=list)
+    total_writer_bands: int = 0
+
+
+class CurriculumScienceDaySegment(BaseModel):
+    """One writer day band for Science (relational; mirrors a segment in science_li_sc_day_structured)."""
+
+    id: str
+    lesson_id: str
+    segment_index: int
+    day_label: str
+    science_doc_lesson_number: Optional[int] = None
+    learning_intention_html: Optional[str] = None
+    success_criteria_html: Optional[str] = None
+    brief_overview_html: Optional[str] = None
+    lesson_in_action_html: Optional[str] = None
+    experimental_splits_json: Optional[str] = Field(
+        default=None,
+        description="JSON object with opening_html, during_html, closing_html, online_html when present.",
+    )
+
+
+class CurriculumBookLessonSupplement(BaseModel):
+    """Student workbook / paired-read complement for one canonical Grade 2 Science lesson (see ADR-003)."""
+
+    lesson_id: str
+    source_pdf_label: str
+    isbn13: Optional[str] = None
+    pdf_page_start: Optional[int] = None
+    pdf_page_end: Optional[int] = None
+    pdf_title_hit_count: Optional[int] = None
+    first_page_workbook_pattern: Optional[str] = None
+    paired_read_block_title: Optional[str] = None
+    teacher_curriculum_cue: Optional[str] = None
+    format_notes: Optional[str] = None
+    updated_at: Optional[str] = None
+
+
+class CurriculumBookPageExtract(BaseModel):
+    """One PDF page of student workbook text linked to a canonical lesson (g2_science_book_lesson_extract)."""
+
+    id: str
+    lesson_id: str
+    page_number: int
+    body_text: str
+    char_count: Optional[int] = None
+    content_sha256: Optional[str] = None
+    alignment_confidence: str = "high"
+    alignment_ambiguous: int = 0
+    source_pdf_label: str
+    ingest_parser_version: str
+    ingested_at: Optional[str] = None
 
 
 class CurriculumVocabularyTerm(BaseModel):
@@ -87,11 +167,49 @@ class CurriculumStandardRow(BaseModel):
     subject: Optional[str] = None
 
 
+class CurriculumLessonBundle(BaseModel):
+    """Single response for explorer: lesson row plus joined vocabulary and standards."""
+
+    lesson: CurriculumLessonDetail
+    vocabulary: List[CurriculumVocabularyTerm] = Field(default_factory=list)
+    standards: List[CurriculumStandardRow] = Field(default_factory=list)
+    science_day_segments: List[CurriculumScienceDaySegment] = Field(default_factory=list)
+    book_lesson_supplement: Optional[CurriculumBookLessonSupplement] = Field(
+        default=None,
+        description="Inspire Grade 2 student workbook cross-reference when seeded (g2_science_book_lesson_supplement).",
+    )
+    book_page_extracts: List[CurriculumBookPageExtract] = Field(
+        default_factory=list,
+        description="Student workbook PDF text pages when include_book_extracts=true (capped).",
+    )
+
+
 class CurriculumSearchHit(BaseModel):
     id: str
     unit_id: str
     lesson_number: int
     title: str
+    snippet_html: Optional[str] = Field(
+        default=None,
+        description="FTS5 snippet with <mark> around hits (body column); null when using LIKE fallback.",
+    )
+    fts_rank: Optional[float] = Field(
+        default=None,
+        description="BM25 rank when FTS used (lower is better); null for LIKE fallback.",
+    )
+
+
+class SemanticUnitLinkRow(BaseModel):
+    """Manual curator link and/or adjacent-grade suggestion for cross-unit navigation."""
+
+    id: Optional[str] = Field(default=None, description="Primary key when source=manual.")
+    to_unit_id: str
+    to_unit_title: str
+    to_grade: Optional[int] = None
+    to_unit_number: Optional[int] = None
+    link_kind: str
+    rationale: str
+    source: str = Field(description="manual | suggested")
 
 
 class CurriculumGapsResponse(BaseModel):

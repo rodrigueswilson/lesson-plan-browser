@@ -10,6 +10,11 @@ from typing import Any, Callable, Dict, List, Optional
 
 from docx import Document
 
+from backend.services.weekly_plan_backup import (
+    build_artifact_metadata,
+    extract_artifact_timestamp,
+    write_auto_backup_file,
+)
 from backend.telemetry import logger
 from tools.batch_processor_pkg.combine_render import (
     _render_multi_slot,
@@ -273,12 +278,30 @@ def combine_lessons_impl(
         )
     if plan_id and getattr(processor, "db", None):
         try:
+            artifact_generated_at = extract_artifact_timestamp(output_path) or generated_at
+            artifact_metadata = build_artifact_metadata(output_path, artifact_generated_at)
+            merged_metadata = merged_json.setdefault("metadata", {})
+            merged_metadata.update(artifact_metadata)
             processor.db.update_weekly_plan(
                 plan_id,
                 status="completed",
                 output_file=output_path,
                 lesson_json=merged_json,
+                generated_at=artifact_generated_at,
             )
+            plan_for_backup = processor.db.get_weekly_plan(plan_id)
+            if plan_for_backup:
+                backup_path = write_auto_backup_file(
+                    plan_for_backup,
+                    output_path,
+                    artifact_metadata=artifact_metadata,
+                )
+                if backup_path:
+                    merged_metadata["auto_backup_file"] = backup_path
+                    processor.db.update_weekly_plan(
+                        plan_id,
+                        lesson_json=merged_json,
+                    )
             logger.debug(
                 "batch_persisted_lesson_json",
                 extra={"plan_id": plan_id, "output_file": output_path},

@@ -1,6 +1,10 @@
 import { create } from 'zustand';
 import { User, ClassSlot, WeeklyPlan } from '@lesson-api';
 
+function toSlotIdKey(id: string | number): string {
+  return String(id);
+}
+
 export interface AppState {
   // Current user
   currentUser: User | null;
@@ -56,7 +60,17 @@ export const useStore = create<AppState>((set) => ({
   
   // Slots
   slots: [],
-  setSlots: (slots) => set({ slots }),
+  setSlots: (slots) =>
+    set((state) => {
+      if (slots.length === 0) {
+        return { slots, selectedSlots: new Set<string>() };
+      }
+      const validIds = new Set(slots.map((s) => toSlotIdKey(s.id)));
+      const pruned = new Set(
+        [...state.selectedSlots].map(toSlotIdKey).filter((id) => validIds.has(id))
+      );
+      return { slots, selectedSlots: pruned };
+    }),
   addSlot: (slot) => set((state) => ({ slots: [...state.slots, slot] })),
   updateSlot: (slotId, data) =>
     set((state) => ({
@@ -65,9 +79,17 @@ export const useStore = create<AppState>((set) => ({
       ),
     })),
   removeSlot: (slotId) =>
-    set((state) => ({
-      slots: state.slots.filter((slot) => slot.id !== slotId),
-    })),
+    set((state) => {
+      const key = toSlotIdKey(slotId);
+      const newSelected = new Set(
+        [...state.selectedSlots].map(toSlotIdKey)
+      );
+      newSelected.delete(key);
+      return {
+        slots: state.slots.filter((slot) => toSlotIdKey(slot.id) !== key),
+        selectedSlots: newSelected,
+      };
+    }),
   
   // Plans
   plans: [],
@@ -87,20 +109,24 @@ export const useStore = create<AppState>((set) => ({
   
   // Selected slots
   selectedSlots: new Set<string>(),
-  setSelectedSlots: (slots) => set({ selectedSlots: slots }),
+  setSelectedSlots: (slots) =>
+    set({ selectedSlots: new Set([...slots].map(toSlotIdKey)) }),
   toggleSlot: (slotId) =>
     set((state) => {
-      const newSelected = new Set(state.selectedSlots);
-      if (newSelected.has(slotId)) {
-        newSelected.delete(slotId);
+      const key = toSlotIdKey(slotId);
+      const newSelected = new Set(
+        [...state.selectedSlots].map(toSlotIdKey)
+      );
+      if (newSelected.has(key)) {
+        newSelected.delete(key);
       } else {
-        newSelected.add(slotId);
+        newSelected.add(key);
       }
       return { selectedSlots: newSelected };
     }),
   selectAllSlots: () =>
     set((state) => ({
-      selectedSlots: new Set(state.slots.map((s) => s.id)),
+      selectedSlots: new Set(state.slots.map((s) => toSlotIdKey(s.id))),
     })),
   deselectAllSlots: () => set({ selectedSlots: new Set<string>() }),
 }));

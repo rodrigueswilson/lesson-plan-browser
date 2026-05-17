@@ -5,7 +5,6 @@ Extracted from orchestrator.
 """
 
 import asyncio
-import uuid
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Tuple
@@ -15,6 +14,28 @@ from tools.batch_processor_pkg.combined_original_render import (
     render_combined_originals_sync,
 )
 from tools.batch_processor_pkg.context import SlotProcessingContext
+from tools.batch_processor_pkg.persistence import stable_original_lesson_plan_id
+from tools.batch_processor_pkg.slot_flow_extract import get_available_days_from_content
+
+
+def _available_days_for_cached_record(db_record: Any) -> Optional[List[str]]:
+    """Prefer recomputed available_days from cached table_content over stale DB column."""
+    stored = db_record.available_days
+    content_json = db_record.content_json or {}
+    if isinstance(content_json, dict) and "table_content" in content_json:
+        recomputed = get_available_days_from_content(content_json)
+        if recomputed != stored:
+            logger.warning(
+                "cached_available_days_recomputed_mismatch",
+                extra={
+                    "slot": db_record.slot_number,
+                    "subject": db_record.subject,
+                    "stored_available_days": stored,
+                    "recomputed_available_days": recomputed,
+                },
+            )
+        return recomputed
+    return stored
 
 
 async def process_file_group(
@@ -26,6 +47,7 @@ async def process_file_group(
     user_base_path: Optional[str],
     plan_id: Optional[str],
     semaphore: asyncio.Semaphore,
+    refresh_source_documents: bool = False,
 ) -> List[SlotProcessingContext]:
     """Process a group of slots that share the same source file."""
     contexts = []
@@ -45,6 +67,12 @@ async def process_file_group(
 
     async with processor._file_locks[file_path]:
         remaining_group = []
+
+        if refresh_source_documents:
+            logger.info(
+                "refresh_source_documents_skip_extraction_cache",
+                extra={"file_path": file_path},
+            )
 
         path_obj = Path(file_path)
         current_mtime = 0
@@ -67,14 +95,20 @@ async def process_file_group(
                 slot["slot_number"],
             )
 
-            if db_record and db_record.source_file_path == file_path:
+            if (
+                db_record
+                and db_record.source_file_path == file_path
+                and not refresh_source_documents
+            ):
                 if path_obj.exists():
                     if db_record.extracted_at.timestamp() > (current_mtime + 2):
                         logger.info(
                             f"DB Cache hit for slot {slot['slot_number']} ({slot['subject']})"
                         )
                         context.extracted_content = db_record.full_text
-                        context.available_days = db_record.available_days
+                        context.available_days = _available_days_for_cached_record(
+                            db_record
+                        )
                         context.cache_hit = True
 
                         cached_hyperlinks = []
@@ -94,6 +128,9 @@ async def process_file_group(
                                 db_record.content_json.get(
                                     "no_school_days", []
                                 )
+                            )
+                            context.table_content = db_record.content_json.get(
+                                "table_content"
                             )
 
                         if not cached_hyperlinks:
@@ -200,12 +237,15 @@ async def process_file_group(
                         context.extracted_content = content_data.get(
                             "full_text", ""
                         )
-                        context.available_days = content_data.get(
-                            "available_days", []
+                        # Parser output does not include available_days; derive from table_content.
+                        # Never default to [] (that means "zero instructional days" and forces full-week stub).
+                        context.available_days = get_available_days_from_content(
+                            content_data
                         )
                         context.no_school_days = content_data.get(
                             "no_school_days", []
                         )
+                        context.table_content = content_data.get("table_content")
 
                         context.slot["_extracted_images"] = images
                         context.slot["_extracted_hyperlinks"] = hyperlinks
@@ -257,7 +297,12 @@ async def process_file_group(
                                     )
 
                         plan_data = {
-                            "id": f"orig_{uuid.uuid4()}",
+                            "id": stable_original_lesson_plan_id(
+                                user_id,
+                                week_of,
+                                slot["slot_number"],
+                                slot["subject"],
+                            ),
                             "user_id": user_id,
                             "week_of": week_of,
                             "slot_number": slot["slot_number"],

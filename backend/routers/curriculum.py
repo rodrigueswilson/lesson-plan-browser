@@ -3,20 +3,26 @@ import re
 import sqlite3
 from typing import Any, Dict, List
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response
 from fastapi.responses import FileResponse
 
 from backend.config import settings
 from backend.database.curriculum import CurriculumDatabase
 from backend.database.curriculum_validation import get_curriculum_schema_issues
 from backend.schemas.curriculum import (
+    CurriculumBookLessonSupplement,
+    CurriculumBookPageExtract,
     CurriculumGapsResponse,
     CurriculumLessonDetail,
+    CurriculumLessonBundle,
     CurriculumResourceResolve,
+    CurriculumScienceDaySegment,
     CurriculumSearchHit,
     CurriculumStandardRow,
+    CurriculumUnitScienceDayOutline,
     CurriculumVocabularyTerm,
     ExplorerGrade,
+    SemanticUnitLinkRow,
 )
 from backend.services.curriculum_gaps import compute_planned_and_gaps
 from backend.services.curriculum_resource_resolve import (
@@ -26,6 +32,17 @@ from backend.services.curriculum_resource_resolve import (
 )
 
 router = APIRouter(tags=["curriculum"])
+
+_BOOK_BODY_RESPONSE_MAX = 12000
+
+
+def _truncate_book_body(row: Dict[str, Any]) -> Dict[str, Any]:
+    t = row.get("body_text") or ""
+    if len(t) <= _BOOK_BODY_RESPONSE_MAX:
+        return dict(row)
+    out = dict(row)
+    out["body_text"] = t[:_BOOK_BODY_RESPONSE_MAX] + "\n...[truncated]"
+    return out
 
 
 def require_curriculum_schema() -> None:
@@ -62,12 +79,23 @@ async def get_registry_tree() -> Dict[str, Any]:
 
 @router.get("/curriculum/search", dependencies=CURRICULUM_DEPS, response_model=List[CurriculumSearchHit])
 async def search_curriculum(
-    q: str = Query(..., min_length=2, description="Substring match on title / procedure / narrative HTML"),
+    q: str = Query(..., min_length=2, description="FTS5 match on title / procedure / narrative HTML"),
     limit: int = Query(40, ge=1, le=200),
 ):
-    """Interim lesson search (LIKE). FTS5 index may replace this later."""
+    """Lesson search via FTS5 (snippet + highlights) with LIKE fallback if FTS fails."""
     curriculum = CurriculumDatabase()
     return curriculum.search_lessons_text(q, limit=limit)
+
+
+@router.get(
+    "/curriculum/units/{unit_id}/semantic-links",
+    dependencies=CURRICULUM_DEPS,
+    response_model=List[SemanticUnitLinkRow],
+)
+async def get_unit_semantic_links(unit_id: str):
+    """Manual cross-unit links plus same-subject adjacent-grade suggestions."""
+    curriculum = CurriculumDatabase()
+    return curriculum.get_unit_semantic_links(unit_id)
 
 
 @router.get("/curriculum/units/{unit_id}/lessons", dependencies=CURRICULUM_DEPS)
@@ -85,6 +113,21 @@ async def get_unit_intro(unit_id: str):
 
 
 @router.get(
+    "/curriculum/units/{unit_id}/science-day-outline",
+    dependencies=CURRICULUM_DEPS,
+    response_model=CurriculumUnitScienceDayOutline,
+)
+async def get_unit_science_day_outline(unit_id: str):
+    """
+    Writer-authored day-band labels per lesson (Science relational segments).
+    This is SSOT metadata for pacing context, not a mapped school calendar.
+    """
+    curriculum = CurriculumDatabase()
+    raw = curriculum.get_unit_science_day_outline(unit_id)
+    return CurriculumUnitScienceDayOutline(**raw)
+
+
+@router.get(
     "/curriculum/lessons/{lesson_id}",
     dependencies=CURRICULUM_DEPS,
     response_model=CurriculumLessonDetail,
@@ -96,6 +139,82 @@ async def get_lesson_details(lesson_id: str):
     if not details:
         raise HTTPException(status_code=404, detail="Lesson not found")
     return details
+
+
+@router.get(
+    "/curriculum/lessons/{lesson_id}/bundle",
+    dependencies=CURRICULUM_DEPS,
+    response_model=CurriculumLessonBundle,
+)
+async def get_lesson_bundle(
+    lesson_id: str,
+    request: Request,
+    response: Response,
+    include_book_extracts: bool = Query(
+        default=False,
+        description="Include student workbook PDF text rows (capped; see book_extract_max_pages).",
+    ),
+    book_extract_max_pages: int = Query(
+        default=20,
+        ge=1,
+        le=60,
+        description="Max workbook pages to include when include_book_extracts is true.",
+    ),
+):
+    """
+    Lesson detail + vocabulary + standards in one response (single DB connection).
+    Supports conditional GET via If-None-Match when lesson.content_hash is set.
+    """
+    curriculum = CurriculumDatabase()
+    bundle = curriculum.get_lesson_bundle(
+        lesson_id,
+        include_book_extracts=include_book_extracts,
+        book_extract_max_pages=book_extract_max_pages,
+    )
+    if not bundle:
+        raise HTTPException(status_code=404, detail="Lesson not found")
+    lesson = bundle["lesson"]
+    etag_source = (lesson.get("content_hash") or "").strip()
+    if etag_source:
+        etag = f'"{etag_source}"'
+        inm = request.headers.get("if-none-match")
+        if inm and inm.strip() == etag:
+            return Response(status_code=304)
+        response.headers["ETag"] = etag
+    seg_raw = bundle.get("science_day_segments") or []
+    science_segments = [CurriculumScienceDaySegment(**row) for row in seg_raw]
+    sup_raw = bundle.get("book_lesson_supplement")
+    book_sup = CurriculumBookLessonSupplement(**sup_raw) if sup_raw else None
+    ex_raw = bundle.get("book_page_extracts") or []
+    book_pages = [
+        CurriculumBookPageExtract(**_truncate_book_body(dict(r))) for r in ex_raw
+    ]
+    return CurriculumLessonBundle(
+        lesson=lesson,
+        vocabulary=bundle["vocabulary"],
+        standards=bundle["standards"],
+        science_day_segments=science_segments,
+        book_lesson_supplement=book_sup,
+        book_page_extracts=book_pages,
+    )
+
+
+@router.get(
+    "/curriculum/lessons/{lesson_id}/book-extracts",
+    dependencies=CURRICULUM_DEPS,
+    response_model=List[CurriculumBookPageExtract],
+)
+async def get_lesson_book_extracts(
+    lesson_id: str,
+    offset: int = Query(default=0, ge=0),
+    limit: int = Query(default=20, ge=1, le=100),
+):
+    """Paginated student workbook PDF text for one lesson (full body_text; use for large extracts)."""
+    curriculum = CurriculumDatabase()
+    if not curriculum.get_lesson_details(lesson_id):
+        raise HTTPException(status_code=404, detail="Lesson not found")
+    rows = curriculum.list_book_extracts(lesson_id, offset=offset, limit=limit)
+    return [CurriculumBookPageExtract(**_truncate_book_body(r)) for r in rows]
 
 
 @router.get(

@@ -10,6 +10,8 @@ from backend.services.objectives_utils import normalize_objectives_in_lesson
 from backend.telemetry import logger
 from backend.utils.date_formatter import format_week_dates
 
+from tools.batch_processor_pkg.no_school_stub_pick import day_stub_for_no_school_list_entry
+
 
 async def run_llm_transform(
     processor: Any,
@@ -54,6 +56,7 @@ def finalize_lesson_json(
     images: List[Any],
     slot: dict,
     week_of: str,
+    table_content: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
     """Restore unit/lesson and objectives, apply no_school stubs, attach media, set metadata, normalize objectives."""
     if not isinstance(lesson_json, dict):
@@ -72,9 +75,11 @@ def finalize_lesson_json(
 
     if no_school_days:
         for day in no_school_days:
-            day_lower = day.lower()
+            day_lower = day.lower().strip()
             if day_lower in lesson_json.get("days", {}):
-                lesson_json["days"][day_lower] = processor._no_school_day_stub()
+                lesson_json["days"][day_lower] = day_stub_for_no_school_list_entry(
+                    processor, day, table_content
+                )
 
     slot_number = slot.get("slot_number")
     subject = slot.get("subject")

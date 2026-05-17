@@ -15,6 +15,7 @@ from backend.progress import progress_tracker
 from backend.telemetry import logger
 
 from tools.batch_processor_pkg.context import SlotProcessingContext
+from tools.batch_processor_pkg.helpers import build_non_instructional_week_lesson_json
 from tools.batch_processor_pkg import slot_flow_resolve
 from tools.batch_processor_pkg import slot_flow_extract
 from tools.batch_processor_pkg import slot_flow_transform
@@ -33,6 +34,7 @@ async def process_one_slot(
     processing_weight: float = 0.8,
     existing_lesson_json: Optional[Dict[str, Any]] = None,
     force_ai: bool = False,
+    refresh_source_documents: bool = False,
 ) -> Dict[str, Any]:
     """Process a single class slot. Resolve file, extract, transform, persist.
 
@@ -49,6 +51,7 @@ async def process_one_slot(
         processing_weight: Weight for processing phase (0-1)
         existing_lesson_json: Existing multi-slot JSON for cache reuse
         force_ai: If True, force LLM transformation even when cache is valid
+        refresh_source_documents: If True, skip DB extraction cache; always parse DOCX
 
     Returns:
         Lesson plan JSON for this slot
@@ -64,7 +67,21 @@ async def process_one_slot(
                 slot_progress / 100 * (1 / total_slots) * processing_weight * 100
             )
             overall_progress = base_progress + current_slot_progress
-            progress_tracker.update(plan_id, stage, overall_progress, message)
+            normalized_stage = stage
+            if stage == "processing":
+                if slot_progress < 30:
+                    normalized_stage = "extracting"
+                elif slot_progress < 80:
+                    normalized_stage = "transforming"
+                else:
+                    normalized_stage = "finalizing"
+            progress_tracker.update(
+                plan_id,
+                normalized_stage,
+                overall_progress,
+                message,
+                metadata={"completed_slots": slot_index - 1, "total_slots": total_slots},
+            )
 
     print(
         f"DEBUG: _process_slot - Resolving primary file for slot {slot['slot_number']}"
@@ -115,7 +132,11 @@ async def process_one_slot(
         slot["slot_number"],
     )
     cache_hit = False
-    if db_record and db_record.source_file_path == primary_file:
+    if (
+        db_record
+        and db_record.source_file_path == primary_file
+        and not refresh_source_documents
+    ):
         path_obj = Path(primary_file)
         if path_obj.exists():
             current_mtime = path_obj.stat().st_mtime
@@ -227,8 +248,26 @@ async def process_one_slot(
         processor, parser, slot_num, slot, teacher_name, plan_id
     )
     available_days = slot_flow_extract.get_available_days_from_content(content)
-    if not available_days:
-        print("DEBUG: _process_slot - No specific days detected, will generate all 5 days")
+    if available_days is None:
+        logger.info(
+            "instructional_weekdays_unknown_no_table_content",
+            extra={
+                "slot": slot["slot_number"],
+                "subject": slot["subject"],
+            },
+        )
+        print(
+            "DEBUG: _process_slot - No table_content weekdays; fall back to all 5 days"
+        )
+    elif len(available_days) == 0:
+        logger.info(
+            "instructional_weekdays_zero_skip_llm",
+            extra={
+                "slot": slot["slot_number"],
+                "subject": slot["subject"],
+            },
+        )
+        print("DEBUG: _process_slot - Zero instructional days; will skip AI")
     else:
         print(f"DEBUG: _process_slot - Generating content for days: {available_days}")
 
@@ -287,27 +326,42 @@ async def process_one_slot(
         )
         scrubbed_primary_content += preserve_msg
 
-    print("DEBUG: _process_slot - Starting LLM transformation")
+    print("DEBUG: _process_slot - Starting lesson transformation")
     update_slot_progress("processing", 30, "Preparing for transformation...")
     try:
-        print("DEBUG: _process_slot - Calling LLM service transform_lesson")
-        update_slot_progress(
-            "processing", 40, f"Transforming {slot['subject']} with AI..."
-        )
-        success, lesson_json, error = await slot_flow_transform.run_llm_transform(
-            processor,
-            scrubbed_primary_content,
-            slot,
-            week_of,
-            available_days,
-            plan_id,
-            update_slot_progress,
-        )
-        print(f"DEBUG: _process_slot - LLM transform_lesson returned, success: {success}")
-        update_slot_progress("processing", 70, "Processing transformation results...")
-        if not success:
-            print(f"DEBUG: _process_slot - LLM transformation failed: {error}")
-            raise ValueError(f"LLM transformation failed: {error}")
+        if available_days is not None and len(available_days) == 0:
+            update_slot_progress(
+                "processing", 40, "No instructional days; skipping AI..."
+            )
+            lesson_json = build_non_instructional_week_lesson_json(
+                processor, slot, week_of
+            )
+            update_slot_progress(
+                "processing", 70, "Skipping AI; applying finalization..."
+            )
+        else:
+            print("DEBUG: _process_slot - Calling LLM service transform_lesson")
+            update_slot_progress(
+                "processing", 40, f"Transforming {slot['subject']} with AI..."
+            )
+            success, lesson_json, error = await slot_flow_transform.run_llm_transform(
+                processor,
+                scrubbed_primary_content,
+                slot,
+                week_of,
+                available_days,
+                plan_id,
+                update_slot_progress,
+            )
+            print(
+                f"DEBUG: _process_slot - LLM transform_lesson returned, success: {success}"
+            )
+            update_slot_progress(
+                "processing", 70, "Processing transformation results..."
+            )
+            if not success:
+                print(f"DEBUG: _process_slot - LLM transformation failed: {error}")
+                raise ValueError(f"LLM transformation failed: {error}")
 
         if not isinstance(lesson_json, dict):
             if hasattr(lesson_json, "model_dump"):
@@ -359,6 +413,7 @@ async def process_one_slot(
             images,
             slot,
             week_of,
+            table_content=content.get("table_content"),
         )
         del parser
         gc.collect()

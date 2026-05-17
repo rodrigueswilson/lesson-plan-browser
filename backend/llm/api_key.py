@@ -8,6 +8,30 @@ from typing import Optional
 from backend.telemetry import logger
 
 
+def get_openai_api_key_for_tests(model: Optional[str] = None) -> Optional[str]:
+    """OpenAI key for gated tests and research smokes only (not lesson-plan SSOT).
+
+    Prefer dedicated test keys so production lesson generation can keep using
+    ``OPENAI_API_KEY`` / ``GPT5_API_KEY`` without sharing quota or rotation.
+
+    Resolution (test-specific first, then same as app for single-key setups):
+
+    - If ``model`` (or ``LLM_MODEL`` when ``model`` is None) contains ``gpt-5``:
+      ``GPT5_API_KEY_TESTS`` → ``OPENAI_API_KEY_TESTS`` → :func:`get_llm_api_key` (``openai``).
+    - Else: ``OPENAI_API_KEY_TESTS`` → :func:`get_llm_api_key` (``openai``).
+
+    ``LLMService`` and :func:`get_llm_api_key` do **not** read ``*_TESTS`` variables.
+    """
+    model_l = (model or os.getenv("LLM_MODEL", "")).lower()
+    if "gpt-5" in model_l:
+        key = os.getenv("GPT5_API_KEY_TESTS") or os.getenv("OPENAI_API_KEY_TESTS")
+    else:
+        key = os.getenv("OPENAI_API_KEY_TESTS")
+    if key:
+        return key.strip() or None
+    return get_llm_api_key("openai")
+
+
 def get_llm_api_key(provider: str) -> Optional[str]:
     """Get API key from environment or api_key.txt for the given provider.
 
@@ -28,7 +52,7 @@ def get_llm_api_key(provider: str) -> Optional[str]:
                 or os.getenv("LLM_API_KEY")
             )
             if not key:
-                warning_msg = "⚠ LLM Service: No API key found in environment variables for OpenAI. Checked: GPT5_API_KEY, OPENAI_API_KEY, LLM_API_KEY"
+                warning_msg = "WARNING LLM Service: No API key found in environment variables for OpenAI. Checked: GPT5_API_KEY, OPENAI_API_KEY, LLM_API_KEY"
                 print(warning_msg)
                 logger.warning(
                     "openai_api_key_not_found",
@@ -46,7 +70,7 @@ def get_llm_api_key(provider: str) -> Optional[str]:
         else:
             key = os.getenv("OPENAI_API_KEY") or os.getenv("LLM_API_KEY")
             if not key:
-                warning_msg = "⚠ LLM Service: No API key found in environment variables for OpenAI. Checked: OPENAI_API_KEY, LLM_API_KEY"
+                warning_msg = "WARNING LLM Service: No API key found in environment variables for OpenAI. Checked: OPENAI_API_KEY, LLM_API_KEY"
                 print(warning_msg)
                 logger.warning(
                     "openai_api_key_not_found",
@@ -60,7 +84,7 @@ def get_llm_api_key(provider: str) -> Optional[str]:
     elif provider == "anthropic":
         key = os.getenv("ANTHROPIC_API_KEY") or os.getenv("LLM_API_KEY")
         if not key:
-            warning_msg = "⚠ LLM Service: No API key found in environment variables for Anthropic. Checked: ANTHROPIC_API_KEY, LLM_API_KEY"
+            warning_msg = "WARNING LLM Service: No API key found in environment variables for Anthropic. Checked: ANTHROPIC_API_KEY, LLM_API_KEY"
             print(warning_msg)
             logger.warning(
                 "anthropic_api_key_not_found",
@@ -106,7 +130,7 @@ def get_llm_api_key(provider: str) -> Optional[str]:
             )
 
     if not key:
-        error_msg = f"✗ LLM Service: No API key found for {provider}. Checked environment variables and api_key.txt file. Service will fail to initialize."
+        error_msg = f"ERROR LLM Service: No API key found for {provider}. Checked environment variables and api_key.txt file. Service will fail to initialize."
         print(error_msg)
         logger.error(
             "api_key_not_found_anywhere",

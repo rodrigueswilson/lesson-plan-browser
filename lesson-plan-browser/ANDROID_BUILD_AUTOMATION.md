@@ -48,12 +48,18 @@ This script sets `TAURI_ENV_PLATFORM=android` and `TAURI_ENV_TARGET_TRIPLE=aarch
 **Troubleshooting:** If the tablet shows "No weeks available" after push:
 1. Confirm the APK was built with `npm run android:build` (or with `TAURI_ENV_PLATFORM=android` and `TAURI_ENV_TARGET_TRIPLE=aarch64-linux-android` set when building).
 2. Confirm the exported DB contains that user's data: `SELECT COUNT(*) FROM users;` and `SELECT COUNT(*) FROM weekly_plans WHERE user_id = '<user_id>';`.
-3. Force-stop the app before pushing the DB, then run the copy step (step 4 in section 4.2) so the app sees the new file on next launch.
+3. Force-stop the app before pushing the DB so startup applies the latest transfer file on next launch.
 4. Check app logs (rebuild the APK first so debug logging is present): run `adb logcat | findstr /i "LP DB"`. You should see:
-   - `[DB] Initializing database at: ...` and either `[DB] Database initialized with existing data. users=X weekly_plans=Y` or `[DB] WARNING: Database is empty`.
+  - `[DB] Initializing database at: ...`
+  - one transfer-import branch line:
+    - `[DB] Transfer import applied: ...` when `/sdcard/.../transfer/lesson_planner.db` is copied into internal DB, or
+    - `[DB] Transfer import skipped (missing)` / `(empty file)` when there is nothing to import, or
+    - `[DB] Transfer import failed: ...` on copy errors.
+  - then either `[DB] Database initialized with existing data. users=X weekly_plans=Y` or `[DB] WARNING: Database is empty`.
    - `[LP] userApi.list STANDALONE_DB_ENABLED=true isStandaloneMode=true canUseLocalDb=true` if the build has standalone DB enabled; if you see `STANDALONE_DB_ENABLED=false` the APK was built without the Android env (rebuild with `npm run android:build` or with those env vars set).
    - `[LP] [API] Local DB users count=1` (or higher) if the local DB is used and has users; `[LP] [API] Local DB query failed: ...` if the DB query failed (e.g. "Database not initialized").
    - `[LP] [API] getRecentWeeks local DB weeks count=N` if weeks are loaded from the local DB; if N is 0 the DB has no `weekly_plans` for that user.
+5. If transfer file verification succeeds but startup still shows unexpected old counts, check for transfer-import branch logs first. Missing `Transfer import applied` means the app did not consume the pushed file.
 
 ---
 

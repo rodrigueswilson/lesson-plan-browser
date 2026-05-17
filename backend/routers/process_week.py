@@ -146,8 +146,12 @@ async def process_week(
 
         progress_tracker.tasks[plan_id] = {
             "progress": 0,
-            "stage": "initialized",
+            "stage": "queued",
+            "status": "processing",
+            "stage_label": "Queued",
             "message": "Processing started",
+            "completed_slots": 0,
+            "total_slots": len(slots),
             "updates": [],
         }
 
@@ -176,6 +180,7 @@ async def process_week(
                     partial=batch_request.partial,
                     missing_only=batch_request.missing_only,
                     force_slots=batch_request.force_slots or [],
+                    refresh_source_documents=bool(batch_request.force_slots),
                 )
 
                 if result["success"]:
@@ -196,6 +201,10 @@ async def process_week(
                             "failed_slots": result["failed_slots"],
                             "output_file": result.get("output_file", ""),
                             "errors": result.get("errors"),
+                        },
+                        metadata={
+                            "completed_slots": result["processed_slots"],
+                            "total_slots": result.get("total_slots", len(slots)),
                         },
                     )
                 else:
@@ -230,6 +239,10 @@ async def process_week(
                             "failed_slots": result.get("failed_slots", 0),
                             "errors": errors,
                         },
+                        metadata={
+                            "completed_slots": result.get("processed_slots", 0),
+                            "total_slots": result.get("total_slots", len(slots)),
+                        },
                     )
             except Exception as e:
                 import traceback
@@ -248,7 +261,11 @@ async def process_week(
                 progress_tracker.tasks[plan_id] = {
                     "progress": 0,
                     "stage": "failed",
+                    "status": "failed",
+                    "stage_label": "Failed",
                     "message": f"Error: {str(e)}",
+                    "completed_slots": 0,
+                    "total_slots": len(slots),
                     "updates": [],
                 }
 

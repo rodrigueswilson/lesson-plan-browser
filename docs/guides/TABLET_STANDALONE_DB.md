@@ -11,6 +11,13 @@ Standalone mode is active when:
 
 In that case the app uses the **local SQLite database** at the path chosen in the Rust layer ([lesson-plan-browser/frontend/src-tauri/src/lib.rs](../../lesson-plan-browser/frontend/src-tauri/src/lib.rs)); **no backend HTTP is available**.
 
+The authoritative Android runtime path is `lesson-plan-browser/frontend/src-tauri` (not the root `frontend/src-tauri` tree). Keep push/import behavior aligned with this runtime path when diagnosing tablet DB issues.
+
+For ADB push flows, startup now checks `/sdcard/Android/data/com.lessonplanner.browser/files/transfer/lesson_planner.db` and logs one explicit transfer-import branch before opening SQLite:
+- `Transfer import applied`
+- `Transfer import skipped (missing|empty file)`
+- `Transfer import failed`
+
 For build and env details, see [lesson-plan-browser/ANDROID_BUILD_AUTOMATION.md](../../lesson-plan-browser/ANDROID_BUILD_AUTOMATION.md).
 
 ## Rule for the API layer
@@ -58,6 +65,8 @@ Do **not** duplicate the full troubleshooting steps here. For "No weeks availabl
 - **[lesson-plan-browser/ANDROID_BUILD_AUTOMATION.md](../../lesson-plan-browser/ANDROID_BUILD_AUTOMATION.md)** — build, push, and troubleshooting section.
 
 If you see `[LP] [API] WARNING: request() called in standalone mode` in logcat, a method used by the tablet is calling HTTP in standalone; add a local-DB branch or safe default and see this doc.
+
+If ADB verifies the transfer file exists but startup still shows unexpected old `users=` / `weekly_plans=` counts, inspect the transfer-import branch logs first. If `Transfer import applied` is missing, the pushed file was not consumed on startup.
 
 ## Settings > Database (PC + FastAPI only)
 

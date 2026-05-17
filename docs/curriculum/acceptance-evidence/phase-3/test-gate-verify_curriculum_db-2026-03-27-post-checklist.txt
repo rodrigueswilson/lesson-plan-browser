@@ -1,0 +1,22 @@
+Phase 3 G3 Math corpus + regression (repo root, 2026-03-27 session)
+
+Per-unit verify (all exit 0):
+  python tools/scraper/verify_curriculum_db.py --ingest-report ingest_reports/2026-03-28T03-02-35Z_5af67cf1.json   (G3 Math U5)
+  python tools/scraper/verify_curriculum_db.py --ingest-report ingest_reports/2026-03-28T02-35-30Z_6f11c05b.json   (G3 Math U6)
+  python tools/scraper/verify_curriculum_db.py --ingest-report ingest_reports/2026-03-28T02-37-20Z_71146a94.json   (G3 Math U7)
+  python tools/scraper/verify_curriculum_db.py --ingest-report ingest_reports/2026-03-28T02-40-10Z_c35638b9.json   (G3 Math U8)
+
+Non-G3 Math regression + verify:
+  python tools/scraper/verify_curriculum_db.py --ingest-report ingest_reports/2026-03-28T02-40-23Z_30d51100.json   (G2 Math U1)
+
+Holistic verify:
+  python tools/scraper/verify_curriculum_db.py
+  -> Curriculum DB validation OK: d:\LP\data\curriculum.db
+
+Pytest:
+  python -m pytest tests/test_math_fidelity_helpers.py tests/test_ingest_report_failure_codes.py tests/test_curriculum_gaps.py -q
+  -> 13 passed
+  python -m pytest tests/test_grade3_ela_ingest_smoke.py -q
+  -> 1 passed
+
+Checklist: docs/curriculum/acceptance-evidence/phase-3/G3_MATH_PHASE3_INGEST_CHECKLIST.md
