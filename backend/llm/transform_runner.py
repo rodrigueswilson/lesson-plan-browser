@@ -6,7 +6,10 @@ import json
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
 from backend.config import settings
-from backend.llm.post_process import normalize_sentence_frame_punctuation
+from backend.llm.post_process import (
+    normalize_sentence_frame_punctuation,
+    normalize_wida_objectives_in_lesson_json,
+)
 from backend.llm.sanitize_lesson_json import sanitize_lesson_json_strings
 from backend.llm.strategy_pack_context import (
     allowed_strategy_ids_retry_suffix,
@@ -394,6 +397,7 @@ def run_transform_lesson(
             },
         )
 
+        lesson_json = normalize_wida_objectives_in_lesson_json(lesson_json)
         lesson_json = normalize_sentence_frame_punctuation(lesson_json)
         lesson_json = sanitize_lesson_json_strings(lesson_json)
 

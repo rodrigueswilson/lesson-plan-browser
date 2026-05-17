@@ -207,20 +207,11 @@ def combine_lessons_impl(
 
         merged_json["metadata"]["total_slots"] = len(lessons)
 
-        teachers = set()
         subjects = set()
         for lesson in lessons:
-            if (
-                lesson.get("lesson_json", {})
-                .get("metadata", {})
-                .get("teacher_name")
-            ):
-                teachers.add(lesson["lesson_json"]["metadata"]["teacher_name"])
             if lesson.get("subject"):
                 subjects.add(lesson["subject"])
 
-        if len(teachers) > 1:
-            merged_json["metadata"]["teacher_name"] = " / ".join(sorted(teachers))
         if len(subjects) > 1:
             merged_json["metadata"]["subject"] = " / ".join(sorted(subjects))
     else:

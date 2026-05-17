@@ -8,6 +8,10 @@ from pydantic import BaseModel, ConfigDict, Field, RootModel, field_validator
 
 from backend.lesson_schema_enums import ModelName, PatternId
 from backend.models import WeekOf
+from backend.wida_eld_format import (
+    WIDA_OBJECTIVE_FIELD_PATTERN,
+    validate_and_normalize_wida_objective,
+)
 from backend.lesson_schema_support import BilingualOverlay, SupportsByLevel
 from backend.lesson_schema_vocabulary import (
     Homework,
@@ -75,8 +79,15 @@ class Objective(BaseModel):
             "Students will use language to explain how Roman law, banking, and Pax Romana enabled economic growth (ELD-SS.6-8.Explain.Reading/Writing) by using cognate awareness and graphic organizers with Portuguese-English vocabulary bridges appropriate for WIDA levels 2-5, producing a written explanation that demonstrates understanding of cause-effect relationships in historical systems."
         ],
         min_length=50,
-        pattern=".*ELD-[A-Z]{2}\\.[0-9K-]+\\.[A-Za-z]+\\.(?:Listening|Reading|Speaking|Writing)(?:/(?:Listening|Reading|Speaking|Writing))*.*",
+        pattern=WIDA_OBJECTIVE_FIELD_PATTERN,
     )
+
+    @field_validator("wida_objective", mode="before")
+    @classmethod
+    def normalize_wida_objective_eld_format(cls, value: object) -> object:
+        if not isinstance(value, str):
+            return value
+        return validate_and_normalize_wida_objective(value)
 
 
 class AnticipatorySet(BaseModel):
