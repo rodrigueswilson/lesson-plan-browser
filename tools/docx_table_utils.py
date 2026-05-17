@@ -30,11 +30,11 @@ def normalize_table_column_widths(
         >>> doc.save('output.docx')
 
     Note:
-        - Width values must be integers (EMU units)
-        - 1 inch = 914,400 EMU
+        - Table preferred width uses dxa/twips: 1 inch = 1,440 dxa
+        - Column widths use python-docx Length values (EMU internally)
         - Handles merged cells correctly
         - Empty tables are skipped
-        - Sets table preferred width type to 'dxa' (twentieths of a point) to prevent auto-sizing
+        - Sets table preferred width type to 'dxa' to prevent auto-sizing
     """
     if not table.columns:
         return
@@ -42,13 +42,25 @@ def normalize_table_column_widths(
     tbl_element = table._element
     tblPr = tbl_element.tblPr
 
-    tblW = tblPr.find(qn("w:tblW"))
-    if tblW is None:
-        tblW = OxmlElement("w:tblW")
-        tblPr.append(tblW)
-
+    for tblW in tblPr.findall(qn("w:tblW")):
+        tblPr.remove(tblW)
+    tblW = OxmlElement("w:tblW")
     tblW.set(qn("w:type"), "dxa")
-    tblW.set(qn("w:w"), str(int(Inches(total_width_inches))))
+    tblW.set(qn("w:w"), str(int(total_width_inches * 1440)))
+    _insert_tbl_pr_element(
+        tblPr,
+        tblW,
+        (
+            "w:jc",
+            "w:tblCellSpacing",
+            "w:tblInd",
+            "w:tblBorders",
+            "w:shd",
+            "w:tblLayout",
+            "w:tblCellMar",
+            "w:tblLook",
+        ),
+    )
 
     layout_list = tblPr.findall(qn("w:tblLayout"))
     for layout in layout_list:
@@ -56,7 +68,14 @@ def normalize_table_column_widths(
 
     layout = OxmlElement("w:tblLayout")
     layout.set(qn("w:type"), "fixed")
-    tblPr.append(layout)
+    _insert_tbl_pr_element(
+        tblPr,
+        layout,
+        (
+            "w:tblCellMar",
+            "w:tblLook",
+        ),
+    )
 
     tblInd_list = tblPr.findall(qn("w:tblInd"))
     for tblInd in tblInd_list:
@@ -65,12 +84,41 @@ def normalize_table_column_widths(
     tblInd = OxmlElement("w:tblInd")
     tblInd.set(qn("w:w"), "0")
     tblInd.set(qn("w:type"), "dxa")
-    tblPr.append(tblInd)
+    _insert_tbl_pr_element(
+        tblPr,
+        tblInd,
+        (
+            "w:tblBorders",
+            "w:shd",
+            "w:tblLayout",
+            "w:tblCellMar",
+            "w:tblLook",
+        ),
+    )
 
     col_width = int(Inches(total_width_inches) / len(table.columns))
 
     for column in table.columns:
         column.width = col_width
+
+    for cell in tbl_element.findall(f".//{qn('w:tc')}"):
+        _ensure_cell_has_block_content(cell)
+
+
+def _insert_tbl_pr_element(tblPr, element, successor_tags: tuple[str, ...]) -> None:
+    successor_qnames = {qn(tag) for tag in successor_tags}
+    for index, child in enumerate(tblPr):
+        if child.tag in successor_qnames:
+            tblPr.insert(index, element)
+            return
+    tblPr.append(element)
+
+
+def _ensure_cell_has_block_content(cell) -> None:
+    for child in cell:
+        if child.tag != qn("w:tcPr"):
+            return
+    cell.append(OxmlElement("w:p"))
 
 
 def normalize_all_tables(doc: Document, total_width_inches: float = 6.5) -> int:

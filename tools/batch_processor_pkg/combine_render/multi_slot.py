@@ -129,9 +129,17 @@ def _render_multi_slot(
                 "render_merge_files",
                 metadata={"file_count": len(temp_files)},
             ):
-                _combine_module.merge_docx_files(temp_files, output_path)
+                _combine_module.merge_docx_files(
+                    temp_files,
+                    output_path,
+                    master_template_path=template_path,
+                )
         else:
-            _combine_module.merge_docx_files(temp_files, output_path)
+            _combine_module.merge_docx_files(
+                temp_files,
+                output_path,
+                master_template_path=template_path,
+            )
         logger.info(
             "batch_merge_slots_success",
             extra={"slot_count": len(temp_files)},
@@ -196,6 +204,33 @@ def _render_multi_slot(
         doc = Document(output_path)
         renderer._append_unmatched_media(doc, unique_hl, unique_img)
         doc.save(output_path)
+
+    try:
+        from tools.docx_utils import normalize_styles_via_file
+
+        template_doc = Document(template_path)
+        merged_doc = Document(output_path)
+        normalized_stream = normalize_styles_via_file(template_doc, merged_doc)
+        if normalized_stream:
+            Path(output_path).write_bytes(normalized_stream.getvalue())
+            logger.info(
+                "batch_multi_slot_post_merge_styles_applied",
+                extra={"output_path": output_path},
+            )
+        else:
+            logger.warning(
+                "batch_multi_slot_post_merge_styles_failed",
+                extra={
+                    "output_path": output_path,
+                    "note": "merged file unchanged; Word may show Styles 1 error",
+                },
+            )
+    except Exception as e:
+        logger.warning(
+            "batch_multi_slot_post_merge_styles_error",
+            extra={"output_path": output_path, "error": str(e)},
+            exc_info=True,
+        )
 
     try:
         from backend.services.objectives_printer import ObjectivesPrinter
