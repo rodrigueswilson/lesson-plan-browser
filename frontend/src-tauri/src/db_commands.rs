@@ -21,9 +21,6 @@ pub fn init_database(db_path: PathBuf) -> Result<(), String> {
             .map_err(|e| format!("Failed to create database directory: {}", e))?;
     }
 
-    #[cfg(target_os = "android")]
-    crate::tablet_adb::apply_incoming_transfer_if_present(&db_path);
-
     let mut db_guard = DB.lock().map_err(|e| format!("Lock error: {}", e))?;
 
     let conn = Connection::open(&db_path).map_err(|e| format!("Failed to open database: {}", e))?;

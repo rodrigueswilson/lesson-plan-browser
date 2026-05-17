@@ -203,7 +203,7 @@ fn ensure_package_installed(device: &str, package_name: &str) -> Result<(), Stri
     Ok(())
 }
 
-fn find_project_root_with_script(script_name: &str) -> Result<std::path::PathBuf, String> {
+pub(crate) fn find_project_root_with_script(script_name: &str) -> Result<std::path::PathBuf, String> {
     if let Ok(cwd) = std::env::current_dir() {
         let mut p = Some(cwd.as_path());
         while let Some(cur) = p {

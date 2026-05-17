@@ -4,18 +4,13 @@ param(
 
 $ErrorActionPreference = "Stop"
 
-# Configuration
-
-# Configuration
 $PackageName = "com.lessonplanner.browser"
 $DbName = "lesson_planner.db"
-$TransferDir = "/sdcard/Android/data/$PackageName/files/transfer"
 $LocalDbPath = "data/$DbName"
 $PythonScript = "scripts/sync_browser_plans_to_tablet_db.py"
 
 Write-Host "Starting sync-to-tablet process..." -ForegroundColor Cyan
 
-# 1. Check if ADB is connected
 Write-Host "Checking for connected Android devices..."
 $devices = adb devices
 $deviceFound = $devices | Where-Object { $_ -match "\s+device$" }
@@ -25,10 +20,7 @@ if (-not $deviceFound) {
     exit 1
 }
 
-# 2. Generate the Database
 Write-Host "Generating SQLite database from browser plans..."
-# Use --plan-limit 100 to ensure we get all recent plans (API default is 50, but we want more)
-# Lesson steps are included and fetched in parallel for better performance
 $syncArgs = @("--plan-limit", "100")
 if ($Force) {
     Write-Host "Force mode enabled: Re-syncing existing plans..." -ForegroundColor Yellow
@@ -46,35 +38,51 @@ if (-not (Test-Path $LocalDbPath)) {
     exit 1
 }
 
-# 3. Create Transfer Directory on Tablet
-Write-Host "Ensuring transfer directory exists on tablet..."
-adb shell "mkdir -p $TransferDir"
-
-# 4. Push Database to Tablet Transfer Directory
-Write-Host "Pushing database to tablet transfer directory..."
-adb push $LocalDbPath "$TransferDir/$DbName"
-if ($LASTEXITCODE -ne 0) {
-    Write-Error "Failed to push database via ADB."
+Write-Host "Probing run-as availability (requires debuggable APK)..."
+$probeOutput = adb shell "run-as $PackageName true" 2>&1
+$probeExit = $LASTEXITCODE
+if ($probeExit -ne 0) {
+    Write-Error @"
+The installed APK is not debuggable; run-as is rejected ($probeOutput).
+Build and install a debug APK before retrying:
+  pwsh .\lesson-plan-browser\scripts\build-android-offline.ps1 -Target arm64
+  adb install -r lesson-plan-browser\frontend\src-tauri\gen\android\app\build\outputs\apk\arm64\debug\app-arm64-debug.apk
+"@
     exit 1
 }
 
-# 5. Copy Database to App's Database Directory
-Write-Host "Copying database to app's database directory..."
-Write-Host "Note: This requires the app to be debuggable"
-adb shell "run-as $PackageName mkdir -p databases"
-adb shell "run-as $PackageName cp $TransferDir/$DbName databases/lesson_planner.db"
+Write-Host "Force-stopping app on tablet..."
+adb shell "am force-stop $PackageName" | Out-Null
+
+$TmpName = "lp_xfer_{0}_{1}.db" -f ([int][double]::Parse((Get-Date -UFormat %s))), $PID
+$TmpPath = "/data/local/tmp/$TmpName"
+
+Write-Host "Pushing database to $TmpPath..."
+adb push $LocalDbPath $TmpPath
 if ($LASTEXITCODE -ne 0) {
-    Write-Warning "Failed to copy database using run-as. The app may need to be restarted manually."
-    Write-Host "Database is available in transfer directory: $TransferDir/$DbName"
-}
-else {
-    Write-Host "Database copied successfully to app directory!" -ForegroundColor Green
+    Write-Error "Failed to push database to /data/local/tmp via ADB."
+    exit 1
 }
 
-# 6. Restart App to Load New Database
-Write-Host "Restarting app to load new database..."
-adb shell "am force-stop $PackageName"
-Start-Sleep -Seconds 1
-adb shell "am start -n $PackageName/.MainActivity"
+Write-Host "Staging into app internal storage via run-as..."
+$StageScript = "run-as $PackageName sh -c 'mkdir -p files/transfer && cp $TmpPath files/transfer/$DbName && chmod 600 files/transfer/$DbName'"
+adb shell $StageScript
+if ($LASTEXITCODE -ne 0) {
+    Write-Error "run-as stage failed. The app's Rust import requires the file at files/transfer/$DbName."
+    adb shell "rm -f $TmpPath" | Out-Null
+    exit 1
+}
 
-Write-Host "Sync complete! The app has been restarted with the new database." -ForegroundColor Green
+Write-Host "Cleaning up /data/local/tmp..."
+adb shell "rm -f $TmpPath" | Out-Null
+
+Write-Host "Verifying staged file..."
+$verify = adb shell "run-as $PackageName ls -la files/transfer/$DbName" 2>&1
+Write-Host "  $verify"
+
+Write-Host "Restarting app to trigger import on next init_database..."
+adb shell "am start -n $PackageName/.MainActivity" | Out-Null
+
+Write-Host "Sync complete. The app will import the new DB on next launch." -ForegroundColor Green
+Write-Host "Tail logs with:" -ForegroundColor Cyan
+Write-Host '  adb logcat -d | findstr /C:"[DB]" /C:"[LP]" /C:"[Transfer]"' -ForegroundColor Cyan
