@@ -36,6 +36,24 @@ class TestTableWidthNormalization:
             assert column.width == expected_width, \
                 f"Column width {column.width} != expected {expected_width}"
 
+        tblW = table._element.tblPr.find(
+            "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}tblW"
+        )
+        assert tblW is not None
+        assert tblW.get(
+            "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}type"
+        ) == "dxa"
+        assert tblW.get(
+            "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}w"
+        ) == "8640"
+        tblPr_tags = [
+            element.tag.rsplit("}", 1)[-1]
+            for element in table._element.tblPr
+        ]
+        assert tblPr_tags.index("tblW") < tblPr_tags.index("tblInd")
+        assert tblPr_tags.index("tblInd") < tblPr_tags.index("tblLayout")
+        assert tblPr_tags.index("tblLayout") < tblPr_tags.index("tblLook")
+
     def test_normalize_single_table_default_width(self):
         """Test normalizing with default 6.5 inch width."""
         doc = Document()
@@ -56,6 +74,18 @@ class TestTableWidthNormalization:
         
         # Should not raise exception
         normalize_table_column_widths(table)
+
+    def test_normalize_restores_required_paragraph_in_empty_cells(self):
+        """A table cell must contain at least one block element for Word to open it."""
+        doc = Document()
+        table = doc.add_table(rows=1, cols=1)
+        table.cell(0, 0)._tc.clear_content()
+
+        normalize_table_column_widths(table)
+
+        assert table.cell(0, 0)._tc.find(
+            "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}p"
+        ) is not None
 
     def test_normalize_all_tables_in_document(self):
         """Test normalizing all tables in a document."""
