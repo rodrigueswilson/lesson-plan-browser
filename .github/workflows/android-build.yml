@@ -7,6 +7,13 @@ on:
       - 'frontend/**'
       - 'backend/**'
       - 'tools/**'
+      - '.github/workflows/android-build.yml'
+  pull_request:
+    paths:
+      - 'frontend/**'
+      - 'backend/**'
+      - 'tools/**'
+      - '.github/workflows/android-build.yml'
 
 jobs:
   build:
