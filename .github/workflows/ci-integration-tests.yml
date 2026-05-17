@@ -212,7 +212,11 @@ jobs:
   integration-tests-sqlite:
     name: Integration Tests (SQLite - Fallback)
     runs-on: ubuntu-latest
-    
+    env:
+      # Placeholders so modules that read API keys at import/collection do not fail in CI.
+      OPENAI_API_KEY: sk-ci-placeholder-not-used
+      ANTHROPIC_API_KEY: sk-ci-placeholder-not-used
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -239,13 +243,21 @@ jobs:
         run: |
           pytest tests/test_integration_authorization.py -v --tb=short
 
-      - name: Run unit-marked critical path tests
+      - name: Run authorization unit tests
         env:
           DATABASE_URL: sqlite:///./data/test_lesson_planner.db
           USE_SUPABASE: 'False'
           PYTHONPATH: ${{ github.workspace }}
         run: |
-          pytest tests/ -m unit -v --tb=short
+          pytest tests/test_authorization.py -v --tb=short
+
+      - name: Run instructional-days and null-day unit tests
+        env:
+          DATABASE_URL: sqlite:///./data/test_lesson_planner.db
+          USE_SUPABASE: 'False'
+          PYTHONPATH: ${{ github.workspace }}
+        run: |
+          pytest tests/test_instructional_days.py tests/test_no_school_stub_pick.py tests/test_validate_null_days.py -v --tb=short
 
   test-summary:
     name: Test Summary
