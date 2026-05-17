@@ -75,6 +75,13 @@ jobs:
     - name: Install Tauri CLI
       run: cargo install tauri-cli --version "^2.0"
       
+    - name: Initialize Android project
+      run: |
+        cd frontend/src-tauri
+        cargo tauri android init --ci
+      env:
+        CI: true
+
     - name: Build Android APK
       run: |
         cd frontend/src-tauri
