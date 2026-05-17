@@ -90,12 +90,11 @@ jobs:
     - name: Upload APK artifact
       uses: actions/upload-artifact@v4
       with:
-        name: app-arm64-debug-apk
-        path: frontend/src-tauri/gen/android/app/build/outputs/apk/arm64/debug/app-arm64-debug.apk
+        name: app-android-apk
+        path: frontend/src-tauri/gen/android/app/build/outputs/apk/**/*.apk
         retention-days: 30
         
     - name: Display APK info
       run: |
-        cd frontend/src-tauri/gen/android/app/build/outputs/apk/arm64/debug
-        ls -la *.apk
-        file app-arm64-debug.apk
+        find frontend/src-tauri/gen/android/app/build/outputs/apk -name '*.apk' -exec ls -la {} \;
+        find frontend/src-tauri/gen/android/app/build/outputs/apk -name '*.apk' | head -1 | xargs file
